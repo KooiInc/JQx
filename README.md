@@ -21,7 +21,7 @@ The objective is to use *`prototype` and `this` **as least as possible*** in the
 ## Install/Import/Initialize
 
 ### NPM
-You can install this module using npm
+You can install this module using npm. To create a HTML tree (DOM Object) server side you need a library like [jsdom](https://github.com/jsdom/jsdom).
 ```
 npm i jqlmodule
 ```
