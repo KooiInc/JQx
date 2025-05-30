@@ -6,7 +6,7 @@
     <img src="https://img.shields.io/npm/v/jqlmodule.svg?labelColor=cb3837&logo=npm&color=dcfdd9"></a>
 </div>
 
-## WIP Migrating from GitHUB to Codeberg
+## *Work in progress*: migrating from GitHUB to Codeberg
 
 # JQx
 
