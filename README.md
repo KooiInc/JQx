@@ -8,7 +8,7 @@
 
 ## *Work in progress*: migrating from GitHUB to Codeberg
 
-# JQx
+# JQx: JQuery - the good parts redone
 
 This module was inspired by the idea that some JQuery was too good <a target="_blank" href="http://youmightnotneedjquery.com/" rel="nofollow">to ditch</a>.
 
