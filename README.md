@@ -48,4 +48,4 @@ $.div(`Hello JQL!`);
 Documentation can be found @[https://kooiinc.codeberg.page/JQx/Resource/Docs/](https://kooiinc.codeberg.page/JQx/Resource/Docs/).
 
 ## Demo and test
-A test and demo of this module can be found @[kooiinc.codeberg.page/JQL/Resource/Demo](https://kooiinc.codeberg.page/JQL/Resource/Demo/).
+A test and demo of this module can be found @[kooiinc.codeberg.page/JQx/Resource/Demo](https://kooiinc.codeberg.page/JQx/Resource/Demo/).
