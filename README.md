@@ -1,6 +1,8 @@
-# JQL
+## WIP Migrating from GitHUB to Codeberg
 
-This module (<b>JQ</b>uery<b>L</b>ike) was inspired by the idea that some JQuery was too good <a target="_blank" href="http://youmightnotneedjquery.com/" rel="nofollow">to ditch</a>.
+# JQx
+
+This module was inspired by the idea that some JQuery was too good <a target="_blank" href="http://youmightnotneedjquery.com/" rel="nofollow">to ditch</a>.
 
 It is developed in a modular fashion and uses plain ES20xx, so not really (or really not, take your pick) suitable for older browsers.
 
@@ -43,7 +45,7 @@ $.div(`Hello JQL!`);
 </script>
 ```
 ## Documentation
-Documentation can be found @[kooiinc.github.io/JQL/Resource/Docs/](https://kooiinc.github.io/JQL/Resource/Docs/).
+Documentation can be found @[https://kooiinc.codeberg.page/JQx/Resource/Docs/](https://kooiinc.codeberg.page/JQx/Resource/Docs/).
 
 ## Demo and test
-A test and demo of this module can be found @[kooiinc.github.io/JQL/Resource/Demo](https://kooiinc.github.io/JQL/Resource/Demo/).
+A test and demo of this module can be found @[kooiinc.codeberg.page/JQL/Resource/Demo](https://kooiinc.codeberg.page/JQL/Resource/Demo/).
