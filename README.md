@@ -24,23 +24,21 @@ For each flavor, the script is (bundled and) minified. The location of the minif
 
 ### ESM import
 ``` javascript
-import $ from "https://kooiinc.github.io/JQL/Bundle/jql.min.js";
+import $ from "https://kooiinc.codeberg.page/JQx/Bundle/jql.min.js";
 // or
 const $ = ( await 
-  import("https://kooiinc.github.io/JQL/Bundle/jql.min.js") 
+  import("https://kooiinc.codeberg.page/JQx/Bundle/jql.min.js") 
 ).default;
-$.div(`Hello JQL!`);
+$.div_jql(`Hello JQL!`).appendTo(document.body);
 // ...
 ```
 
 ### Browser script
 ``` html
-<script src="https://kooiinc.github.io/JQL/Bundle/jql.browser.min.js"></script>
+<script src="https://kooiinc.codeberg.page/JQx/Bundle/jql.browser.min.js"></script>
 <script>
   const $ = JQL.default;
-  // optionally delete from global namespace
-  delete window.JQL;
-  $.div(`Hello JQL!`);
+  $.div_jql(`Hello JQL!`).appendTo(document.body);
   // ...
 </script>
 ```
