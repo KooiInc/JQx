@@ -1,3 +1,11 @@
+<div align="center">
+  <a href="https://bundlephobia.com/package/jqlmodule" rel="nofollow">
+  <a href="https://bundlephobia.com/package/jqlmodule@latest" rel="nofollow">
+    <img src="https://badgen.net/bundlephobia/min/jqlmodule"></a>
+  <a target="_blank" href="https://www.npmjs.com/package/jqlmodule">
+    <img src="https://img.shields.io/npm/v/jqlmodule.svg?labelColor=cb3837&logo=npm&color=dcfdd9"></a>
+</div>
+
 ## WIP Migrating from GitHUB to Codeberg
 
 # JQx
