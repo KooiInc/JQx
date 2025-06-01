@@ -1,6 +1,7 @@
 /**
   This code is classfree object oriented. No this. No prototype. No class.
   Inspired by Douglas Crockford (see https://youtu.be/XFTOG895C7c?t=2562)
+ 2025/05/31 overhaul ...
 */
 
 import {

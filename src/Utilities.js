@@ -1,8 +1,6 @@
 import jql from "../index.js";
-import {
-  default as tagFNFactory,
-  IS,
-  LifeStyleFactory as styleFactory } from "./SyncedExternals.js";
+import {default as tagFNFactory} from "./tinyDOM.js";
+import { IS, maybe, LifeStyleFactory as styleFactory } from "./SyncedExternals.js";
 const characters4RandomString = [...Array(26)]
   .map((x, i) => String.fromCharCode(i + 65))
   .concat([...Array(26)].map((x, i) => String.fromCharCode(i + 97)))
@@ -114,6 +112,7 @@ function ExamineElementFeatureFactory() {
 
 export {
   IS,
+  maybe,
   randomString,
   toDashedNotation,
   toCamelcase,

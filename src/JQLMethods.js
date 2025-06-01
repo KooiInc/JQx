@@ -174,10 +174,15 @@ const allMethods = {
           ? content[Symbol.jqlvirtual].HTML.get(1) : content.isJQL ? content.HTML.get(1) : content;
         return self.HTML.set(content + self.HTML.get(), false, escape);
       },
-    })
+    }),
+    render: self => self.is.empty ? `NO ELEMENTS TO RENDER` : self.toDOM(),
   },
   instanceExtensions: {
     isEmpty: self => self.collection.length < 1,
+    renderTo: (self, root = document.body, at = jql.insertPositions.end) => {
+      self.appendTo(root, at);
+      return self;
+    },
     replaceClass: (self, className, ...nwClassNames) =>
       loop( self, el => {
         el.classList.remove(className);
@@ -433,8 +438,9 @@ const allMethods = {
       return toDOM ? nwJQL.toDOM(root) : nwJQL;
     },
     toDOM: (self, root = document.body, position = insertPositions.BeforeEnd) => {
-      self.collection = inject2DOMTree(self.collection, root, position);
       if (self.isVirtual) { self.isVirtual = false; }
+      self.collection = inject2DOMTree(self.collection, root, position);
+      
       return self;
     },
     first: (self, asJQLInstance = false) => {

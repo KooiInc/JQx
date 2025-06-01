@@ -1,16 +1,16 @@
-import { createElementFromHtmlString, insertPositions, inject2DOMTree } from "./DOM.js";
+import { createElementFromHtmlString, insertPositions, inject2DOMTree, cleanupHtml, } from "./DOM.js";
 import { debugLog, Log, systemLog } from "./JQLLog.js";
 import allMethods from "./JQLMethods.js";
 import PopupFactory from "./Popup.js";
 import HandleFactory from "./HandlerFactory.js";
 import tagLib from "./HTMLTags.js";
 import {
-  randomString, toDashedNotation, IS, truncateHtmlStr, tagFNFactory,
+  randomString, toDashedNotation, IS, truncateHtmlStr, tagFNFactory as $T,
   truncate2SingleStr, logTime, hex2RGBA, styleFactory, toCamelcase
 } from "./Utilities.js";
 let static4Docs = {};
 const {
-  instanceMethods, instanceGetters,isCommentOrTextNode, isNode, isComment, isText,
+  instanceMethods, instanceGetters,isCommentOrTextNode, isNode,
   isHtmlString, isArrayOfHtmlElements, isArrayOfHtmlStrings, ElemArray2HtmlString,
   input2Collection, setCollectionFromCssSelector, addHandlerId, cssRuleEdit,
   addFn, elems4Docs } = smallHelpersFactory();
@@ -117,55 +117,25 @@ function addJQLStaticMethods(jql) {
   return jql;
 }
 
-function defaultStaticMethodsFactory(jql) {
-  return combineObjectSources(
-    Object.entries(tagLib.tagsRaw).reduce(staticTagsLambda(jql), {}),
-    staticMethodsFactory(jql));
-}
-
-function staticMethodsFactory(jql) {
-  const editCssRule = (ruleOrSelector, ruleObject) => cssRuleEdit(ruleOrSelector, ruleObject);
+function allowances() {
   return {
-    debugLog,
-    log: (...args) => Log(`fromStatic`, ...args),
-    insertPositions,
-    get at() { return insertPositions; },
-    editCssRules: (...rules) => rules.forEach(rule => cssRuleEdit(rule)),
-    editCssRule,
-    get setStyle() { /*deprecated*/return editCssRule; },
-    delegate: delegateFactory(HandleFactory()),
-    virtual: virtualFactory(jql),
-    get fn() { return addFn; },
-    allowTag: tagName => {
+    allow: tagName => {
       tagName = tagName.toLowerCase();
       tagLib.allowTag(tagName);
-
+      
       if (!IS(jql[tagName], Function)) {
-        Object.defineProperties( jql, addGetters(tagName, jql) );
+        Object.defineProperties( jql, addGetters(tagName, true, jql) );
       }
     },
-    prohibitTag: tagLib.prohibitTag,
-    get lenient() { return tagLib.allowUnknownHtmlTags; },
-    get IS() { return IS; },
-    get Popup() {
-      if (!jql.activePopup) {
-        Object.defineProperty(
-          jql, `activePopup`, {
-            value: PopupFactory(jql),
-            enumerable: false
-          } );
+    prohibit: tagName => {
+      tagName = tagName.toLowerCase();
+      tagLib.prohibitTag(tagName);
+      
+      if (IS(jql[tagName], Function)) {
+        Object.defineProperties( jql, addGetters(tagName, false, jql) );
       }
-      return jql.activePopup;
-    },
-    popup: () => jql.Popup,
-    createStyle: id => styleFactory({createWithId: id || `jql${randomString()}`}),
-    editStylesheet: id => styleFactory({createWithId: id || `jql${randomString()}`}),
-    removeCssRule: cssRemove,
-    removeCssRules: cssRemove,
-    text: (str, isComment = false) => isComment ? jql.comment(str) : document.createTextNode(str),
-    node: (selector, root = document) => root.querySelector(selector, root),
-    nodes: (selector, root = document) => [...root.querySelectorAll(selector, root)],
-  };
+    }
+  }
 }
 
 function cssRemove(...rules) {
@@ -215,44 +185,91 @@ function combineObjectSources(...sources) {
   return result;
 }
 
-function tagGetterFactory(tagName, jql) {
+function tagNotAllowed(tagName) {
+  console.error(`JQL: "${tagName}" not allowed, not rendered`);
+  return undefined;
+}
+
+function tagGetterFactory(tagName, cando, jql) {
   tagName = tagName.toLowerCase();
   
   return {
-    get() { return (...args) =>
-        IS(jql, Function)
-          ? tagLib.tagsRaw[tagName.toLowerCase()] && jql.virtual(tagFNFactory[tagName](...args)) || undefined
-          : tagLib.tagsRaw[tagName.toLowerCase()] && tagFNFactory[tagName](...args)  || undefined;
+    get() {
+      return  (...args) => {
+        if (!cando) { return tagNotAllowed()}
+        
+        return jql.virtual(cleanupHtml($T[tagName](...args)));
+      }
     },
     enumerable: false,
-    configurable: false,
+    configurable: true,
   }
 }
 
-function addGetters(tag, jql) {
-  const getterForThisTag = tagGetterFactory(tag);
-  const jqlGetterForThisTag = tagGetterFactory(tag.replace(/_jql$/i, ``), jql);
-  const getters = {
-    [tag]: getterForThisTag,
-    [tag.toUpperCase()]: getterForThisTag,
-    [`${tag}_jql`]: jqlGetterForThisTag,
-    [`${tag.toUpperCase()}_JQL`]: jqlGetterForThisTag,
-  };
-
-  if (/\-/.test(tag)) {
+function addGetters(tag, cando, jql) {
+  tag = tag.toLowerCase();
+  const jqlGetterForThisTag = tagGetterFactory(tag, cando, jql);
+  if (/-/.test(tag)) {
     tag = toCamelcase(tag);
-    getters[tag] = getterForThisTag;
-    getters[`${tag}_jql`] = jqlGetterForThisTag;
+    return { [tag]: jqlGetterForThisTag, }
   }
+  
+  return {
+    [tag]: jqlGetterForThisTag,
+    [tag.toUpperCase()]: jqlGetterForThisTag,
+  };
+}
 
-  return getters;
+function defaultStaticMethodsFactory(jql) {
+  return combineObjectSources(
+    Object.entries(tagLib.tagsRaw).reduce(staticTagsLambda(jql), {}),
+    staticMethodsFactory(jql));
 }
 
 function staticTagsLambda(jql) {
   return function(acc, [tag, cando]) {
-    Object.defineProperties( acc, addGetters(tag, jql) );
+    cando && Object.defineProperties( acc, addGetters(tag, cando, jql) );
     return acc;
   }
+}
+
+function staticMethodsFactory(jql) {
+  const editCssRule = (ruleOrSelector, ruleObject) => cssRuleEdit(ruleOrSelector, ruleObject);
+  const allowProhibit = allowances();
+  return {
+    debugLog,
+    log: (...args) => Log(`fromStatic`, ...args),
+    insertPositions,
+    get at() { return insertPositions; },
+    editCssRules: (...rules) => rules.forEach(rule => cssRuleEdit(rule)),
+    editCssRule,
+    get setStyle() { /*deprecated*/return editCssRule; },
+    delegate: delegateFactory(HandleFactory()),
+    virtual: virtualFactory(jql),
+    get fn() { return addFn; },
+    allowTag: allowProhibit.allow,
+    prohibitTag: allowProhibit.prohibit,
+    get lenient() { return tagLib.allowUnknownHtmlTags; },
+    get IS() { return IS; },
+    get Popup() {
+      if (!jql.activePopup) {
+        Object.defineProperty(
+          jql, `activePopup`, {
+            value: PopupFactory(jql),
+            enumerable: false
+          } );
+      }
+      return jql.activePopup;
+    },
+    popup: () => jql.Popup,
+    createStyle: id => styleFactory({createWithId: id || `jql${randomString()}`}),
+    editStylesheet: id => styleFactory({createWithId: id || `jql${randomString()}`}),
+    removeCssRule: cssRemove,
+    removeCssRules: cssRemove,
+    text: (str, isComment = false) => isComment ? jql.comment(str) : document.createTextNode(str),
+    node: (selector, root = document) => root.querySelector(selector, root),
+    nodes: (selector, root = document) => [...root.querySelectorAll(selector, root)],
+  };
 }
 /* endregion functions */
 

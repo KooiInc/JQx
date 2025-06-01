@@ -1,25 +1,25 @@
-const isDev = /^dev|local/i.test(location.host);
+import cssRules from "./styling.js";
+const isDev = /dev|local/i.test(location.href);
 const testBndl = false;
 const libLink = !testBndl && isDev ? "../../index.js" : "../../Bundle/jql.min.js";
 const $ = (await import(libLink)).default;
 const started = performance.now();
 const debug = false;
-const toDOM = Symbol.jql;
-const create = Symbol.jqlvirtual;
-window.jql = $; // use jql in the developer console
+
+// initialize styling for this page
+$.editCssRules(...cssRules);
+
+// use jql in the developer console
+window.jql = $;
+
+// initialize some statics from $
+const {virtual: $$, log, debugLog} = $;
+const {DIV, H2, SPAN, I, B, P, U, A, BUTTON, COMMENT, BR, LINK} = $;
 
 if ( isDev ) {
-  $(`link[rel="icon"]`)
-    .replaceWith( $.LINK({
-      href: `./demoIcon.png`,
-      rel: `icon`,
-      type: `image/png` }) );
+  $(`link[rel="icon"]`).replaceWith(LINK({rel: `icon`, href: `./demoIcon.png`}));
   document.title = `##DEV## ${document.title}`;
 }
-
-// initialize statics from $
-const {virtual: $$, log, debugLog} = $;
-const {DIV, H2, SPAN, I, B, P, U, A, BUTTON, COMMENT, BR} = $;
 
 // a helper extension
 $.fn(`addTitle`, (self, ttl) => {
@@ -31,42 +31,39 @@ $.fn(`addTitle`, (self, ttl) => {
 debugLog.on().toConsole.off().reversed.on().hide();
 const back2 = /github/i.test(location.href) ? `_top` : `_blank`;
 const backLinks =
-  P(`The repository can be found  @ `,
+  DIV(
+    DIV(`The repository can be found  @ `,
     A( {
       href: `//github.com/KooiInc/JQL`,
       target: back2,
-      text: `https://github.com/KooiInc/JQL` } ),
-    BR(),
-    `The documentation resides @ `,
+      text: `https://github.com/KooiInc/JQL` } )),
+    DIV(`The documentation resides @ `,
     A( {
       href: `//kooiinc.github.io/JQL/Resource/Docs`,
       target: back2,
-      text: `https://kooiinc.github.io/JQL/Resource/Docs` } )
-  )[create];
-
-// initialize styling for logging and a few elements
-$.editCssRules(...getStyleRules())
+      text: `https://kooiinc.github.io/JQL/Resource/Docs` } ))
+);
 
 // create container for all generated html
 $.div(
-  {id: `container`, class: `MAIN`},
-  $.div(
-    { id: `JQLRoot` },
-    $.comment(`div#JQLRoot contains all generated html`) )
-)[toDOM] .prepend( $(`#logBox`).style({margin: `1rem auto`}) );
+  {id: `container`, class: `MAIN`})
+.append(
+  $.div( { id: `JQLRoot` }).append($.comment(`div#JQLRoot contains all generated html`))
+).style({margin: `1rem auto`}).toDOM();
 
 const JQLRoot = $(`#JQLRoot`);
+JQLRoot.prepend($(`#logBox`));
 
 /* ENTRY POINT  */
 if (!debug) {
-// create the header content
+  // create the header content
   DIV( { id: `StyledPara`, class: `thickBorder` },
     H2( `Demo & test JQueryLike (JQL) library`),
     SPAN( I( B( {class: `attention`}, U(`Everything`) ) ),
       ` on this page was dynamically created using JQL.`),
     P( B({class: `arrRight`, html: `&#8594;`}, ),
       ` Check the HTML source &mdash; right click anywhere, and select 'View page source'.`)
-  )[create].appendTo(JQLRoot);
+  ).appendTo(JQLRoot);
   
 // add all event handling delegates defined in function [getDelegates4Document]
   getDelegates4Document()
@@ -114,26 +111,26 @@ if (!debug) {
 
 // create a few buttons. Some already contain an event handler (delegated)
   const cssBttns = {
-    defaultCSS: $.button_jql({
+    defaultCSS: BUTTON({
       data: {sheetId: `JQLPopupCSS`, switchBttn: `popupCSS`},
       text: `show popup css` }),
     popupCSS: BUTTON({
       data: {sheetId: `JQLStylesheet`, switchBttn: `defaultCSS`},
-      text: `show default css` })[create],
+      text: `show default css` }),
   };
   $.delegate(`click`, `[data-switch-bttn]`,
     evt =>
       showStyling(evt.target.dataset?.sheetId,
         cssBttns[evt.target.dataset?.switchBttn]));
   
-  DIV({id: "bttnblock"})[create].append(...[
+  DIV({id: "bttnblock"}).append(...[
       BUTTON({
         id: "logBttn",
         data: {on: "0"},
         title: "show/hide the logged activities" }),
       BUTTON({
         id: "clearLog",
-        text: "Clear Log box" })[create].on(`click`, () => debugLog.clear()),
+        text: "Clear Log box" }).on(`click`, () => debugLog.clear()),
       BUTTON({
         id: "showComments",
         text: "Show document comments",
@@ -141,10 +138,10 @@ if (!debug) {
       BUTTON({
         id: "showCSS",
         title: "Show the dynamically created styling in a popup" },
-        "Show custom CSS")[create].on("click", evt =>
+        "Show custom CSS").on("click", () =>
           showStyling("JQLStylesheet", cssBttns.defaultCSS)),
-      BUTTON("Modal popup demo")[create].on(`click`, modalDemo),
-      BUTTON("Github")[create].on(`click`, () =>  $.Popup.show( { content: backLinks } ) )
+      BUTTON("Modal popup demo").on(`click`, modalDemo),
+      BUTTON("Github").on(`click`, () =>  $.Popup.show( { content: backLinks } ) )
     ] ).appendTo(JQLRoot);
   
   $("button")
@@ -185,7 +182,7 @@ if (!debug) {
      So, you can add plain comments using JQL
      A comment may be injected into a child
      element (using the [root] parameter
-     combined with a position`)[create]
+     combined with a position`)
   .appendTo(JQLRoot),
 
 // a comment can also be appended using append/appendTo/prepend/prependTo
@@ -209,35 +206,30 @@ if (!debug) {
   DIV({
     class: `exampleText codeVwr`,
     data: {updown: `\u25BC View `, forid: `code`, hidden: 1} },
-    `code used in this example (index.js)`)[create]
+    `code used in this example (index.js)`)
   .appendTo(JQLRoot);
 
-// append actual code to document
-  injectCode().then(_ => Prism.highlightAll());
-  $(`#logBox`).style({maxWidth: `${$(`#JQLRoot`).dimensions.width}px`});
+  // append actual code to document
+  injectCode(JQLRoot).then(_ => `code injected`);
+  
+  $(`#logBox`).style({maxWidth: `${JQLRoot.dimensions.width}px`, marginTop: 0});
   const donePerf = (performance.now() - started) / 1000;
-  const perfMessage = $([
-    $.div(`Page creation took ${donePerf.toFixed(3)} seconds`),
-    $.div(`All done, enjoy 😎!`)]
-  );
+  const perfMessage =
+    $.div(`Page creation took ${donePerf.toFixed(3)} seconds`)
+      .afterMe( $.div(`All done, enjoy 😎!` ) );
   $.Popup.show({content: perfMessage, closeAfter: 5});
 }
 /* DEBUG EXIT POINT */
 
 // show actual code
-async function injectCode() {
+async function injectCode(root = document.body) {
   return await fetch("./index.js").then(r => r.text())
     .then(r =>
-      $(`#JQLRoot`).append(
-        DIV({
-            class: `upDownFader`,
-            id: `code` },
-          $.pre({
-              class: `language-javascript line-numbers`},
-            $.code({class: `language-javascript line-numbers`}, r.replace(/</gi, `&lt;`))
-          ) )
-      )
-    );
+        DIV({ class: `upDownFader`, id: `code` },
+          $.pre({ class: `language-javascript line-numbers` },
+            $.code({ class: `language-javascript line-numbers`, text: r.replace(/</g, `&lt;`)}, )
+          ) ).renderTo(root, $.insertPositions.beforeend)
+    ).then(_ => setTimeout(Prism.highlightAll));
 }
 
 // create a few delegated handler methods
@@ -304,7 +296,7 @@ function modalDemo() {
   const callbackAfterClose = () =>
     $.Popup.show({content: `Modal closed, you're ok, bye.`, closeAfter: 2});
   const closeBttn = DIV(
-    BUTTON({id: "modalCloseTest"}, `Close me`))[create]
+    BUTTON({id: "modalCloseTest"}, `Close me`))
     .css({marginTop: `0.5rem`, textAlign: "center"})
     .on(`click`, () => $.Popup.removeModal());
   $.Popup.show({
@@ -312,7 +304,7 @@ function modalDemo() {
       `Hi. This box is `, I(`really`), ` modal.`,
       BR(), `There is no close icon and clicking outside this box does nothing.`,
       BR(), `In other words: you can only close this using the button below.`,
-      BR() )[create].append(closeBttn),
+      BR() ).append(closeBttn),
     modal: true,
     callback: callbackAfterClose,
     warnMessage: `There's only <b><i>one</i></b> escape`,
@@ -340,7 +332,9 @@ function allComments(root, result = []) {
       const spacing = `&nbsp;`.repeat(7);
       result.push(`<div class="cmmt">${parentStr ?? `&#8226; in <b>??</b>`}<br>${
         `&nbsp;`.repeat(2)}&lt;!--${
-          node.textContent.replace(/</, `&lt;`).replace(/\n/g, `<br>${spacing}`)}--&gt;</div>`);
+          node.textContent
+            .replace(/</, `&lt;`)
+            .replace(/\n/g, `<br>${spacing}`)}--&gt;</div>`);
     }
   }
   
@@ -375,103 +369,7 @@ function showStyling(styleId, bttn) {
   };
   const mappedCSS = [...rules].map(mapping).join(`\n\n`);
   return $.Popup.show({
-    content: $$(`<div class="cssView"><h3>style#${styleId} current content</h3>${mappedCSS}</div>`)
-      .prepend($$(`<p></p>`).append(bttn.HTML.get(1)))
+    content: $$(`<div class="cssView"><h3>style#${styleId} current content</h3>${
+      mappedCSS}</div>`).prepend($$(`<p></p>`).append(bttn.HTML.get(1)))
   });
-}
-
-// style rules for this document
-function getStyleRules() {
-  return [
-    `body {
-      font: normal 13px/16px verdana, arial;
-      margin: 2rem;
-    }`,
-    `#JQLRoot {
-      position: relative;
-      margin: 2rem auto;
-      maxWidth: 50vw;
-      display: table }`,
-    `.MAIN {
-      position: absolute;
-      inset: 0;
-    }`,
-    `pre[class*='language-'] {
-      position: relative;
-      display: block;
-     }`,
-    `code:not([class*='language-']) {
-      background-color: rgb(227, 230, 232);
-      color: rgb(12, 13, 14);
-      padding: 2px 4px;
-      display: inline;
-      border-radius: 4px;
-      margin: 1px 0;
-    }`,
-    `.green {
-      color: green;
-    }`,
-    `#StyledPara { padding: 6px; }`,
-    `#StyledPara h2 { marginTop: 6px; }`,
-    `.thickBorder {
-      border: 5px solid green;
-      border-width: 5px;
-      padding: 0 0.5rem;
-    }`,
-    `a.InternalLink {
-      textDecoration: none;
-      color: blue;
-      background-color: #EEE;
-      padding: 3px;
-      font-weight: bold;
-    }`,
-    `.codeVwr {
-      cursor: pointer;
-      color: #777;
-      background-color: #EEE;
-      padding: 3px;
-      font-weight: bold;
-    }`,
-    `.codeVwr:before {
-      content: ' 'attr(data-updown);
-    }`,
-    `.upDownFader {
-      max-height: 0;
-      opacity: 0;
-      width: 0;
-      position: absolute;
-      overflow: hidden;
-      transition: all 0.7s;
-    }`,
-    `.upDownFader.down {
-      max-height: calc(100% - 1px);
-      position: relative;
-      width: 811px;
-      opacity: 1;
-      overflow: auto;
-    }`,
-    `#bttnblock { margin-top: 1em; }`,
-    `#logBttn[data-on='0']:before { content: 'Show logs'; }`,
-    `#logBttn[data-on='1']:before { content: 'Hide logs'; }`,
-    `b.arrRight {
-      vertical-align: baseline;
-      font-size: 1.2rem;
-    }`,
-    `.cmmt { color: #888; }`,
-    `.cssView {
-       white-space: pre;
-       padding-bottom: 1rem;
-       overflow: hidden;
-    }`,
-    `@media screen and (width < 1400px) {
-      #bttnblock button {
-       margin-top: 0.4rem;
-      }
-    }`,
-    `.hidden { display: none; }`,
-    `b.attention {
-      color: red;
-      fontSize: 1.2em;
-     }`
-  ];
 }
