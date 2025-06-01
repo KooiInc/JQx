@@ -5,9 +5,7 @@ const characters4RandomString = [...Array(26)]
   .map((x, i) => String.fromCharCode(i + 65))
   .concat([...Array(26)].map((x, i) => String.fromCharCode(i + 97)))
   .concat([...Array(10)].map((x, i) => `${i}`));
-const invalid = `Invalid parameter(s)`;
 const pad0 = (nr, n=2) => `${nr}`.padStart(n, `0`);
-const ISOneOf = (obj, ...params) => !!params.find( param => IS(obj, param) );
 const randomNr = (max, min = 0) => {
   [max, min] = [Math.floor(max), Math.ceil(min)];
   return Math.floor( ([...crypto.getRandomValues(new Uint32Array(1))].shift() / 2 ** 32 ) * (max - min + 1) + min );

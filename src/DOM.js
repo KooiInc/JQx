@@ -1,6 +1,7 @@
 import {
   cleanupHtml,
-  getRestricted, } from "./DOMCleanup.js";
+  getRestricted,
+  ATTRS, } from "./DOMCleanup.js";
 import {truncateHtmlStr, IS, isNode} from "./JQLExtensionHelpers.js";
 const insertPositions = new Proxy({
   start: "afterbegin", afterbegin: "afterbegin",
@@ -72,4 +73,5 @@ export {
   cleanupHtml,
   inject2DOMTree,
   insertPositions,
+  ATTRS,
 };

@@ -2,7 +2,6 @@ export default documentHandlingFactory;
 
 function documentHandlingFactory($) {
   const clickActions = clickActionsFactory($);
-  document[Symbol.actionFns] = clickActions;
   $.editCssRules(`[data-id="tmpEx"], #tmpEx { white-space: normal; padding-top: 5px;}`, `.test, .warn { color: red; }`);
 
   return {
@@ -204,31 +203,31 @@ function clickActionsFactory($) {
       setTimeout($("#tmpEx").remove, 2000);
     },
     afterMeEx: evt => {
-      $.Popup.show({ content: $.div("I am div 1")[create].after($("<div>And I am div 2</div>"))});
+      $.Popup.show({ content: $.div("I am div 1").after($("<div>And I am div 2</div>"))});
     },
     beforeMeEx: evt => {
       $.Popup.show({
       content: $("<div>...and I am div 2</div>")
-         .andThen( $.div("...and finally I am div 4")[create]
-           .before($.div("...hithere, I am div 3")[create]))
+         .andThen( $.div("...and finally I am div 4")
+           .before($.div("...hithere, I am div 3")))
        .before( $($.div("I am div 1")) )
       } );
     },
     andThenEx: evt => {
       const ele1 = $.p("I am the first");
       const ele2 = $.p("I am the second");
-      const codeLine1 = '<code>ele1[create].andThen(ele2)</code>';
-      const codeLine2 = '<code>ele2[create].andThen(ele1)</code>';
-      const codeLine3 = '<code>ele2[create].andThen(ele1, true)</code>';
+      const codeLine1 = '<code>ele1.andThen(ele2)</code>';
+      const codeLine2 = '<code>ele2.andThen(ele1)</code>';
+      const codeLine3 = '<code>ele2.andThen(ele1, true)</code>';
       $.Popup.show( {
-        content: $(codeLine1).andThen(ele1).andThen(ele2[create]),
+        content: $(codeLine1).andThen(ele1).andThen(ele2),
         closeAfter: 3.5,
         callback: () =>
           $.Popup.show( {
             closeAfter: 3.5,
             content: $(codeLine2).andThen(ele2).andThen(ele1),
             callback: () => $.Popup.show( {
-              content: ele2[create].andThen(ele1, true).andThen(codeLine3),
+              content: ele2.andThen(ele1, true).andThen(codeLine3),
               closeAfter: 3.5,
             } ),
           } )
@@ -240,7 +239,7 @@ function clickActionsFactory($) {
         id: "disabledInput",
         disabled: true,
         type: "text",
-        placeholder: "I am not enabled"})[create];
+        placeholder: "I am not enabled"});
       const { is } = inpDisabled;
       const retrieveFeatures = () =>
         `<ul>${
@@ -254,7 +253,7 @@ function clickActionsFactory($) {
       const reCheckAfterAdded2DOM = () => {
         inpDisabled.toDOM();
         $.Popup.show({
-          content: $.div()[create].append( inpDisabled, getActualPopupText() )
+          content: $.div().append( inpDisabled, getActualPopupText() )
         });
       }
       
@@ -306,14 +305,14 @@ function clickActionsFactory($) {
               $.p(ismyBrandNewCssSheetAStyleSheet),
               $.p(`What rules are in it?`),
               $.pre({style: "color:green;margin:-8px 0 0 1em;"}, "- " + rules.join(`<br>- `))
-            )[create],
+            ),
           callback() { $("#exampleStyleSheet").remove() }
         } );
       },
     staticElemEx: () => {
       // use Symbol.jqlvirtual (create)
       $.editCssRules(".exRed {color: red;}");
-      const popupPara = $.p("Hello world ...")[create]
+      const popupPara = $.p("Hello world ...")
        .append(
          $.i( {class: "exRed"}, $.B(" here we are!") )
        );
@@ -332,7 +331,7 @@ function clickActionsFactory($) {
             font-size: 1.2rem;\
         }"
       );
-      const {p_jql: $P, i_jql: $I } = $;
+      const {p: $P, i: $I } = $;
       const popupPara = $P( { text: "Hello world ... ", id: "Hithere" });
       popupPara.append( $I( { class: "exRed exFont" }, $.SPAN(" here we are!") ) );
       const popupDupe = popupPara.duplicate();
@@ -382,8 +381,8 @@ function clickActionsFactory($) {
             letter-spacing: normal;
         }`,
       );
-      const {p_jql: P, SPAN} = $;
-      const hereWeAre = $.I_JQL( { class: "exRed exFont" }, SPAN("Here we are! ") );
+      const {P, SPAN} = $;
+      const hereWeAre = $.I( { class: "exRed exFont" }, SPAN("Here we are! ") );
       const popupPara = P( "Hello world ... " );
       
       $.Popup.show({
@@ -632,7 +631,7 @@ function clickActionsFactory($) {
         callback: () => $(`[data-id]`).remove() } );
     },
     htmlObjEx: evt => {
-      const initialEl = $.DIV({id: "initial"})[create];
+      const initialEl = $.DIV({id: "initial"})
 
       // create reference to initialEl.HTML
       const { HTML } = initialEl;
@@ -650,7 +649,7 @@ function clickActionsFactory($) {
       const initialElOuterHtml2 = `<code>replace</code>: ${HTML.get(true, true)}`;
 
       // append to content
-      HTML.append($.span(" WORLD")[create]).data.set({iteration: "append"});
+      HTML.append($.span(" WORLD")).data.set({iteration: "append"});
 
       // html now
       const initialElOuterHtml3 = `<code>append</code>: ${HTML.get(true, true)}`;
@@ -702,7 +701,7 @@ function clickActionsFactory($) {
     },
     htmlForEx: evt => {
       // note: this example serves both for [JQL].html and [JQL].htmlFor
-      const someDiv = $.div({data: {id: "htmlExample"}})[create];
+      const someDiv = $.div({data: {id: "htmlExample"}});
       $.Popup.show({
         content: someDiv.html("(<code class='inline'>html</code>) =>\
           Hello <span class='wrld'><b>world</b></span> <span>... wait 3 secs ...</span>"),
@@ -727,10 +726,10 @@ function clickActionsFactory($) {
       } );
     },
     isEmptyEx: evt => {
-      const currentParagraph = getCurrentParagraph(evt)[create];
+      const currentParagraph = getCurrentParagraph(evt);
       let someDiv = $.div(
             { data: {id:"tmpEx"} },
-            $.b({class: "red"}, "Hello!") )[create]
+            $.b({class: "red"}, "Hello!") )
           .appendTo(currentParagraph);
       $.Popup.show( {
         content: `
@@ -805,7 +804,7 @@ function clickActionsFactory($) {
       $.editCssRule("#tmpEx { color: blue; font-weight: normal; }");
       $.editCssRule("#tmpEx div {color: red; font-weight: bold}");
       const helloWorld = $('<p id="tmpEx">Hello World</p>', getCurrentParagraph(evt));
-      const div2Append = $.div("And bye again")[create];
+      const div2Append = $.div("And bye again");
       console.log(div2Append);
       setTimeout(() => {
         div2Append.appendTo(helloWorld);
@@ -846,7 +845,7 @@ function clickActionsFactory($) {
         ".hello { margin: 0.3rem 0; display: inline-block; }",
         "h2.hello {margin-right: 0.2rem;");
       const helloH3 = $.h3({class: "hello"}, "world");
-      const elemContainer = $( `<div>` ).append( helloH3[create] );
+      const elemContainer = $( `<div>` ).append( helloH3 );
       $.virtual(`<h2 class="hello">Hello</h2>`, helloH3, $.at.BEFORE);
       $.Popup.show({
         content: elemContainer,
@@ -927,7 +926,7 @@ function clickActionsFactory($) {
       });
     },
     styleRulingsEx: evt => {
-      const hello = $.div("Hello")[create].append($.span(" world")[create]);
+      const hello = $.div("Hello").append($.span(" world"));
       hello.Style.byRule( {
         classes2Apply: ["test1", "boring"],
         rules: [".test1 { color: green }", ".boring {backgroundColor: #EEE;}"] } );
@@ -936,7 +935,7 @@ function clickActionsFactory($) {
       hello.find$("span")?.Style.nwRule(".test2 { color: red; }");
 
       $.Popup.show({
-        content: $.div("This resulted in:")[create]
+        content: $.div("This resulted in:")
           .Style
             .nwRule("#test3 { color: blue; }")
           .append(hello),
@@ -946,12 +945,12 @@ function clickActionsFactory($) {
       $.removeCssRule('[data-id="tmpEx"], #tmpEx');
 
       // inline
-      const hello1 = $.P({data: {id: "tmpEx"}})[create]
+      const hello1 = $.P({data: {id: "tmpEx"}})
         .Style.inline({ paddingLeft: "4px", color: "white", backgroundColor: "#000" });
       hello1.append($.div(`HTML of hello1: ${hello1.HTML.get(true, true)}`));
 
       // inSheet with given className
-      const hello2 = $.P()[create]
+      const hello2 = $.P()
         .addClass("leftRedBorder")
         .attr({data: {id: "tmpEx"}})
         .Style.inSheet({
@@ -993,7 +992,7 @@ function clickActionsFactory($) {
     },
     attrEx: evt => {
       const item = getCurrentParagraph(evt);
-      const someDiv = $.div_jql( {
+      const someDiv = $.div( {
           id: "tmpEx",
           data: {id: "#tmpEx"},
           class:"initial" },

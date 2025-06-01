@@ -1,4 +1,4 @@
-import { createElementFromHtmlString, insertPositions, inject2DOMTree, cleanupHtml, } from "./DOM.js";
+import { createElementFromHtmlString, insertPositions, inject2DOMTree, cleanupHtml, ATTRS} from "./DOM.js";
 import { debugLog, Log, systemLog } from "./JQLLog.js";
 import allMethods from "./JQLMethods.js";
 import PopupFactory from "./Popup.js";
@@ -91,23 +91,11 @@ function proxify(instance) {
 function addJQLStaticMethods(jql) {
   Object.defineProperties(
     Node.prototype, {
-      [Symbol.jql]:        {
+      [Symbol.$]: {
         get() { return jql(this); },
         enumerable: false,
         configurable: false
       },
-      [Symbol.jqlvirtual]: {
-        get() { return jql.virtual(this); },
-        enumerable: false,
-        configurable: false
-      },
-      [Symbol.jql2Root]: {
-        value(root = document.body, at = insertPositions.end) {
-          return jql(this, root, at);
-        },
-        enumerable: false,
-        configurable: false
-      }
     });
   const staticMethods = defaultStaticMethodsFactory(jql);
   Object.entries(Object.getOwnPropertyDescriptors(staticMethods))
@@ -117,7 +105,7 @@ function addJQLStaticMethods(jql) {
   return jql;
 }
 
-function allowances() {
+function allowances(jql) {
   return {
     allow: tagName => {
       tagName = tagName.toLowerCase();
@@ -196,8 +184,7 @@ function tagGetterFactory(tagName, cando, jql) {
   return {
     get() {
       return  (...args) => {
-        if (!cando) { return tagNotAllowed()}
-        
+        if (!cando) { return tagNotAllowed(tagName) }
         return jql.virtual(cleanupHtml($T[tagName](...args)));
       }
     },
@@ -235,7 +222,7 @@ function staticTagsLambda(jql) {
 
 function staticMethodsFactory(jql) {
   const editCssRule = (ruleOrSelector, ruleObject) => cssRuleEdit(ruleOrSelector, ruleObject);
-  const allowProhibit = allowances();
+  const allowProhibit = allowances(jql);
   return {
     debugLog,
     log: (...args) => Log(`fromStatic`, ...args),

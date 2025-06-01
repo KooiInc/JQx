@@ -6,6 +6,11 @@ const $ = (await import(libLink)).default;
 const started = performance.now();
 const debug = false;
 
+if ( isDev ) {
+  document.title = `##DEV## ${document.title}`;
+  $(`link[rel="icon"]`).replaceWith($.LINK({rel: `icon`, href: `./demoIcon.png`, type: `image/png`}));
+}
+
 // initialize styling for this page
 $.editCssRules(...cssRules);
 
@@ -16,11 +21,6 @@ window.jql = $;
 const {virtual: $$, log, debugLog} = $;
 const {DIV, H2, SPAN, I, B, P, U, A, BUTTON, COMMENT, BR, LINK} = $;
 
-if ( isDev ) {
-  $(`link[rel="icon"]`).replaceWith(LINK({rel: `icon`, href: `./demoIcon.png`}));
-  document.title = `##DEV## ${document.title}`;
-}
-
 // a helper extension
 $.fn(`addTitle`, (self, ttl) => {
   self.prop(`title`, ttl);
@@ -30,29 +30,30 @@ $.fn(`addTitle`, (self, ttl) => {
 // activate logging all JQL events (hidden)
 debugLog.on().toConsole.off().reversed.on().hide();
 const back2 = /github/i.test(location.href) ? `_top` : `_blank`;
+
+// create container for all generated html
+$.div(
+    {id: `container`, class: `MAIN`})
+  .append(
+    $.div( { id: `JQLRoot` }).append($.comment(`div#JQLRoot contains all generated html`))
+  ).style({margin: `1rem auto`}).toDOM();
+
+const JQLRoot = $(`#JQLRoot`).prepend($(`#logBox`));
+
 const backLinks =
   DIV(
     DIV(`The repository can be found  @ `,
     A( {
-      href: `//github.com/KooiInc/JQL`,
+      href: `//codeberg.org/KooiInc/JQx`,
       target: back2,
-      text: `https://github.com/KooiInc/JQL` } )),
+      text: `https://codeberg.org/KooiInc/JQx` } )),
     DIV(`The documentation resides @ `,
     A( {
-      href: `//kooiinc.github.io/JQL/Resource/Docs`,
+      href: `//kooiinc.codeberg.page/JQx/Resource/Docs/`,
       target: back2,
-      text: `https://kooiinc.github.io/JQL/Resource/Docs` } ))
+      text: `https://kooiinc.codeberg.page/JQx/Resource/Docs/` } ))
 );
 
-// create container for all generated html
-$.div(
-  {id: `container`, class: `MAIN`})
-.append(
-  $.div( { id: `JQLRoot` }).append($.comment(`div#JQLRoot contains all generated html`))
-).style({margin: `1rem auto`}).toDOM();
-
-const JQLRoot = $(`#JQLRoot`);
-JQLRoot.prepend($(`#logBox`));
 
 /* ENTRY POINT  */
 if (!debug) {
@@ -227,7 +228,7 @@ async function injectCode(root = document.body) {
     .then(r =>
         DIV({ class: `upDownFader`, id: `code` },
           $.pre({ class: `language-javascript line-numbers` },
-            $.code({ class: `language-javascript line-numbers`, text: r.replace(/</g, `&lt;`)}, )
+            $.code({ class: `language-javascript line-numbers`}, r.replace(/</g, `&lt;`))
           ) ).renderTo(root, $.insertPositions.beforeend)
     ).then(_ => setTimeout(Prism.highlightAll));
 }

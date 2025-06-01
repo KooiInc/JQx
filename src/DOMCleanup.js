@@ -84,4 +84,4 @@ const getRestricted = emphasizeTag =>
       acc, []);
 const logElementCreationErrors = onOff => logElementCreationErrors2Console = onOff;
 
-export { cleanupHtml, getRestricted, logElementCreationErrors, };
+export { cleanupHtml, getRestricted, logElementCreationErrors, ATTRS};

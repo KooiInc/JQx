@@ -7,9 +7,9 @@ const importLink =  isDev ?
   `../../index.js` :
   `../../Bundle/jql.min.js`;
 const $ = (await import(importLink)).default;
-$.allowTag(`copyright-slotted`);
+$.allowTag(`copyrightSlotted`);
 const ghLink = $.a({slot: `link`, href: `//github.com/KooiInc/JQL`, target: `_top`, text: `Github`});
-$[`copyright-slotted`]($.span({slot: `year`, class: `yr` }, new Date().getFullYear()), ghLink)[Symbol.jql];
+$(`<copyright-slotted>$.span({slot: "year", class: "yr" }, new Date().getFullYear()), ghLink)</copyright-slotted>`);
 window.$ = $;
 const codeReplacements = new Map( [
   [`<`, `&lt;`],
@@ -24,8 +24,8 @@ const setAllCodeStyling = el => {
 }
 // wrap into .container
 const docContainer = $(`.docs`);
-$.div_jql({class: `container`})
-  .append($.div_jql({class:`docBrowser`})
+$.div({class: `container`})
+  .append($.div({class:`docBrowser`})
     .append($(`#navigation`), docContainer))
   .toDOM();
 $.log(`Wrapped into container.`);

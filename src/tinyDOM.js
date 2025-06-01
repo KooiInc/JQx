@@ -50,11 +50,19 @@ function retrieveElementFromInitial(initial, tag) {
 
 function cleanupProps(props) {
   delete props.data;
-  if ( Object.keys(props).length < 1 ) { return props; }
+  if (Object.keys(props).length < 1) {
+    return props;
+  }
   
-  Object.keys(props).forEach( key => {
-    const keyCI = key.toLowerCase();
-    keyCI in converts && (props[converts[keyCI]] = props[key]) && delete props[key]; } );
+  Object.keys(props).forEach(key => {
+    const keyLowercase = key.toLowerCase();
+    
+    if (keyLowercase in converts) {
+      props[converts[keyLowercase]] = props[key];
+      delete props[key];
+    }
+  });
+  
   return props;
 }
 
@@ -70,7 +78,7 @@ function createElement(tagName, props = {}) {
   const elem = Object.assign(
     isComment(tagName) ? new Comment() : document.createElement(tagName),
     cleanupProps( props ) );
-  data.length && data.forEach(([key, value]) => elem.dataset[key] = value);
+  data.length && data.forEach(([key, value]) => elem.dataset[key] = String(value));
   return elem;
 }
 
