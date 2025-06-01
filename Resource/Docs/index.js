@@ -7,9 +7,12 @@ const importLink =  isDev ?
   `../../index.js` :
   `../../Bundle/jql.min.js`;
 const $ = (await import(importLink)).default;
-$.allowTag(`copyrightSlotted`);
-const ghLink = $.a({slot: `link`, href: `//github.com/KooiInc/JQL`, target: `_top`, text: `Github`});
-$(`<copyright-slotted>$.span({slot: "year", class: "yr" }, new Date().getFullYear()), ghLink)</copyright-slotted>`);
+$.allowTag(`copyright-slotted`);
+const ghLink = $.a({slot: `link`, href: `//codeberg.org/KooiInc/JQx`, target: `_top`, text: `Back to repository`});
+$(`<copyright-slotted>
+  <span slot="year" class="yr">${new Date().getFullYear()}</span>
+  ${ghLink.HTML.get(1)}
+</copyright-slotted>`);
 window.$ = $;
 const codeReplacements = new Map( [
   [`<`, `&lt;`],
@@ -108,12 +111,16 @@ const paramStr2Div = value => Object.entries(value).map( ([key, val]) => {
   return `<div class="param"><code>${escHtml(prm)}</code>: ${escHtml(val)}</div>`;
 });
 
+// modified for JQx
 groups.forEach( group => {
-  const displayName = createNavigationItems({group: group, displayName: group.displayName.slice(0, -1)});
+  const displayName = createNavigationItems({
+    group: group,
+    displayName: group.displayName.slice(0, -1).replace(`JQL`, `JQx`)
+  });
 
   // create corresponding documentation items in docs
   Object.entries(documentationData)
-    .filter( ([itemKey, value]) => itemKey.startsWith(`${group.displayName.toLowerCase()}`))
+    .filter( ([itemKey, ]) => itemKey.startsWith(`${group.displayName.toLowerCase()}`))
     .sort( ([key1,], [key2,]) => key1.localeCompare(key2))
     .forEach( ([itemName, itemValue]) => {
       itemValue.description = itemValue.description.trim();
@@ -144,10 +151,11 @@ groups.forEach( group => {
           itemValue.description.replace(/\n{3,}/g, `\n`)}</div>`, docsContainer);
       }
 
+      // modified for JQx
       $(`
         <div class="paragraph" data-for="${itemNameClean.replace(/([a-z])\$/gi, `$1_D`)}">
           <h3 class="methodName" id="${itemName.replace(/([a-z])\$/gi, `$1_D`)}">
-            <span class="group">${itemGroupLookup[itemName.slice(0, itemName.indexOf(`_`))]}</span
+            <span class="group">${itemGroupLookup[itemName.slice(0, itemName.indexOf(`_`))].replace(`L`, `x`)}</span
             ><span${isDeprecated ? ` class="deprecated"` : ""}>${itemNameClean}</span>
           </h3>
           ${params ?? ``}

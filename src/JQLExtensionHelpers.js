@@ -108,7 +108,8 @@ function addJQLStaticMethods(jql) {
 function allowances(jql) {
   return {
     allow: tagName => {
-      tagName = tagName.toLowerCase();
+      if (/-/.test(tagName)) { return tagLib.allowTag(tagName); }
+      tagName =  tagName.toLowerCase();
       tagLib.allowTag(tagName);
       
       if (!IS(jql[tagName], Function)) {
