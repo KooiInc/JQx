@@ -53,7 +53,7 @@ $.div(`Hello JQx!`).appendTo(document.body);
 </script>
 ```
 ## Documentation
-Documentation can be found @[https://kooiinc.codeberg.page/JQx/Resource/Docs/](https://kooiinc.codeberg.page/JQx/Resource/Docs/).
+Documentation can be found @[https://kooiinc.codeberg.page/JQx/Resource/Docs/](https://kooiinc.codeberg.page/JQx/@main/Resource/Docs/).
 
 ## Demo and test
-A test and demo of this module can be found @[kooiinc.codeberg.page/JQx/Resource/Demo](https://kooiinc.codeberg.page/JQx/Resource/Demo/).
+A test and demo of this module can be found @[kooiinc.codeberg.page/JQx/Resource/Demo](https://kooiinc.codeberg.page/JQx/@main/Resource/Demo/).
