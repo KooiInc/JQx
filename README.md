@@ -37,7 +37,7 @@ import $ from "https://kooiinc.codeberg.page/JQx/Bundle/jql.min.js";
 const $ = ( await 
   import("https://kooiinc.codeberg.page/JQx/Bundle/jql.min.js") 
 ).default;
-$.div_jql(`Hello JQL!`).appendTo(document.body);
+$.div(`Hello JQx!`).appendTo(document.body);
 // ...
 ```
 
@@ -46,7 +46,7 @@ $.div_jql(`Hello JQL!`).appendTo(document.body);
 <script src="https://kooiinc.codeberg.page/JQx/Bundle/jql.browser.min.js"></script>
 <script>
   const $ = JQL.default;
-  $.div_jql(`Hello JQL!`).appendTo(document.body);
+  $.div(`Hello JQx!`).appendTo(document.body);
   // ...
 </script>
 ```
