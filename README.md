@@ -8,7 +8,9 @@
 
 ## *Work in progress*: migrating (and renaming) from GitHUB JQL to Codeberg JQx
 
-# JQx: JQuery - the good parts redone
+# JQx
+
+<h3>JQuery - the good parts redone</h3>
 
 This module was inspired by the idea that some JQuery was too good <a target="_blank" href="http://youmightnotneedjquery.com/" rel="nofollow">to ditch</a>.
 
