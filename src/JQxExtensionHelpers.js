@@ -14,14 +14,10 @@ const {
   isHtmlString, isArrayOfHtmlElements, isArrayOfHtmlStrings, ElemArray2HtmlString,
   input2Collection, setCollectionFromCssSelector, addHandlerId, cssRuleEdit,
   addFn, elems4Docs } = smallHelpersFactory();
-Symbol.jql = Symbol.for(`jql`);
-Symbol.jqlvirtual = Symbol.for(`jqlvirtual`);
-Symbol.jql2Root = Symbol.for(`jql2dom`);
-Symbol.JQLX = Symbol.for(`NodeProxy`);
 
 /* region functions */
 function smallHelpersFactory() {
-  const cssRuleEdit = styleFactory( { createWithId: `JQLStylesheet` } );
+  const cssRuleEdit = styleFactory( { createWithId: `JQxStylesheet` } );
   const addFn = (name, fn) => instanceMethods[name] = (self, ...params) => fn(self, ...params);
   const instanceMethods = allMethods.instanceExtensions;
   const instanceGetters = allMethods.factoryExtensions;
@@ -42,7 +38,7 @@ function smallHelpersFactory() {
         : IS(input, NodeList) ? [...input]
           : isNode(input) ? [input]
             : isArrayOfHtmlElements(input) ? input
-              : input.isJQL ? input.collection : undefined;
+              : input.isJQx ? input.collection : undefined;
   const setCollectionFromCssSelector = (input, root, self) => {
     const selectorRoot = root !== document.body && (IS(input, String) && input.toLowerCase() !== "body") ? root : document;
     let errorStr = undefined;
@@ -88,24 +84,24 @@ function proxify(instance) {
   return new Proxy( instance, proxyMe );
 }
 
-function addJQLStaticMethods(jql) {
+function addJQxStaticMethods(jqx) {
   Object.defineProperties(
     Node.prototype, {
       [Symbol.$]: {
-        get() { return jql(this); },
+        get() { return jqx(this); },
         enumerable: false,
         configurable: false
       },
     });
-  const staticMethods = defaultStaticMethodsFactory(jql);
+  const staticMethods = defaultStaticMethodsFactory(jqx);
   Object.entries(Object.getOwnPropertyDescriptors(staticMethods))
     .forEach( ([key, descriptor]) => {
-      Object.defineProperty(jql, key, descriptor);
+      Object.defineProperty(jqx, key, descriptor);
       Object.defineProperty(static4Docs, key, descriptor); } );
-  return jql;
+  return jqx;
 }
 
-function allowances(jql) {
+function allowances(jqx) {
   return {
     allow: tagName => {
       const isWebComponent = /-/.test(tagName);
@@ -113,16 +109,16 @@ function allowances(jql) {
       tagName =  isWebComponent ? toCamelcase(tagName) : tagName.toLowerCase();
       tagLib.allowTag(tagName);
       
-      if (!IS(jql[tagName], Function)) {
-        Object.defineProperties( jql, addGetters(tagName, true, jql, webComponentTagName) );
+      if (!IS(jqx[tagName], Function)) {
+        Object.defineProperties( jqx, addGetters(tagName, true, jqx, webComponentTagName) );
       }
     },
     prohibit: tagName => {
       tagName = tagName.toLowerCase();
       tagLib.prohibitTag(tagName);
       
-      if (IS(jql[tagName], Function)) {
-        Object.defineProperties( jql, addGetters(tagName, false, jql) );
+      if (IS(jqx[tagName], Function)) {
+        Object.defineProperties( jqx, addGetters(tagName, false, jqx) );
       }
     }
   }
@@ -150,11 +146,11 @@ function delegateFactory(handle) {
   }
 }
 
-function virtualFactory(jql) {
+function virtualFactory(jqx) {
   return function(html, root, position) {
-    root = root?.isJQL ? root?.[0] : root;
+    root = root?.isJQx ? root?.[0] : root;
     position = position && Object.values(insertPositions).find(pos => position === pos) ? position : undefined;
-    const virtualElem = jql(html, document.createElement(`br`));
+    const virtualElem = jqx(html, document.createElement(`br`));
     if (root && !IS(root, HTMLBRElement)) {
       virtualElem.collection.forEach(elem =>
         position ? root.insertAdjacentElement(position, elem) : root.append(elem));
@@ -176,18 +172,18 @@ function combineObjectSources(...sources) {
 }
 
 function tagNotAllowed(tagName) {
-  console.error(`JQL: "${tagName}" not allowed, not rendered`);
+  console.error(`JQx: "${tagName}" not allowed, not rendered`);
   return undefined;
 }
 
-function tagGetterFactory(tagName, cando, jql, webComponentTagName) {
+function tagGetterFactory(tagName, cando, jqx, webComponentTagName) {
   tagName = toDashedNotation(webComponentTagName || tagName.toLowerCase());
   
   return {
     get() {
       return  (...args) => {
         if (!cando) { return tagNotAllowed(tagName) }
-        return jql.virtual(cleanupHtml($T[tagName](...args)));
+        return jqx.virtual(cleanupHtml($T[tagName](...args)));
       }
     },
     enumerable: false,
@@ -195,37 +191,37 @@ function tagGetterFactory(tagName, cando, jql, webComponentTagName) {
   }
 }
 
-function addGetters(tag, cando, jql, webComponentTagName) {
+function addGetters(tag, cando, jqx, webComponentTagName) {
   tag = tag.toLowerCase();
-  const jqlGetterForThisTag = tagGetterFactory(tag, cando, jql, webComponentTagName);
+  const jqxGetterForThisTag = tagGetterFactory(tag, cando, jqx, webComponentTagName);
   
   return webComponentTagName
     ? {
-      [webComponentTagName]: jqlGetterForThisTag,
-      [toCamelcase(webComponentTagName)]: jqlGetterForThisTag,
+      [webComponentTagName]: jqxGetterForThisTag,
+      [toCamelcase(webComponentTagName)]: jqxGetterForThisTag,
     }
     : {
-        [tag]: jqlGetterForThisTag,
-        [tag.toUpperCase()]: jqlGetterForThisTag,
+        [tag]: jqxGetterForThisTag,
+        [tag.toUpperCase()]: jqxGetterForThisTag,
     };
 }
 
-function defaultStaticMethodsFactory(jql) {
+function defaultStaticMethodsFactory(jqx) {
   return combineObjectSources(
-    Object.entries(tagLib.tagsRaw).reduce(staticTagsLambda(jql), {}),
-    staticMethodsFactory(jql));
+    Object.entries(tagLib.tagsRaw).reduce(staticTagsLambda(jqx), {}),
+    staticMethodsFactory(jqx));
 }
 
-function staticTagsLambda(jql) {
+function staticTagsLambda(jqx) {
   return function(acc, [tag, cando]) {
-    cando && Object.defineProperties( acc, addGetters(tag, cando, jql) );
+    cando && Object.defineProperties( acc, addGetters(tag, cando, jqx) );
     return acc;
   }
 }
 
-function staticMethodsFactory(jql) {
+function staticMethodsFactory(jqx) {
   const editCssRule = (ruleOrSelector, ruleObject) => cssRuleEdit(ruleOrSelector, ruleObject);
-  const allowProhibit = allowances(jql);
+  const allowProhibit = allowances(jqx);
   return {
     debugLog,
     log: (...args) => Log(`fromStatic`, ...args),
@@ -235,28 +231,28 @@ function staticMethodsFactory(jql) {
     editCssRule,
     get setStyle() { /*deprecated*/return editCssRule; },
     delegate: delegateFactory(HandleFactory()),
-    virtual: virtualFactory(jql),
+    virtual: virtualFactory(jqx),
     get fn() { return addFn; },
     allowTag: allowProhibit.allow,
     prohibitTag: allowProhibit.prohibit,
     get lenient() { return tagLib.allowUnknownHtmlTags; },
     get IS() { return IS; },
     get Popup() {
-      if (!jql.activePopup) {
+      if (!jqx.activePopup) {
         Object.defineProperty(
-          jql, `activePopup`, {
-            value: PopupFactory(jql),
+          jqx, `activePopup`, {
+            value: PopupFactory(jqx),
             enumerable: false
           } );
       }
-      return jql.activePopup;
+      return jqx.activePopup;
     },
-    popup: () => jql.Popup,
-    createStyle: id => styleFactory({createWithId: id || `jql${randomString()}`}),
-    editStylesheet: id => styleFactory({createWithId: id || `jql${randomString()}`}),
+    popup: () => jqx.Popup,
+    createStyle: id => styleFactory({createWithId: id || `jqx${randomString()}`}),
+    editStylesheet: id => styleFactory({createWithId: id || `jqx${randomString()}`}),
     removeCssRule: cssRemove,
     removeCssRules: cssRemove,
-    text: (str, isComment = false) => isComment ? jql.comment(str) : document.createTextNode(str),
+    text: (str, isComment = false) => isComment ? jqx.comment(str) : document.createTextNode(str),
     node: (selector, root = document) => root.querySelector(selector, root),
     nodes: (selector, root = document) => [...root.querySelectorAll(selector, root)],
   };
@@ -281,7 +277,7 @@ export {
   truncateHtmlStr,
   truncate2SingleStr,
   proxify,
-  addJQLStaticMethods,
+  addJQxStaticMethods,
   createElementFromHtmlString,
   insertPositions,
   systemLog,

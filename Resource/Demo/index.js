@@ -14,8 +14,8 @@ if ( isDev ) {
 // initialize styling for this page
 $.editCssRules(...cssRules);
 
-// use jql in the developer console
-window.jql = $;
+// use jqx in the developer console
+window.jqx = $;
 
 // initialize some statics from $
 const {virtual: $$, log, debugLog} = $;
@@ -27,7 +27,7 @@ $.fn(`addTitle`, (self, ttl) => {
   return self;
 });
 
-// activate logging all JQL events (hidden)
+// activate logging all JQx events (hidden)
 debugLog.on().toConsole.off().reversed.on().hide();
 const back2 = /github/i.test(location.href) ? `_top` : `_blank`;
 
@@ -35,10 +35,10 @@ const back2 = /github/i.test(location.href) ? `_top` : `_blank`;
 $.div(
     {id: `container`, class: `MAIN`})
   .append(
-    $.div( { id: `JQLRoot` }).append($.comment(`div#JQLRoot contains all generated html`))
+    $.div( { id: `JQxRoot` }).append($.comment(`div#JQxRoot contains all generated html`))
   ).style({margin: `1rem auto`}).toDOM();
 
-const JQLRoot = $(`#JQLRoot`).prepend($(`#logBox`));
+const JQxRoot = $(`#JQxRoot`).prepend($(`#logBox`));
 
 const backLinks =
   DIV(
@@ -59,12 +59,12 @@ const backLinks =
 if (!debug) {
   // create the header content
   DIV( { id: `StyledPara`, class: `thickBorder` },
-    H2( `Demo & test JQueryLike (JQL) library`),
+    H2( `Demo & test JQueryLike (JQx) library`),
     SPAN( I( B( {class: `attention`}, U(`Everything`) ) ),
-      ` on this page was dynamically created using JQL.`),
+      ` on this page was dynamically created using JQx.`),
     P( B({class: `arrRight`, html: `&#8594;`}, ),
       ` Check the HTML source &mdash; right click anywhere, and select 'View page source'.`)
-  ).appendTo(JQLRoot);
+  ).appendTo(JQxRoot);
   
 // add all event handling delegates defined in function [getDelegates4Document]
   getDelegates4Document()
@@ -80,14 +80,14 @@ if (!debug) {
 // onclick is not allowed, so will be removed on element creation
   const msg = `hi there, you won't see me`;
   $(`<div id="nohandling" onclick="alert('${msg}')"></div>`)
-    .html(`<h1>Hell! O world.</h1>`).appendTo(JQLRoot);
+    .html(`<h1>Hell! O world.</h1>`).appendTo(JQxRoot);
   
 // script and data attribute will be removed, but you can add data-attributes later
 // styles are inline here
   $([
       `<script id="noscripts">alert('hi');</script>`,
       `<div data-cando="1" id="delegates">Hi 1</div>`
-    ], JQLRoot)
+    ], JQxRoot)
     .data.add({hello: "Added post creation"})
     .html(` [you may <b><i>click</i> me</b>] `, true)
     .style({cursor: `pointer`});
@@ -108,15 +108,15 @@ if (!debug) {
             ? `red` : `orange`
       });
     })
-    .appendTo(JQLRoot);
+    .appendTo(JQxRoot);
 
 // create a few buttons. Some already contain an event handler (delegated)
   const cssBttns = {
     defaultCSS: BUTTON({
-      data: {sheetId: `JQLPopupCSS`, switchBttn: `popupCSS`},
+      data: {sheetId: `JQxPopupCSS`, switchBttn: `popupCSS`},
       text: `show popup css` }),
     popupCSS: BUTTON({
-      data: {sheetId: `JQLStylesheet`, switchBttn: `defaultCSS`},
+      data: {sheetId: `JQxStylesheet`, switchBttn: `defaultCSS`},
       text: `show default css` }),
   };
   $.delegate(`click`, `[data-switch-bttn]`,
@@ -140,10 +140,10 @@ if (!debug) {
         id: "showCSS",
         title: "Show the dynamically created styling in a popup" },
         "Show custom CSS").on("click", () =>
-          showStyling("JQLStylesheet", cssBttns.defaultCSS)),
+          showStyling("JQxStylesheet", cssBttns.defaultCSS)),
       BUTTON("Modal popup demo").on(`click`, modalDemo),
       BUTTON("Github").on(`click`, () =>  $.Popup.show( { content: backLinks } ) )
-    ] ).appendTo(JQLRoot);
+    ] ).appendTo(JQxRoot);
   
   $("button")
     .style({marginRight: "4px"})
@@ -162,7 +162,7 @@ if (!debug) {
     'padding-top': "0.2rem", })
   .prepend($$("<span>Some </span>"))
   .html(" examples", true)
-  .appendTo(JQLRoot);
+  .appendTo(JQxRoot);
 // styled with intermediate class
   $$(`<div id="helloworld"/>`)
   .text("Example: hello ... world")
@@ -173,29 +173,29 @@ if (!debug) {
     padding: "5px",
     fontSize: "1.2em",
     display: "inline-block", })
-  .appendTo(JQLRoot)
+  .appendTo(JQxRoot)
   .find$("span")
   .css({className: "okRed", color: "red"});
 
-// append multiline comment to p#JQLRoot
+// append multiline comment to p#JQxRoot
   COMMENT(`Hi, I am a multiline HTML-comment.
-     So, you can add plain comments using JQL
+     So, you can add plain comments using JQx
      A comment may be injected into a child
      element (using the [root] parameter
      combined with a position`)
-  .appendTo(JQLRoot),
+  .appendTo(JQxRoot),
 
 // a comment can also be appended using append/appendTo/prepend/prependTo
-  $$(`<!--I was appended to div#JQLRoot using .appendTo-->`)
-    .appendTo(JQLRoot);
-  $$(`<!--I was PREpended to div#JQLRoot using .prependTo-->`)
-    .prependTo(JQLRoot);
+  $$(`<!--I was appended to div#JQxRoot using .appendTo-->`)
+    .appendTo(JQxRoot);
+  $$(`<!--I was PREpended to div#JQxRoot using .prependTo-->`)
+    .prependTo(JQxRoot);
 
 // comment insertion test (note: this works with before-/afterMe/andThen too now)
-  $( COMMENT(`Comment @ #JQLRoot beforebegin (verify it in DOM tree)`),
-    JQLRoot, $.at.BeforeBegin);
-  $( COMMENT(`Comment @ #JQLRoot beforebegin (verify it in DOM tree)`),
-    JQLRoot, $.at.BeforeBegin);
+  $( COMMENT(`Comment @ #JQxRoot beforebegin (verify it in DOM tree)`),
+    JQxRoot, $.at.BeforeBegin);
+  $( COMMENT(`Comment @ #JQxRoot beforebegin (verify it in DOM tree)`),
+    JQxRoot, $.at.BeforeBegin);
   $(`<!--Comment @ #bttnblock afterend (verify it in DOM tree) -->`,
     $(`#bttnblock`), $.at.AfterEnd);
   $(`<!--Comment @ #bttnblock afterbegin (so, prepend) verify it in DOM tree) -->`,
@@ -207,12 +207,12 @@ if (!debug) {
     class: `exampleText codeVwr`,
     data: {updown: `\u25BC View `, forid: `code`, hidden: 1} },
     `code used in this example (index.js)`)
-  .appendTo(JQLRoot);
+  .appendTo(JQxRoot);
 
   // append actual code to document
-  injectCode(JQLRoot).then(_ => `code injected`);
+  injectCode(JQxRoot).then(_ => `code injected`);
   
-  $(`#logBox`).style({maxWidth: `${JQLRoot.dimensions.width}px`, marginTop: 0});
+  $(`#logBox`).style({maxWidth: `${JQxRoot.dimensions.width}px`, marginTop: 0});
   const donePerf = (performance.now() - started) / 1000;
   const perfMessage =
     $.div(`Page creation took ${donePerf.toFixed(3)} seconds`)

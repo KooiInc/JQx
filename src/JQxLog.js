@@ -1,4 +1,4 @@
-import jql from "../index.js";
+import jqx from "../index.js";
 import {createElementFromHtmlString, element2DOM, insertPositions} from "./DOM.js";
 import {IS, logTime,} from "./JQxExtensionHelpers.js";
 import {logStyling} from "./EmbedResources.js";
@@ -8,8 +8,8 @@ let log2Console = true;
 let reverseLogging = false;
 let useHtml = true;
 let editLogRule;
-const getLogBox = () => jql(`#logBox`);
-const logBoxTextBoxId = `#jql_logger`;
+const getLogBox = () => jqx(`#logBox`);
+const logBoxTextBoxId = `#jqx_logger`;
 
 const setStyling4Log = setStyle => { logStyling?.forEach(selector => setStyle(selector)); };
 
@@ -17,11 +17,11 @@ const createLogElement = () => {
   if (logStyling) {
     setStyling4Log(editLogRule);
   }
-  const jql_logger_element_name = useHtml ? `div` : `pre`;
+  const jqx_logger_element_name = useHtml ? `div` : `pre`;
   const loggingFieldSet = `<div id="logBox"><div class="legend"><div></div></div><${
-    jql_logger_element_name} id="jql_logger"></${jql_logger_element_name}></div>`;
+    jqx_logger_element_name} id="jqx_logger"></${jqx_logger_element_name}></div>`;
   element2DOM(createElementFromHtmlString(loggingFieldSet), undefined, insertPositions.AfterBegin);
-  return jql.node(logBoxTextBoxId);
+  return jqx.node(logBoxTextBoxId);
 };
 
 const decodeForConsole = something => IS(something, String) &&
@@ -36,8 +36,8 @@ const Log = (...args) => {
 
     if (!useLogging) { return; }
 
-    if (!log2Console && !jql.node(`#logBox`)) {
-      editLogRule = jql.createStyle(`JQLLogCSS`);
+    if (!log2Console && !jqx.node(`#logBox`)) {
+      editLogRule = jqx.createStyle(`JQxLogCSS`);
       createLogElement();
     }
 
@@ -45,7 +45,7 @@ const Log = (...args) => {
 
     args.forEach( arg => log2Console
       ? console.info(`${logTime()} ✔ ${decodeForConsole(arg)}`)
-      : jql.node(`#jql_logger`).insertAdjacentHTML(
+      : jqx.node(`#jqx_logger`).insertAdjacentHTML(
           reverseLogging ? `afterbegin` : `beforeend`,
           `<div class="entry">${logTime()} ${logLine(arg.replace(/\n/g, `<br>`))}</div>`)
     );
@@ -66,14 +66,14 @@ const systemLog = (...logTxt) => logSystem && Log(...logTxt);
 const debugLog = {
   get isConsole() { return log2Console === true; },
   get isOn() { return useLogging; },
-  isVisible: function() { return jql(`#jql_logger`).is(`visible`); },
+  isVisible: function() { return jqx(`#jqx_logger`).is(`visible`); },
   on() {
     logActive.on();
     setSystemLog.on();
     if (!log2Console) {
       getLogBox()?.addClass(`visible`);
     }
-    Log(`Debug logging started. Every call to [jql instance] is logged`);
+    Log(`Debug logging started. Every call to [jqx instance] is logged`);
     return debugLog;
   },
   off() {
@@ -122,19 +122,19 @@ const debugLog = {
       on: () => {
         reverseLogging = true;
         Log(`Reverse logging set: now logging bottom to top (latest first)`);
-        jql(`#logBox .legend`).addClass(`reversed`);
+        jqx(`#logBox .legend`).addClass(`reversed`);
         return debugLog;
       },
       off: () => {
         reverseLogging = false;
-        jql(`#logBox .legend`).removeClass(`reversed`);
+        jqx(`#logBox .legend`).removeClass(`reversed`);
         Log(`Reverse logging reset: now logging chronological (latest last)`);
         return debugLog;
       },
     };
   },
   clear() {
-    jql(logBoxTextBoxId).text(``);
+    jqx(logBoxTextBoxId).text(``);
     console.clear();
     Log(`Logging cleared`);
     return debugLog;

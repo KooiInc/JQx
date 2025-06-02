@@ -14,16 +14,16 @@ import {
   setCollectionFromCssSelector,
   truncateHtmlStr,
   proxify,
-  addJQLStaticMethods,
+  addJQxStaticMethods,
   createElementFromHtmlString,
   insertPositions,
   systemLog,
   IS,
 } from "./src/JQxExtensionHelpers.js";
 
-export default addJQLStaticMethods(JQLFactory());
+export default addJQxStaticMethods(JQxFactory());
 
-function JQLFactory() {
+function JQxFactory() {
   const logLineLength = 70;
 
   return function JQLDefault(input, root, position = insertPositions.BeforeEnd) {

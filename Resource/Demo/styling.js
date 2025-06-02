@@ -3,7 +3,7 @@ export default [
     font: normal 13px/16px verdana, arial;
     margin: 2rem;
   }`,
-  `#JQLRoot {
+  `#JQxRoot {
     position: relative;
     margin: 2rem auto;
     maxWidth: 50vw;
