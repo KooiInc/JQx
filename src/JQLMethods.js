@@ -180,7 +180,6 @@ const allMethods = {
   instanceExtensions: {
     isEmpty: self => self.collection.length < 1,
     renderTo: (self, root = document.body, at = jql.insertPositions.end) => {
-      console.log(root, at);
       self.toDOM(root, at);
       return self;
     },

@@ -144,16 +144,16 @@ function clickActionsFactory($) {
       );
     },
     renderEx(evt) {
-      const helloWrld = $.div({class: "removeMe", style: "color:red;font-weight:bold"}, `Hello`, $.span(` world`));
+      const helloWrld = $.div({style: "color:red;font-weight:bold"}, `Hello`, $.span(` world`));
       const currentParagraph = getCurrentParagraph(evt);
       helloWrld.render.appendTo(currentParagraph, $.at.end);
-      setTimeout(() => helloWrld.remove(), 3000);
+      setTimeout(() => helloWrld.remove(), 4000);
     },
     renderToEx(evt) {
-      const helloWrld = $.div({class: "removeMe", style: "color:red;font-weight:bold"}, `HELLO`, $.span(` WORLD!`));
-      const currentParagraph = getCurrentParagraph(evt).closest(`.paragraph`).querySelector(`h3`);
-      helloWrld.renderTo(currentParagraph, $.at.afterend);
-      setTimeout(() => helloWrld.remove(), 3000);
+      const helloWrld = $.div({style: "color:red;font-weight:bold"}, `HELLO`, $.span(` WORLD!`));
+      const currentParagraphHeader = $(getCurrentParagraph(evt)).parent.find$(`h3`);
+      helloWrld.renderTo(currentParagraphHeader, $.at.afterend);
+      setTimeout(() => helloWrld.remove(), 4000);
     },
     popupShowEx: () => {
       // Just a message
