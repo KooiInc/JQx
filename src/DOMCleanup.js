@@ -16,7 +16,7 @@ const logContingentErrors = elCreationInfo => {
     const msgs = Object.entries(elCreationInfo.removed)
       .reduce( (acc, [k, v]) => [...acc, `${escHtml(k)} => ${v}`], [])
       .join(`\\000A`);
-    debugLog.log(`JQL HTML creation errors: ${debugLog.isConsole ? msgs : escHtml(msgs)}`);
+    debugLog.log(`JQx HTML creation errors: ${debugLog.isConsole ? msgs : escHtml(msgs)}`);
   }
 };
 const elementCheck = function(child) {

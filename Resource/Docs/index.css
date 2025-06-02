@@ -79,11 +79,11 @@ ul.navGroup li:not(.grouped) {
   margin-left: -2rem;
 }
 
-.jqlTitle {
+.jqxTitle {
   color: green;
 }
 
-.jqlTitle b {
+.jqxTitle b {
   color: red;
 }
 

@@ -32,7 +32,7 @@ const perform = performance.now();
 document.title = isDev ? `##DEV## ${document.title}` : document.title;
 if (isDev) {
   $(`link[rel="icon"]`).replaceWith($.LINK({href: `./devIco.png`, rel: `icon`}));
-  window.jql = $;
+  window.jqx = $;
   window.IS = $.IS;
   window.popup = $.Popup;
 }
@@ -124,10 +124,10 @@ groups.forEach( group => {
       let params;
       let exampleCode = [];
       const itemGroupLookup = {
-        instance: `[JQL instance].`,
-        popup: `[JQL.Popup].`,
+        instance: `[JQx instance].`,
+        popup: `[JQx.Popup].`,
         debuglog: `[debugLog].`,
-        static: `[JQL].`
+        static: `[JQx].`
       }
 
       if (itemValue.params?.length) {
@@ -175,10 +175,10 @@ Prism.highlightAll();
 $.log(`Code formatting done.`);
 
 // navigate to top
-$(`#jql_About`).html(` (<span class="jqlTitle"><b>JQ</b>uery<b>-x</span>)`, true);
+$(`#jqx_About`).html(` (<span class="jqxTitle"><b>JQ</b>uery<b>-x</span>)`, true);
 
 // display the first item
-$(`[data-group="jql"]`).trigger(`click`);
+$(`[data-group="jqx"]`).trigger(`click`);
 $.log(`Navigation triggered.`);
 $.log(`Documenter implementation took ${((performance.now() - perform)/1000).toFixed(3)} seconds`);
 

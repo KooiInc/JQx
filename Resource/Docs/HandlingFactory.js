@@ -422,7 +422,7 @@ function clickActionsFactory($) {
       const div2 = $.virtual('<div id="div2">I am div#div2</div>');
       
       $.Popup.show( {
-        content: $($.div()).append(div1, div2),
+        content: $.div().append(div1, div2),
         callback: () => $.removeCssRules("#div1", "#div2")
       } );
     },

@@ -26,9 +26,9 @@ export default addJQxStaticMethods(JQxFactory());
 function JQxFactory() {
   const logLineLength = 70;
 
-  return function JQLDefault(input, root, position = insertPositions.BeforeEnd) {
+  return function JQxDefault(input, root, position = insertPositions.BeforeEnd) {
     const isVirtual = IS(root, HTMLBRElement);
-    root = (!isVirtual && root && root.isJQL ? root[0] : root) || document.body;
+    root = (!isVirtual && root && root.isJQx ? root[0] : root) || document.body;
     position = position && Object.values(insertPositions).find(pos => position === pos) ? position : undefined;
     const isRawHtml = isHtmlString(input);
     const isRawHtmlArray = !isRawHtml && isArrayOfHtmlStrings(input);
@@ -36,16 +36,12 @@ function JQxFactory() {
     let instance = {
       collection: input2Collection(input) ?? [],
       isVirtual,
-      isJQL: true,
+      isJQL: true, // legacy
       isJQx: true,
     };
 
     const isRawElemCollection = isArrayOfHtmlElements(instance.collection);
-
-    if (location.host.startsWith(`dev`)) {
-      instance.params = { virtual: instance.isVirtual, jql: instance.isJQL, isRawHtml, isRawHtmlArray, isRawElemCollection };
-    }
-
+    
     const logStr = `input =&gt; ${
       isRawHtmlArray
         ? `"${truncateHtmlStr(input.join(`, `), logLineLength)}"`
@@ -74,8 +70,8 @@ function JQxFactory() {
         instance.collection.push(createElementFromHtmlString(htmlStringOrComment)));
 
       if (instance.collection.length > 0) {
-        const errors = instance.collection.filter( el => el?.dataset?.jqlcreationerror );
-        instance.collection = instance.collection.filter(el => !el?.dataset?.jqlcreationerror);
+        const errors = instance.collection.filter( el => el?.dataset?.jqxcreationerror );
+        instance.collection = instance.collection.filter(el => !el?.dataset?.jqxcreationerror);
 
         systemLog(`${logStr}`);
         systemLog(`*Created ${instance.isVirtual ? `VIRTUAL ` : ``}[${
@@ -83,7 +79,7 @@ function JQxFactory() {
             "sanitized: no elements remaining", logLineLength)}]`);
 
         if (errors.length) {
-          console.error(`JQL: illegal html, not rendered: "${
+          console.error(`JQx: illegal html, not rendered: "${
             errors.reduce( (acc, el) => acc.concat(`${el.textContent}\n`), ``).trim()}"` );
         }
 

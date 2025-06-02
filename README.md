@@ -28,14 +28,14 @@ npm i jqlmodule
 
 There are *two flavors* of this library. One for scripts with type `module` (or projects with `"type": "module"` in package.json) and one for the browser.
 
-For each flavor, the script is (bundled and) minified. The location of the minified scripts is `https://kooiinc.github.io/JQL/Bundle`
+For each flavor, the script is (bundled and) minified. The location of the minified scripts is `https://kooiinc.codeberg.page/JQx/JQL/Bundle`
 
 ### ESM import
 ``` javascript
-import $ from "https://kooiinc.codeberg.page/JQx/Bundle/jql.min.js";
+import $ from "https://kooiinc.codeberg.page/JQx/Bundle/jqx.min.js";
 // or
 const $ = ( await 
-  import("https://kooiinc.codeberg.page/JQx/Bundle/jql.min.js") 
+  import("https://kooiinc.codeberg.page/JQx/Bundle/jqx.min.js") 
 ).default;
 $.div(`Hello JQx!`).appendTo(document.body);
 // ...
@@ -43,9 +43,9 @@ $.div(`Hello JQx!`).appendTo(document.body);
 
 ### Browser script
 ``` html
-<script src="https://kooiinc.codeberg.page/JQx/Bundle/jql.browser.min.js"></script>
+<script src="https://kooiinc.codeberg.page/JQx/Bundle/jqx.browser.min.js"></script>
 <script>
-  const $ = JQL.default;
+  const $ = JQx.default;
   $.div(`Hello JQx!`).appendTo(document.body);
   // ...
 </script>

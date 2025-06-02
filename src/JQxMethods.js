@@ -10,7 +10,7 @@ import {
   systemLog,
 } from "./JQxExtensionHelpers.js";
 import {ATTRS} from "./EmbedResources.js";
-import jql from "../index.js";
+import jqx from "../index.js";
 import {ExamineElementFeatureFactory, toDashedNotation, toCamelcase, escHtml} from "./Utilities.js";
 import {debugLog} from "./JQxLog.js";
 const loop = (instance, callback) => {
@@ -51,9 +51,9 @@ const css = (el, keyOrKvPairs, value) => {
     delete keyOrKvPairs.className;
   }
 
-  const classExists = ([...el.classList].find(c => c.startsWith(`JQLClass-`) || nwClass && c === nwClass));
-  nwClass = classExists || nwClass || `JQLClass-${randomString().slice(1)}`;
-  jql.editCssRule(`.${nwClass}`, keyOrKvPairs);
+  const classExists = ([...el.classList].find(c => c.startsWith(`JQxClass-`) || nwClass && c === nwClass));
+  nwClass = classExists || nwClass || `JQxClass-${randomString().slice(1)}`;
+  jqx.editCssRule(`.${nwClass}`, keyOrKvPairs);
   el.classList.add(nwClass);
 };
 const assignAttrValues = (/*NODOC*/el, keyValuePairs) => {
@@ -94,7 +94,7 @@ const allMethods = {
     length: self => self.collection.length,
     dimensions: self => self.first()?.getBoundingClientRect(),
     parent: self =>{
-      const tryParent = jql(self[0]?.parentNode);
+      const tryParent = jqx(self[0]?.parentNode);
       return !tryParent.is.empty ? tryParent : self;
     },
     outerHtml: self => (self.first() || {outerHTML: undefined}).outerHTML,
@@ -131,7 +131,7 @@ const allMethods = {
         classes2Apply = classes2Apply && IS(classes2Apply, String) ? [classes2Apply] : classes2Apply;
 
         if (rules?.length || classes2Apply?.length) {
-          rules?.length && jql.editCssRules(...rules);
+          rules?.length && jqx.editCssRules(...rules);
           classes2Apply?.forEach(selector => self.addClass(selector));
         }
 
@@ -155,7 +155,7 @@ const allMethods = {
         return escaped ? escHtml(html) : html;
       },
       set: (content, append = false, escape = false) => {
-        content = content.isJQL ? content.HTML.get(1) : content;
+        content = content.isJQx ? content.HTML.get(1) : content;
         const isString = IS(content, String);
         content = isString && escape ? escHtml(content) : content;
         if (isString && (content || ``).trim().length) { self.html(content, append); }
@@ -166,20 +166,20 @@ const allMethods = {
       },
       append: (content, escape = false) => {
         content = IS(content, HTMLElement)
-          ? content[Symbol.jqlvirtual].HTML.get(1) : content.isJQL ? content.HTML.get(1) : content;
+          ? jqx(content).HTML.get(1) : content.isJQx ? content.HTML.get(1) : content;
         return self.HTML.set(content, true, escape);
       },
       insert: (content, escape = false) => {
         content = IS(content, HTMLElement)
-          ? content[Symbol.jqlvirtual].HTML.get(1) : content.isJQL ? content.HTML.get(1) : content;
+          ? jqx(content).HTML.get(1) : content.isJQx ? content.HTML.get(1) : content;
         return self.HTML.set(content + self.HTML.get(), false, escape);
       },
     }),
-    render: self => !self.is.empty && self.toDOM() || (jql.log(`[JQL.render]: empty collection`), undefined),
+    render: self => !self.is.empty && self.toDOM() || (jqx.log(`[JQx.render]: empty collection`), undefined),
   },
   instanceExtensions: {
     isEmpty: self => self.collection.length < 1,
-    renderTo: (self, root = document.body, at = jql.insertPositions.end) => {
+    renderTo: (self, root = document.body, at = jqx.insertPositions.end) => {
       self.toDOM(root, at);
       return self;
     },
@@ -197,7 +197,7 @@ const allMethods = {
     clear: self => loop(self, emptyElement),
     closest: (self, selector) => {
       const theClosest = IS(selector, String) ? self[0].closest(selector) : null;
-      return theClosest ? jql(theClosest) : self
+      return theClosest ? jqx(theClosest) : self
     },
     style: (self, keyOrKvPairs, value) => {
       const loopCollectionLambda = el => {
@@ -248,12 +248,12 @@ const allMethods = {
     replace: (self, oldChild, newChild) => {
       const firstElem = self[0];
 
-      if (!oldChild || (!newChild || !IS(newChild, HTMLElement) && !newChild.isJQL)) {
-        console.error(`JQL replace: invalid replacement value`);
+      if (!oldChild || (!newChild || !IS(newChild, HTMLElement) && !newChild.isJQx)) {
+        console.error(`JQx replace: invalid replacement value`);
         return self;
       }
 
-      if (newChild.isJQL) {
+      if (newChild.isJQx) {
         newChild = newChild[0];
       }
 
@@ -264,7 +264,7 @@ const allMethods = {
       if (firstElem && oldChild) {
         oldChild = IS(oldChild, String)
           ? firstElem.querySelectorAll(oldChild)
-          : oldChild.isJQL
+          : oldChild.isJQx
             ? oldChild.collection
             : oldChild;
 
@@ -277,11 +277,11 @@ const allMethods = {
       return self;
     },
     replaceWith: (self, newChild) => {
-      newChild = IS(newChild, Element) ? newChild : newChild.isJQL ? newChild[0] : undefined;
+      newChild = IS(newChild, Element) ? newChild : newChild.isJQx ? newChild[0] : undefined;
 
       if (newChild) {
         self[0].replaceWith(newChild);
-        self = jql.virtual(newChild);
+        self = jqx.virtual(newChild);
       }
 
       return self;
@@ -327,14 +327,14 @@ const allMethods = {
     },
     andThen: (self, elem2Add, before = false) => {
       if (!elem2Add || !IS(elem2Add, String, Node, Proxy)) {
-        logDebug(`[JQL instance].[beforeMe | afterMe | andThen]: insufficient input [${elem2Add}]`, );
+        logDebug(`[JQx instance].[beforeMe | afterMe | andThen]: insufficient input [${elem2Add}]`, );
         return self;
       }
       
-      elem2Add = elem2Add?.isJQL
+      elem2Add = elem2Add?.isJQx
         ? elem2Add.collection
-        : IS(elem2Add, Node) ? jql.virtual(elem2Add).collection
-          : jql.virtual(createElementFromHtmlString(elem2Add)).collection;
+        : IS(elem2Add, Node) ? jqx.virtual(elem2Add).collection
+          : jqx.virtual(createElementFromHtmlString(elem2Add)).collection;
       
       const [index, method, reCollected] = before
         ? [0, `before`, elem2Add.concat(self.collection)]
@@ -353,10 +353,10 @@ const allMethods = {
         const shouldMove = self.length === 1;
         
         for (let elem2Append of elems2Append) {
-          if (!elem2Append.isJQL && IS(elem2Append, String)) {
+          if (!elem2Append.isJQx && IS(elem2Append, String)) {
             const elem2Append4Test = elem2Append.trim();
             const isPlainString = !/^<(.+)[^>]+>$/m.test(elem2Append4Test);
-            let toAppend = isPlainString ? jql.text(elem2Append) : createElementFromHtmlString(elem2Append);
+            let toAppend = isPlainString ? jqx.text(elem2Append) : createElementFromHtmlString(elem2Append);
             loop(self, el => el.append(shouldMove ? toAppend : cloneAndDestroy(toAppend)));
           }
           
@@ -364,7 +364,7 @@ const allMethods = {
             loop(self, el => el.append(shouldMove ? elem2Append : cloneAndDestroy(elem2Append)));
           }
           
-          if (elem2Append.isJQL && !elem2Append.is.empty) {
+          if (elem2Append.isJQx && !elem2Append.is.empty) {
             loop(self, el =>
               elem2Append.collection.forEach(elem =>
                 el.append(shouldMove ? elem : cloneAndDestroy(elem)))
@@ -382,7 +382,7 @@ const allMethods = {
           if (IS(elem2Prepend, String)) {
             elem2Prepend = elem2Prepend.trim();
             const isPlainString = !/^<(.+)[^>]+>$/m.test(elem2Prepend);
-            let toPrepend = isPlainString ? jql.text(elem2Prepend) : createElementFromHtmlString(elem2Prepend);
+            let toPrepend = isPlainString ? jqx.text(elem2Prepend) : createElementFromHtmlString(elem2Prepend);
             toPrepend = shouldMove ? toPrepend : cloneAndDestroy(toPrepend);
             loop(self, el => el.prepend(toPrepend.cloneNode(true)));
           }
@@ -391,7 +391,7 @@ const allMethods = {
             loop(self, el => el.prepend(shouldMove ? elem2Prepend : cloneAndDestroy(elem2Prepend)));
           }
           
-          if (elem2Prepend.isJQL && !elem2Prepend.is.empty) {
+          if (elem2Prepend.isJQx && !elem2Prepend.is.empty) {
             elem2Prepend.collection.length > 1 && elem2Prepend.collection.reverse();
             loop(self, el => loop( elem2Prepend, elem => el.prepend(shouldMove ? elem : cloneAndDestroy(elem)) ) );
             elem2Prepend.collection.reverse();
@@ -402,15 +402,15 @@ const allMethods = {
       return self;
     },
     appendTo: (self, appendTo) => {
-      if (!appendTo.isJQL) {
-        appendTo = jql(appendTo);
+      if (!appendTo.isJQx) {
+        appendTo = jqx(appendTo);
       }
       appendTo.append(self);
       return self;
     },
     prependTo: (self, prependTo) => {
-      if (!prependTo.isJQL) {
-        prependTo = jql.virtual(prependTo);
+      if (!prependTo.isJQx) {
+        prependTo = jqx.virtual(prependTo);
       }
 
       prependTo.prepend(self);
@@ -423,10 +423,10 @@ const allMethods = {
         }
 
         if (IS(indexOrSelector, Number)) {
-          return jql(self.collection[indexOrSelector]);
+          return jqx(self.collection[indexOrSelector]);
         }
 
-        return jql(self.collection[0]);
+        return jqx(self.collection[0]);
       }
 
       return self;
@@ -434,8 +434,8 @@ const allMethods = {
     toNodeList: self => [...self.collection].map(el => document.importNode(el, true)),
     duplicate: (self, toDOM = false, root = document.body) => {
       const nodes = self.toNodeList().map(el => el.removeAttribute && el.removeAttribute(`id`) || el);
-      const nwJQL = jql.virtual(nodes);
-      return toDOM ? nwJQL.toDOM(root) : nwJQL;
+      const nwJQx = jqx.virtual(nodes);
+      return toDOM ? nwJQx.toDOM(root) : nwJQx;
     },
     toDOM: (self, root = document.body, position = insertPositions.BeforeEnd) => {
       if (self.isVirtual) { self.isVirtual = false; }
@@ -443,9 +443,9 @@ const allMethods = {
       
       return self;
     },
-    first: (self, asJQLInstance = false) => {
+    first: (self, asJQxInstance = false) => {
       if (self.collection.length > 0) {
-        return asJQLInstance
+        return asJQxInstance
           ? self.single()
           : self.collection[0];
       }
@@ -454,7 +454,7 @@ const allMethods = {
     first$: (self, indexOrSelector) => self.single(indexOrSelector),
     nth$: (self, indexOrSelector) => self.single(indexOrSelector),
     find: (self, selector) => self.collection.length > 0 ? [...self.first()?.querySelectorAll(selector)] : [],
-    find$: (self, selector) => { return self.collection.length > 0 ? jql(selector, self) : self; },
+    find$: (self, selector) => { return self.collection.length > 0 ? jqx(selector, self) : self; },
     prop: (self, nameOrProperties, value) => {
       if (IS(nameOrProperties, String) && !value) {
         return nameOrProperties.startsWith(`data`)
@@ -489,7 +489,7 @@ const allMethods = {
       if (self.collection.length) {
         callback?.forEach(cb => {
           const cssSelector4Handler = addHandlerId(self);
-          jql.delegate(type, cssSelector4Handler, cb);
+          jqx.delegate(type, cssSelector4Handler, cb);
         });
       }
 
@@ -501,13 +501,13 @@ const allMethods = {
       }
 
       if (!self.isEmpty()) {
-        const nwElement = createElementFromHtmlString(`<div>${htmlValue.isJQL ? htmlValue.HTML.get(true) : htmlValue}</div>`);
+        const nwElement = createElementFromHtmlString(`<div>${htmlValue.isJQx ? htmlValue.HTML.get(true) : htmlValue}</div>`);
 
         if (!IS(nwElement, Comment)) {
           const cb = el => {
             if (!append) { el.textContent = ``; }
             
-            return el.insertAdjacentHTML(jql.at.end, nwElement.getHTML());
+            return el.insertAdjacentHTML(jqx.at.end, nwElement.getHTML());
           }
           return loop(self, cb);
         }
@@ -527,7 +527,7 @@ const allMethods = {
         
         el2Change.each(el => {
           if (!append) { el.textContent = ``; }
-          el.insertAdjacentHTML(jql.at.end, nwElement.getHTML());
+          el.insertAdjacentHTML(jqx.at.end, nwElement.getHTML());
         });
         
       }

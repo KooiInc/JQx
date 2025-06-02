@@ -32,7 +32,7 @@ const inject2DOMTree = (
     return created ? [...acc, created] : acc;
   }, []);
 const element2DOM = (elem, root = document.body, position = insertPositions.BeforeEnd) => {
-  root = root?.isJQL ? root?.[0] : root;
+  root = root?.isJQx ? root?.[0] : root;
 
   return IS(elem, Comment, Text) ?
     characterDataElement2DOM(elem, root, position) : root.insertAdjacentElement(position, elem);
@@ -60,7 +60,7 @@ const createElementFromHtmlString = htmlStr => {
   const nwElem = htmlToVirtualElement(htmlStr);
 
   if (nwElem.childNodes.length < 1) {
-    return createElementFromHtmlString(`<span data-jqlcreationerror="1">${truncateHtmlStr(htmlStr, 60)}</span>`);
+    return createElementFromHtmlString(`<span data-jqxcreationerror="1">${truncateHtmlStr(htmlStr, 60)}</span>`);
   }
 
   return nwElem.children[0];
