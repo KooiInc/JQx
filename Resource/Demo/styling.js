@@ -6,7 +6,7 @@ export default [
   `#JQxRoot {
     position: relative;
     margin: 2rem auto;
-    maxWidth: 50vw;
+    maxWidth: 70vw;
     display: table }`,
   `.MAIN {
     position: absolute;
@@ -62,7 +62,7 @@ export default [
   `.upDownFader.down {
     max-height: calc(100% - 1px);
     position: relative;
-    width: 811px;
+    width: 840px;
     opacity: 1;
     overflow: auto;
   }`,

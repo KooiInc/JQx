@@ -142,7 +142,7 @@ if (!debug) {
         "Show custom CSS").on("click", () =>
           showStyling("JQxStylesheet", cssBttns.defaultCSS)),
       BUTTON("Modal popup demo").on(`click`, modalDemo),
-      BUTTON("Github").on(`click`, () =>  $.Popup.show( { content: backLinks } ) )
+      BUTTON("@Codeberg").on(`click`, () =>  $.Popup.show( { content: backLinks } ) )
     ] ).appendTo(JQxRoot);
   
   $("button")
@@ -157,7 +157,6 @@ if (!debug) {
     borderLeft: "5px solid red",
     paddingLeft: "5px",
     display: "block",
-    maxWidth: "800px",
     'margin-top': "1rem",
     'padding-top': "0.2rem", })
   .prepend($$("<span>Some </span>"))
