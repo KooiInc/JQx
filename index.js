@@ -37,6 +37,7 @@ function JQLFactory() {
       collection: input2Collection(input) ?? [],
       isVirtual,
       isJQL: true,
+      isJQx: true,
     };
 
     const isRawElemCollection = isArrayOfHtmlElements(instance.collection);

@@ -8,9 +8,6 @@ const importLink =  isDev ?
 const $ = (await import(importLink)).default;
 createCopyrightComponent();
 
-const ghLink = $.a({slot: `link`, href: `//codeberg.org/KooiInc/JQx`, target: `_top`, text: `Back to repository`});
-$.copyrightSlotted($.span({slot: `year`, class: `yr`, text: String(new Date().getFullYear())}), ghLink.HTML.get(1)).render;
-
 window.$ = $;
 const codeReplacements = new Map( [
   [`<`, `&lt;`],
@@ -48,7 +45,7 @@ let documentationData = await fetch(`./documentation.json`).then(r => r.json());
 $.log(`Fetched documenter json...`);
 import handlerFactory  from "./HandlingFactory.js";
 const {clientHandling, allExampleActions} = handlerFactory($);
-const groupOrder = ['jql_About', 'static_About', 'instance_About', 'popup_About', 'debuglog_About'];
+const groupOrder = ['jqx_About', 'static_About', 'instance_About', 'popup_About', 'debuglog_About'];
 const groups = groupOrder.reduce((acc, group) =>
   [...acc, {name: group, displayName: group.slice(0, group.indexOf(`About`)).toUpperCase()}], []);
 const sliceName = name => name.slice(name.indexOf(`_`) + 1);
@@ -178,7 +175,7 @@ Prism.highlightAll();
 $.log(`Code formatting done.`);
 
 // navigate to top
-$(`#jql_About`).html(` (<span class="jqlTitle"><b>JQ</b>uery<b>L</b>ike</span>)`, true);
+$(`#jql_About`).html(` (<span class="jqlTitle"><b>JQ</b>uery<b>-x</span>)`, true);
 
 // display the first item
 $(`[data-group="jql"]`).trigger(`click`);
@@ -264,4 +261,10 @@ function createCopyrightComponent() {
     }
   });
   $.allowTag(`copyright-slotted`);
+  const ghLink = $.a({slot: `link`, href: `//codeberg.org/KooiInc/JQx`, target: `_top`, text: `Back to repository`});
+  $.copyrightSlotted(
+    $.span({slot: `year`, class: `yr`, text: String(new Date().getFullYear())}),
+    ghLink.HTML.get(1)
+  ).render;
+  $.log(`Copyright component created and inserted.`);
 }

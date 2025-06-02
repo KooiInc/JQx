@@ -71,9 +71,6 @@ function documentHandlingFactory($) {
 }
 
 function clickActionsFactory($) {
-  const create = Symbol.jqlvirtual;
-  const toDOM = Symbol.jql;
-  const jqlTo = Symbol.jql2Root;
   const toCodeElement = str => `<code>${str}</code>`;
   const yn = item => item === undefined ? `Yep 😎` : `Nope 😡`;
   const randomNr = (max, min = 0) => {
@@ -180,17 +177,17 @@ function clickActionsFactory($) {
     appendEx: evt => {
       exDivStyle();
         $.editCssRule(".appended { color: red; cursor: pointer; }");
-        const toAppendJQLInstance = $.virtual('<div class="appended">I am an appended JQL instance ...</div>')
+        const toAppendJQxInstance = $.virtual('<div class="appended">I am an appended JQx instance ...</div>')
            .on("click", () => alert("HELLO!"));
         const elem2Append = $('<div id="tmpEx">Hi there! Wait a sec ... </div>', getCurrentParagraph(evt))
           .append(
-            toAppendJQLInstance,
+            toAppendJQxInstance,
             "Appended text",
             "<div>Appended HTML string</div>",
             Object.assign( document.createElement("div"), {textContent: "Appended element"}) );
         setTimeout(() =>
           $.Popup.show( {
-            content: toAppendJQLInstance.html("Now I am appended to the popup element, one can still click me"),
+            content: toAppendJQxInstance.html("Now I am appended to the popup element, one can still click me"),
             callback: () => $("#tmpEx").remove(),
         }), 1500);
     },
@@ -310,45 +307,19 @@ function clickActionsFactory($) {
         } );
       },
     staticElemEx: () => {
-      // use Symbol.jqlvirtual (create)
       $.editCssRules(".exRed {color: red;}");
       const popupPara = $.p("Hello world ...")
        .append(
          $.i( {class: "exRed"}, $.B(" here we are!") )
        );
-      
+
       $.Popup.show({
         content: popupPara,
         closeAfter: 3,
       });
     },
-    staticElemEx2: (evt) =>{
-      // use Symbol.jql (toDOM)
-      $.editCssRules(
-        ".exRed { color: red; }",
-        ".exFont {\
-            font-family: fantasy;\
-            font-size: 1.2rem;\
-        }"
-      );
-      const {p: $P, i: $I } = $;
-      const popupPara = $P( { text: "Hello world ... ", id: "Hithere" });
-      popupPara.append( $I( { class: "exRed exFont" }, $.SPAN(" here we are!") ) );
-      const popupDupe = popupPara.duplicate();
-      
-      $(getCurrentParagraph(evt))
-        .find$(`.exContainer`)
-        .nth$(3)
-        .before( popupDupe );
-      
-      $.Popup.show({
-        content: popupPara,
-        callback: () => popupDupe.remove(),
-        closeAfter: 3,
-      });
-    },
-    staticElemEx3: () =>{
-      // extract tag methods from [JQL] and use Symbol.jql2Root (jqlTo)
+    staticElemEx2: () =>{
+      // extract tag methods from [JQx]
       $.editCssRules(
         ".exRed {color: red;}",
         ".exFont {\
@@ -359,34 +330,10 @@ function clickActionsFactory($) {
       const {P, I, SPAN} = $;
       const hereWeAre = I( { class: "exRed exFont" }, SPAN("Here we are! ") );
       const popupPara = P( { text: "Hello world ... ", id: "Hithere" });
-      hereWeAre[jqlTo](popupPara, $.at.start);
-      
+      hereWeAre.renderTo(popupPara, $.at.start);
+
       $.Popup.show({
         content: popupPara,
-        closeAfter: 3,
-      });
-    },
-    staticElemEx4: () =>{
-      // use [JQL][tag]_jql (extract tag methods from [JQL])
-      const fontFamily = "Georgia, cursive";
-      $.editCssRules(
-        `[data-static-id] {
-          color: green;
-          letter-spacing: 6px;
-          .exRed {color: red;}
-          .exFont {
-            font-family: ${fontFamily};
-            font-size: 1.2rem;
-            margin-right: 0.4rem;
-            letter-spacing: normal;
-        }`,
-      );
-      const {P, SPAN} = $;
-      const hereWeAre = $.I( { class: "exRed exFont" }, SPAN("Here we are! ") );
-      const popupPara = P( "Hello world ... " );
-      
-      $.Popup.show({
-        content: popupPara.data.set({staticId: "staticElemEx"}).prepend(hereWeAre),
         closeAfter: 3,
       });
     },
@@ -424,7 +371,7 @@ function clickActionsFactory($) {
       $.Popup.show( {
         content: `
           <code>printHtml(exElem.outerHtml)</code> =&gt; ${printHtml(exElem.outerHtml)}<br>
-          // one can also use [jql instance].HTML:
+          // one can also use [JQx instance].HTML:
           <code>exElem.HTML.get(true, true)</code> =&gt; ${exElem.HTML.get(true, true)}`,
         callback: () => exElem.remove(),
       } );
@@ -700,7 +647,7 @@ function clickActionsFactory($) {
       setTimeout($(".ex").remove, 5000);
     },
     htmlForEx: evt => {
-      // note: this example serves both for [JQL].html and [JQL].htmlFor
+      // note: this example serves both for [JQx instance].html and [JQx instance].htmlFor
       const someDiv = $.div({data: {id: "htmlExample"}});
       $.Popup.show({
         content: someDiv.html("(<code class='inline'>html</code>) =>\
@@ -1044,14 +991,14 @@ function clickActionsFactory($) {
       $.Popup.show( { content: $(".docs").find$("#instance_find_D").HTML.get(1, 1) } );
     },
     firstEx: evt => {
-      const jqlElems = $("#navigation li[data-key]");
+      const jqxElems = $("#navigation li[data-key]");
       $.Popup.show({content: $(`<div>
-         <code>jqlElems.collection.length</code>: ${jqlElems.collection.length},<br>
-         outerHTML <code>jqlElems.first()</code>: ${jqlElems.first()?.outerHTML.replace(/</g, "&lt;")}</div>`)});
+         <code>jqxElems.collection.length</code>: ${jqxElems.collection.length},<br>
+         outerHTML <code>jqxElems.first()</code>: ${jqxElems.first()?.outerHTML.replace(/</g, "&lt;")}</div>`)});
     },
     first$Ex: evt => {
       // first$
-      const jqlElem = $(".docs").first$("#instance_single");
+      const jqxElem = $(".docs").first$("#instance_single");
       const first$WithIndexExample = () => {
         $.Popup.show({
           content: `<code>$(".docs h3").first$(17)</code> =&gt;<br>${
@@ -1059,14 +1006,14 @@ function clickActionsFactory($) {
       };
       $.Popup.show(
         { content: `<div><code>$(".docs").first$("#instance_single")</code> =&gt;<br>${
-          jqlElem.HTML.get(1, 1)}</div>`, callback: first$WithIndexExample } );
+          jqxElem.HTML.get(1, 1)}</div>`, callback: first$WithIndexExample } );
     },
     nth$Ex: evt => {
       // nth$
-      const jqlElem = $(".docs").nth$(30001); // does not exist
+      const jqxElem = $(".docs").nth$(30001); // does not exist
       $.Popup.show({ content: `
-            <div><code>jqlElem.HTML.get(1,1) </code> should give 'no elements' message: ${
-              jqlElem.HTML.get(1, 1)}</div>` });
+            <div><code>jqxElem.HTML.get(1,1) </code> should give 'no elements' message: ${
+              jqxElem.HTML.get(1, 1)}</div>` });
     },
     dataEx: evt => {
       const helloWrld = $("<div>Hello World again</div>", getCurrentParagraph(evt));
