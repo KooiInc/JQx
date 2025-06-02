@@ -1,18 +1,16 @@
 import {default as CreateComponent, createOrRetrieveShadowRoot}
   from "https://cdn.jsdelivr.net/gh/KooiInc/es-webcomponent-factory/Bundle/WebComponentFactory.min.js"
 Prism.manual = true;
-createCR();
 const isDev = location.host.startsWith(`dev`) || location.host.startsWith(`localhost`);
 const importLink =  isDev ?
   `../../index.js` :
   `../../Bundle/jql.min.js`;
 const $ = (await import(importLink)).default;
-$.allowTag(`copyright-slotted`);
+createCopyrightComponent();
+
 const ghLink = $.a({slot: `link`, href: `//codeberg.org/KooiInc/JQx`, target: `_top`, text: `Back to repository`});
-$(`<copyright-slotted>
-  <span slot="year" class="yr">${new Date().getFullYear()}</span>
-  ${ghLink.HTML.get(1)}
-</copyright-slotted>`);
+$.copyrightSlotted($.span({slot: `year`, class: `yr`, text: String(new Date().getFullYear())}), ghLink.HTML.get(1)).render;
+
 window.$ = $;
 const codeReplacements = new Map( [
   [`<`, `&lt;`],
@@ -213,7 +211,7 @@ function QS2Obj() {
   return {};
 }
 
-function createCR() {
+function createCopyrightComponent() {
   CreateComponent( {
     componentName: `copyright-slotted`,
     onConnect(elem) {
@@ -265,4 +263,5 @@ function createCR() {
       shadow.append(componentStyle, content);
     }
   });
+  $.allowTag(`copyright-slotted`);
 }

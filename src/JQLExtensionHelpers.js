@@ -108,12 +108,13 @@ function addJQLStaticMethods(jql) {
 function allowances(jql) {
   return {
     allow: tagName => {
-      if (/-/.test(tagName)) { return tagLib.allowTag(tagName); }
-      tagName =  tagName.toLowerCase();
+      const isWebComponent = /-/.test(tagName);
+      const webComponentTagName = isWebComponent && tagName;
+      tagName =  isWebComponent ? toCamelcase(tagName) : tagName.toLowerCase();
       tagLib.allowTag(tagName);
       
       if (!IS(jql[tagName], Function)) {
-        Object.defineProperties( jql, addGetters(tagName, true, jql) );
+        Object.defineProperties( jql, addGetters(tagName, true, jql, webComponentTagName) );
       }
     },
     prohibit: tagName => {
@@ -179,8 +180,8 @@ function tagNotAllowed(tagName) {
   return undefined;
 }
 
-function tagGetterFactory(tagName, cando, jql) {
-  tagName = tagName.toLowerCase();
+function tagGetterFactory(tagName, cando, jql, webComponentTagName) {
+  tagName = toDashedNotation(webComponentTagName || tagName.toLowerCase());
   
   return {
     get() {
@@ -194,18 +195,19 @@ function tagGetterFactory(tagName, cando, jql) {
   }
 }
 
-function addGetters(tag, cando, jql) {
+function addGetters(tag, cando, jql, webComponentTagName) {
   tag = tag.toLowerCase();
-  const jqlGetterForThisTag = tagGetterFactory(tag, cando, jql);
-  if (/-/.test(tag)) {
-    tag = toCamelcase(tag);
-    return { [tag]: jqlGetterForThisTag, }
-  }
+  const jqlGetterForThisTag = tagGetterFactory(tag, cando, jql, webComponentTagName);
   
-  return {
-    [tag]: jqlGetterForThisTag,
-    [tag.toUpperCase()]: jqlGetterForThisTag,
-  };
+  return webComponentTagName
+    ? {
+      [webComponentTagName]: jqlGetterForThisTag,
+      [toCamelcase(webComponentTagName)]: jqlGetterForThisTag,
+    }
+    : {
+        [tag]: jqlGetterForThisTag,
+        [tag.toUpperCase()]: jqlGetterForThisTag,
+    };
 }
 
 function defaultStaticMethodsFactory(jql) {
