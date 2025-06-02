@@ -1,7 +1,7 @@
-import { truncate2SingleStr, IS } from "./JQLExtensionHelpers.js";
+import { truncate2SingleStr, IS } from "./JQxExtensionHelpers.js";
 import cleanupTagInfo from "./HTMLTags.js";
 import {ATTRS} from "./EmbedResources.js";
-import {debugLog} from "./JQLLog.js";
+import {debugLog} from "./JQxLog.js";
 import {escHtml} from "./Utilities.js";
 
 let logElementCreationErrors2Console = true;

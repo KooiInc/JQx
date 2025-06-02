@@ -19,7 +19,7 @@ import {
   insertPositions,
   systemLog,
   IS,
-} from "./src/JQLExtensionHelpers.js";
+} from "./src/JQxExtensionHelpers.js";
 
 export default addJQLStaticMethods(JQLFactory());
 

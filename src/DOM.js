@@ -2,7 +2,7 @@ import {
   cleanupHtml,
   getRestricted,
   ATTRS, } from "./DOMCleanup.js";
-import {truncateHtmlStr, IS, isNode} from "./JQLExtensionHelpers.js";
+import {truncateHtmlStr, IS, isNode} from "./JQxExtensionHelpers.js";
 const insertPositions = new Proxy({
   start: "afterbegin", afterbegin: "afterbegin",
   end: "beforeend", beforeend: "beforeend",

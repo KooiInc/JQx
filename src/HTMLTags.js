@@ -1,5 +1,5 @@
 import { allTags } from "./EmbedResources.js";
-import { IS } from "./JQLExtensionHelpers.js";
+import { IS } from "./JQxExtensionHelpers.js";
 let lenient = false;
 const allowUnknownHtmlTags = {
   on: () => lenient = true,
