@@ -64,7 +64,6 @@ const cleanupHtml = el2Clean => {
         child.constructor === Comment;
       
       if (!allowed) {
-        console.log(`child mofo`, child.constructor, child.nodeName,);
         const tag = (child?.outerHTML || child?.textContent).trim();
         let tagValue = truncate2SingleStr(tag, 60) ?? `EMPTY`;
         tagValue += tagValue.length === 60 ? `...` : ``;

@@ -28,7 +28,6 @@ function processNext(root, next, tagName) {
   
   return maybe({
     trial: _ => {
-      console.log(isText(next), next, root);
       return isText(next)
         ? root.append(next)
         : containsHTML(next)
