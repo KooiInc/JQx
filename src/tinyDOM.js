@@ -27,7 +27,13 @@ function processNext(root, next, tagName) {
   next = next?.isJQx && next.first() || next;
   
   return maybe({
-    trial: _ => containsHTML(next) ? root.insertAdjacentHTML(`beforeend`, next) : root.append(next),
+    trial: _ => {
+      console.log(isText(next), next, root);
+      return isText(next)
+        ? root.append(next)
+        : containsHTML(next)
+          ? root.insertAdjacentHTML(`beforeend`, next) : root.append(next)
+    },
     whenError: err => console.info(`${tagName} (for root ${root}) not created, reason\n`, err)
   });
 }
@@ -74,9 +80,10 @@ function createElementAndAppend(tag, element2Append) {
 
 function createElement(tagName, props = {}) {
   props = isObjectCheck(props, {});
+  
   const data = Object.entries(props.data ?? {});
   const elem = Object.assign(
-    isComment(tagName) ? new Comment() : document.createElement(tagName),
+    isComment(tagName) ? new Comment(props?.text) : document.createElement(tagName),
     cleanupProps( props ) );
   data.length && data.forEach(([key, value]) => elem.dataset[key] = String(value));
   return elem;
@@ -88,9 +95,11 @@ function isObjectCheck(someObject, defaultValue) {
     : IS(someObject, {isTypes: Object, notTypes: [Array, null, NaN, Proxy]});
 }
 
+function toCommentTag(commentElement) {}
 function cleanupComment(initial) { return isObjectCheck(initial) ? initial?.text ?? initial?.textContent ?? `` : String(initial); }
 function errorElement(key) { return createElement(`b`, {style:`color:red`,text:`'${key}' is not a valid HTML-tag`}); }
 function containsHTML(str, tag) { return !isComment(tag) && IS(str, String) && /<.*>|&[#|0-9a-z]+[^;];/i.test(str); }
-function isComment(tag) { return /comment/i.test(tag); }
+function isText(tag) { return tag?.constructor === Comment || tag?.constructor === CharacterData; }
+function isComment(tag) { return tag?.constructor === Comment || /comment/i.test(tag); }
 function validateTag(name) { return !IS(createElement(name), HTMLUnknownElement); }
 function tag2FN(tagName) { return (initial, ...args) => tagFN(tagName, initial, ...args); }

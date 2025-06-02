@@ -722,14 +722,18 @@ function clickActionsFactory($) {
       });
     },
     textOrCommentEx: evt => {
-      const root = getCurrentParagraph(evt);
-      $( [$.text("Some text added here"), $.text("Some comment added here", true)], root );
-      const textNodes = [...root.childNodes]
-        .filter( el => el.nodeValue?.trim().length && [3, 8].find(t => el.nodeType === t));
+      const commentNode = $.text("Some comment here", true);
+      const textNode = $.text("Some text here");
+      const divWithTextNodes = $.div( textNode, commentNode );
+      
       $.Popup.show( {
-        content: `<div><b>The created text nodes</b></div><div>${
-          textNodes.map( el => el.nodeType === 8 ? `&lt;!--${el.data}-->` : el.data ).join(`<br>`)}</div>`,
-        callback: () => textNodes.forEach( node => node.remove() ),
+        content:
+          `<div><b>The created text nodes</b></div>
+           <div>${
+              [...divWithTextNodes.first().childNodes]
+              .map( el => el.nodeType === 8 ? `&lt;!--${el.data}-->` : el.data )
+              .join(`<br>`)}
+          </div>`
       } );
     },
     replaceEx: () => {

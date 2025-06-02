@@ -59,9 +59,12 @@ const cleanupHtml = el2Clean => {
           });
       }
       
-      const allowed = elementCheck(child);
+      const allowed = elementCheck(child) ||
+        child.constructor === CharacterData ||
+        child.constructor === Comment;
       
       if (!allowed) {
+        console.log(`child mofo`, child.constructor, child.nodeName,);
         const tag = (child?.outerHTML || child?.textContent).trim();
         let tagValue = truncate2SingleStr(tag, 60) ?? `EMPTY`;
         tagValue += tagValue.length === 60 ? `...` : ``;
