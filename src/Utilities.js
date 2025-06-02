@@ -1,4 +1,4 @@
-import jql from "../index.js";
+import jqx from "../index.js";
 import {default as tagFNFactory} from "./tinyDOM.js";
 import { IS, maybe, LifeStyleFactory as styleFactory } from "./SyncedExternals.js";
 const characters4RandomString = [...Array(26)]
@@ -66,12 +66,12 @@ function ExamineElementFeatureFactory() {
   const notApplicable = `n/a`;
   const isWritable = function(elem) {
     return elem.parentNode
-      ? !!jql.nodes(`:is(:read-write)`, elem?.parentNode)?.find(el => el === elem) : false;
+      ? !!jqx.nodes(`:is(:read-write)`, elem?.parentNode)?.find(el => el === elem) : false;
   };
   
   const isModal = function(elem) {
     return elem.parentNode
-      ? !!jql.nodes(`:is(:modal)`, elem?.parentNode)?.find(el => el === elem) : false;
+      ? !!jqx.nodes(`:is(:modal)`, elem?.parentNode)?.find(el => el === elem) : false;
   };
   
   const noElements = { notInDOM: true, writable: notApplicable, modal: notApplicable, empty: true, open: notApplicable, visible: notApplicable, };

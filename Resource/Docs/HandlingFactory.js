@@ -448,7 +448,7 @@ function clickActionsFactory($) {
         content: $.virtual(`<div>`).append(div1, div2),
         callback: () => {
           $.removeCssRules("#div1", "#div2");
-          const rulesExist = [...$.node("#JQLStylesheet", document.documentElement).sheet.cssRules]
+          const rulesExist = [...$.node("#JQxStylesheet", document.documentElement).sheet.cssRules]
             .filter(r => r.cssText.startsWith("#div1") || r.cssText.startsWith("#div2"))
           $.Popup.show( {
             content: `Rules removed, so we expect <code>rulesExist?.cssText</code>
@@ -465,7 +465,7 @@ function clickActionsFactory($) {
         content: $.virtual("<div>").append(div1, div2),
         callback: () => {
           $.removeCssRule("#div1");
-          const rulesExist = [...$.node("#JQLStylesheet", document.documentElement).sheet.cssRules]
+          const rulesExist = [...$.node("#JQxStylesheet", document.documentElement).sheet.cssRules]
             .filter(r => r.cssText.startsWith("#div1"))
           $.Popup.show( {
             content: `Rule removed, so we expect <code>rulesExist?.cssText</code> to be undefined.

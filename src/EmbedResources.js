@@ -26,7 +26,7 @@ function getLogStyling() {
     "#logBox .legend{text-align:center;margin-top:-1em;width:inherit;max-width:inherit;}",
     "#logBox .legend div{text-align:center;display:inline-block;max-width:inherit;height:1.2rem;background-color:rgb(119, 119, 119);padding:2px 10px;color:rgb(255, 255, 255);box-shadow:rgb(119 119 119) 2px 1px 10px;border-radius:4px;}",
     "#logBox .legend div:before{content:'JQx Logging (chronological)';}",
-    "#logBox .legend.reversed div:before{content:'JQL Logging (reversed)';}",
+    "#logBox .legend.reversed div:before{content:'JQx Logging (reversed)';}",
     "#logBox #jqx_logger{marginTop:0.7rem;lineHeight:1.4em;font-family:consolas,monospace;whiteSpace:pre-wrap;maxWidth:inherit;padding-left:100px;}",
     "#logBox #jqx_logger div.entry{text-indent:-100px;whiteSpace:normal;}",
   ]

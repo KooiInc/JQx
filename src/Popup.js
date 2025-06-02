@@ -4,7 +4,7 @@ import { randomString } from "./Utilities.js";
 export default newPopupFactory;
 
 function newPopupFactory($) {
-  const editRule = $.createStyle(`JQLPopupCSS`);
+  const editRule = $.createStyle(`JQxPopupCSS`);
   popupStyling.forEach( rule => editRule(rule) );
   let callbackOnClose = {};
   let isModal, modalWarning, timeout;
@@ -41,12 +41,12 @@ function newPopupFactory($) {
   
   function createAndShowPupup( { content, modal, closeAfter, callback, warnMessage } ) {
     if (content) {
-      content = $.IS(content, Node) ? content[Symbol.jqlvirtual] : content;
+      content = $.IS(content, Node) ? jqx(content) : content;
       clearTimeout(timeout);
       isModal = modal ?? false;
-      modalWarning = $.IS(warnMessage, String) && `${warnMessage?.trim()}`.length || warnMessage?.isJQL
+      modalWarning = $.IS(warnMessage, String) && `${warnMessage?.trim()}`.length || warnMessage?.isJQx
         ? warnMessage : undefined;
-      txtBox.clear().append(content.isJQL ? content : $(`<div>${content}</div>`));
+      txtBox.clear().append(content.isJQx ? content : $(`<div>${content}</div>`));
       isModal && warnMessage && txtBox.append(warnTemplate.duplicate());
       popupContainer.addClass(`popup-active`);
       

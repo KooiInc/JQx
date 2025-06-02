@@ -1,4 +1,4 @@
-import jql from "../index.js";
+import jqx from "../index.js";
 let handlers = {};
 const shouldCaptureEventTypes = [
   `load`, `unload`, `scroll`, `focus`, `blur`, `DOMNodeRemovedFromDocument`,
@@ -11,7 +11,7 @@ export default () => {
   const createHandlerForHID = (HID, callback) => {
     return evt => {
       const target = evt.target?.closest?.(HID);
-      return target && callback(evt, jql(target));
+      return target && callback(evt, jqx(target));
     };
   };
 

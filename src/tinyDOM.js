@@ -24,7 +24,7 @@ function createTagFunctionProperty(obj, tag, key, isError = false) {
 }
 
 function processNext(root, next, tagName) {
-  next = next?.isJQL && next.first() || next;
+  next = next?.isJQx && next.first() || next;
   
   return maybe({
     trial: _ => containsHTML(next) ? root.insertAdjacentHTML(`beforeend`, next) : root.append(next),
@@ -39,7 +39,7 @@ function tagFN(tagName, initial, ...nested) {
 }
 
 function retrieveElementFromInitial(initial, tag) {
-  initial = isComment(tag) ? cleanupComment(initial) : initial?.isJQL ? initial.first() : initial;
+  initial = isComment(tag) ? cleanupComment(initial) : initial?.isJQx ? initial.first() : initial;
   
   switch(true) {
     case IS(initial, String): return createElement(tag, containsHTML(initial, tag) ? {html: initial} : {text: initial});
