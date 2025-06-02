@@ -1,7 +1,7 @@
 import cssRules from "./styling.js";
 const isDev = /dev|local/i.test(location.href);
 const testBndl = false;
-const libLink = !testBndl && isDev ? "../../index.js" : "../../Bundle/jql.min.js";
+const libLink = !testBndl && isDev ? "../../index.js" : "../../Bundle/jqx.min.js";
 const $ = (await import(libLink)).default;
 const started = performance.now();
 const debug = false;
