@@ -126,7 +126,7 @@ function clickActionsFactory($) {
       const message = $.div(
         modalBoxText,
         $.div({style: "margin-top: 0.6rem;"}, closeBttn)
-      ).outerHTML;
+      );
       $.Popup.show({
         content: message,
         modal: true,
@@ -217,9 +217,10 @@ function clickActionsFactory($) {
     beforeMeEx: evt => {
       $.Popup.show({
       content: $("<div>...and I am div 2</div>")
-         .andThen( $.div("...and finally I am div 4")
-           .before($.div("...hithere, I am div 3")))
-       .before( $($.div("I am div 1")) )
+         .andThen( $.div("...and finally I am div 4" )
+           .before( $.div("...hithere, I am div 3") )
+         )
+       .before( $.div("I am div 1") )
       } );
     },
     andThenEx: evt => {
@@ -254,11 +255,12 @@ function clickActionsFactory($) {
         `<ul>${
           [...Object.keys(is)]
             .reduce((acc, key) => acc.concat(`<li>${toCodeElement(key)}? ${is[key]}</li>`), "")}
-         </ul>`;
-      const getActualPopupText = () => $.virtual(
+        </ul>`;
+      const getActualPopupText = () =>
         $.div({class: "description"},
           `<h3><code>inpDisabled</code> ${is.inDOM ? "in" : "<i>NOT</i> in"} the DOM</h3>
-           <div>${retrieveFeatures()}</div>`) );
+           <div>${retrieveFeatures()}</div>`);
+      console.log(getActualPopupText().HTML.get(1));
       const reCheckAfterAdded2DOM = () => {
         inpDisabled.toDOM();
         $.Popup.show({
@@ -267,7 +269,7 @@ function clickActionsFactory($) {
       }
       
       $.Popup.show({
-        content: $(getActualPopupText()),
+        content: getActualPopupText(),
         callback: reCheckAfterAdded2DOM,
       });
     },

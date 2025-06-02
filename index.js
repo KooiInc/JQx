@@ -27,6 +27,7 @@ function JQxFactory() {
   const logLineLength = 70;
 
   return function JQxDefault(input, root, position = insertPositions.BeforeEnd) {
+    if (input?.isJQx) { return input; }
     const isVirtual = IS(root, HTMLBRElement);
     root = (!isVirtual && root && root.isJQx ? root[0] : root) || document.body;
     position = position && Object.values(insertPositions).find(pos => position === pos) ? position : undefined;
