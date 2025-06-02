@@ -28,7 +28,7 @@ npm i jqlmodule
 
 There are *two flavors* of this library. One for scripts with type `module` (or projects with `"type": "module"` in package.json) and one for the browser.
 
-For each flavor, the script is (bundled and) minified. The location of the minified scripts is `https://kooiinc.codeberg.page/JQx/JQL/Bundle`
+For each flavor, the script is (bundled and) minified. The location of the minified scripts is `https://kooiinc.codeberg.page/JQx/Bundle`
 
 ### ESM import
 ``` javascript
