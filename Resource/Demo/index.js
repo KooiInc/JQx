@@ -163,7 +163,6 @@ if (!debug) {
   .prepend($$("<span>Some </span>"))
   .html(" examples", true)
   .appendTo(JQLRoot);
-
 // styled with intermediate class
   $$(`<div id="helloworld"/>`)
   .text("Example: hello ... world")

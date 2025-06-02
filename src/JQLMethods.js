@@ -175,12 +175,13 @@ const allMethods = {
         return self.HTML.set(content + self.HTML.get(), false, escape);
       },
     }),
-    render: self => self.is.empty ? `NO ELEMENTS TO RENDER` : self.toDOM(),
+    render: self => !self.is.empty && self.toDOM() || (jql.log(`[JQL.render]: empty collection`), undefined),
   },
   instanceExtensions: {
     isEmpty: self => self.collection.length < 1,
     renderTo: (self, root = document.body, at = jql.insertPositions.end) => {
-      self.appendTo(root, at);
+      console.log(root, at);
+      self.toDOM(root, at);
       return self;
     },
     replaceClass: (self, className, ...nwClassNames) =>
