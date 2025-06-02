@@ -4,7 +4,7 @@ Prism.manual = true;
 const isDev = location.host.startsWith(`dev`) || location.host.startsWith(`localhost`);
 const importLink =  isDev ?
   `../../index.js` :
-  `../../Bundle/jql.min.js`;
+  `../../Bundle/jqx.min.js`;
 const $ = (await import(importLink)).default;
 createCopyrightComponent();
 
