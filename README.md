@@ -8,7 +8,9 @@
 
 ## *Work in progress*: migrating (and renaming) from GitHUB JQL to Codeberg JQx
 
-# JQx: JQuery - the good parts redone
+# JQx
+
+<h3>JQuery - the good parts redone</h3>
 
 This module was inspired by the idea that some JQuery was too good <a target="_blank" href="http://youmightnotneedjquery.com/" rel="nofollow">to ditch</a>.
 
@@ -16,7 +18,7 @@ It is developed in a modular fashion and uses plain ES20xx, so not really (or re
 
 The module was rewritten in 2023 in a <i>classfree object oriented</i> fashion, inspired by a <a target="_blank" href="https://youtu.be/XFTOG895C7c?t=2562">Douglas Crockford presentation</a>. 
 
-The objective is to use *`prototype` and `this` **as least as possible*** in the code. Actually `prototype` and `this` are only used to extend `Node` symbolically.
+The objective is to ***not*** use `prototype` and `this` in the code.
 
 ## Install/Import/Initialize
 
