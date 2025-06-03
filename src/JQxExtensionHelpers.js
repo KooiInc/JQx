@@ -191,14 +191,8 @@ function addGetters(tag, cando, jqx, webComponentTagName) {
   const jqxGetterForThisTag = tagGetterFactory(tag, cando, jqx, webComponentTagName);
   
   return webComponentTagName
-    ? {
-      [webComponentTagName]: jqxGetterForThisTag,
-      [toCamelcase(webComponentTagName)]: jqxGetterForThisTag,
-    }
-    : {
-      [tag]: jqxGetterForThisTag,
-      [tag.toUpperCase()]: jqxGetterForThisTag,
-    };
+    ? { [webComponentTagName]: jqxGetterForThisTag, [toCamelcase(webComponentTagName)]: jqxGetterForThisTag, }
+    : { [tag]: jqxGetterForThisTag, [tag.toUpperCase()]: jqxGetterForThisTag, };
 }
 
 function defaultStaticMethodsFactory(jqx) {
