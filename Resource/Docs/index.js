@@ -47,7 +47,7 @@ import handlerFactory  from "./HandlingFactory.js";
 const {clientHandling, allExampleActions} = handlerFactory($);
 const groupOrder = ['jqx_About', 'static_About', 'instance_About', 'popup_About', 'debuglog_About'];
 const groups = groupOrder.reduce((acc, group) =>
-  [...acc, {name: group, displayName: group.slice(0, group.indexOf(`About`)).toUpperCase()}], []);
+  [...acc, {name: group, displayName: group.slice(0, group.indexOf(`About`)).toUpperCase().replace(`X`, `x`)}], []);
 const sliceName = name => name.slice(name.indexOf(`_`) + 1);
 const createNavigationItems = ({group, displayName}) => {
   const ul = $(`<ul class="navGroup closed" data-group="${displayName.toLowerCase()}"/>`, $.node(`#navigation`));
