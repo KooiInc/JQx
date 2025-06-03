@@ -78,11 +78,13 @@ function wrapGetter(method, instance) {
 }
 
 function proxyKeyFactory(self, key, instance) {
-  if (IS(key, Symbol)) { return self; }
-  if (IS(+key, Number)) { return self.collection?.[key]; }
-  if (key in instanceGetters) { return wrapGetter(instanceGetters[key], instance)();  }
-  if (key in instanceMethods) { return wrapExtension(instanceMethods[key], instance); }
-  return self[key];
+  switch(true) {
+    case IS(key, Symbol): return self;
+    case IS(+key, Number): return self.collection?.[key] || `ELEMENT WITH INDEX ${key} NOT FOUND`;
+    case !!(key in instanceGetters): return wrapGetter(instanceGetters[key], instance)();
+    case !!(key in instanceMethods): return wrapExtension(instanceMethods[key], instance);
+    default: return self[key];
+  }
 }
 
 function addJQxStaticMethods(jqx) {
