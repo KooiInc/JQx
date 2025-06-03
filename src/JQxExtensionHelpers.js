@@ -66,33 +66,26 @@ function smallHelpersFactory() {
 }
 
 function proxify(instance) {
-  const runExt = method => (...args) => IS(method, Function) && method(proxify(instance), ...args);
-  const runGet = method => (...args) => {
-    if (IS(method, Function)) {
-      return { tmpKey: method(proxify(instance), ...args) };
-    }
-    return { tmpKey: undefined };
-  };
-  const check = (self, key) => {
-    if (IS(key, Symbol)) { return () =>  self; }
-    if (IS(+key, Number)) { return self.collection?.[key]; }
-    if (key in instanceGetters) { return runGet(instanceGetters[key])().tmpKey;  }
-    if (key in instanceMethods) { return runExt(instanceMethods[key]); }
-    return self[key];
-  }
-  const proxyMe = { get: (obj, key) => check(obj, key) };
-  return new Proxy( instance, proxyMe );
+  return new Proxy( instance, { get: (obj, key) => proxyKeyFactory(obj, key, instance) } );
+}
+
+function wrapExtension(method, instance) {
+  return  (...args) => IS(method, Function) && method(proxify(instance), ...args);
+}
+
+function wrapGetter(method, instance) {
+  return (...args) => IS(method, Function) && method(proxify(instance), ...args);
+}
+
+function proxyKeyFactory(self, key, instance) {
+  if (IS(key, Symbol)) { return self; }
+  if (IS(+key, Number)) { return self.collection?.[key]; }
+  if (key in instanceGetters) { return wrapGetter(instanceGetters[key], instance)();  }
+  if (key in instanceMethods) { return wrapExtension(instanceMethods[key], instance); }
+  return self[key];
 }
 
 function addJQxStaticMethods(jqx) {
-  Object.defineProperties(
-    Node.prototype, {
-      [Symbol.$]: {
-        get() { return jqx(this); },
-        enumerable: false,
-        configurable: false
-      },
-    });
   const staticMethods = defaultStaticMethodsFactory(jqx);
   Object.entries(Object.getOwnPropertyDescriptors(staticMethods))
     .forEach( ([key, descriptor]) => {
@@ -201,8 +194,8 @@ function addGetters(tag, cando, jqx, webComponentTagName) {
       [toCamelcase(webComponentTagName)]: jqxGetterForThisTag,
     }
     : {
-        [tag]: jqxGetterForThisTag,
-        [tag.toUpperCase()]: jqxGetterForThisTag,
+      [tag]: jqxGetterForThisTag,
+      [tag.toUpperCase()]: jqxGetterForThisTag,
     };
 }
 
