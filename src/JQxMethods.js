@@ -32,11 +32,11 @@ const setData = (el, keyValuePairs) => {
   el && IS(keyValuePairs, Object) &&
   Object.entries(keyValuePairs).forEach(([key, value]) => el.setAttribute(`data-${toDashedNotation(key)}`, value));
 };
-const before = (self, elem2AddBefore) => {
-  return self.andThen(elem2AddBefore, true);
+const before = (instance, elem2AddBefore) => {
+  return instance.andThen(elem2AddBefore, true);
 };
-const after = (self, elem2AddAfter) => {
-  return self.andThen(elem2AddAfter);
+const after = (instance, elem2AddAfter) => {
+  return instance.andThen(elem2AddAfter);
 };
 const checkProp = prop => prop.startsWith(`data`) || ATTRS.html.find(attr => prop.toLowerCase() === attr);
 const css = (el, keyOrKvPairs, value) => {
@@ -80,111 +80,106 @@ const applyStyle = (el, rules) => {
     } );
   }
 };
-const dataWeirdnessProxy = {
-  get(obj, key) { return obj[toCamelcase(key)] || obj[key]; }
-};
+const datasetKeyProxy = { get(obj, key) { return obj[toCamelcase(key)] || obj[key]; }, enumerable: false, configurable: false };
+const logDebug = (...args) => { debugLog.log(`❗` + args.map(v => String(v)).join(`, `) ) ; }
 
-const logDebug = (...args) => {
-  debugLog.log(`❗` + args.map(v => String(v)).join(`, `) ) ;
-}
-
-const allMethods = {
+export default {
   factoryExtensions: {
-    data: self => ({
-      get all() { return new Proxy(self[0]?.dataset ?? {}, dataWeirdnessProxy); },
+    data: instance => ({
+      get all() { return new Proxy(instance[0]?.dataset ?? {}, datasetKeyProxy); },
       set: (valuesObj = {}) => {
-        !self.is.empty && IS(valuesObj, Object) && Object.entries(valuesObj)
-          .forEach( ([key,value]) => self.setData( { [key]: value} ) );
-        return self;
+        !instance.is.empty && IS(valuesObj, Object) && Object.entries(valuesObj)
+          .forEach( ([key,value]) => instance.setData( { [key]: value} ) );
+        return instance;
       },
-      get: (key, whenUndefined) => self.data.all[key] ?? whenUndefined,
+      get: (key, whenUndefined) => instance.data.all[key] ?? whenUndefined,
       add: (valuesObj = {}) => {
-        !self.is.empty && IS(valuesObj, Object) && Object.entries(valuesObj)
-          .forEach( ([key,value]) => self.setData( { [key]: value} ) );
-        return self;
+        !instance.is.empty && IS(valuesObj, Object) && Object.entries(valuesObj)
+          .forEach( ([key,value]) => instance.setData( { [key]: value} ) );
+        return instance;
       },
       remove: key => {
-        self[0]?.removeAttribute(`data-${toDashedNotation(key)}`);
-        return self;
+        instance[0]?.removeAttribute(`data-${toDashedNotation(key)}`);
+        return instance;
       },
     }),
-    dimensions: self => self.first()?.getBoundingClientRect(),
-    HTML: self => ({
+    dimensions: instance => instance.first()?.getBoundingClientRect(),
+    HTML: instance => ({
       get: (outer, escaped) => {
-        if (self.is.empty) {
+        if (instance.is.empty) {
           return `NO ELEMENTS IN COLLECTION`;
         }
-        const html = outer ? self.outerHtml : self.html();
+        const html = outer ? instance.outerHtml : instance.html();
         return escaped ? escHtml(html) : html;
       },
       set: (content, append = false, escape = false) => {
         content = content.isJQx ? content.HTML.get(1) : content;
         const isString = IS(content, String);
         content = isString && escape ? escHtml(content) : content;
-        if (isString && (content || ``).trim().length) { self.html(content, append); }
-        return self;
+        if (isString && (content || ``).trim().length) { instance.html(content, append); }
+        return instance;
       },
       replace: (content, escape = false) => {
-        return self.HTML.set(content, false, escape);
+        return instance.HTML.set(content, false, escape);
       },
       append: (content, escape = false) => {
         content = IS(content, HTMLElement)
           ? jqx(content).HTML.get(1) : content.isJQx ? content.HTML.get(1) : content;
-        return self.HTML.set(content, true, escape);
+        return instance.HTML.set(content, true, escape);
       },
       insert: (content, escape = false) => {
         content = IS(content, HTMLElement)
           ? jqx(content).HTML.get(1) : content.isJQx ? content.HTML.get(1) : content;
-        return self.HTML.set(content + self.HTML.get(), false, escape);
+        return instance.HTML.set(content + instance.HTML.get(), false, escape);
       },
     }),
-    is: self => isIt(self),
-    length: self => self.collection.length,
-    outerHtml: self => (self.first() || {outerHTML: undefined}).outerHTML,
-    parent: self =>{
-      const tryParent = jqx(self[0]?.parentNode);
-      return !tryParent.is.empty ? tryParent : self;
+    is: instance => isIt(instance),
+    length: instance => instance.collection.length,
+    outerHtml: instance => (instance.first() || {outerHTML: undefined}).outerHTML,
+    parent: instance =>{
+      const tryParent = jqx(instance[0]?.parentNode);
+      return !tryParent.is.empty ? tryParent : instance;
     },
-    render: self => !self.is.empty && self.toDOM() || (jqx.log(`[JQx.render]: empty collection`), undefined),
-    Style: self => ({
-      get computed() { return !self.is.empty ? getComputedStyle(self[0]) : {}; },
-      inline: styleObj => self.style(styleObj),
-      inSheet: styleObj => self.css(styleObj),
+    render: instance => !instance.is.empty && instance.toDOM() || (jqx.log(`[JQx.render]: empty collection`), undefined),
+    Style: instance => ({
+      get computed() { return !instance.is.empty ? getComputedStyle(instance[0]) : {}; },
+      inline: styleObj => instance.style(styleObj),
+      inSheet: styleObj => instance.css(styleObj),
       valueOf: key => {
-        return !self.is.empty ? getComputedStyle(self[0])[toDashedNotation(key)] : undefined;
+        return !instance.is.empty ? getComputedStyle(instance[0])[toDashedNotation(key)] : undefined;
       },
-      nwRule: rule => self.Style.byRule({rules: rule}),
+      nwRule: rule => instance.Style.byRule({rules: rule}),
       byRule: ({classes2Apply = [], rules = []} = {}) => {
         const isSingleRule = IS(rules, String);
         const addClassNameOrID = isSingleRule && !classes2Apply.length ? rules.split(`{`)[0].trim() : ``;
         rules = rules && IS(rules, String) ? [rules] : rules;
         classes2Apply = classes2Apply && IS(classes2Apply, String) ? [classes2Apply] : classes2Apply;
-
+        
         if (rules?.length || classes2Apply?.length) {
           rules?.length && jqx.editCssRules(...rules);
-          classes2Apply?.forEach(selector => self.addClass(selector));
+          classes2Apply?.forEach(selector => instance.addClass(selector));
         }
-
+        
         if (addClassNameOrID?.startsWith(`.`)) {
-          self.addClass(addClassNameOrID.slice(1));
+          instance.addClass(addClassNameOrID.slice(1));
         }
-
-        if (addClassNameOrID?.startsWith(`#`) && !self.attr(`id`)) {
-          self.prop({id: addClassNameOrID.slice(1)});
+        
+        if (addClassNameOrID?.startsWith(`#`) && !instance.attr(`id`)) {
+          instance.prop({id: addClassNameOrID.slice(1)});
         }
-
-        return self;
+        
+        return instance;
       },
     }),
   },
   instanceExtensions: {
-    addClass: (self, ...classNames) => loop(self, el => el && classNames.forEach(cn => el.classList.add(cn))),
+    addClass: (instance, ...classNames) => loop(instance, el => el && classNames.forEach(cn => el.classList.add(cn))),
     after,
     afterMe: after,
-    andThen: (self, elem2Add, before = false) => {
+    andThen: (instance, elem2Add, before = false) => {
       if (!elem2Add || !IS(elem2Add, String, Node, Proxy)) {
         logDebug(`[JQx instance].[beforeMe | afterMe | andThen]: insufficient input [${elem2Add}]`, );
-        return self;
+        return instance;
       }
       
       elem2Add = elem2Add?.isJQx
@@ -193,50 +188,50 @@ const allMethods = {
           : jqx.virtual(createElementFromHtmlString(elem2Add)).collection;
       
       const [index, method, reCollected] = before
-        ? [0, `before`, elem2Add.concat(self.collection)]
-        : [self.collection.length - 1, `after`, self.collection.concat(elem2Add)];
+        ? [0, `before`, elem2Add.concat(instance.collection)]
+        : [instance.collection.length - 1, `after`, instance.collection.concat(elem2Add)];
       
-      self[index][method](...elem2Add);
-      self.collection = reCollected;
-      return self;
+      instance[index][method](...elem2Add);
+      instance.collection = reCollected;
+      return instance;
     },
-    append: (self, ...elems2Append) => {
-      if (!self.is.empty && elems2Append.length) {
-        const shouldMove = self.length === 1;
+    append: (instance, ...elems2Append) => {
+      if (!instance.is.empty && elems2Append.length) {
+        const shouldMove = instance.length === 1;
         
         for (let elem2Append of elems2Append) {
           if (!elem2Append.isJQx && IS(elem2Append, String)) {
             const elem2Append4Test = elem2Append.trim();
             const isPlainString = !/^<(.+)[^>]+>$/m.test(elem2Append4Test);
             let toAppend = isPlainString ? jqx.text(elem2Append) : createElementFromHtmlString(elem2Append);
-            loop(self, el => el.append(shouldMove ? toAppend : cloneAndDestroy(toAppend)));
+            loop(instance, el => el.append(shouldMove ? toAppend : cloneAndDestroy(toAppend)));
           }
           
           if (isNode(elem2Append)) {
-            loop(self, el => el.append(shouldMove ? elem2Append : cloneAndDestroy(elem2Append)));
+            loop(instance, el => el.append(shouldMove ? elem2Append : cloneAndDestroy(elem2Append)));
           }
           
           if (elem2Append.isJQx && !elem2Append.is.empty) {
-            loop(self, el =>
+            loop(instance, el =>
               elem2Append.collection.forEach(elem =>
                 el.append(shouldMove ? elem : cloneAndDestroy(elem)))
             );
           }
         }
       }
-      return self;
+      return instance;
     },
-    appendTo: (self, appendTo) => {
+    appendTo: (instance, appendTo) => {
       if (!appendTo.isJQx) {
         appendTo = jqx(appendTo);
       }
-      appendTo.append(self);
-      return self;
+      appendTo.append(instance);
+      return instance;
     },
-    attr: (self, keyOrObj, value) => {
-      const firstElem = self[0];
+    attr: (instance, keyOrObj, value) => {
+      const firstElem = instance[0];
       
-      if (!firstElem) { return self }
+      if (!firstElem) { return instance }
       
       if (!value && IS(keyOrObj, String)) {
         if (keyOrObj === `class`) {
@@ -250,53 +245,54 @@ const allMethods = {
         keyOrObj = { [keyOrObj]: value };
       }
       
-      if (IS(keyOrObj, Object) && !self.is.empty) {
+      if (IS(keyOrObj, Object) && !instance.is.empty) {
         assignAttrValues(firstElem, keyOrObj);
       }
       
-      return self;
+      return instance;
     },
     before,
     beforeMe: before,
-    clear: self => loop(self, emptyElement),
-    closest: (self, selector) => {
-      const theClosest = IS(selector, String) ? self[0].closest(selector) : null;
-      return theClosest ? jqx(theClosest) : self
+    clear: instance => loop(instance, emptyElement),
+    closest: (instance, selector) => {
+      const theClosest = IS(selector, String) ? instance[0].closest(selector) : null;
+      return theClosest ? jqx(theClosest) : instance
     },
-    computedStyle: (self, property) => self.first() && getComputedStyle(self.first())[property],
-    css: (self, keyOrKvPairs, value) => loop(self, el => css(el, keyOrKvPairs, value)),
-    duplicate: (self, toDOM = false, root = document.body) => {
-      const nodes = self.toNodeList().map(el => el.removeAttribute && el.removeAttribute(`id`) || el);
+    computedStyle: (instance, property) => instance.first() && getComputedStyle(instance.first())[property],
+    css: (instance, keyOrKvPairs, value) => loop(instance, el => css(el, keyOrKvPairs, value)),
+    duplicate: (instance, toDOM = false, root = document.body) => {
+      const nodes = instance.toNodeList().map(el => el.removeAttribute && el.removeAttribute(`id`) || el);
       const nwJQx = jqx.virtual(nodes);
       return toDOM ? nwJQx.toDOM(root) : nwJQx;
     },
-    each: (self, cb) => loop(self, cb),
-    empty: self => loop(self, emptyElement),
-    find: (self, selector) => self.collection.length > 0 ? [...self.first()?.querySelectorAll(selector)] : [],
-    find$: (self, selector) => { return self.collection.length > 0 ? jqx(selector, self) : self; },
-    first: (self, asJQxInstance = false) => {
-      if (self.collection.length > 0) {
+    each: (instance, cb) => loop(instance, cb),
+    empty: instance => loop(instance, emptyElement),
+    find: (instance, selector) =>
+      instance.collection.length > 0 ? [...instance.first()?.querySelectorAll(selector)] : [],
+    find$: (instance, selector) => { return instance.collection.length > 0 ? jqx(selector, instance) : instance; },
+    first: (instance, asJQxInstance = false) => {
+      if (instance.collection.length > 0) {
         return asJQxInstance
-          ? self.single()
-          : self.collection[0];
+          ? instance.single()
+          : instance.collection[0];
       }
       return undefined;
     },
-    first$: (self, indexOrSelector) => self.single(indexOrSelector),
-    getData: (self, dataAttribute, valueWhenFalsy) => self.first() &&
-      self.first().dataset?.[dataAttribute] || valueWhenFalsy,
-    hasClass: (self, ...classNames) => {
-      const firstElem = self[0];
+    first$: (instance, indexOrSelector) => instance.single(indexOrSelector),
+    getData: (instance, dataAttribute, valueWhenFalsy) =>
+      instance.first() && instance.first().dataset?.[dataAttribute] || valueWhenFalsy,
+    hasClass: (instance, ...classNames) => {
+      const firstElem = instance[0];
       return !firstElem || !firstElem.classList.length
         ? false : classNames.find(cn => firstElem.classList.contains(cn)) && true || false;
     },
-    hide: self => loop(self, el => applyStyle(el, {display: `none !important`})),
-    html: (self, htmlValue, append) => {
+    hide: instance => loop(instance, el => applyStyle(el, {display: `none !important`})),
+    html: (instance, htmlValue, append) => {
       if (htmlValue === undefined) {
-        return self[0]?.getHTML();
+        return instance[0]?.getHTML();
       }
       
-      if (!self.isEmpty()) {
+      if (!instance.isEmpty()) {
         const nwElement = createElementFromHtmlString(`<div>${htmlValue.isJQx ? htmlValue.HTML.get(true) : htmlValue}</div>`);
         
         if (!IS(nwElement, Comment)) {
@@ -305,19 +301,19 @@ const allMethods = {
             
             return el.insertAdjacentHTML(jqx.at.end, nwElement.getHTML());
           }
-          return loop(self, cb);
+          return loop(instance, cb);
         }
       }
       
-      return self;
+      return instance;
     },
-    htmlFor: (self, forQuery, htmlString = "", append = false) => {
-      if (forQuery && self.collection.length) {
-        if (!forQuery || !IS(htmlString, String)) { return self; }
+    htmlFor: (instance, forQuery, htmlString = "", append = false) => {
+      if (forQuery && instance.collection.length) {
+        if (!forQuery || !IS(htmlString, String)) { return instance; }
         
-        const el2Change = self.find$(forQuery);
+        const el2Change = instance.find$(forQuery);
         
-        if (el2Change.length < 1) { return self; }
+        if (el2Change.length < 1) { return instance; }
         
         const nwElement = createElementFromHtmlString(`<span>${htmlString}</span>`);
         
@@ -328,23 +324,23 @@ const allMethods = {
         
       }
       
-      return self;
+      return instance;
     },
-    isEmpty: self => self.collection.length < 1,
-    nth$: (self, indexOrSelector) => self.single(indexOrSelector),
-    on: (self, type, ...callback) => {
-      if (self.collection.length) {
+    isEmpty: instance => instance.collection.length < 1,
+    nth$: (instance, indexOrSelector) => instance.single(indexOrSelector),
+    on: (instance, type, ...callback) => {
+      if (instance.collection.length) {
         callback?.forEach(cb => {
-          const cssSelector4Handler = addHandlerId(self);
+          const cssSelector4Handler = addHandlerId(instance);
           jqx.delegate(type, cssSelector4Handler, cb);
         });
       }
       
-      return self;
+      return instance;
     },
-    prepend: (self, ...elems2Prepend) => {
-      if (!self.is.empty && elems2Prepend) {
-        const shouldMove = self.length === 1;
+    prepend: (instance, ...elems2Prepend) => {
+      if (!instance.is.empty && elems2Prepend) {
+        const shouldMove = instance.length === 1;
         
         for (let elem2Prepend of elems2Prepend) {
           if (IS(elem2Prepend, String)) {
@@ -352,36 +348,36 @@ const allMethods = {
             const isPlainString = !/^<(.+)[^>]+>$/m.test(elem2Prepend);
             let toPrepend = isPlainString ? jqx.text(elem2Prepend) : createElementFromHtmlString(elem2Prepend);
             toPrepend = shouldMove ? toPrepend : cloneAndDestroy(toPrepend);
-            loop(self, el => el.prepend(toPrepend.cloneNode(true)));
+            loop(instance, el => el.prepend(toPrepend.cloneNode(true)));
           }
           
           if (isNode(elem2Prepend)) {
-            loop(self, el => el.prepend(shouldMove ? elem2Prepend : cloneAndDestroy(elem2Prepend)));
+            loop(instance, el => el.prepend(shouldMove ? elem2Prepend : cloneAndDestroy(elem2Prepend)));
           }
           
           if (elem2Prepend.isJQx && !elem2Prepend.is.empty) {
             elem2Prepend.collection.length > 1 && elem2Prepend.collection.reverse();
-            loop(self, el => loop( elem2Prepend, elem => el.prepend(shouldMove ? elem : cloneAndDestroy(elem)) ) );
+            loop(instance, el => loop( elem2Prepend, elem => el.prepend(shouldMove ? elem : cloneAndDestroy(elem)) ) );
             elem2Prepend.collection.reverse();
           }
         }
       }
       
-      return self;
+      return instance;
     },
-    prependTo: (self, prependTo) => {
+    prependTo: (instance, prependTo) => {
       if (!prependTo.isJQx) {
         prependTo = jqx.virtual(prependTo);
       }
       
-      prependTo.prepend(self);
-      return self;
+      prependTo.prepend(instance);
+      return instance;
     },
-    prop: (self, nameOrProperties, value) => {
+    prop: (instance, nameOrProperties, value) => {
       if (IS(nameOrProperties, String) && !value) {
         return nameOrProperties.startsWith(`data`)
-          ? self[0]?.dataset[nameOrProperties.slice(nameOrProperties.indexOf(`-`)+1)]
-          : self[0]?.[nameOrProperties];
+          ? instance[0]?.dataset[nameOrProperties.slice(nameOrProperties.indexOf(`-`)+1)]
+          : instance[0]?.[nameOrProperties];
       }
       
       const props = !IS(nameOrProperties, Object) ? { [nameOrProperties]: value } : nameOrProperties;
@@ -394,9 +390,9 @@ const allMethods = {
         
         const isId = propName.toLowerCase() === `id`;
         
-        if (isId) { return self[0].id = propValue; }
+        if (isId) { return instance[0].id = propValue; }
         
-        loop(self, el => {
+        loop(instance, el => {
           if (propName.startsWith(`data`)) {
             return el.dataset[propName.slice(propName.indexOf(`-`)+1)] = propValue;
           }
@@ -405,38 +401,39 @@ const allMethods = {
         });
       });
       
-      return self;
+      return instance;
     },
-    remove: (self, selector) => {
-      systemLog(`remove ${truncateHtmlStr(self.HTML.get(1), 40)}${selector ? ` /w selector ${selector}` : ``}`);
+    remove: (instance, selector) => {
+      systemLog(`remove ${truncateHtmlStr(instance.HTML.get(1), 40)}${selector ? ` /w selector ${selector}` : ``}`);
       const remover = el => el.remove();
       const removeFromCollection = () =>
-        self.collection = self.collection.filter(el => document.documentElement.contains(el));
+        instance.collection = instance.collection.filter(el => document.documentElement.contains(el));
       
       if (selector) {
-        const selectedElements = self.find$(selector);
+        const selectedElements = instance.find$(selector);
         if (!selectedElements.is.empty) {
           loop(selectedElements, remover);
           removeFromCollection();
         }
-        return self;
+        return instance;
       }
-      loop(self, remover);
+      loop(instance, remover);
       removeFromCollection();
-      return self;
+      return instance;
     },
-    removeAttribute: (self, attrName) => loop(self, el => el.removeAttribute(attrName)),
-    removeClass: (self, ...classNames) => loop(self, el => el && classNames.forEach(cn => el.classList.remove(cn))),
-    renderTo: (self, root = document.body, at = jqx.insertPositions.end) => {
-      self.toDOM(root, at);
-      return self;
+    removeAttribute: (instance, attrName) => loop(instance, el => el.removeAttribute(attrName)),
+    removeClass: (instance, ...classNames) =>
+      loop(instance, el => el && classNames.forEach(cn => el.classList.remove(cn))),
+    renderTo: (instance, root = document.body, at = jqx.insertPositions.end) => {
+      instance.toDOM(root, at);
+      return instance;
     },
-    replace: (self, oldChild, newChild) => {
-      const firstElem = self[0];
+    replace: (instance, oldChild, newChild) => {
+      const firstElem = instance[0];
       
       if (!oldChild || (!newChild || !IS(newChild, HTMLElement) && !newChild.isJQx)) {
         console.error(`JQx replace: invalid replacement value`);
-        return self;
+        return instance;
       }
       
       if (newChild.isJQx) {
@@ -460,42 +457,41 @@ const allMethods = {
         }
       }
       
-      return self;
+      return instance;
     },
-    replaceClass: (self, className, ...nwClassNames) =>
-      loop( self, el => {
+    replaceClass: (instance, className, ...nwClassNames) => loop( instance, el => {
         el.classList.remove(className);
         nwClassNames.forEach(name => el.classList.add(name));
       } ),
-    replaceMe: (self, newChild) => /*NODOC*/ self.replaceWith(newChild),
-    replaceWith: (self, newChild) => {
+    replaceMe: (instance, newChild) => /*NODOC*/ instance.replaceWith(newChild),
+    replaceWith: (instance, newChild) => {
       newChild = IS(newChild, Element) ? newChild : newChild.isJQx ? newChild[0] : undefined;
       
       if (newChild) {
-        self[0].replaceWith(newChild);
-        self = jqx.virtual(newChild);
+        instance[0].replaceWith(newChild);
+        instance = jqx.virtual(newChild);
       }
       
-      return self;
+      return instance;
     },
-    setData: (self, keyValuePairs) => loop(self, el => setData(el, keyValuePairs)),
-    show: self => loop(self, el => applyStyle(el, {display: `revert-layer !important`})),
-    single: (self, indexOrSelector) => {
-      if (self.collection.length > 0) {
+    setData: (instance, keyValuePairs) => loop(instance, el => setData(el, keyValuePairs)),
+    show: instance => loop(instance, el => applyStyle(el, {display: `revert-layer !important`})),
+    single: (instance, indexOrSelector) => {
+      if (instance.collection.length > 0) {
         if (IS(indexOrSelector, String)) {
-          return self.find$(indexOrSelector);
+          return instance.find$(indexOrSelector);
         }
         
         if (IS(indexOrSelector, Number)) {
-          return jqx(self.collection[indexOrSelector]);
+          return jqx(instance.collection[indexOrSelector]);
         }
         
-        return jqx(self.collection[0]);
+        return jqx(instance.collection[0]);
       }
       
-      return self;
+      return instance;
     },
-    style: (self, keyOrKvPairs, value) => {
+    style: (instance, keyOrKvPairs, value) => {
       const loopCollectionLambda = el => {
         if (value && IS(keyOrKvPairs, String)) {
           keyOrKvPairs = { [keyOrKvPairs]: value || `none` };
@@ -503,34 +499,34 @@ const allMethods = {
         
         applyStyle(el, keyOrKvPairs);
       };
-      return loop(self, loopCollectionLambda);
+      return loop(instance, loopCollectionLambda);
     },
-    text: (self, textValue, append = false) => {
-      if (self.isEmpty()) { return self; }
-      if (!IS(textValue, String)) { return self.first().textContent; }
+    text: (instance, textValue, append = false) => {
+      if (instance.isEmpty()) { return instance; }
+      if (!IS(textValue, String)) { return instance.first().textContent; }
       const loopCollectionLambda = el => el.textContent = append ? el.textContent + textValue : textValue;
-      return loop(self, loopCollectionLambda);
+      return loop(instance, loopCollectionLambda);
     },
-    toDOM: (self, root = document.body, position = insertPositions.BeforeEnd) => {
-      if (self.isVirtual) { self.isVirtual = false; }
-      self.collection = inject2DOMTree(self.collection, root, position);
+    toDOM: (instance, root = document.body, position = insertPositions.BeforeEnd) => {
+      if (instance.isVirtual) { instance.isVirtual = false; }
+      instance.collection = inject2DOMTree(instance.collection, root, position);
       
-      return self;
+      return instance;
     },
-    toggleClass: (self, className) => loop(self, el => el.classList.toggle(className)),
-    toNodeList: self => [...self.collection].map(el => document.importNode(el, true)),
-    trigger: (self, evtType, SpecifiedEvent = Event, options = {}) => {
-      if (self.collection.length) {
+    toggleClass: (instance, className) => loop(instance, el => el.classList.toggle(className)),
+    toNodeList: instance => [...instance.collection].map(el => document.importNode(el, true)),
+    trigger: (instance, evtType, SpecifiedEvent = Event, options = {}) => {
+      if (instance.collection.length) {
         const evObj = new SpecifiedEvent( evtType, { ...options, bubbles: options.bubbles??true} );
-        for( let elem of self.collection ) { elem.dispatchEvent(evObj); }
+        for( let elem of instance.collection ) { elem.dispatchEvent(evObj); }
       }
-      return self;
+      return instance;
     },
-    val: (self, newValue) => {
-      const firstElem = self[0];
+    val: (instance, newValue) => {
+      const firstElem = instance[0];
       
       if (!firstElem || !IS(firstElem, HTMLInputElement, HTMLSelectElement, HTMLTextAreaElement)) {
-        return self;
+        return instance;
       }
       
       if (newValue === undefined) {
@@ -539,9 +535,7 @@ const allMethods = {
       
       firstElem.value = !IS(newValue, String) ? "" : newValue;
       
-      return self;
+      return instance;
     },
   },
 };
-
-export default allMethods;
