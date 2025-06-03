@@ -1,9 +1,8 @@
 <div align="center">
-  <a href="https://bundlephobia.com/package/jqlmodule" rel="nofollow">
-  <a href="https://bundlephobia.com/package/jqlmodule@latest" rel="nofollow">
-    <img src="https://badgen.net/bundlephobia/min/jqlmodule"></a>
-  <a target="_blank" href="https://www.npmjs.com/package/jqlmodule">
-    <img src="https://img.shields.io/npm/v/jqlmodule.svg?labelColor=cb3837&logo=npm&color=dcfdd9"></a>
+  <a href="https://bundlephobia.com/package/jqx-es@latest" rel="nofollow">
+    <img src="https://badgen.net/bundlephobia/min/jqx-es"></a>
+  <a target="_blank" href="https://www.npmjs.com/package/jqx-es">
+    <img src="https://img.shields.io/npm/v/jqx-es.svg?labelColor=cb3837&logo=npm&color=dcfdd9"></a>
 </div>
 
 ## *Work in progress*: migrating (and renaming) from GitHUB JQL to Codeberg JQx
@@ -22,10 +21,10 @@ The objective is to ***not*** use `prototype` and `this` in the code.
 
 ## Install/Import/Initialize
 
-### NPM
-You can install this module using npm. To create a HTML tree (DOM Object) server side you need a library like [jsdom](https://github.com/jsdom/jsdom).
+### NPM 
+You can install this module from npm (package *jqx-es*). To create a HTML tree (DOM Object) server side you need a library like [jsdom](https://github.com/jsdom/jsdom).
 ```
-npm i jqlmodule
+npm i jqx-es
 ```
 
 There are *two flavors* of this library. One for scripts with type `module` (or projects with `"type": "module"` in package.json) and one for the browser.
