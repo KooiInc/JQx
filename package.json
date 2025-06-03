@@ -1,29 +1,27 @@
 {
-  "name": "jqlmodule",
-  "version": "3.6.0",
+  "name": "jqx-es",
+  "version": "1.0.0",
   "private": false,
   "type": "module",
   "description": "A JQuery alike es20xx module",
   "keywords": [
-    "JQuery",
-    "JQuerySubset",
-    "JQueryAlike",
-    "ES20xx"
+    "jquery-subset",
+    "es20xx",
+    "classfree",
+    "js"
   ],
   "author": "KooiInc",
   "license": "GNU General Public License v3.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/KooiInc/JQL.git"
+    "url": "https://codeberg.org/KooiInc/JQx"
   },
   "bugs": {
-    "url": "https://github.com/KooiInc/JQL/issues"
+    "url": "https://codeberg.org/KooiInc/JQx/issues"
   },
-  "devDependencies": {
-    "esbuild": "^0.25.0"
-  },
+  "sideEffects": false,
   "scripts": {
     "build": "node build"
   },
-  "browser": "./Bundle/jql.min.js"
+  "main": "./index.js"
 }
