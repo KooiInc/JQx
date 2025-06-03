@@ -26,7 +26,7 @@ export default addJQxStaticMethods(JQxFactory());
 function JQxFactory() {
   const logLineLength = 70;
 
-  return function JQxDefault(input, root, position = insertPositions.BeforeEnd) {
+  return function JQx(input, root, position = insertPositions.BeforeEnd) {
     if (input?.isJQx) { return input; }
     const isVirtual = IS(root, HTMLBRElement);
     root = (!isVirtual && root && root.isJQx ? root[0] : root) || document.body;
@@ -34,10 +34,10 @@ function JQxFactory() {
     const isRawHtml = isHtmlString(input);
     const isRawHtmlArray = !isRawHtml && isArrayOfHtmlStrings(input);
     const shouldCreateElements = isRawHtmlArray || isRawHtml;
+    
     let instance = {
       collection: input2Collection(input) ?? [],
       isVirtual,
-      isJQL: true, // legacy
       isJQx: true,
     };
 
