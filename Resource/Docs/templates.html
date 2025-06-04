@@ -1,0 +1,1628 @@
+<template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value=''></div>
+<div data-text='1'><div>This module was inspired by the idea that some JQuery was too
+  good <a target="_blank" href="https://youmightnotneedjquery.com/" rel="nofollow">to ditch</a>.
+</div>
+
+<div>It is developed in a modular fashion and uses plain ES20xx, so not really (or really not,
+  take your pick) suitable for older browsers.
+</div>
+
+<div>The module originally was written in 2021. In 2023 it was rewritten in a <i>classfree
+  object oriented</i> fashion, inspired by a
+  <a target="_blank" href="https://youtu.be/XFTOG895C7c?t=2562">Douglas Crockford
+    presentation</a>. This means you will very seldom find <code>this</code> in the code.
+</div>
+
+<div>It is <i>not</i> a replacement for
+  <a target="_blank" href="https://github.com/jquery/jquery">JQuery</a>. Consider it a subset of
+  JQuery <i>alike</i> methods to <i>retrieve</i>, <i>create</i>, <i>modify</i>, <i>style</i> or
+  <i>manipulate</i> (collections of) HTML elements in your HTML document.
+</div>
+
+<div>This document is completely built using JQx. This is how the html of this page looks:</div>
+
+<div data-example>&lt;!DOCTYPE html>
+&lt;html lang="en">
+&lt;head>
+  &lt;meta charset="UTF-8">
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1">
+  &lt;title>JQx Documentation&lt;/title>
+  &lt;link rel="icon" href="../Common/codebergicon.ico" type="image/x-icon">
+  &lt;link rel="stylesheet" href="index.css">
+  &lt;link rel="stylesheet" href="../Common/prism.css">
+  &lt;script src="../Common/prism.js">&lt;/script>
+&lt;/head>
+&lt;body>
+  &lt;div id="navigation">&lt;/div>
+  &lt;div class="docs">&lt;/div>
+  &lt;script src="./index.js" type="module">&lt;/script>
+&lt;/body>
+&lt;/html></div>
+
+<div> An example-/demo-page can be found @<a
+    href="//kooiinc.codeberg.page/JQx/Resource/Docs/" target="_blank"
+  >https://kooiinc.codeberg.page/JQx/Resource/Demo</a>
+</div>
+
+<div>In the following you'll find documentation for usage of the module, divided into 4
+  chapters:
+</div>
+
+<ul>
+  <li>
+    <div data-action="jump2Nav" data-jumpgroup="static" class="linkLike">STATIC</div>:
+    static methods/properties of the JQx module;
+  </li>
+  <li>
+    <div data-action="jump2Nav" data-jumpgroup="instance" class="linkLike">INSTANCE</div>:
+    all methods/properties applicable to a JQx <i>instance</i>;
+  </li>
+  <li>
+    <div data-action="jump2Nav" data-jumpgroup="popup" class="linkLike">POPUP</div>:
+    JQx includes a module to create (modal) popup messages;
+  </li>
+  <li>
+    <div data-action="jump2Nav" data-jumpgroup="debuglog" class="linkLike">DEBUGLOG</div>:
+    JQx includes a module to extensively log everything it does (you do with it).
+  </li>
+</ul>
+<h2>JQx instance creation/retrieval</h2>
+
+<div class="note"><b>Note</b>: For this document JQx is imported as <code><b>$</b></code> (so
+  (the result of) <code>import $ from "[location of JQx]"</code>). Most examples in the
+  following use this.
+</div>
+
+<div>
+  JQx provides a single Function/Object to create and/or retrieve HTML elements and convert the
+  result to a JQx instance. A JQx instance contains a collection of the created or retrieved
+  HTML element(s). These element(s) can be manipulated extensively.
+</div>
+
+<div>Element creation or retrieval using the imported JQx-function always results in a JQx
+  instance. <br>The syntax is (JQx imported as <code>$</code>)
+</div>
+
+<ul>
+  <li>
+    <div>
+      <code>$(html: string | string[][, root: HTMLElement | JQx instance, position:
+        string])</code>
+    </div>
+    <div>Creates element(s) from a single HTML string or an Array of HTML strings. Using an
+      Array of HTML strings creates the elements subsequently. The created element(s) is/are
+      appended to <code>root</code> (default <code>document.body</code>) at
+      <code>position</code> (default: as the last element of <code>root</code>).
+    </div>
+  </li>
+  <li>
+    <div><code>$(cssSelector: string[, root: HTMLElement | JQx instance])</code></div>
+    <div>Retrieves all Elements from the document using <code>cssSelector</code> (e.g. <code>`div.example,
+      h3#someId`</code>) within <code>root</code> (default <code>document</code>).
+    </div>
+  </li>
+  <li>
+    <div><code>$(element: Node | Node[])</code></div>
+    <div>Takes the given <code>element</code>(s) and creates a JQx instance from it/them.</div>
+  </li>
+  <li>
+    <div><code>$[tagname|TAGNAME](attributes Object | string[, (nested) elements/strings])</code></div>
+    <div>Creates a JQx instance from [tagname].
+    See 'Direct element creation' in the
+      <div data-action="jump2Nav" data-jumpgroup="static" class="linkLike">STATIC</div> chapter.
+    </div>
+  </li>
+</ul>
+
+<div>
+  Most examples in this document can be run (use the [Try it] button). If elements are
+  created/modified in an example, the result is shown within the item at hand (and removed after
+  a few seconds) or in a popup.
+</div>
+
+<div class="note">
+  <b>Note</b>: The examples in this document <i>deliberately</i> use all kinds of JQx methods, to
+  familiarize you with them.
+</div></div>
+</template>
+
+<template data-id="instance_text" class="instance_text" data-is-deprecated="false">
+<div data-params='[{"textValue":"String"},{"append":"Boolean, default false"}]'></div>
+<div data-return-value='String | JQx Instance'></div>
+<div data-text='1'><div>Set the textcontent of all elements of the instance element collection.</div>
+
+<div>When <code>textValue</code> is empty, returns the current textcontent of the <i>first element</i> of the instance element collection.
+Otherwise returns the JQx Instance.</div></div>
+</template>
+
+<template data-id="instance_each" class="instance_each" data-is-deprecated="false">
+<div data-params='[{"cb":"Function. The lambda function to appy to every element of the collection."}]'></div>
+<div data-return-value='JQx Instance'></div>
+<div data-text='1'><div>
+ Loops through every element of the instance collection and applies the 
+ given callback function to it.
+</div>
+
+<div>
+  The signature of the callback function is <code>(element, [i]) => {...}</code>.
+  Elements that are not <code>HTMLElement</code> (e.g. <code>Comment</code> or text 
+  nodes) are <i>not</i> processed.
+</div>
+
+<div>
+  Click the [Try it] button twice and watch the <b><i>method name headers</i></b> 
+  for a demo.
+</div>
+
+<div data-example>##EXAMPLECODE@eachEx##</div></div>
+</template>
+
+<template data-id="instance_remove" class="instance_remove" data-is-deprecated="false">
+<div data-params='[{"instance":""},{"selector":"string. A (valid) css selector string, e.g. <code>#someDiv.someClass</code>"}]'></div>
+<div data-return-value='None'></div>
+<div data-text='1'><div>Removes every element of the instance element collection, <i>or</i>, when <code>selector</code> is present, removes every child element from of the instance element collection for which the selector applies.</div>
+
+<pre class="line-numbers language-javascript" tabindex="0"
+><code class="language-javascript"
+>$(`p`).remove(); // => all &lt;p> are removed from the document
+$(`p`).remove(".toBeRemoved"); // => all &lt;p.toBeRemoved> are removed from the document
+$(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are removed from the document</code></pre></div>
+</template>
+
+<template data-id="instance_computedStyle" class="instance_computedStyle" data-is-deprecated="false">
+<div data-params='[{"property":"string. Style property string, e.g. <code>width</code>, <code>display</code>"}]'></div>
+<div data-return-value='String | undefined'></div>
+<div data-text='1'><div>Retrieves the computed style for the given <code>property</code> the first element of the instance collection.</div>
+
+<div>See also <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_Style">Style.computed</div>.</div>
+
+<div data-example>##EXAMPLECODE@computedStyleEx##</div></div>
+</template>
+
+<template data-id="instance_isEmpty" class="instance_isEmpty" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='Boolean'></div>
+<div data-text='1'><div>returns: <code>true</code> if the JQx Instance collection is empty, otherwise <code>false</code>.</div>
+
+<div class="note"><b>Note</b>: alternatively you can use <code>[JQx instance].is.empty</code>.</div>
+
+<div data-example>##EXAMPLECODE@isEmptyEx##</div></div>
+</template>
+
+<template data-id="instance_getData" class="instance_getData" data-is-deprecated="false">
+<div data-params='[{"dataAttribute":"string. The data-attribute to query, e.q. <code>width</code>"},{"valueWhenFalsy":"Any. The value to return when the data-attribute was not found."}]'></div>
+<div data-return-value='Any | undefined'></div>
+<div data-text='1'><div>Retrieve the value of a data-attribute. When <code>valueWhenFalsy</code> is present, it will return that value if the data-attribute does not exist.</div>
+
+<div><b>See also</b>: <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_data">data</div>.</div>
+
+<div data-example>##EXAMPLECODE@getDataEx##</div></div>
+</template>
+
+<template data-id="instance_is" class="instance_is" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='Object&lt;string, Boolean | string>'></div>
+<div data-text='1'><div><code>[JQx instance].is</code> is a <i>static property</i>. To retrieve a value of it use <code>[JQx instance].is[key]</code>. If the JQx instance element collection is empty, the return values of all properties except <code>empty</code> will be "n/a".</div>
+
+<div><code>[JQx instance].is</code> keys: </div>
+
+<ul><li><code>writable</code>: is the first element of the JQx instance collection writable?</li>
+<li><code>visible</code>: is the first element of the JQx instance collection visible in the DOM?</li>
+<li><code>disabled</code>: is the first element of the JQx instance collection disabled?</li>
+<li><code>open</code>: is the first element of the JQx instance collection open (<code>&lt;details></code> or <code>&lt;dialog></code>)</li>
+<li><code>modal</code>: is the first element of the JQx instance collection modal (<code>&lt;dialog></code>)</li>
+<li><code>empty</code>: is the JQx instance element collection empty?</li>
+<li><code>virtual</code>: does the JQx instance only exist in memory?</li></ul>
+
+<div data-example>##EXAMPLECODE@isEx##</div>
+</div>
+</template>
+
+<template data-id="instance_hasClass" class="instance_hasClass" data-is-deprecated="false">
+<div data-params='[{"...classNames":"string[]"}]'></div>
+<div data-return-value='Boolean'></div>
+<div data-text='1'><div>For (the list of) className(s) determine if the first (root) element of the JQx Instance element collection contains (one of) the <code>classNames</code>.</div>
+
+<div data-example>##EXAMPLECODE@hasClassEx##</div></div>
+</template>
+
+<template data-id="instance_replace" class="instance_replace" data-is-deprecated="false">
+<div data-params='[{"oldChild":"JQx instance | HTMLElement | String. If String, a (valid) css selector. "},{"newChild":"JQx Instance"}]'></div>
+<div data-return-value='JQx Instance'></div>
+<div data-text='1'><div>Replace [oldChild] (a DOM Element, css selector or a JQx instance) within the first (root) element of the instance element collection with a new JQx Instance</div>
+
+<div data-example>##EXAMPLECODE@replaceEx##</div></div>
+</template>
+
+<template data-id="instance_toDOM" class="instance_toDOM" data-is-deprecated="false">
+<div data-params='[{"instance":""},{"root":"HTMLElement. Default <code>document.body</code>"},{"position":"String. One of \"beforeend\", \"afterbegin\", \"beforebegin\", \"afterend\". Default: \"beforeend\""}]'></div>
+<div data-return-value='JQx Instance'></div>
+<div data-text='1'><div>
+  Add a 'virtual' element (an element created in memory, using the <code> 
+  [instance].virtual</code> or the <code>[JQx constructor][tagName]</code> method) 
+  to the DOM. 
+</div>
+
+<div>
+  Defaults to adding the element to the body, but <code>root</code> may be any element (if 
+  the DOM allows it). See <div class="linkLike" data-jumpkey="static_virtual" 
+  data-action="jump2Nav">virtual</div> documentation for an example.
+</div></div>
+</template>
+
+<template data-id="instance_first" class="instance_first" data-is-deprecated="false">
+<div data-params='[{"asJQxInstance":"[defaultValue] false"}]'></div>
+<div data-return-value='HTMLElement | (asJQxInstance true) JQx Instance'></div>
+<div data-text='1'><div>Returns the first element of the JQx element collection or a new JQx Instance derived from the first element of the JQx Instance element collection. When <code>asJQxInstance</code> is true, the element is returned as a new JQx Instance (equivalent to <div data-action="jump2Nav" data-jumpkey="instance_first$" class="linkLike">first$</div>), otherwise a <code>DOM Node</code>.</div>
+
+<div data-example>##EXAMPLECODE@firstEx##</div></div>
+</template>
+
+<template data-id="instance_append" class="instance_append" data-is-deprecated="false">
+<div data-params='[{"...elems2Append":"string[] | HTMLElement[]| Text[] | Comment[] | JQx instance[]"}]'></div>
+<div data-return-value='JQx Instance'></div>
+<div data-text='1'><div>Appends one ore more elements to each element of the JQx Instance collection (for real, in the DOM tree).</div>
+
+<div class="note"><b>Notes</b>:</div>
+
+<ul>
+  <li>when the JQx Instance to append to is empty, nothing will happen.</li>
+  <li>If (one of) elems2Append consists of html string(s), they should contain valid html 
+  (e.g., no flow content in elements expecting phrasing content, so for example no <code>&lt;h1></code> within <code>&lt;p></code>). 
+  The HTML is always sanitized.</li>
+  <li>Already existing (in DOM) <code>elems2Append</code> are <i>moved</i> to the JQx instance when the JQx instance to append to has one element in 
+    its collection, <b>but</b></li>
+  <li><code>elems2Append</code> (if JQx instance or Node) are <i>cloned and stripped of their id</i> when the JQx instance collection to append to contains more then one element.</li>
+</ul>
+
+<div data-example>##EXAMPLECODE@appendEx##</div></div>
+</template>
+
+<template data-id="instance_appendTo" class="instance_appendTo" data-is-deprecated="false">
+<div data-params='[{"appendTo":"JQx instance"}]'></div>
+<div data-return-value='JQx Instance'></div>
+<div data-text='1'><div>Appends the collection of one JQx instance to another instance, so injects the element(s) of [JQx instance element collection] to each element of <code>appendTo</code> (for real, injected and visible in the DOM tree).</div>
+
+<div class="note"><b>Note</b>: this returns <code>appendTo</code> (so, the <i>parent</i> JQx Instance).</div>
+
+<div data-example>##EXAMPLECODE@appendToEx##</div></div>
+</template>
+
+<template data-id="static_delegate" class="static_delegate" data-is-deprecated="false">
+<div data-params='[{"type":"string. Event type (e.g. <code>click</code>) to listen for"},{"origin":"string. Optional selector to identify the element to assign listener to (e.g. <code>#someId</code>)"},{"...handlers":"One or more lambda functions"}]'></div>
+<div data-return-value='JQx Instance'></div>
+<div data-text='1'><div>Create targeted event listeners/handlers. </div>
+
+<div class="note"><b>Note</b>: <a target="_blank" href="https://en.wikipedia.org/wiki/DOM_events">non bubbling events</a> are delegated using <code>{capture: true}</code>. This concerns the following events:</div>
+
+<ul>
+  <li><code>load</code></li>
+  <li><code>unload</code></li>
+  <li><code>scroll</code></li>
+  <li><code>focus</code></li>
+  <li><code>blur</code></li>
+  <li><code>DOMNodeRemovedFromDocument</code></li>
+  <li><code>DOMNodeInsertedIntoDocument</code></li>
+  <li><code>loadstart</code></li>
+  <li><code>progress</code></li>
+  <li><code>error</code></li>
+  <li><code>abort</code></li>
+  <li><code>load</code></li>
+  <li><code>loadend</code></li>
+  <li><code>pointerenter</code></li>
+  <li><code>pointerleave</code></li>
+  <li><code>readystatechange</code></li>
+</ul>
+
+<div>The example creates a click listener/handler for the header of this chapter ("[JQx].delegate"). The handler changes the color of all headers (by changing the value of the corresponding variable within <code>:root</code>). It is a specific click handler for this header only (but all headers are affected: so click on the header '[JQx].delegate' changes the color of all headers, clicking on another header handles
+the already defined click handler (scroll to it)).</div>
+
+<div data-example>##EXAMPLECODE@staticDelegateEx##</div></div>
+</template>
+
+<template data-id="instance_dimensions" class="instance_dimensions" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='(Object) <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/DOMRect">DOMRect</a> | undefined'></div>
+<div data-text='1'><div>Retrieve the actual dimensions of the first (root) element in the instance element collection. It actually returns the result of <code>getBoundingClientRect</code>, see <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect">MDN</a> for interpretation of the values.</div>
+
+<div class="note"><b>Note</b>: dimensions is a <i>property</i>, not a function. Usage <code>[JQx instance].dimensions</code>.</div>
+
+<div data-example>##EXAMPLECODE@dimEx##</div></div>
+</template>
+
+<template data-id="instance_duplicate" class="instance_duplicate" data-is-deprecated="false">
+<div data-params='[{"toDOM":"Boolean. Default <code>false</code>"},{"root":"Node. Default document.body"}]'></div>
+<div data-return-value='JQx Instance'></div>
+<div data-text='1'><div>Duplicate a JQx instance to memory (default) or to DOM (append to <code>root</code>).</div>
+
+<div>The elements within the instance are cloned, their id's are removed and the resulting NodeList is converted to a new JQx Instance.</div>
+
+<div class="note"><b>Note</b>: check the cloned nodes classList/properties/attributes: you may want to change them before injecting to DOM.</div>
+
+<div data-example>##EXAMPLECODE@duplicateEx##</div></div>
+</template>
+
+<template data-id="instance_css" class="instance_css" data-is-deprecated="false">
+<div data-params='[{"instance":""},{"keyOrKvPairs":"Object<string, string> | string. If you want to use a className for the css, add a <code>className</code> property to the Object."},{"value":"string | undefined. If <code>value</code> is a string, <code>keyOrKvPairs</code> must be a string too."}]'></div>
+<div data-return-value='JQx Instance'></div>
+<div data-text='1'><div>Style each element of the element collection of the JQx Instance <i>within</i> the custom style sheet (<code>&lt;style id="JQxStylesheet"></code>), using an intermediate (generated, random) or given class name. Preferably use key-value pairs, even when assigning a single property.</div>
+
+<div class="note"><b>Notes</b></div>
+<ul>
+<li>the intermediate className starts with <code>"jQxClass-"</code>. There will be one intermediate class name per element. Subsequent .css calls will modify the rule for the generated class name.</li>
+<li>using <code>!important</code> will be honored, e.g. <code>{color: `green !important`}</code></li>
+</ul>
+
+<div data-example>##EXAMPLECODE@cssEx##</div>
+
+<div><div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_Style">See also [JQx instance].Style.inSheet</div></div></div>
+</template>
+
+<template data-id="instance_empty" class="instance_empty" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='JQx Instance. An instance with elements without any content.'></div>
+<div data-text='1'><div>Remove contents for all elements of the JQx instance element collection.</div>
+
+<div>Equivalent to <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_clear">clear</div></div></div>
+</template>
+
+<template data-id="instance_clear" class="instance_clear" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='JQx Instance. An empty instance.'></div>
+<div data-text='1'><div>Remove contents for all elements of the JQx instance element collection.</div>
+
+<div data-example>##EXAMPLECODE@clearEx##</div></div>
+</template>
+
+<template data-id="instance_hide" class="instance_hide" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='JQx instance'></div>
+<div data-text='1'><div>Hide each element of the element collection of the JQx instance.</div>
+
+<div class="note"><b>Note</b>: hiding changes the css <code>display</code> property to "none". It may be more useful to use a <code>css class</code> for this.</div>
+
+<div data-example>##EXAMPLECODE@showHideEx##</div></div>
+</template>
+
+<template data-id="instance_removeAttribute" class="instance_removeAttribute" data-is-deprecated="false">
+<div data-params='[{"attrName":"string."}]'></div>
+<div data-return-value='JQx Instance'></div>
+<div data-text='1'><div>Remove some attribute from each element of the element collection of the JQx Instance.</div></div>
+</template>
+
+<template data-id="instance_removeClass" class="instance_removeClass" data-is-deprecated="false">
+<div data-params='[{"...classNames":"string[]. One or more classNames"}]'></div>
+<div data-return-value='JQx Instance'></div>
+<div data-text='1'><div>Remove <code>classNames</code> from for each element of the element collection of the JQx Instance. Class names can be one or more strings.</div>
+
+<div data-example>##EXAMPLECODE@removeClassEx##</div></div>
+</template>
+
+<template data-id="instance_replaceClass" class="instance_replaceClass" data-is-deprecated="false">
+<div data-params='[{"className":"string. the className to replace  "},{"...nwClassNames":"string[]. The class name(s) to replace <code>className</code> with."}]'></div>
+<div data-return-value='JQx Instance'></div>
+<div data-text='1'><div>Swap <code>className</code> with <code>nwClassnames</code> for each element of the element collection of the JQx Instance. Enables replacing a class name with one or more class name(s)</div>
+
+<div data-example>##EXAMPLECODE@replaceClassEx##</div></div>
+</template>
+
+<template data-id="instance_find" class="instance_find" data-is-deprecated="false">
+<div data-params='[{"selector":"string. A (valid) css selector"}]'></div>
+<div data-return-value='NodeList | empty Array'></div>
+<div data-text='1'><div>Find one or more elements within the first (root) element of the JQx Instance collection using a css query (e.g. <code>'.someClass'</code>).</div>
+
+<div data-example>##EXAMPLECODE@findEx##</div></div>
+</template>
+
+<template data-id="instance_find$" class="instance_find$" data-is-deprecated="false">
+<div data-params='[{"selector":"string. A (valid) css selector"}]'></div>
+<div data-return-value='JQx Instance'></div>
+<div data-text='1'><div>Find one or more elements within the JQx Instance collection using a css query (e.g. <code>'.someClass'</code>)  starting from the root element of the collection, and return a new JQx Instance from it's result</div>
+
+<div data-example>##EXAMPLECODE@find$Ex##</div></div>
+</template>
+
+<template data-id="instance_first$" class="instance_first$" data-is-deprecated="false">
+<div data-params='[{"indexOrSelector":"Number | string. If string, a (valid) css selector."}]'></div>
+<div data-return-value='JQx Instance'></div>
+<div data-text='1'><div>Alias for <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_single">[JQx instance].single</div>.</div></div>
+</template>
+
+<template data-id="instance_on" class="instance_on" data-is-deprecated="false">
+<div data-params='[{"instance":""},{"type":"string. The event type (e.g. \"click\", \"keyup\")"},{"...callback":"Function[]. One or more handler functions (lambdas)"}]'></div>
+<div data-return-value='JQx Instance'></div>
+<div data-text='1'><div>Add listener and handler lambda('s) for the JQx Instance root element.</div>
+
+<div>The lambda signature is <code>[handler function](event, JQxInstance)</code>.</div>
+
+<div>See <div data-action="jump2Nav" data-jumpkey="instance_toggleClass" class="linkLike">the toggleClass documentation</div> for examplary usage.</div></div>
+</template>
+
+<template data-id="instance_outerHtml" class="instance_outerHtml" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='string'></div>
+<div data-text='1'><div>Retrieves the complete html for the first (root) element of the JQx Instance.</div>
+
+<div class="note"><b>Note</b>: <code>.outerHtml</code> is a <i><b>property</b></i> (not a method). 
+ It is also possible to use the <code>HTML</code> for this: <code>[instance].HTML.get(true)</code>.
+ See: <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_HTML">[JQx instance].HTML</div>
+</div>
+
+<div data-example>##EXAMPLECODE@outerHTMLEx##</div></div>
+</template>
+
+<template data-id="instance_parent" class="instance_parent" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='JQx Instance'></div>
+<div data-text='1'><div>Get the direct parentNode of the first (root) element of the JQx Instance (as new JQx Instance).</div>
+
+<div class="note"><b>Notes</b>:</div>
+
+<ul><li><code>.parent</code> is a <i>property</i> (not a method)</li>
+<li>In (the unlikely) case there is no parent, <code>.parent</code> returns the original JQx instance.</li></ul></div>
+</template>
+
+<template data-id="instance_html" class="instance_html" data-is-deprecated="false">
+<div data-params='[{"htmlValue":"string. (valid) HTML string"},{"append":"Boolean. Default false"}]'></div>
+<div data-return-value='string | JQx Instance'></div>
+<div data-text='1'><div>Get (inner-) html of the first (root) element in the collection of the JQx instance <i>or</i> set html for each element of the collection.</div>
+
+<div>Overwrites current html of the elements, or appends (<code>append</code>: true) the value to it.</div>
+
+<div class="note"><b>Note</b>: <code>htmlValue</code> is always sanitized.</div>
+
+<div data-example>##EXAMPLECODE@htmlForEx##</div></div>
+</template>
+
+<template data-id="instance_htmlFor" class="instance_htmlFor" data-is-deprecated="false">
+<div data-params='[{"instance":""},{"forQuery":"string.  A (valid) css selector."},{"htmlString":"string. (valid) HTML string."},{"append":"Boolean. Default false"}]'></div>
+<div data-return-value='JQx Instance'></div>
+<div data-text='1'><div>
+  Sets/adds/removes html for one or more elements 
+  (identified with a <code>forQuery</code>) within the element 
+  collection of the JQx Instance.
+</div>
+
+<div class="note"><b>Notes</b>:</div>
+<ul><li>html from <code>htmlString</code> is always sanitized.</li>
+<li>if <code>htmlString</code> is empty, the element content is removed.</li></ul>
+
+<div data-example>##EXAMPLECODE@htmlForEx##</div>
+</div>
+</template>
+
+<template data-id="instance_prepend" class="instance_prepend" data-is-deprecated="false">
+<div data-params='[{"...elems2Prepend":"string | HTMLElement | Text | Comment | JQx Instance (one or more)"}]'></div>
+<div data-return-value='JQx Instance'></div>
+<div data-text='1'><div>Injects one or more elements at the start of each element of the collection of a JQx Instance.</div>
+
+<div>The syntax equals <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_append">append</div>.</div>
+
+<div class="note"><b>Notes</b>:</div>
+
+<ul>
+  <li>When (one of) <code>elems2Prepend</code> is a collection of elements (e.g. retrieved from <code>$(`.example`)</code>), the elements from the collection will be prepended in reversed order.
+  <li>When the JQx Instance to append to is empty, nothing will happen.</li>
+  <li>If (one of) elems2Prepend consists of html string(s), they should contain valid html 
+    (e.g., no flow content in elements expecting phrasing content, so for example no <code>&lt;h1></code> within <code>&lt;p></code>). 
+    The HTML is always sanitized.</li>
+  <li>When (one of) <code>elems2Prepend</code>, a textNode is prepended.</li>
+  <li>Already existing (in DOM) <code>elems2Prepend</code> are <i>moved</i> to the JQx instance when the JQx instance to prepend to has one element in 
+    its collection, <b>but</b></li>
+  <li><code>elems2Prepend</code> (if JQx instance or Node) are <i>cloned and stripped of their id</i> 
+    when the JQx instance collection to append to contains more then one element.</li>
+</ul>
+
+<div data-example>##EXAMPLECODE@prependEx##</div></div>
+</template>
+
+<template data-id="instance_prop" class="instance_prop" data-is-deprecated="false">
+<div data-params='[{"nameOrProperties":"string (e.g. <code>title</code>) or Object&lt;string, any>"},{"value":"string | undefined."}]'></div>
+<div data-return-value='string | JQx Instance'></div>
+<div data-text='1'><div>Set one or more properties (e.g. <code>title</code> or <code>disabled</code>) value for each element of the JQx Instance element collection. Or, without <code>[value]</code> retrieve the value of [property] of the first (root) element from the JQx Instance collection.</div>
+
+<div class="note"><b>Notes</b>:</div>
+
+<ul>
+  <li>Properties are validated (so, e.g. no <code>onclick</code> etc. - see example).</li>
+  <li>When the property is <code>id</code>, the id for the first element of the JQx instance collection will be set (duplicate id's are not allowed in html).</li>
+  <li>See all information on properties and attributes @<a target="_blank" href="https://javascript.info/dom-attributes-and-properties">javascript.info</a></li>
+</ul>
+
+<div data-example>##EXAMPLECODE@propEx##</div></div>
+</template>
+
+<template data-id="instance_attr" class="instance_attr" data-is-deprecated="false">
+<div data-params='[{"instance":""},{"keyOrObj":"string | Object<string, string>"},{"value":"string | Object<string, string> | undefined"}]'></div>
+<div data-return-value='string | JQx instance'></div>
+<div data-text='1'><div><b>Get</b> (<code>keyOrObj</code> string, <code>[value]</code> empty) attribute for the root element of the JQx Instance  or <b>set</b> attributes for the first (root) element of the JQx Instance element collection.</div>
+
+<div class="note"><b>Notes</b>:</div> 
+<ul>
+  <li>
+    to set <code>data-attribute</code> or <code>style</code>, use <code>{[data/style]: 
+    {[key]: [value], ...}</code> (see example)
+  </li> 
+  <li>
+    To set multiple <code>class</code>-names, use a comma or space separated 
+    string of class names 
+    <br>(e.g. <code>[instance].attr({class: `class1, class2, ... `})</code>)
+    <div><b class="red">Additional note</b>: setting <code>class</code>
+      using <code>[JQx instance].attr</code> will <i>replace</i> 
+      the existing <code>class</code> attribute.
+      Use
+      <div class="linkLike" data-action="jump2Nav"
+         data-jumpkey="instance_addClass">[JQx instance].addClass</div> 
+      to <i>add</i> classes to an Element.</div>
+   </li>
+   <li>
+     All attributes are validated (so, e.g. no <code>onclick</code> etc.)
+   </li>
+   <li>
+      Setting an attribute value ([keyOrObj] returns the JQx instance.
+    </li>
+   <li>
+     See all information on attributes and properties @<a target="_blank" 
+       href="https://javascript.info/dom-attributes-and-properties">javascript.info</a>
+    </li>
+</ul>
+
+<div data-example>##EXAMPLECODE@attrEx##</div></div>
+</template>
+
+<template data-id="instance_addClass" class="instance_addClass" data-is-deprecated="false">
+<div data-params='[{"...classNames":"string[]"}]'></div>
+<div data-return-value='Object&lt;key, Function>'></div>
+<div data-text='1'><div>Add [classNames] to each element of the element collection of the JQx instance. <code>...classNames</code> Can be one or more strings.</div>
+
+<div data-example>##EXAMPLECODE@addClassEx##</div>
+</div>
+</template>
+
+<template data-id="instance_About" class="instance_About" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value=''></div>
+<div data-text='1'><div>All methods applicable for an <i>instance</i> of JQx.</div>
+
+<div>An instance of JQx is anything created with the imported JQx constructor (here <code>$</code>).
+  A JQx instance is recognizable with a boolean property <code>isJQx</code> (for backward
+  compatibility one can also use <code>isJQx</code>).
+</div>
+
+<div data-example>// in html use
+&lt;script type="module">
+import $ from "//kooiinc.github.io/JQx/Bundle/jqx.min.js";
+//             ^ or any location you downloaded the JQx library to
+&lt/script></div>
+
+<div>
+  As said, JQx can be used to <i>retrieve</i>, <i>create</i>,
+  <i>modify</i>, <i>style</i> or <i>manipulate</i> (collections of) HTML
+  elements.
+</div>
+<div>The syntax <code>[imported JQx constructor](input[, root, position])</code>:</div>
+
+<ul>
+  <li><code>input</code>: A (n Array of) HTML string(s), HTMLElement, JQx instance or a single
+    (simple or complex) css selector. <br><b>Notes</b>:
+    <ul>
+      <li>When using an Array, its elements must be of equal types (so an Array of <i>either</i>
+        Nodes (including text nodes), <i>or</i> HTML strings, <i>or</i> JQx instances).
+      </li>
+      <li>For creating Text Nodes you can use either <code>$("&lt;text>some text")</code> or
+        <code>$($.text("some text"))</code>. Both can also be Arrays.
+      </li>
+      <li>For creating HTML Comment Nodes you can use either <code>$("&lt;!--[comment
+        1]-->")</code> or <code>$($.text("[comment 1]", true))</code>. Both can also be Arrays.
+      </li>
+    </ul>
+  </li>
+
+  <li><code>root</code>: (HTMLElement | JQx Instance) The root element for the [input]. Default is
+    <code>document.body</code>. When root is a JQx Instance, the first element of its collection
+    is presumed to be the root.
+  </li>
+
+  <li>
+    <code>position</code>: (string) For creation of elements: where the instance should end up
+    (relative to the root). You can use:
+    <uL>
+      <li><code>"beforebegin"</code>: (before [root], so [root] will be the first sibling of
+        [input])
+      </li>
+      <li><code>"afterbegin"</code>: (after the begin of [root], so [input] as first element of
+        [root])
+      </li>
+      <li><code>"beforeend"</code>: (before the end of [root], so [input] as last element of
+        [root]))
+      </li>
+      <li><code>"afterend"</code>: (after [root], so [input] will be the first sibling of [root])
+      </li>
+    </ul>
+    You can also use
+    <div data-action="jump2Nav" data-jumpgroup="static" class="linkLike">the static
+      [JQx].<b>at</b> property
+    </div>
+    .
+  </li>
+</ul>
+
+<div>Every JQx Instance has a three relevant static properties:</div>
+
+<uL>
+  <li><code>collection: Array&lt;HTMLelement></code>: an Array with the collection of elements
+    contained in the instance (so, <code>$(`.someClass`).collection</code> can contain 0 to n
+    elements)
+  </li>
+  <li><code>isVirtual: boolean</code>: true if the instance is virtual (i.e. not (yet) in the
+    <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model">DOM</a>-tree)
+  </li>
+  <li><code>isJQx: boolean</code>: true if the instance is a JQx instance (so <code>$.nodes(`.someClass`).isJQx</code>
+    is false) -
+    <div class="linkLike" data-action="jump2Nav" data-jumpkey="static_nodes">see [JQx].nodes
+    </div>
+  </li>
+</ul>
+
+<div>Examples:</div>
+
+<ul>
+  <li><code>const exampleDiv = $(`&lt;div id="example">Hello &lt;div class="example">world&lt;/div>&lt;/div>`);</code>
+  </li>
+  <li><code>const exampleDiv = $(`&lt;div id="example"> world&lt;/div>`,
+    $.node(`.example:first-child`), "afterbegin");</code></li>
+  <li><code>const exampleDiv = $(`meta, style`, document.documentElement);</code></li>
+  <li><code>const exampleDiv = $([`&lt;div class="a">A&lt;/div>`, `&lt;div class="B">B&lt;/div>`]);</code>
+  </li>
+  <li><code>const exampleDivs = $(`.example`);</code></li>
+  <li><code>const exampleSubDivs = $(`#example`).find$(`.example`);</code></li>
+  <li>... etc</li>
+</ul>
+
+<div>Where a method's return value is <code>JQx Instance</code>,
+  <a target="_blank" href="https://www.geeksforgeeks.org/method-chaining-in-javascript/"><i>method
+    chaining</i></a> is possible.
+</div>
+
+<div data-example>##EXAMPLECODE@chainEx##</div>
+
+<div>In the following every instance method is documented.</div></div>
+</template>
+
+<template data-id="static_About" class="static_About" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value=''></div>
+<div data-text='1'><div>Static methods are methods you can call using the imported JQx module.</div>
+
+<div>For example, when imported as <code>$</code>, <code>$.editCssRule(...)</code> or <code>const
+  popup = $.Popup</code>.
+</div>
+
+<h2>Direct element creation</h2>
+
+<div>
+  For all allowed HTML elements (e.g. <code>div</code>, <code>table</code>, <code>ul</code>) JQx
+  encapsulates static methods to create them, with <i>their HTML tagname as method name</i>. A
+  direct tag creation method name can either be UPPERCASE or lowercase (<code>$.SPAN(...)</code>
+  equals <code>$.span(...)</code>)
+</div>
+
+<div>For example <code>$.P('Hello!')</code> creates a JQx instance encapsulating a <code>HTMLParagraphElement</code>
+  with content "Hello!".
+</div>
+
+<div>Such HTML elements are created in memory, not yet added to the DOM.</div>
+
+<div>The syntax for element creation follows the syntax from the
+  <a href="https://github.com/KooiInc/tinyDOM"
+     target="_blank">tinyDOM</a> library.
+</div>
+
+<div>Examples:</div>
+
+<ul class="numbered">
+  <li>
+    <code> <b>$.P(</b> 'Hello!' <b>)</b></code>
+  </li>
+  <li>
+    <code><b
+    >$.div(</b> {class:"hello", id:"hi"}, 'Hello', <b>$.span(</b>' world!'<b>)</b>
+      <b>)</b></code>
+  </li>
+  <li>
+    <code> <b>$.img(</b> {src: './images/someImg.png'} <b>)</b></code>
+  </li>
+</ul>
+
+<div>
+  <i>Autonomous custom elements</i>
+  (<a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Web_components">Web
+  componenents</a>) can also be adressed by using either <code>$[`some-component`](...)</code>
+  or its <a target="_blank"
+            href="https://developer.mozilla.org/en-US/docs/Glossary/Camel_case">camel cased</a>
+  tag name: <code>$.someComponent</code>. You'll have to <i>allow</i> using such tags first: see
+  <div class="linkLike" data-action="jump2Nav" data-jumpkey="static_allowTag"
+    >[JQx instance].allowTag
+  </div>
+  <div>The top line of this document is a web component (<code>&lt;copyright-slotted></code>)
+  </div>
+</div>
+
+<div data-example>##EXAMPLECODE@staticElemEx##</div>
+
+<div data-example>##EXAMPLECODE@staticElemEx2##</div></div>
+</template>
+
+<template data-id="instance_setData" class="instance_setData" data-is-deprecated="false">
+<div data-params='[{"keyValuePairs":"Object<string, string>"}]'></div>
+<div data-return-value='JQx Instance'></div>
+<div data-text='1'><div>Set data-attribute(s) for each element of the the JQx Instance element collection. The attributes must be key-value pairs.</div>
+
+<div><b>See also</b>: <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_data">data</div>.</div>
+
+<div data-example>##EXAMPLECODE@setDataEx##</div></div>
+</template>
+
+<template data-id="instance_show" class="instance_show" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='JQx Instance'></div>
+<div data-text='1'>  <div>
+    <div>
+      <div>Show each element of the element collection of the JQx instance.</div>
+  
+      <div class="note"><b>Note</b>: this will reset the <code>display</code> css property. For
+        more granular showing/hiding elements, use your own css classes.
+      </div>
+  
+      <div data-example>##EXAMPLECODE@showHideEx##</div>
+    </div>
+  </div></div>
+</template>
+
+<template data-id="instance_single" class="instance_single" data-is-deprecated="false">
+<div data-params='[{"instance":""},{"indexOrSelector":"string | number. An optional (valid) css selector."}]'></div>
+<div data-return-value='JQx Instance'></div>
+<div data-text='1'><div>
+When <code>indexOrSelector</code> has a value, retrieves the first matching element from a JQx Instance collection, or retrieves the first (root) element from the collection. The result will be a new JQx Instance 
+(<b class="red">note</b>: its collection may be empty).</div>
+
+<div class="note"><b>Note</b>: retrieve a single element with a number is zero based.</div>
+
+<div data-example>##EXAMPLECODE@singleEx##</div>
+
+<div data-example>##EXAMPLECODE@singleEx2##</div>
+
+<div data-example>##EXAMPLECODE@singleEx3##</div>
+
+<h3>Aliases: <code>first$</code> and <code>nth$</code></h3>
+
+<div data-example>##EXAMPLECODE@first$Ex##</div>
+
+<div data-example>##EXAMPLECODE@nth$Ex##</div></div>
+</template>
+
+<template data-id="instance_style" class="instance_style" data-is-deprecated="false">
+<div data-params='[{"keyOrKvPairs":"Object&lt;string, string> | string"},{"value":"string | undefined"}]'></div>
+<div data-return-value='JQx Instance'></div>
+<div data-text='1'><div>Style each element of the of the JQx Instance element collection <i>inline</i>, so <code>&lt;div style="[the style from parameters]"></code>. If <code>keyOrKvPairs</code> is a string and <code>value</code> is not empty, will set a single style value. Preferably use key-value pairs.</div>
+
+<div class="note"><b>Note</b>: using <code>!important</code> will be honored, e.g. <code>{color: `green !important`}</code>.</div>
+
+<div>Equivalent to <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_Style">[JQx instance].Style.inline</div></div></div>
+</template>
+
+<template data-id="instance_toNodeList" class="instance_toNodeList" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='NodeList'></div>
+<div data-text='1'><div>Copy the JQx Instance element collection into a <code>NodeList</code>. It may be a way to duplicate a collection of nodes (see example).</div>
+
+<div class="note"><b>Notes</b>:</div>
+<ul><li>the list is not a live <code>NodeList</code>. In other words: the nodes are copies of the original (and <i>only exist in memory</i>)</li>
+<li>the eventual id of the copied nodes is removed (element id's must be unique). See also the <code>.duplicate</code> method</li></ul>
+
+<div data-example>##EXAMPLECODE@toNodeListEx##</div></div>
+</template>
+
+<template data-id="instance_trigger" class="instance_trigger" data-is-deprecated="false">
+<div data-params='[{"evtType":"string. An event identifier, e.g. <code>\"click\"</code>"},{"SpecifiedEvent":"Event. The event may be specified, e.g. <code>MouseEvent</code>. Defaults to generic <code>Event</code>"},{"options":"Object<string, any>. Event options. Default <code>{bubbles: true, cancelable: false, composed: false}</code>"}]'></div>
+<div data-return-value='JQx Instance'></div>
+<div data-text='1'><div>Trigger a handler for all elements of the the JQx Instance element collection.</div>
+
+<div class="note"><b>Note</b>: bubbling is always true (<code>{bubbles: true}</code>), because event handling in this library uses <a target="_blank" href="https://javascript.info/event-delegation">event delegation</a>.</div>
+
+<div>See the example @<div data-action="jump2Nav" data-jumpkey="static_delegate" class="linkLike">the delegate documentation</div></div></div>
+</template>
+
+<template data-id="instance_toggleClass" class="instance_toggleClass" data-is-deprecated="false">
+<div data-params='[{"instance":""},{"className":"string. The class name to toggle (eg \"hidden\")"}]'></div>
+<div data-return-value='JQx Instance'></div>
+<div data-text='1'><div>Toggle className (on/off) for each element of the JQx Instance element collection.</div>
+
+<div data-example>##EXAMPLECODE@toggleClassEx##</div></div>
+</template>
+
+<template data-id="instance_val" class="instance_val" data-is-deprecated="false">
+<div data-params='[{"newValue":"string. The value to set."}]'></div>
+<div data-return-value='string | JQx Instance'></div>
+<div data-text='1'><div>Get or set the value of (the root element of) the JQx instance, where the first element is one of input, textarea or select HTMLElement. </div>
+
+<div>When <code>newValue</code> is empty, return the current value, otherwise the JQx Instance. When <code>newValue</code> is not a string, the new value will be an empty string.</div>
+
+<div data-example>##EXAMPLECODE@valEx##</div></div>
+</template>
+
+<template data-id="static_virtual" class="static_virtual" data-is-deprecated="false">
+<div data-params='[{"html":"string | string[]. A (n array of) (valid) html string"},{"root":"Node. The parent of the element to create"},{"position":"The position relative to the parent of the element to create"}]'></div>
+<div data-return-value='JQx Instance (in memory)'></div>
+<div data-text='1'><div>Create a HTML element, but don't add it to DOM (so, only in memory).</div>
+
+<div data-example>##EXAMPLECODE@virtualEx##</div></div>
+</template>
+
+<template data-id="static_text" class="static_text" data-is-deprecated="false">
+<div data-params='[{"str":"string. The text content of the node "},{"isComment":"Boolean. Default false"}]'></div>
+<div data-return-value='Text Node | Comment Node'></div>
+<div data-text='1'><div>Create a text (<code>isComment: false</code>) or comment (<code>isComment: true</code>) Node.</div>
+
+<div data-example>##EXAMPLECODE@textOrCommentEx##</div></div>
+</template>
+
+<template data-id="static_popup" class="static_popup" data-is-deprecated="true">
+<div data-params='None'></div>
+<div data-return-value='Object<string, Function>'></div>
+<div data-text='1'><!--DEPRECATED-->
+
+<div>Alias for <code>[JQx].Popup</code>.
+  This is kept for backward 
+  compatibility. <b class="red">Note</b>: it may disappear someday!
+</div>
+</div>
+</template>
+
+<template data-id="popup_About" class="popup_About" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value=''></div>
+<div data-text='1'><div>Popup is a small module for creating (modal) popups. By default it is not initialized. You can initialize it using the <code>Popup</code> getter: <code>const popup = [JQx].Popup</code>, or use it directly (<code>[JQx].Popup.show(...)</code>). Also available as <code>[JQx].popup</code> (deprectated, may disappear without notice)</div>
+
+<div>Once initialized you can use the 4 methods the module contains, documented in the following.</div>
+
+</div>
+</template>
+
+<template data-id="popup_create" class="popup_create" data-is-deprecated="false">
+<div data-params='[{"message":"JQx instance | Node | HTML string | string"},{"isModalOrCallback":"Boolean | Function."},{"modalCallback":"Function. Optional function to call after closing a modal popup."},{"modalWarning":"Optional warning text when a user tries to close a modal popup without the preferred action."}]'></div>
+<div data-return-value='Nothing'></div>
+<div data-text='1'><div>Create a popup. When <code>isModalOrCallback</code> is a boolean and true, the window can not be automatically closed, use <code>removeModal</code> for that.</div>
+
+<div>When <code>isModalOrCallback</code> is a function it will be called after the popup is closed. Other <a href="https://developer.mozilla.org/en-US/docs/Glossary/Truthy" target="_blank"><i>truthy</i></a> values create a modal popup.</div>
+
+<div class="note"><b>Note</b>: <code>[JQx].Popup.create</code> is a legacy method. It is replaced with the more versatile (less convoluted) <div class="linkLike" data-jumpkey="popup_show" data-action="jump2Nav">show</div> method.</div>
+
+<div>When <code>modalCallback</code> is a function, it will be called after a <i>modal</i> popup is closed.</div>
+
+<div>The examples demonstrate both a modal popup and a regular one.</div>
+
+<div data-example>##EXAMPLECODE@popupCreateEx##</div>
+
+<div data-example>##EXAMPLECODE@popupCreateModalEx##</div></div>
+</template>
+
+<template data-id="popup_createTimed" class="popup_createTimed" data-is-deprecated="false">
+<div data-params='[{"message":"string. A text or (valid) HTML string."},{"closeAfter":"Number. The number of seconds after the popup closes itself. Default 2."},{"callback":"Function. Optional function to call after closing the popup."}]'></div>
+<div data-return-value='Nothing'></div>
+<div data-text='1'><div>
+  Create a (non modal) popup, that closes itself after <code>closeAfter</code> seconds.
+</div>
+
+
+<div data-example>##EXAMPLECODE@popupTimedEx##</div>
+</div>
+</template>
+
+<template data-id="popup_removeModal" class="popup_removeModal" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='Nothing'></div>
+<div data-text='1'><div>
+Remove a modal popup. 
+
+See the third example @<div class="linkLike" data-jumpkey="popup_show" data-action="jump2Nav">[JQx].Popup.show</div>.</div></div>
+</template>
+
+<template data-id="static_log" class="static_log" data-is-deprecated="false">
+<div data-params='[{"...args":"string[]"}]'></div>
+<div data-return-value='JQx.debugLog: function'></div>
+<div data-text='1'><div>Equivalent to <div class="linkLike" data-jumpkey="debuglog_log" data-action="jump2Nav">log</div> in <div class="linkLike" data-jumpgroup="debuglog" data-action="jump2Nav">debugLog</div>, but for intermediate logging to console (so <code>debugLog</code> doesn't have to be set to 'on').</div>
+
+<div>While loading this document this logging was called several times. See the console for that.</div></div>
+</template>
+
+<template data-id="static_nodes" class="static_nodes" data-is-deprecated="false">
+<div data-params='[{"selector":"string. A (valid) css selector"},{"root":"Node. Default <code>document html element</code>"}]'></div>
+<div data-return-value='Node[]'></div>
+<div data-text='1'><div>Retrieve or more DOM Nodes from [root]. The equivalent of <code>Array.from([root].querySelectorAll([css selector]))</code>. </div>
+
+<div class="note"><b>Note</b>: returns a real <code>Array</code> (not a <code>NodeList</code>), so all <code>Array</code> methods work on the result.</div>
+
+<div>For example: <code>$.nodes(`.allGreen`).map(elem => elem.textContent += ` I'm green!`);</code>.</div></div>
+</template>
+
+<template data-id="static_node" class="static_node" data-is-deprecated="false">
+<div data-params='[{"selector":"string. A (valid) css selector"},{"root":"Node. Default <code>document html element</code>"}]'></div>
+<div data-return-value='Node'></div>
+<div data-text='1'><div>Retrieve a DOM Node from [root]. The equivalent of <code>[root].querySelector([css selector])</code>. For example: <code>const firstGreen = $.node(`.allGreen`);</code>.</div>
+
+</div>
+</template>
+
+<template data-id="static_createStyle" class="static_createStyle" data-is-deprecated="true">
+<div data-params='[{"id":"string"}]'></div>
+<div data-return-value='Function.'></div>
+<div data-text='1'><!--DEPRECATED-->
+
+<div>
+  Alias of <div class="linkLike" 
+  data-action="jump2Nav" 
+  data-jumpkey="static_editStylesheet">editStylesheet</div>. 
+  This method is kept for backward 
+  compatibility. <b class="red">Note</b>: it may disappear someday!
+</div></div>
+</template>
+
+<template data-id="instance_prependTo" class="instance_prependTo" data-is-deprecated="false">
+<div data-params='[{"prependTo":"string | JQx Instance"}]'></div>
+<div data-return-value='JQx Instance'></div>
+<div data-text='1'><div>Injects the current JQx Instance at the start of <code>prependTo</code>. </div>
+
+<div>If <code>prependTo</code> is a HTML string, it is converted to a JQx Instance and thus validated.</div>
+
+<div>The syntax equals <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_appendTo">appendTo</div>.</div>
+
+
+</div>
+</template>
+
+<template data-id="debuglog_About" class="debuglog_About" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value=''></div>
+<div data-text='1'><div data-params="None"></div>
+<div data-returnValue=""></div>
+<div>To use extensive logging for debugging (or just follow the application flow) you can use a
+  special object named <code>debugLog</code>. <code>debugLog</code> is a static property of the
+  JQx module. Where a method returns <code>debugLog</code> (so itself) the result is
+  <i>chainable</i>.
+</div>
+
+<div>Logging by default is to the browser console, but you can also log to a specially created
+  element within your document.
+</div>
+
+<div>By default debug logging is not active.</div>
+
+<div>See it in action in
+  <a class="linkLike" target="_blank" href="https://kooiinc.github.io/JQx/Resource/Demo/">the JQx
+    demonstration page</a> (click 'Show logs').
+</div>
+
+<div class="note"><b>Note</b>: errors when creating elements are always logged to the browser
+  console.
+</div>
+
+<div data-example>
+  // JQx imported as $ const { debugLog } = $; if (!debugLog.isOn()) { debugLog .on()
+  .toConsole.off() .log("We started logging to div#logBox, enjoy ..."); }
+</div>
+
+<div>There are two extra <i>properties</i> in <code>debugLog</code> to note:</div>
+
+<ul>
+  <li><code>toConsole</code> can be used to enable or disable logging to the browser console. Use
+    <code>toConsole.on()</code> to enable, <code>toConsole.off()</code> to disable logging to the
+    console. By default logging to the console is enabled. If logging is not active, using <code>toConsole.on/off</code>
+    will set the state for later usage.
+  </li>
+  <li><code>reversed</code>. By default logging (to screen) is from latest entry to the oldest. To
+    log from first entry to the last you can use <code>debugLog.reversed.on()</code>, and vice
+    versa use <code>debugLog.reversed.off()</code>. As with <code>toConsole</code> this is only
+    useful if debug logging is active, and only if logging to console is <i>off</i>.
+  </li>
+</ul></div>
+</template>
+
+<template data-id="debuglog_isOn" class="debuglog_isOn" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='Boolean'></div>
+<div data-text='1'><div>Check if debug logging state is active.</div></div>
+</template>
+
+<template data-id="debuglog_isVisible" class="debuglog_isVisible" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='Boolean'></div>
+<div data-text='1'><div>When logging to screen is active, check if the special logging box is visible.</div></div>
+</template>
+
+<template data-id="debuglog_on" class="debuglog_on" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='debugLog'></div>
+<div data-text='1'><div>Activate debug logging. By default logs all to the browser console.</div>
+
+<div>Use <code>[JQx].debugLog.on().toConsole.off()</code> to activate logging to screen.</div></div>
+</template>
+
+<template data-id="debuglog_off" class="debuglog_off" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='debugLog'></div>
+<div data-text='1'><div>Deactivate debug logging.</div></div>
+</template>
+
+<template data-id="debuglog_remove" class="debuglog_remove" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='debugLog'></div>
+<div data-text='1'><div>Removes and deactivates all logging. If applicable removes the log box from the DOM.</div>
+
+<div class="note"><b>Note</b>: reactivate debug logging with <code>[JQx].debugLog.on()</code>.</div></div>
+</template>
+
+<template data-id="debuglog_log" class="debuglog_log" data-is-deprecated="false">
+<div data-params='[{"...args":"string[]"}]'></div>
+<div data-return-value='debugLog'></div>
+<div data-text='1'><div>Log one or more strings, either to the console or the DOM logging element. <code>debugLog</code> Must be on (so <code>debugLog.isOn === true</code>). </div>
+
+<div class="note"><b>Note</b> For custom log messages to the console (independent of <code>debugLog.isOn</code>) you can use the <div class="linkLike" data-jumpkey="static_log" data-action="jump2Nav">static [JQx].log method</div>.</div></div>
+</template>
+
+<template data-id="debuglog_hide" class="debuglog_hide" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='debugLog'></div>
+<div data-text='1'><div>Hide the DOM log box, if applicable (not logging to console).</div></div>
+</template>
+
+<template data-id="debuglog_show" class="debuglog_show" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='debugLog'></div>
+<div data-text='1'><div>Show the DOM log box, if applicable (not logging to console).</div></div>
+</template>
+
+<template data-id="debuglog_clear" class="debuglog_clear" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='debugLog'></div>
+<div data-text='1'><div>Remove all strings logged until now from DOM log box or browser console.</div></div>
+</template>
+
+<template data-id="static_setStyle" class="static_setStyle" data-is-deprecated="true">
+<div data-params='None'></div>
+<div data-return-value='Nothing'></div>
+<div data-text='1'><!--DEPRECATED-->
+
+<div>
+  Alias of <div class="linkLike" 
+   data-action="jump2Nav" 
+   data-jumpkey="static_editCssRule">editCssRule</div>. The method is kept for backward 
+  compatibility. <b class="red">Note</b>: it may disappear someday!
+</div>
+
+
+</div>
+</template>
+
+<template data-id="static_removeCssRule" class="static_removeCssRule" data-is-deprecated="false">
+<div data-params='[{"...rules":"string | string[]. One ore more css selectors."}]'></div>
+<div data-return-value='Nothing'></div>
+<div data-text='1'><div>Remove one or more css rules (e.g. <code>.someclass:after</code>) from the custom JQx stylesheet (<code>&lt;style id="JQxStylesheet"></code>).</div>
+
+<div><b>Notes</b>:</div>
+<ul>
+<li>[...rules] may also be a single comma delimited string of several css selectors</li>
+<li>When a rule has several cssSelectors in one rule (e.g. <code>.test1, test2 {...}</code>, surround the rule to remove 
+  with exclamation marks: <code>$.removeCssRule(`!.test1, test2!`)</code></li>
+<li>The selector to remove should be <i>exactly</i> the selector you used to create it. 
+So removal of <code>.test1, test2 {...}</code> will fail using <code>$.removeCssRule(`!.test1,test2!`)</code></li>
+<li>For clarity <div class="linkLike" data-action="jump2Nav" data-jumpkey="static_removeCssRules">removeCssRules</div> exists also. Both <code>removeCssRule</code> and <code>removeCssRule<b style="color:red">s</b></code> work exactly the same.</li>
+</ul>
+
+<div data-example>##EXAMPLECODE@removeCssRuleEx##</div>
+
+<div class="note">
+  <b>Note</b>: <code>editCssRule</code> uses the repository
+  <a target="_blank" href="https://github.com/KooiInc/LifeCSS">LifeCSS</a>,
+  which is integrated within the JQx-module
+</div></div>
+</template>
+
+<template data-id="static_editCssRule" class="static_editCssRule" data-is-deprecated="false">
+<div data-params='[{"ruleOrSelector":"string. A css selector (e.g. <code>div[data-form]</code>) or a css rule (e.g. <code>.redBold {color: red; font-weight: bold;}</code>)"},{"ruleObject":"Object&lt;string, string> optional. When [ruleOrSelector] is a css selector, an object with rule properties."}]'></div>
+<div data-return-value='Nothing'></div>
+<div data-text='1'><div>
+  Formerly known as <div class="linkLike" data-action="jump2Nav" data-jumpkey="static_setStyle"
+    >setStyle</div>.
+</div>
+
+<div>
+  On importing, JQx creates a custom stylesheet in the header (<code>&lt;style
+  id="JQxStylesheet"></code>. Within this stylesheet you can create, remove and/or modify
+  style rules using <code>[jqx].editCssRule</code>
+</div>
+
+<div>
+  You can use either real style rule string, or a selector and an Object defining the
+  properties of that selector.
+</div>
+
+<div>
+  When a rule is valid and doesn't exist, it will be created. Existing rules are modified
+  with the given parameters.
+</div>
+
+<div>
+  You can remove rule properties (e.g. <code>color</code>) or complete rules.
+</div>
+
+<ul>
+  <li>To remove one or more <i>rule properties</i>, use (for example) <code>$.editCssRule(`#someDiv`,
+    {removeProperties: {color: 1, border: 1}})</code></li>
+  <li>To completely remove a css rule, use (for example) <code>$.editCssRule(`#someDiv`,
+    {removeRule: 1})</code> <i>OR</i> use
+    <div class="linkLike" data-action="jump2Nav" data-jumpkey="static_removeCssRule">
+      removeCssRule
+    </div>
+  </li>
+</ul>
+
+<div data-example>##EXAMPLECODE@editCssRuleEx##</div>
+
+<div class="note">
+  <b>Note</b>: <code>editCssRule</code> uses the repository
+  <a target="_blank" href="https://github.com/KooiInc/LifeCSS">LifeCSS</a>,
+  which is integrated within the JQx-module
+</div></div>
+</template>
+
+<template data-id="static_allowTag" class="static_allowTag" data-is-deprecated="false">
+<div data-params='[{"tagName":"string (e.g. \"template\")"}]'></div>
+<div data-return-value='Nothing'></div>
+<div data-text='1'><div>The creation of some html-tags are prohibited/not enabled by default (like <code>&lt;frameset></code>, or <code>&lt;script></code>). You can allow the creation of such tags using this static method.</div>
+
+<div>
+Allowing a <code>tagName</code> also enables its use as a static JQx extension method. So
+</div>
+
+<div data-example>$.allowTag('template');
+// this will create template#myTemplate and add it to the DOM tree
+$.TEMPLATE({id: "myTemplate", innerHTML: "..."}).render;</div>
+
+<div class="note">
+<b>Notes</b>
+  <ul>
+    <li>
+      using <code>allowTag</code> may introduce 
+      security problems. <b class="warn">Handle with care</b>!
+     </li>
+    <li>
+      This  method can also be used to allow <i>custom element</i> (web components) tags. 
+      <br>The top bar of this documentation is a web component 
+      (<code>&lt;copyright-slotted></code>), created with 
+      <a target="_blank" href="https://github.com/KooiInc/es-webcomponent-factory"
+       >es-webcomponent-factory</a>
+    </li>
+  </uL>
+</div></div>
+</template>
+
+<template data-id="static_prohibitTag" class="static_prohibitTag" data-is-deprecated="false">
+<div data-params='[{"tagName":""}]'></div>
+<div data-return-value='Nothing'></div>
+<div data-text='1'><div>The creation of most html-tags is allowed by default. You can prohibit the creation of a tag using this the <code>prohibitTag</code> method, e.g. <code>$.prohibitTag(`dialog`)</code>.</div>
+
+<div>
+Prohibiting a <code>tagName</code> also disables its use as a static JQx extension method. So
+</div>
+
+<pre class="line-numbers language-javascript" tabindex="0"
+  ><code class="language-javascript"
+   >$.prohibitTag('template');
+// this will throw a TypeError (because the result of $.TEMPLATE_JQx(...) is undefined
+$.TEMPLATE_JQx({id: "myTemplate", innerHTML: "..."}).toDOM();</code></pre></div>
+</template>
+
+<template data-id="instance_length" class="instance_length" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='Number'></div>
+<div data-text='1'><div>The number of elements within the JQx instance element collection.</div>
+
+<div data-example>##EXAMPLECODE@lenEx##</div></div>
+</template>
+
+<template data-id="popup_show" class="popup_show" data-is-deprecated="false">
+<div data-params='[{"show_isObject":"<code>{ content[, modal, closeAfter, callback, warnMessage]  }</code>"}]'></div>
+<div data-return-value='Nothing'></div>
+<div data-text='1'><div>Create and display a popup 'window'. There is one parameter, which is an Object with the following properties.</div>
+
+<ul><li><code>content</code>: (JQx instance | HTML string | string) the message to show;</li>
+<li>[<code>modal</code>]: (Boolean) <code>true</code> makes the popup modal (a popup without a closer icon, which can only be closed using some handler withing its' content);</li>
+<li>[<code>closeAfter</code>]: (Number) the number of seconds after which the popup closes itself (ignored when <code>modal</code>);</li>
+<li>[<code>callback</code>]: (Function) a function that will be executed after closing the popup;</li>
+<li>[<code>warnMessage</code>]: (JQx instance | HTML string | string) a warning shown when the user tries to close the modal popup (e.g. by clicking outside it).</li></ul>
+
+<div>The only property that should have a value is <code>content</code>.</div>
+
+<div>The examples demonstrate a regular and modal popup.</div>
+
+
+<div data-example>##EXAMPLECODE@popupShowEx##</div>
+
+<div data-example>##EXAMPLECODE@popupShowTimedEx##</div>
+
+
+<div data-example>##EXAMPLECODE@popupShowModalEx##</div></div>
+</template>
+
+<template data-id="instance_data" class="instance_data" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='Object&lt;string, Function>'></div>
+<div data-text='1'><div>Delivers a utility Object to manipulate data-attributes of the first element of the JQx instance collection.</div>
+
+<div class="note"><b>Notes</b>:</div>
+<ul>
+<li><code>[JQx instance].data</code> is a <i>static property</i>;</li>
+<li><code>[JQx instance].data</code>'s methods are applied to the first element of the JQx instance collection;</li>
+<li>The handling of casing for data-attributes is a bit weird and poorly documented imho. 
+In html and css a data-attribute like <code>helloWorld</code> will show up as <code>hello-world</code>, for setting of/retrieval from the <code>dataset</code> it should be <code>helloWorld</code>. The methods of <code>[JQx instance].data</code> mitigate this (in other words: you can always use either <i>camelCased</i> or <i>dashed notation</i> data-attributes here). The example should demonstrate this;</li>
+<li>The methods <code>.set</code> and <code>.remove</code> return the JQx instance (so, you can chain from them).
+</ul>
+
+<div>The available methods:</div>
+
+<ul>
+  <li><code>all</code>: Retrieves all data-attribute values (e.g. <code>[JQx instance].data.all.someattribute</code>);</li>
+  <li><code>get(key: string[, whenUndefined: any])</code> Retrieves the value of data-attribute with [key] (e.g. <code>[JQx instance].data.get("someattribute")</code>. 
+   <code>whenUndefined</code> (optional) will be returned when the data-attribute does not exist);</li>
+  <li><code>set({key1: value1, ..., keyn: valuen})</code> Sets one or more attribute values (e.g. <code>[JQx instance].data.set({someattribute: "1"})</code>);</li>
+  <li><code>remove(key: string)</code> Removes the data-attribute with [key] (e.g. <code>[JQx instance].data.remove("someattribute")</code>).</li>
+</ul>
+
+<div><b>See also</b>
+<div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_getData">getData</div> and
+  <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_setData">setData</div>.</div>
+
+<div data-example>##EXAMPLECODE@dataEx##</div></div>
+</template>
+
+<template data-id="instance_HTML" class="instance_HTML" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='Object&lt;string, Function>'></div>
+<div data-text='1'><div>Returns a utility object for retrieving inner-/outerHTML, replacing, inserting or appending html of the first element of the JQx instance element.</div>
+
+<div>The available methods:</div>
+<ul>
+<li><code>get([outer:boolean, escaped:boolean])</code> Retrieves the html. If [outer] is true, it will be the outerHTML, otherwise innerHTML. 
+  When [escaped] is true, the html will be escaped, meaning that you can display the html within another html element.</li>
+<li><code>set(content:string|JQx instance, [append:boolean], [escape:boolean])</code> 
+  Set the html of the first element of the JQx collection.
+  <ul>
+    <li>When [append] is true, [content] is appended to the existing html.</li>
+    <li>When[escape] is true, [content] is escaped (so: <code>&lt;div></code> becomes <code>&amp;lt;div></code>)</li>
+  </ul>
+  <b>Notes</b>: 
+  <ul>
+    <li>[content] is always sanitized.</li>
+    <li>When not appended or inserted, <code>set</code> destroys everything within 
+         the first element of the JQx collection</li></ul>
+</li>
+<li><code>replace(content:string|JQx Instance, [escape:boolean])</code> Replaces innerHTML with [content]. See <code>HTML.set</code>.</li>
+<li><code>append(content:string|JQx Instance, [escape:boolean])</code> Appends [content] to innerHTML. See <code>HTML.set</code>.</li>
+<li><code>insert(content:string|Node|JQx Instance, [escape:boolean])</code> Inserts [content] to innerHTML. See <code>HTML.set</code>.</li>
+</ul>
+
+<div class="note"><b>Notes</b>:</div>
+<ul>
+<li><code>set</code>, <code>replace</code>, <code>append</code> and <code>insert</code> return the JQx instance.</li>
+<li>When the [html] parameter is a JQx Instance, the outer HTML of the first element of its collection will be used.</li>
+</ul>
+
+<div data-example>##EXAMPLECODE@htmlObjEx##</div>
+</div>
+</template>
+
+<template data-id="static_editCssRules" class="static_editCssRules" data-is-deprecated="false">
+<div data-params='[{"...rules":"string[]. One or more complete css rules"}]'></div>
+<div data-return-value='Nothing'></div>
+<div data-text='1'><div>
+  Like <code>editCssRule</code> but for multiple css rules at once</div>
+<div>
+  Add one or more css rules (e.g. <code>.redBold {color: red; font-weight: bold;}</code>)
+  to <code>&lt;style id="JQxStylesheet"></code>.
+</div>
+
+<div data-example>##EXAMPLECODE@editCssRulesEx##</div>
+
+<div class="note">
+  <b>Note</b>: <code>editCssRule</code> uses the repository
+  <a target="_blank" href="https://github.com/KooiInc/LifeCSS">LifeCSS</a>,
+  which is integrated within the JQx-module
+</div></div>
+</template>
+
+<template data-id="instance_Style" class="instance_Style" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='Nothing'></div>
+<div data-text='1'><div>Delivers a utility object to manipulate styling of a JQx instance (element collection) or retrieve computed style value(s) from the first element of the element collection.</div>
+
+<div>The available methods:</div>
+<ul>
+<li><code>inline(rules: Object&lt;string, string>)</code> set the styling of all elements of the JQx instance collection using the style attribute (<code>style="..."</code>)</li>
+<li><code>inSheet(rules: Object&lt;string, string>)</code> set the styling of all elements of the JQx instance collection using the JQx custom stylesheet. When rules contains a <code>className</code> property, the className and the rules values will be added to the styleSheet, otherwise a intermediate className will be created for the given rules (see the example)</li>
+<li><code>byRule({classes2Apply: Array&lt;string>, rules: Array&lt;string>})</code> Add one or more rules to the JQx custom stylesheet and (optionally) apply one or more classes to the concerning JQx Instance. See second example.
+</li>
+<li><code>nwRule(rule:string)</code>. Create a new rule with className (<code>.someClass</code>) or id (<code>#someId</code>) <i>and</i> add the class or id from the rule to the element this method is called from. See second example.
+<br><b>Note</b>: if the element already has an id, it is <i>NOT</i> overwritten!</li>
+<li><code>computed</code> (getter) Retrieves the complete computedStyle of the first element of the JQx instance collection.</li>
+<li><code>valueOf(key:string)</code> Retrieve the computed value of a style property (see example)</li>
+</ul>
+<div class="note"><b>Notes</b>:</div>
+
+<ul><li><code>inline</code>, <code>inSheet</code> and <code>byRule</code> return the JQx instance.</li>
+<li>For the [key] value of <code>valueOf</code> you can either supply camel cased or dashed notation (e.g. "borderLeft" vs "border-left")</li></ul>
+
+<div data-example>##EXAMPLECODE@styleObjInStyleEx##</div>
+
+<div data-example>##EXAMPLECODE@styleRulingsEx##</div>
+</div>
+</template>
+
+<template data-id="static_fn" class="static_fn" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='Nothing'></div>
+<div data-text='1'><div>Add custom method to JQx instances. </div>
+
+<div>The first argument of function [fn] is the JQx instance. Calling the added method, you only need [...arguments]. See both examples for usage.</div>
+
+<div data-example>##EXAMPLECODE@fnEx##</div>
+
+<div data-example>##EXAMPLECODE@fnEx2##</div></div>
+</template>
+
+<template data-id="instance_closest" class="instance_closest" data-is-deprecated="false">
+<div data-params='[{"selector":"string. A css selector"}]'></div>
+<div data-return-value='JQx instance'></div>
+<div data-text='1'><div>Return the parent element/node with css selector the closest (upwards) to the first element of the JQx instance collection. Equals <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Element/closest">Element.closest</a>. The element returned is either new JQx instance (when something was found) or the original JQx instance (nothing found).</div>
+
+<div data-example>##EXAMPLECODE@closestEx##</div></div>
+</template>
+
+<template data-id="static_IS" class="static_IS" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='Boolean'></div>
+<div data-text='1'><div><code>[JQx].IS</code> is a utility. With it you can determine if a given Object is of (one of) the <code>shouldBe</code> types, <b><i>or</i></b> determine what type <code>obj</code> is.</div>
+
+<div data-example>##EXAMPLECODE@ISEx##</div>
+
+<div>There's an extensive example of this utility method in the <a href="https://kooiinc.github.io/typeofAnything/Demo/" target="_blank">demonstration page</a> of the github repository 'typeOfAnything'.</div></div>
+</template>
+
+<template data-id="instance_afterMe" class="instance_afterMe" data-is-deprecated="false">
+<div data-params='[{"elem2AddAfter":"JQx instance | HtmlElement | (valid) HTML string"}]'></div>
+<div data-return-value='JQx instance'></div>
+<div data-text='1'><div>Alias for <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_after">[JQx instance].after</div>.</div>
+</div>
+</template>
+
+<template data-id="instance_beforeMe" class="instance_beforeMe" data-is-deprecated="false">
+<div data-params='[{"elem2AddBefore":"JQx instance | HtmlElement | (valid) HTML string"}]'></div>
+<div data-return-value='JQx instance'></div>
+<div data-text='1'><div>
+Alias for <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_before">[JQx instance].before</div>
+</div></div>
+</template>
+
+<template data-id="instance_andThen" class="instance_andThen" data-is-deprecated="false">
+<div data-params='[{"elem2Add":"JQx instance | single HtmlElement | HTML string"},{"before":"Boolean (default value = false)"}]'></div>
+<div data-return-value='JQx instance'></div>
+<div data-text='1'><div><code>.andThen</code> injects [elem2Add] into the parent of the current JQx instance, right <i>before</i> (before = true) or <i>after</i> it. The original instance is replaced with an JQx instance containing both elements in its collection. The return value is the new instance.</div>
+
+<div data-example>##EXAMPLECODE@andThenEx##</div></div>
+</template>
+
+<template data-id="static_removeCssRules" class="static_removeCssRules" data-is-deprecated="false">
+<div data-params='[{"...rules":"string | string[]. One ore more css selectors"}]'></div>
+<div data-return-value='Nothing'></div>
+<div data-text='1'><div>Remove one or several css rule(s) (e.g. <code>.someclass:after</code>) from the custom JQx stylesheet (<code>&lt;style id="JQxStylesheet"></code>).</div>
+
+<ul>
+<li>[...rules] may also be a single comma delimited string of several css selectors</li>
+<li>When a rule has several cssSelectors in one rule (e.g. <code>.test1, test2 {...}</code>, surround the rule to remove 
+  with exclamation marks: <code>$.removeCssRule(`!.test1, test2!`)</code></li>
+<li>The selector(s) to remove should be <i>exactly</i> the selector you used to create it. 
+So removal of <code>.test1, test2 {...}</code> will fail using <code>$.removeCssRule(`!.test1,test2!`)</code></li>
+<li>For clarity <div class="linkLike" data-action="jump2Nav" data-jumpkey="static_removeCssRule">removeCssRule</div> exists also. Both <code>removeCssRule</code> and <code>removeCssRule<b style="color:red">s</b></code> work exactly the same.</li>
+</ul>
+
+<div data-example>##EXAMPLECODE@removeCssRulesEx##</div>
+
+<div class="note">
+  <b>Note</b>: <code>editCssRule</code> uses the repository
+  <a target="_blank" href="https://github.com/KooiInc/LifeCSS">LifeCSS</a>,
+  which is integrated within the JQx-module
+</div></div>
+</template>
+
+<template data-id="instance_replaceWith" class="instance_replaceWith" data-is-deprecated="false">
+<div data-params='[{"newChild":"HTMLElement | JQx instance"}]'></div>
+<div data-return-value='JQx Instance (from the replacement element)'></div>
+<div data-text='1'><div>Replace the JQx Instance with a new JQx Instance.</div> 
+
+<div><b>Note</b>: formerly known as <code>replaceMe</code>, which may still be used for now. <code>replaceMe</code> is candidate for future deprecation.</div>
+
+<div data-example>##EXAMPLECODE@replaceWithEx##</div></div>
+</template>
+
+<template data-id="debuglog_reversed" class="debuglog_reversed" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='<code>debugLog</code>'></div>
+<div data-text='1'><div>
+  By default logging starts with the oldest event logged. With This method on can 
+  reverse that to newest first. Use <code>debugLog.reversed<b>.on/off()</b></code>
+</div></div>
+</template>
+
+<template data-id="static_lenient" class="static_lenient" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='void'></div>
+<div data-text='1'><div>
+  A few HTML tags are prohibited (e.g. <code>script</code>). One can override it using
+  <code>$.lenient</code>. It is an <code>Object</code> with two methods:
+</div>
+
+<ul>
+  <li>use <code>$.lenient.on()</code> to allow the creation of not allowed HTML tags 
+    (e.g. <code>embed</code>)
+    <div class="note"><b style="color:red">
+      Note</b>: <code>$.lenient.on()</code> may introduce security problems. <b 
+      class="warn">Handle with care</b>!</div>
+  </li>
+  <li>(Default) use <code>$.lenient.off()</code> to use only permitted HTML tags.</li>
+</ul>
+
+<h3>
+  By default prohibited HTML tags:</h3> <ul>
+  <li>audio</li>
+  <li>embed</li>
+  <li>form</li>
+  <li>iframe</li>
+  <li>frameset</li>
+  <li>object</li>
+  <li>progress</li>
+  <li>script</li>
+  <li>template</li></ul>
+
+<div>To allow individual HTML tags, use <div class="linkLike" data-jumpkey="static_allowTag" data-action="jump2Nav"><code>$.allowTag(tagName)</code></div></div>
+
+<div>To prohibit individual HTML tags, use <div class="linkLike" data-jumpkey="static_prohibitTag" data-action="jump2Nav"><code>$.prohibitTag(tagName)</code></div></div></div>
+</template>
+
+<template data-id="static_at" class="static_at" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='n/a'></div>
+<div data-text='1'><div>
+  <code>at</code> is an <code>Object</code> containing eight properties to use for
+  mapping a created elements' position relative to its parent, 
+  in other words: the position parameter from the JQx constructor.
+</div>
+
+<div>For example:</div>
+
+<code>$(
+ "&lt;div>Hi there&lt;/div>" <b class="comment">/*[input]*/</b>, 
+  $("#someElem") <b class="comment">/*[root]*/</b>, 
+  <b>$.at.before</b>)</code>
+
+<div class="note"><b style="color:red">
+  Note</b>: one can provide keys <i>case insensitive</i>. So 
+  <code>$.at.afterend</code> is equivalent to 
+  <code>$.at.AfterEND</code>.
+</div>
+
+<div>Its keys (properties) are:</div>
+
+<ul>
+  <li>
+    <code>Before</code> or <code>BeforeBegin</code>: 
+    before [root], so [root] will be the first sibling of [input]</li>
+  <li>
+    <code>Start</code> or <code>AfterBegin</code>: 
+    after the begin of [root], so [input] as first element of [root]
+     (de facto <i>prepend</i>)
+  </li>
+  <li>
+    <code>End</code> or <code>BeforeEnd</code>:
+    before the end of [root], so [input] as last element of [root]
+   (de facto <i>append</i>)
+  </li>
+  <li>
+    <code>After</code> or <code>AfterEnd</code>: 
+    after [root], so [input] will be the first sibling of [root]</li>
+</ul>
+
+<div data-example>##EXAMPLECODE@staticAtEx##</div>
+
+</div>
+</template>
+
+<template data-id="static_editStylesheet" class="static_editStylesheet" data-is-deprecated="false">
+<div data-params='[{"id":"string. The id of the stylesheet to edit. If stylesheet#[id] does not exist, it will be created"}]'></div>
+<div data-return-value='Function'></div>
+<div data-text='1'><div>This factory function that creates (or retrieves) a stylesheet with the given <code>id</code> in the head of the document and returns a function to create/modify style rules in that stylesheet.</div>
+
+<div>See also <div data-action="jump2Nav" data-jumpkey="static_editCssRules" class="linkLike">the <code>editCssRules</code>documentation</div>.</div>
+
+<div data-example>##EXAMPLECODE@staticCreateStyleEx##</div>
+
+<div class="note">
+  <b>Note</b>: <code>editCssRule</code> uses the repository
+  <a target="_blank" href="https://github.com/KooiInc/LifeCSS">LifeCSS</a>,
+  which is integrated within the JQx-module
+</div></div>
+</template>
+
+<template data-id="static_Popup" class="static_Popup" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='Object<string, Function>'></div>
+<div data-text='1'><div>The built in Popup library.</div>
+
+<div>See <div data-action="jump2Nav" data-jumpgroup="popup" class="linkLike">the documentation</div>.</div></div>
+</template>
+
+<template data-id="instance_after" class="instance_after" data-is-deprecated="false">
+<div data-params='[{"elem2AddAfter":"JQx instance | HtmlElement | (valid) HTML string"}]'></div>
+<div data-return-value='JQx instance'></div>
+<div data-text='1'><div><code>.after</code> injects [elem2Add] into the parent of the current JQx instance, right <i>after</i> it. The original instance is replaced with an JQx instance containing both elements in its collection. The return value is the new instance.</div>
+
+<div data-example>##EXAMPLECODE@afterMeEx##</div></div>
+</template>
+
+<template data-id="instance_before" class="instance_before" data-is-deprecated="false">
+<div data-params='[{"elem2AddBefore":"JQx instance | HtmlElement | (valid) HTML string"}]'></div>
+<div data-return-value='JQx instance'></div>
+<div data-text='1'><div><code>.beforeMe</code> injects [elem2Add] into the parent of the current JQx instance, right <i>before</i> it. The original instance is replaced with an JQx instance containing both elements in its collection. The return value is the new instance.</div>
+
+<div data-example>##EXAMPLECODE@beforeMeEx##</div></div>
+</template>
+
+<template data-id="instance_nth$" class="instance_nth$" data-is-deprecated="false">
+<div data-params='[{"indexOrSelector":"string | number. An optional (valid) css selector."}]'></div>
+<div data-return-value='JQx instance'></div>
+<div data-text='1'><div>Alias for <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_single">[JQx instance].single</div>.</div>
+</div>
+</template>
+
+<template data-id="instance_render" class="instance_render" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='JQx instance | undefined'></div>
+<div data-text='1'><div>
+  <code>[JQx instance].render</code> is a <i>property</i> of a JQx instance.
+  It writes the JQx instance to the document (appends the instance element(s) 
+  to the current <code>document.body</code>).
+</div>
+<div>
+  It is the equivalent of calling the
+  <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_toDOM"
+    >[instance].toDOM</div> function with default parameters.
+</div>
+
+<div data-example>##EXAMPLECODE@renderEx##</div></div>
+</template>
+
+<template data-id="instance_renderTo" class="instance_renderTo" data-is-deprecated="false">
+<div data-params='[{"root":"HTMLElement | JQx instance (default: document.body)"},{"at":"string"}]'></div>
+<div data-return-value='JQx instance'></div>
+<div data-text='1'><div>
+  <code>renderTo</code> writes the JQx instance to [root] at position [at]
+</div>
+<div>
+  It is the equivalent of calling the
+  <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_toDOM"
+    >[instance].toDOM</div> function with parameters.
+</div>
+
+<div data-example>##EXAMPLECODE@renderToEx##</div></div>
+</template>

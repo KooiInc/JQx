@@ -36,7 +36,7 @@ function documentHandlingFactory($) {
   };
   
   function getCodeBody(acc, [functionName, handlerFunction]) {
-    handlerFunction = String(handlerFunction);
+    handlerFunction = String(handlerFunction).trim();
     return {
       ...acc,
       [functionName]: handlerFunction
