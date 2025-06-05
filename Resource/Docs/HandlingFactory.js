@@ -1088,7 +1088,10 @@ function clickActionsFactory($) {
       evt.preventDefault();
       $(".navGroup:not(.closed)").each(group => $(group).addClass("closed"));
       $(evt.target.closest(`.navGroup`)).removeClass("closed");
-      const aboutNavItem = $.node(`[data-for-id="${evt.target.dataset.navitem}"]`)
+      const navItemId = evt.target.dataset.navitem;
+      const aboutNavItem = navItemId.endsWith(`About`)
+        ? $.node(`[data-group-id="${navItemId}"]`)
+        : $.node(`[data-for-id="${navItemId}"]`);
       aboutNavItem.scrollIntoView();
       $(".selected").removeClass("selected");
       $(evt.target).addClass("selected");
