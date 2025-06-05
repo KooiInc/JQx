@@ -84,13 +84,11 @@ function clickActionsFactory($) {
   };
   const popup = $.Popup;
   const docsContainer = $.node(".docs");
-  const scrollPosition = () => $.node(`.container`).scrollBy(0, -20);
   const removeEx = (...rules2Remove) => setTimeout(() => {
     $('#tmpEx, [data-id="tmpEx"]').remove();
     rules2Remove.length > 0 && $.removeCssRule(...rules2Remove);
   }, 1500);
   const exDivStyle = (remove = false) => remove ? $.removeCssRule(`#tmpEx`) : $.editCssRule(`#tmpEx {color: green; font-weight: bold;}`);
-  $.log(`Documenter handling done.`);
   const getCurrentParagraph = evt => evt.target.closest(`.description`);
   return {
     popupTimedEx: () => {
