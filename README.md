@@ -15,7 +15,12 @@ It is developed in a modular fashion and uses plain ES20xx, so not really (or re
 
 The module was rewritten in 2023 in a <i>classfree object oriented</i> fashion, inspired by a <a target="_blank" href="https://youtu.be/XFTOG895C7c?t=2562">Douglas Crockford presentation</a>. 
 
-The objective is to ***not*** use `prototype` and `this` in the code.
+The objective was and is to ***not*** use `prototype` and `this` in the code.
+
+## Documentation/demo
+Documentation can be found @[https://kooiinc.codeberg.page/JQx/Resource/Docs/](https://kooiinc.codeberg.page/JQx/Resource/Docs/).
+
+A test and demo of this module can be found @[kooiinc.codeberg.page/JQx/Resource/Demo](https://kooiinc.codeberg.page/JQx/Resource/Demo/).
 
 ## Install/Import/Initialize
 
@@ -49,8 +54,3 @@ $.div(`Hello JQx!`).appendTo(document.body);
   // ...
 </script>
 ```
-## Documentation
-Documentation can be found @[https://kooiinc.codeberg.page/JQx/@main/Resource/Docs/](https://kooiinc.codeberg.page/JQx/@main/Resource/Docs/).
-
-## Demo and test
-A test and demo of this module can be found @[kooiinc.codeberg.page/@main/JQx/Resource/Demo](https://kooiinc.codeberg.page/JQx/@main/Resource/Demo/).
