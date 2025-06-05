@@ -25,7 +25,7 @@ function documentHandlingFactory($) {
       }
       // clicked header in doc
       if (itemFromDoc) {
-        return clickActions.jumpTo(itemFromDoc.id);
+        return clickActions.jumpTo(itemFromDoc.dataset.forId);
       }
       // clicked an element with data-action
       if ( action && clickActions[action] ) {
@@ -56,15 +56,20 @@ function documentHandlingFactory($) {
          const marge = docsTop - el.nextElementSibling?.offsetTop;
          return marge && marge <= -30;
       } );
-
+    
     if (nextHeader) {
-      const nextNavItem = $(`[data-navitem="#${nextHeader.querySelector(`h3`).id}"]`);
-
+      const nextNavItem = $(nextHeader).find$(`h3`);
+      
       if (!nextNavItem.hasClass(`selected`)) {
         $(`.navGroup:not(.closed)`).addClass(`closed`);
-        nextNavItem.closest(`.navGroup`).removeClass(`closed`);
         $(`.selected`).removeClass(`selected`);
-        nextNavItem.addClass(`selected`);
+        const itemId = nextNavItem.data.get(`forId`) ?? nextNavItem.data.get(`groupId`);
+        const navItem = $(`[data-navitem="${itemId}"]`);
+        
+        if (!navItem.is.empty) {
+            navItem.addClass(`selected`);
+            navItem.closest(`.navGroup`).removeClass(`closed`);
+        }
       }
     }
   }
@@ -821,7 +826,7 @@ function clickActionsFactory($) {
     staticDelegateEx: evt => {
       $.delegate(
         "click",
-        "#static_delegate",
+        "[data-for-id='static_delegate']",
         function(evt) {
           const $target = $(evt.target);
           
@@ -1067,24 +1072,33 @@ function clickActionsFactory($) {
       mNameElems.each( el => $(el).style({color: currentColor === brown ? "" : brown}) );
     },
     clickNavGroup: (evt, groupItem) => {
-      const isOpen = !$(groupItem).hasClass("closed");
+      const groupItem$ = $(groupItem);
+      const isOpen = !groupItem$.hasClass("closed");
       $(`.navGroup`).each(group => $(group).addClass("closed"));
-      $.node(`#${groupItem.dataset.group}_About`).scrollIntoView();
+      const selectChapter = groupItem.dataset.group + `_About`;
+      const groupElement = $.node(`h3[data-group-id="${selectChapter}"]`);
+      $.node(`h3[data-group-id="${selectChapter}"]`).scrollIntoView();
       $(`.selected`).removeClass("selected");
       $(`ul.navGroupItems li:first-child div[data-navitem]`, groupItem).addClass("selected");
-      scrollPosition();
-      !isOpen && groupItem.classList.remove("closed");
+      
+      if(!isOpen) {
+        groupItem$.removeClass("closed");
+      }
     },
     clickNavItem: evt => {
-      $(".navGroup").each(group => $(group).addClass("closed"));
+      evt.stopImmediatePropagation();
+      evt.preventDefault();
+      $(".navGroup:not(.closed)").each(group => $(group).addClass("closed"));
       $(evt.target.closest(`.navGroup`)).removeClass("closed");
-      $.node(evt.target.dataset.navitem).scrollIntoView();
+      const aboutNavItem = $.node(`[data-for-id="${evt.target.dataset.navitem}"]`)
+      aboutNavItem.scrollIntoView();
       $(".selected").removeClass("selected");
       $(evt.target).addClass("selected");
-      return scrollPosition();
+      
+      return $(evt.target.closest(`.navGroup`)).removeClass("closed");
     },
     jumpTo: key => {
-      const navItem = $(`[data-navitem='#${key}']`);
+      const navItem = $(`[data-navitem='${key}']`);
       navItem.trigger("click");
 
       if (navItem[0].offsetTop > $.node("#navigation").offsetHeight) {
@@ -1097,7 +1111,7 @@ function clickActionsFactory($) {
       if (linkOrigin) {
         const toGroup = linkOrigin.dataset.jumpgroup;
         const toKey = linkOrigin.dataset.jumpkey;
-        const jumpTo = toGroup ? $(`[data-group='${toGroup}']`) : $(`#${toKey}`);
+        const jumpTo = toGroup ? $(`[data-group='${toGroup}']`) : $(`[data-navitem="${toKey}"]`);
         
         return jumpTo.trigger("click");
       }

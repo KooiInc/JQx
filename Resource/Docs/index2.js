@@ -16,7 +16,6 @@ initialize();
 
 function initialize() {
   const handler = clientHandling;
-  $.delegate(`click`, handler);
   const docContainer = $(`.docs`);
   const groupOrder = ['jqx_About', 'static_About', 'instance_About', 'popup_About', 'debuglog_About'];
   const [jqxGroup, staticGroup, instanceGroup, popupGroup, debugLogGroup] = createGroups(docContainer, groupOrder);
@@ -24,7 +23,22 @@ function initialize() {
   createDocsGroup($.node(`[data-groupcontainer="instance_About"]`), `JQx instance`);
   createDocsGroup($.node(`[data-groupcontainer="popup_About"]`), `JQx.popup`);
   createDocsGroup($.node(`[data-groupcontainer="debuglog_About"]`), `JQx.debugLog`);
+  createNavigationBlock(groupOrder);
+  $.delegate(`click`, handler);
+  $.delegate(`scroll`, handler);
+  $(`[data-group="jqx"]`).trigger(`click`);
   Prism.highlightAll();
+}
+
+function createNavigationBlock(groupOrder) {
+  const navGroups = groupOrder.reduce((acc, group) =>
+    [...acc, {name: group, displayName: group.slice(0, group.indexOf(`About`)).toUpperCase()}], []);
+  navGroups.forEach( group => {
+    const displayName = createNavigationItems({
+      group: group,
+      displayName: group.displayName.slice(0, -1).replace(`JQL`, `JQx`)
+    });});
+  $(`.docBrowser`).before($(`#navigation`));
 }
 
 function paramStr2Div(value) {
@@ -34,21 +48,18 @@ function paramStr2Div(value) {
   })
 }
 
-function createParams(params) {
-  if (params?.length && params !== `None`) {
-    const mappedParams =
-      Object.entries(params).forEach(([key, val]) => {
-        const paramdiv =  `<div class="param"><code>${key}</code>: ${escHtml(val)}</div>`}, ``)
-    return $.virtual(`<div data-parameters><b>Parameters</b>${mapped.join('')}</div>`);
-  }
-  return $.span();
-}
-
 function escHtml(str) {
   return str
     .replace(/</g, `&lt;`)
     .replace(/&lt;code/g, `<code`)
     .replace(/&lt;\/code/g, `</code`);
+}
+
+function createParams(params) {
+  const mappedParams = Object.entries(params).reduce((acc, [key, val]) =>
+    acc.concat(`<div class="param"><code>${key}</code>: ${escHtml(val || ``)}</div>`), ``)
+    
+  return $.virtual(`<div data-parameters><b>Parameters</b>${mappedParams}</div>`);
 }
 
 function createDocsGroup(forContainer, header) {
@@ -61,18 +72,22 @@ function createDocsGroup(forContainer, header) {
   staticChapters.forEach(chapterTemplate => {
     const chapter = chapterTemplate.content;
     const chapterName = chapterTemplate.dataset.id;
-    const paramJSON = chapter.querySelector(`[data-params]`);
-    const params = paramJSON.textContent && createParams(JSON.parse(chapterJSON.textContent)) || $.span();
-    const returnValue = chapter.querySelector(`[data-return-value]`).textContent;
+    const paramJSON = chapter.querySelector(`[data-params]`).dataset?.params;
+    const params = paramJSON && !/none/i.test(paramJSON) && createParams(JSON.parse(paramJSON)[0]) || "";
+    const returnValue = escHtml(chapter.querySelector(`[data-return-value]`).dataset.returnValue);
     const chapterTextElement = $.div({class:"description"}, chapter.querySelector(`[data-text]`).innerHTML);
     const isDeprecated = chapterTemplate.dataset.isDeprecated === "true";
+    isDeprecated && chapterTextElement.prepend(`<b class="red">*Deprecated*</b>`);
+    const returns = returnValue.trim().length ?
+      $.div({class: "returnValue"}, `<b>Returns</b>: ${returnValue}`)
+      : ``;
     const chapterElement = $.div(
       {class: "paragraph", data: {for: chapterName}},
       `<h3 class="methodName" data-for-id="${chapterName}">
        ${getChapterName(chapterName, header, isDeprecated)}
       </h3>`,
-      $.virtual(params),
-      $.virtual(`<div class="returnValue"><b>Returns</b>: ${returnValue}</div>`),
+      params,
+      returns,
       chapterTextElement,
     ).renderTo(lastChapter, $.at.afterend);
     
@@ -109,7 +124,7 @@ function createExampleCodeElement(code) {
 
 function getChapterName(name, prefix, isDeprecated = false) {
   return `<span class="group">[${prefix}].</span
-    ><span${isDeprecated ? ` class="deprecated"` : ""}>${
+    ><span ${isDeprecated ? `class="deprecated"` : ""}>${
       name.slice(name.indexOf(`_`) + 1)}</span>`;
 }
 
@@ -149,20 +164,26 @@ function createGroupname(name) {
 function createNavigationItems({group, displayName}) {
   const ul = $(`<ul class="navGroup closed" data-group="${displayName.toLowerCase()}"/>`, $.node(`#navigation`));
   ul.append($(`<li class="grouped">${displayName}<ul class="navGroupItems"></ul></li>`));
-  chapters.filter(v => v.id.startsWith(group.displayName.toLowerCase()))
-    .sort( (a, b) => a.localeCompare(b) )
-    .forEach(item => {
-      const itemClean = item.replace(/([a-z])\$/gi, `$1_D`);
-      const isDeprecated = /--DEPRECATED/.test(documentationData[item]?.description);
+  
+  const data = chapters.map( chapter => {
+    const chapterId = chapter.dataset.id;
+    return {
+      label: chapterId,
+      isDeprecated: chapter.dataset.isDeprecated === "true",
+      shortName: chapterId.slice(chapterId.indexOf(`_`) + 1) };
+  } );
+  data.filter(v => v.label.startsWith(group.displayName.toLowerCase()))
+    .forEach( item => {
+      //const itemClean = item.label.replace(/([a-z])\$/gi, `$1_D`);
       $(`.navGroupItems`, ul[0])
         .append($(`
-            <li data-key="${itemClean}">
-            <div data-navitem="#${itemClean}"${isDeprecated ? ` class="deprecated"` : ``}>${
-          createGroupname(item)}</div></li>`));
+            <li data-key="${item.label}">
+            <div data-navitem="${item.label}"${
+              item.isDeprecated ? ` class="deprecated"` : ``}>${item.shortName}</div></li>`));
     });
+  
   return displayName;
 }
-
 async function fetchChapters() {
   const templatesImport = await fetch(`./templates.html`).then(r => r.text());
   $.allowTag(`template`);

@@ -21,26 +21,6 @@
   <i>manipulate</i> (collections of) HTML elements in your HTML document.
 </div>
 
-<div>This document is completely built using JQx. This is how the html of this page looks:</div>
-
-<div data-example>&lt;!DOCTYPE html>
-&lt;html lang="en">
-&lt;head>
-  &lt;meta charset="UTF-8">
-  &lt;meta name="viewport" content="width=device-width, initial-scale=1">
-  &lt;title>JQx Documentation&lt;/title>
-  &lt;link rel="icon" href="../Common/codebergicon.ico" type="image/x-icon">
-  &lt;link rel="stylesheet" href="index.css">
-  &lt;link rel="stylesheet" href="../Common/prism.css">
-  &lt;script src="../Common/prism.js">&lt;/script>
-&lt;/head>
-&lt;body>
-  &lt;div id="navigation">&lt;/div>
-  &lt;div class="docs">&lt;/div>
-  &lt;script src="./index.js" type="module">&lt;/script>
-&lt;/body>
-&lt;/html></div>
-
 <div> An example-/demo-page can be found @<a
     href="//kooiinc.codeberg.page/JQx/Resource/Docs/" target="_blank"
   >https://kooiinc.codeberg.page/JQx/Resource/Demo</a>
@@ -123,9 +103,31 @@
 </div>
 
 <div class="note">
-  <b>Note</b>: The examples in this document <i>deliberately</i> use all kinds of JQx methods, to
+  <b>Note</b>: the examples in this document <i>deliberately</i> use all kinds of JQx methods, to
   familiarize you with them.
-</div></div>
+</div>
+
+<div class="note">
+  <b>Note:</b> this document is <i>completely</i> built using JQx. This is how the html of this page looks:
+</div>
+
+<div data-example>&lt;!DOCTYPE html>
+&lt;html lang="en">
+&lt;head>
+  &lt;meta charset="UTF-8">
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1">
+  &lt;title>JQx Documentation&lt;/title>
+  &lt;link rel="icon" href="../Common/codebergicon.ico" type="image/x-icon">
+  &lt;link rel="stylesheet" href="index.css">
+  &lt;link rel="stylesheet" href="../Common/prism.css">
+  &lt;script src="../Common/prism.js">&lt;/script>
+&lt;/head>
+&lt;body>
+  &lt;div id="navigation">&lt;/div>
+  &lt;div class="docs">&lt;/div>
+  &lt;script src="./index.js" type="module">&lt;/script>
+&lt;/body>
+&lt;/html></div></div>
 </template>
 
 <template data-id="instance_text" class="instance_text" data-is-deprecated="false">
@@ -316,8 +318,8 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
   <li><code>readystatechange</code></li>
 </ul>
 
-<div>The example creates a click listener/handler for the header of this chapter ("[JQx].delegate"). The handler changes the color of all headers (by changing the value of the corresponding variable within <code>:root</code>). It is a specific click handler for this header only (but all headers are affected: so click on the header '[JQx].delegate' changes the color of all headers, clicking on another header handles
-the already defined click handler (scroll to it)).</div>
+<div>The example creates a click listener/handler for the header of this chapter (<b>[JQx].delegate</b>). The handler changes the color of all headers (by changing the value of the corresponding variable within <code>:root</code>). It is a specific click handler for this header only (but all headers are affected: so click on the header of this chapter changes the 
+color of <i>all</i> headers, clicking on another header handles the already defined click handler (scroll to it)).</div>
 
 <div data-example>##EXAMPLECODE@staticDelegateEx##</div></div>
 </template>
@@ -1210,7 +1212,7 @@ $.TEMPLATE({id: "myTemplate", innerHTML: "..."}).render;</div>
 </template>
 
 <template data-id="static_prohibitTag" class="static_prohibitTag" data-is-deprecated="false">
-<div data-params='[{"tagName":""}]'></div>
+<div data-params='[{"tagName":"string (a <code>tagName</code>, e.g. \"embed\")"}]'></div>
 <div data-return-value='Nothing'></div>
 <div data-text='1'><div>The creation of most html-tags is allowed by default. You can prohibit the creation of a tag using this the <code>prohibitTag</code> method, e.g. <code>$.prohibitTag(`dialog`)</code>.</div>
 
@@ -1218,11 +1220,10 @@ $.TEMPLATE({id: "myTemplate", innerHTML: "..."}).render;</div>
 Prohibiting a <code>tagName</code> also disables its use as a static JQx extension method. So
 </div>
 
-<pre class="line-numbers language-javascript" tabindex="0"
-  ><code class="language-javascript"
-   >$.prohibitTag('template');
-// this will throw a TypeError (because the result of $.TEMPLATE_JQx(...) is undefined
-$.TEMPLATE_JQx({id: "myTemplate", innerHTML: "..."}).toDOM();</code></pre></div>
+<div data-example>$.prohibitTag('template');
+// this will show an error message in the console
+// Message: JQx: "template" not allowed, not rendered
+$.TEMPLATE({id: "myTemplate", innerHTML: "..."})?.toDOM();</div></div>
 </template>
 
 <template data-id="instance_length" class="instance_length" data-is-deprecated="false">
