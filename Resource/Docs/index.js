@@ -1,211 +1,196 @@
 import {default as CreateComponent, createOrRetrieveShadowRoot}
   from "https://cdn.jsdelivr.net/gh/KooiInc/es-webcomponent-factory/Bundle/WebComponentFactory.min.js"
+import handlerFactory  from "./HandlingFactory.js";
 Prism.manual = true;
 const isDev = location.host.startsWith(`dev`) || location.host.startsWith(`localhost`);
 const importLink =  isDev ?
   `../../index.js` :
   `../../Bundle/jqx.min.js`;
 const $ = (await import(importLink)).default;
+window.$ = $;
+const {clientHandling, allExampleActions} = handlerFactory($);
 createCopyrightComponent();
 
-window.$ = $;
-const codeReplacements = new Map( [
-  [`<`, `&lt;`],
-  [`>`, `&gt;`],
-  [`&`, a => `&amp;${a[1]}`],
-  [`linebreak`, `\n<br>`],
-  [`reducebreaks`, `\n\n`] ] );
+const chapters = await fetchChapters();
+initialize();
 
-const setAllCodeStyling = el => {
-  const pre = el.closest(`pre`);
-  return !pre ? $(el).addClass(`inline`) : $(pre).addClass(`language-javascript`, `line-numbers`);
+function initialize() {
+  const handler = clientHandling;
+  const docContainer = $(`.docs`);
+  const groupOrder = ['jqx_About', 'static_About', 'instance_About', 'popup_About', 'debuglog_About'];
+  const [jqxGroup, staticGroup, instanceGroup, popupGroup, debugLogGroup] = createGroups(docContainer, groupOrder);
+  createDocsGroup($.node(`[data-groupcontainer="static_About"]`), `JQx`);
+  createDocsGroup($.node(`[data-groupcontainer="instance_About"]`), `JQx instance`);
+  createDocsGroup($.node(`[data-groupcontainer="popup_About"]`), `JQx.popup`);
+  createDocsGroup($.node(`[data-groupcontainer="debuglog_About"]`), `JQx.debugLog`);
+  createNavigationBlock(groupOrder);
+  $.delegate(`click`, handler);
+  $.delegate(`scroll`, handler);
+  $(`[data-group="jqx"]`).trigger(`click`);
+  Prism.highlightAll();
 }
-// wrap into .container
-const docContainer = $(`.docs`);
-$.div({class: `container`})
-  .append($.div({class:`docBrowser`})
-    .append($(`#navigation`), docContainer))
-  .toDOM();
-$.log(`Wrapped into container.`);
 
-const perform = performance.now();
-document.title = isDev ? `##DEV## ${document.title}` : document.title;
-if (isDev) {
-  $(`link[rel="icon"]`).replaceWith($.LINK({href: `./devIco.png`, rel: `icon`}));
-  window.jqx = $;
-  window.IS = $.IS;
-  window.popup = $.Popup;
+function createNavigationBlock(groupOrder) {
+  const navGroups = groupOrder.reduce((acc, group) =>
+    [...acc, {name: group, displayName: group.slice(0, group.indexOf(`About`)).toUpperCase()}], []);
+  navGroups.forEach( group => {
+    const displayName = createNavigationItems({
+      group: group,
+      displayName: group.displayName.slice(0, -1).replace(`JQL`, `JQx`)
+    });});
+  $(`.docBrowser`).before($(`#navigation`));
 }
-$.log(`Start documenter...`);
-const randomNumber = (max, min = 0) => {
-  [max, min] = [Math.floor(max), Math.ceil(min)];
-  return Math.floor( (crypto.getRandomValues(new Uint32Array(1))[0] / 2 ** 32 )
-    * (max - min + 1) + min ); };
-let documentationData = await fetch(`./documentation.json`).then(r => r.json());
-$.log(`Fetched documenter json...`);
-import handlerFactory  from "./HandlingFactory.js";
-const {clientHandling, allExampleActions} = handlerFactory($);
-const groupOrder = ['jqx_About', 'static_About', 'instance_About', 'popup_About', 'debuglog_About'];
-const groups = groupOrder.reduce((acc, group) =>
-  [...acc, {name: group, displayName: group.slice(0, group.indexOf(`About`)).toUpperCase().replace(`X`, `x`)}], []);
-const sliceName = name => name.slice(name.indexOf(`_`) + 1);
-const createNavigationItems = ({group, displayName}) => {
+
+function paramStr2Div(value) {
+  return Object.entries(value).map( ([key, val]) => {
+    const prm = /_isobject/i.test(key) ? `[Object&lt;string, any>]` : key;
+    return `<div class="param"><code>${escHtml(prm)}</code>: ${escHtml(val)}</div>`;
+  })
+}
+
+function escHtml(str) {
+  return str
+    .replace(/</g, `&lt;`)
+    .replace(/&lt;code/g, `<code`)
+    .replace(/&lt;\/code/g, `</code`);
+}
+
+function createParams(params) {
+  const mappedParams = Object.entries(params).reduce((acc, [key, val]) =>
+    acc.concat(`<div class="param"><code>${key}</code>: ${escHtml(val || ``)}</div>`), ``)
+    
+  return $.virtual(`<div data-parameters><b>Parameters</b>${mappedParams}</div>`);
+}
+
+function createDocsGroup(forContainer, header) {
+  let lastChapter = forContainer;
+  const groupId = lastChapter.dataset.groupcontainer;
+  const prfx = groupId.slice(0, groupId.indexOf(`_`));
+  const staticChapters =
+    chapters.filter(chapter => chapter.dataset.id.startsWith(prfx) && !/about$/i.test(chapter.dataset.id))
+    .map(chapter => chapter);
+  staticChapters.forEach(chapterTemplate => {
+    const chapter = chapterTemplate.content;
+    const chapterName = chapterTemplate.dataset.id;
+    const paramJSON = chapter.querySelector(`[data-params]`).dataset?.params;
+    const params = paramJSON && !/none/i.test(paramJSON) && createParams(JSON.parse(paramJSON)[0]) || "";
+    const returnValue = escHtml(chapter.querySelector(`[data-return-value]`).dataset.returnValue);
+    const chapterTextElement = $.div({class:"description"}, chapter.querySelector(`[data-text]`).innerHTML);
+    const isDeprecated = chapterTemplate.dataset.isDeprecated === "true";
+    isDeprecated && chapterTextElement.prepend(`<b class="red">*Deprecated*</b>`);
+    const returns = returnValue.trim().length ?
+      $.div({class: "returnValue"}, `<b>Returns</b>: ${returnValue}`)
+      : ``;
+    const chapterElement = $.div(
+      {class: "paragraph", data: {for: chapterName}},
+      `<h3 class="methodName" data-for-id="${chapterName}">
+       ${getChapterName(chapterName, header, isDeprecated)}
+      </h3>`,
+      params,
+      returns,
+      chapterTextElement,
+    ).renderTo(lastChapter, $.at.afterend);
+    
+    chapterElement.find$(`[data-example]`).each( codeElem => {
+      const el$ = codeElem.textContent;
+      codeElem.textContent = ``;
+      $(codeElem).replaceWith(createExampleCodeElement(el$));
+    });
+    
+    lastChapter = chapterElement;
+  });
+}
+
+function getCodeElement(content) {
+  return $.pre(
+    {class: "line-numbers language-javascript"}, $.code({class: "language-javascript"}, content)
+  );
+}
+
+function createExampleCodeElement(code) {
+  const codeId = code.split(/(##)|@/)[4]
+  const codeBody = allExampleActions[codeId];
+  
+  if (!codeBody) {
+    return getCodeElement(escHtml(code).trim());
+  }
+  
+  const theCodeElement = getCodeElement(codeBody);
+  
+  return $.div({class: "exContainer"}, `<h3 className="example">Example</h3>`)
+    .append(theCodeElement)
+    .append($.virtual(`<button class="exRunBttn" data-action="${codeId}">Try it</button>`));
+}
+
+function getChapterName(name, prefix, isDeprecated = false) {
+  return `<span class="group">[${prefix}].</span
+    ><span ${isDeprecated ? `class="deprecated"` : ""}>${
+      name.slice(name.indexOf(`_`) + 1)}</span>`;
+}
+
+function createGroups(docContainer, groupOrder) {
+  const groupElements = groupOrder
+    .map(group => chapters.find(el => el.dataset.id === group))
+    .map(groupTemplate => {
+      const groupId = groupTemplate.dataset.id;
+      const displayName = createGroupname(groupId);
+      const text = groupTemplate.content.querySelector(`[data-text]`).outerHTML;
+      // TODO
+      return $.div(
+        { data: {groupcontainer: groupId}, class: "description" },
+        `<h3 class="groupHeader" data-group-id="${groupId}">${displayName}</h3>`)
+        .append(text)
+    });
+  
+  $.div({class: `container`})
+    .append(docContainer
+      .append($.div({class: `docBrowser`}, ...groupElements)))
+    .render;
+  
+  $(`[data-example]`).each( codeElem => {
+    const elText = codeElem.textContent;
+    codeElem.textContent = ``;
+    $(codeElem).replaceWith(createExampleCodeElement(elText));
+  });
+  
+  return $.nodes(`[data-groupcontainer]`);
+}
+
+function createGroupname(name) {
+  const displayName = name.slice(0, name.indexOf(`_`)).toUpperCase().replace('X', `x`);
+  return displayName.startsWith(`JQx`) ? `<span class="jqxTitle"><b>JQ</b>uery</b>-<b>x</b></span>` : displayName;
+}
+
+function createNavigationItems({group, displayName}) {
   const ul = $(`<ul class="navGroup closed" data-group="${displayName.toLowerCase()}"/>`, $.node(`#navigation`));
   ul.append($(`<li class="grouped">${displayName}<ul class="navGroupItems"></ul></li>`));
-  Object.keys(documentationData).filter(v => v.startsWith(group.displayName.toLowerCase()))
-    .sort( (a, b) => a.localeCompare(b) )
-    .forEach(item => {
-      const itemClean = item.replace(/([a-z])\$/gi, `$1_D`);
-      const isDeprecated = /--DEPRECATED/.test(documentationData[item]?.description);
+  
+  const data = chapters.map( chapter => {
+    const chapterId = chapter.dataset.id;
+    return {
+      label: chapterId,
+      isDeprecated: chapter.dataset.isDeprecated === "true",
+      shortName: chapterId.slice(chapterId.indexOf(`_`) + 1) };
+  } );
+  data.filter(v => v.label.startsWith(group.displayName.toLowerCase()))
+    .forEach( item => {
+      //const itemClean = item.label.replace(/([a-z])\$/gi, `$1_D`);
       $(`.navGroupItems`, ul[0])
         .append($(`
-            <li data-key="${itemClean}">
-            <div data-navitem="#${itemClean}"${isDeprecated ? ` class="deprecated"` : ``}>${
-              sliceName(item)}</div></li>`));
+            <li data-key="${item.label}">
+            <div data-navitem="${item.label}"${
+              item.isDeprecated ? ` class="deprecated"` : ``}>${item.shortName}</div></li>`));
     });
+  
   return displayName;
-};
-const docsContainer = $.node(`.docs`);
-const handler = clientHandling;
-$.delegate(`click`, handler);
-$.delegate(`scroll`, `.container`, handler);
-const codeMapper = (code, i) => {
-  const cleanedCode = code.trim().replace(/\n{3,}/g, codeReplacements.get(`reducebreaks`));
-
-  return `<div class="exContainer"><h3 class="example">Example${
-    i > 0 ? ` ${i + 1}` : ``}</h3><pre><code>${cleanedCode}</code></pre></div>`;
-};
-const getCodeBody = fn => {
-  fn = String(fn);
-  return fn.slice(fn.indexOf(`{`)+1, -1).replace(/\n {6}/g, `\n`).trim();
 }
-const convertExamples = descriptionValue => {
-  const re = /(?<=<example>)(.|\n)*?(?=<\/example>)/gm;
-  const exampleCode = (descriptionValue.match(re) || []).map( (code, i) => codeMapper(code, i) );
-  const replaceCB = () => {
-    let code = exampleCode.shift();
-    
-    if (/##EXAMPLECODE/.test(code)) {
-      const actionMethodName = code.slice(code.indexOf(`@`) + 1).split(`#`)[0];
-      code = code.replace(/##.+##/, allExampleActions[actionMethodName]) +
-        `<button class="exRunBttn" data-action="${actionMethodName}">Try it</button>`;
-    }
-
-    return code;
-  }
-  
-  return descriptionValue.replace(/<example>(.|\n)*?<\/example>/g, replaceCB);
-};
-const groupWithExamples = description => /<example>/.test(description) ? convertExamples(description) : description;
-const escHtml = str => str
-  .replace(/</g, `&lt;`)
-  .replace(/&lt;code/g, `<code`)
-  .replace(/&lt;\/code/g, `</code`);
-const paramStr2Div = value => Object.entries(value).map( ([key, val]) => {
-  const prm = /_isobject/i.test(key) ? `[Object&lt;string, any>]` : key;
-  return `<div class="param"><code>${escHtml(prm)}</code>: ${escHtml(val)}</div>`;
-});
-
-// modified for JQx
-groups.forEach( group => {
-  const displayName = createNavigationItems({
-    group: group,
-    displayName: group.displayName.slice(0, -1).replace(`JQL`, `JQx`)
-  });
-
-  // create corresponding documentation items in docs
-  Object.entries(documentationData)
-    .filter( ([itemKey, ]) => itemKey.startsWith(`${group.displayName.toLowerCase()}`))
-    .sort( ([key1,], [key2,]) => key1.localeCompare(key2))
-    .forEach( ([itemName, itemValue]) => {
-      itemValue.description = itemValue.description.trim();
-      const isDeprecated = /--DEPRECATED/.test(itemValue.description);
-      const itemNameClean = sliceName(itemName);
-      let params;
-      let exampleCode = [];
-      const itemGroupLookup = {
-        instance: `[JQx instance].`,
-        popup: `[JQx.Popup].`,
-        debuglog: `[debugLog].`,
-        static: `[JQx].`
-      }
-
-      if (itemValue.params?.length) {
-        const paramDivs = itemValue.params.reduce((acc, value) => [...acc, paramStr2Div(value)], []);
-        params = `<div data-parameters><b>Parameters</b>${paramDivs.join('')}</div>`;
-      }
-
-      // insert formatted example code if applicable
-      if (/<example>/.test(itemValue.description)) {
-        itemValue.description = convertExamples(itemValue.description);
-      }
-
-      if (itemNameClean === `About`) {
-        return $(`<div data-groupContainer="${displayName}" class="description">
-          <h3 class="groupHeader" id="${group.name}">${displayName}</h3>${
-          itemValue.description.replace(/\n{3,}/g, `\n`)}</div>`, docsContainer);
-      }
-
-      // modified for JQx
-      $(`
-        <div class="paragraph" data-for="${itemNameClean.replace(/([a-z])\$/gi, `$1_D`)}">
-          <h3 class="methodName" id="${itemName.replace(/([a-z])\$/gi, `$1_D`)}">
-            <span class="group">${itemGroupLookup[itemName.slice(0, itemName.indexOf(`_`))].replace(`L`, `x`)}</span
-            ><span${isDeprecated ? ` class="deprecated"` : ""}>${itemNameClean}</span>
-          </h3>
-          ${params ?? ``}
-          <div class="returnValue"><b>Returns</b>: ${itemValue.returnValue}</div>
-          <div class="description">${isDeprecated ? `<b class="red">*deprecated</b> ` : ``}${
-              itemValue.description.replace(/\n{2,}/g, `\n`)}</div>
-        </div>`, docsContainer);
-    });
-});
-
-$(`code`).each(setAllCodeStyling);
-$.log(`Documenter json parsed to DOM.`);
-
-// free some memory
-documentationData = null;
-
-// remove loading message
-$(`.docs`).removeClass(`loading`);
-
-//format the code blocks
-Prism.highlightAll();
-$.log(`Code formatting done.`);
-
-// navigate to top
-$(`#jqx_About`).html(` (<span class="jqxTitle"><b>JQ</b>uery<b>-x</span>)`, true);
-
-// display the first item
-$(`[data-group="jqx"]`).trigger(`click`);
-$.log(`Navigation triggered.`);
-$.log(`Documenter implementation took ${((performance.now() - perform)/1000).toFixed(3)} seconds`);
-
-const loadItem = QS2Obj();
-
-if (loadItem.load) {
-  const load = loadItem.load.replace(/about/, `About`);
-  const item2Load = $(findItemCaseInsensitive(load));
-  !item2Load.is.empty && item2Load.trigger(`click`);
-}
-
-function findItemCaseInsensitive(loadItemKey) {
-  return $.nodes(`[data-navitem]`)
-    .find(el => el.dataset.navitem?.toLowerCase() === `#${loadItemKey.toLowerCase()}`);
-}
-
-function QS2Obj() {
-  const search = location.search
-  if (search.length > 1) {
-    const search = location.search.slice(1);
-    return search.split(`&`).reduce((acc, item) => {
-      const [key, value] = item.split(`=`);
-      return {...acc, [key]: value};
-    }, {});
-  }
-  
-  return {};
+async function fetchChapters() {
+  const templatesImport = await fetch(`./templates.html`).then(r => r.text());
+  $.allowTag(`template`);
+  $.log(`Fetched documenter templates...`);
+  const templatesElsSortedById = $.div({html: templatesImport}).find$(`template`).collection
+    .sort((el1, el2) => el1.dataset.id.localeCompare(el2.dataset.id));
+  return templatesElsSortedById;
 }
 
 function createCopyrightComponent() {
