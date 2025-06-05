@@ -5,8 +5,6 @@
     ><img src="https://img.shields.io/npm/v/jqx-es.svg?labelColor=cb3837&logo=npm&color=dcfdd9"></a>
 </div>
 
-## *Work in progress*: migrating (and renaming) from GitHUB JQL to Codeberg JQx
-
 # JQx
 
 <h3>JQuery - the good parts redone</h3>
