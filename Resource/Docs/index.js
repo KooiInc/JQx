@@ -2,43 +2,42 @@ const perform = performance.now();
 import {default as CreateComponent, createOrRetrieveShadowRoot} from "./WebComponentFactory.min.js";
 // ^ see https://cdn.jsdelivr.net/gh/KooiInc/es-webcomponent-factor
 import handlerFactory  from "./HandlingFactory.js";
-Prism.manual = true;
 const isDev = location.host.startsWith(`dev`) || location.host.startsWith(`localhost`);
 const importLink =  isDev ?
   `../../index.js` :
   `../../Bundle/jqx.min.js`;
 const $ = (await import(importLink)).default;
 window.$ = $;
-const {clientHandling, allExampleActions} = handlerFactory($);
-createCopyrightComponent();
-let chapters = await fetchChapters();
+const {clientHandling, allExampleActions, documentationTemplates, docContainer, orderedGroups} = await getUsedVariablesInTopLevelScope();
+
 createDocument();
 
 function createDocument() {
+  createCopyrightComponent();
+  setupHandling();
+  createAboutChapters();
+  createGroupChapters();
+  createNavigationBlock();
+  documentCreationDone();
+}
+
+function setupHandling() {
   const handler = clientHandling;
-  const docContainer = $(`.docs`);
-  const groupOrder = ['jqx_About', 'static_About', 'instance_About', 'popup_About', 'debuglog_About'];
-  const [jqxGroup, staticGroup, instanceGroup, popupGroup, debugLogGroup] = createGroups(docContainer, groupOrder);
-  $.log(`Group chapters created ...`);
+  $.delegate(`click`, handler);
+  $.delegate(`scroll`, handler);
+  $.log(`Event handling set ...`);
+}
+
+function createGroupChapters() {
   createDocsGroup($.node(`[data-groupcontainer="static_About"]`), `JQx`);
   createDocsGroup($.node(`[data-groupcontainer="instance_About"]`), `JQx instance`);
   createDocsGroup($.node(`[data-groupcontainer="popup_About"]`), `JQx.popup`);
   createDocsGroup($.node(`[data-groupcontainer="debuglog_About"]`), `JQx.debugLog`);
-  $.log(`Chapters created ...`);
-  createNavigationBlock(groupOrder);
-  $.log(`Navigation created ...`);
-  $.delegate(`click`, handler);
-  $.delegate(`scroll`, handler);
-  $.log(`Event handling set ...`);
-  $(`[data-group="jqx"]`).trigger(`click`);
-  Prism.highlightAll();
-  chapters = null;
-  $.log(`Document creation implementation (including imports and formatting code) took ${
-    ((performance.now() - perform)/1000).toFixed(3)} seconds`);
+  $.log(`Documentation chapters created ...`);
 }
 
-function createNavigationBlock(groupOrder) {
-  const navGroups = groupOrder.reduce((acc, group) =>
+function createNavigationBlock() {
+  const navGroups = orderedGroups.reduce((acc, group) =>
     [...acc, {name: group, displayName: group.slice(0, group.indexOf(`About`)).toUpperCase()}], []);
   navGroups.forEach( group => {
     const displayName = createNavigationItems({
@@ -46,6 +45,7 @@ function createNavigationBlock(groupOrder) {
       displayName: group.displayName.slice(0, -1).replace(`JQL`, `JQx`)
     });});
   $(`.docBrowser`).before($(`#navigation`));
+  $.log(`Navigation block created ...`);
 }
 
 function createDocsGroup(forContainer, header) {
@@ -53,7 +53,7 @@ function createDocsGroup(forContainer, header) {
   const groupId = lastChapter.dataset.groupcontainer;
   const prfx = groupId.slice(0, groupId.indexOf(`_`));
   const staticChapters =
-    chapters.filter(chapter => chapter.dataset.id.startsWith(prfx) && !/about$/i.test(chapter.dataset.id))
+    documentationTemplates.templates.filter(chapter => chapter.dataset.id.startsWith(prfx) && !/about$/i.test(chapter.dataset.id))
       .map(chapter => chapter);
   staticChapters.forEach(chapterTemplate => {
     const chapter = chapterTemplate.content;
@@ -135,14 +135,14 @@ function getChapterName(name, prefix, isDeprecated = false) {
       name.slice(name.indexOf(`_`) + 1)}</span>`;
 }
 
-function createGroups(docContainer, groupOrder) {
-  const groupElements = groupOrder
-    .map(group => chapters.find(el => el.dataset.id === group))
+function createAboutChapters() {
+  const groupElements = orderedGroups
+    .map(group => documentationTemplates.templates.find(el => el.dataset.id === group))
     .map(groupTemplate => {
       const groupId = groupTemplate.dataset.id;
       const displayName = createGroupname(groupId);
       const text = groupTemplate.content.querySelector(`[data-text]`).outerHTML;
-      // TODO
+      
       return $.div(
         { data: {groupcontainer: groupId}, class: "description" },
         `<h3 class="groupHeader" data-group-id="${groupId}">${displayName}</h3>`)
@@ -160,7 +160,7 @@ function createGroups(docContainer, groupOrder) {
     $(codeElem).replaceWith(createExampleCodeElement(elText));
   });
   
-  return $.nodes(`[data-groupcontainer]`);
+  $.log(`"About" chapters created ...`);
 }
 
 function createGroupname(name) {
@@ -172,7 +172,7 @@ function createNavigationItems({group, displayName}) {
   const ul = $(`<ul class="navGroup closed" data-group="${displayName.toLowerCase()}"/>`, $.node(`#navigation`));
   ul.append($(`<li class="grouped">${displayName}<ul class="navGroupItems"></ul></li>`));
   
-  const data = chapters.map( chapter => {
+  const data = documentationTemplates.templates.map( chapter => {
     const chapterId = chapter.dataset.id;
     return {
       label: chapterId,
@@ -191,13 +191,31 @@ function createNavigationItems({group, displayName}) {
   
   return displayName;
 }
-async function fetchChapters() {
+
+function documentCreationDone() {
+  $(`[data-group="jqx"]`).trigger(`click`);
+  Prism.highlightAll();
+  delete documentationTemplates.templates;
+  $.log(`Document creation/implementation (including imports and formatting code) took ${
+    ((performance.now() - perform)/1000).toFixed(3)} seconds`);
+}
+
+async function getUsedVariablesInTopLevelScope() {
+  const {clientHandling, allExampleActions} = handlerFactory($);
+  let documentationTemplates = await fetchAllChaptersFromTemplateDocument();
+  const templates = documentationTemplates.templates;
+  const docContainer = $(`.docs`);
+  const orderedGroups = ['jqx_About', 'static_About', 'instance_About', 'popup_About', 'debuglog_About'];
+  return {clientHandling, allExampleActions, documentationTemplates, docContainer, orderedGroups};
+}
+
+async function fetchAllChaptersFromTemplateDocument() {
   const templatesImport = await fetch(`./templates.html`).then(r => r.text());
   $.allowTag(`template`);
   $.log(`Fetched documenter templates...`);
   const templatesElsSortedById = $.div({html: templatesImport}).find$(`template`).collection
     .sort((el1, el2) => el1.dataset.id.localeCompare(el2.dataset.id));
-  return templatesElsSortedById;
+  return {templates: templatesElsSortedById};
 }
 
 function createCopyrightComponent() {
