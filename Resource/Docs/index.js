@@ -1,5 +1,6 @@
-import {default as CreateComponent, createOrRetrieveShadowRoot}
-  from "https://cdn.jsdelivr.net/gh/KooiInc/es-webcomponent-factory/Bundle/WebComponentFactory.min.js"
+const perform = performance.now();
+import {default as CreateComponent, createOrRetrieveShadowRoot} from "./WebComponentFactory.min.js";
+// ^ see https://cdn.jsdelivr.net/gh/KooiInc/es-webcomponent-factor
 import handlerFactory  from "./HandlingFactory.js";
 Prism.manual = true;
 const isDev = location.host.startsWith(`dev`) || location.host.startsWith(`localhost`);
@@ -10,24 +11,30 @@ const $ = (await import(importLink)).default;
 window.$ = $;
 const {clientHandling, allExampleActions} = handlerFactory($);
 createCopyrightComponent();
+let chapters = await fetchChapters();
+createDocument();
 
-const chapters = await fetchChapters();
-initialize();
-
-function initialize() {
+function createDocument() {
   const handler = clientHandling;
   const docContainer = $(`.docs`);
   const groupOrder = ['jqx_About', 'static_About', 'instance_About', 'popup_About', 'debuglog_About'];
   const [jqxGroup, staticGroup, instanceGroup, popupGroup, debugLogGroup] = createGroups(docContainer, groupOrder);
+  $.log(`Group chapters created ...`);
   createDocsGroup($.node(`[data-groupcontainer="static_About"]`), `JQx`);
   createDocsGroup($.node(`[data-groupcontainer="instance_About"]`), `JQx instance`);
   createDocsGroup($.node(`[data-groupcontainer="popup_About"]`), `JQx.popup`);
   createDocsGroup($.node(`[data-groupcontainer="debuglog_About"]`), `JQx.debugLog`);
+  $.log(`Chapters created ...`);
   createNavigationBlock(groupOrder);
+  $.log(`Navigation created ...`);
   $.delegate(`click`, handler);
   $.delegate(`scroll`, handler);
+  $.log(`Event handling set ...`);
   $(`[data-group="jqx"]`).trigger(`click`);
   Prism.highlightAll();
+  chapters = null;
+  $.log(`Document creation implementation (including imports and formatting code) took ${
+    ((performance.now() - perform)/1000).toFixed(3)} seconds`);
 }
 
 function createNavigationBlock(groupOrder) {
@@ -41,34 +48,13 @@ function createNavigationBlock(groupOrder) {
   $(`.docBrowser`).before($(`#navigation`));
 }
 
-function paramStr2Div(value) {
-  return Object.entries(value).map( ([key, val]) => {
-    const prm = /_isobject/i.test(key) ? `[Object&lt;string, any>]` : key;
-    return `<div class="param"><code>${escHtml(prm)}</code>: ${escHtml(val)}</div>`;
-  })
-}
-
-function escHtml(str) {
-  return str
-    .replace(/</g, `&lt;`)
-    .replace(/&lt;code/g, `<code`)
-    .replace(/&lt;\/code/g, `</code`);
-}
-
-function createParams(params) {
-  const mappedParams = Object.entries(params).reduce((acc, [key, val]) =>
-    acc.concat(`<div class="param"><code>${key}</code>: ${escHtml(val || ``)}</div>`), ``)
-    
-  return $.virtual(`<div data-parameters><b>Parameters</b>${mappedParams}</div>`);
-}
-
 function createDocsGroup(forContainer, header) {
   let lastChapter = forContainer;
   const groupId = lastChapter.dataset.groupcontainer;
   const prfx = groupId.slice(0, groupId.indexOf(`_`));
   const staticChapters =
     chapters.filter(chapter => chapter.dataset.id.startsWith(prfx) && !/about$/i.test(chapter.dataset.id))
-    .map(chapter => chapter);
+      .map(chapter => chapter);
   staticChapters.forEach(chapterTemplate => {
     const chapter = chapterTemplate.content;
     const chapterName = chapterTemplate.dataset.id;
@@ -99,6 +85,27 @@ function createDocsGroup(forContainer, header) {
     
     lastChapter = chapterElement;
   });
+}
+
+function paramStr2Div(value) {
+  return Object.entries(value).map( ([key, val]) => {
+    const prm = /_isobject/i.test(key) ? `[Object&lt;string, any>]` : key;
+    return `<div class="param"><code>${escHtml(prm)}</code>: ${escHtml(val)}</div>`;
+  })
+}
+
+function escHtml(str) {
+  return str
+    .replace(/</g, `&lt;`)
+    .replace(/&lt;code/g, `<code`)
+    .replace(/&lt;\/code/g, `</code`);
+}
+
+function createParams(params) {
+  const mappedParams = Object.entries(params).reduce((acc, [key, val]) =>
+    acc.concat(`<div class="param"><code>${key}</code>: ${escHtml(val || ``)}</div>`), ``)
+    
+  return $.virtual(`<div data-parameters><b>Parameters</b>${mappedParams}</div>`);
 }
 
 function getCodeElement(content) {
