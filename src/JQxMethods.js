@@ -82,7 +82,12 @@ const applyStyle = (el, rules) => {
 };
 const datasetKeyProxy = { get(obj, key) { return obj[toCamelcase(key)] || obj[key]; }, enumerable: false, configurable: false };
 const logDebug = (...args) => { debugLog.log(`❗` + args.map(v => String(v)).join(`, `) ) ; }
-
+const findParentScrollDistance = (node, distance = 0, top = true) => {
+  node = node?.parentElement;
+  const what = top ? `scrollTop` : `scrollLeft`;
+  distance += node ? node[what] : 0;
+  return !node ? distance : findParentScrollDistance(node, distance, top);
+};
 export default {
   factoryExtensions: {
     data: instance => ({
@@ -103,7 +108,16 @@ export default {
         return instance;
       },
     }),
-    dimensions: instance => instance.first()?.getBoundingClientRect(),
+    dimensions: instance => {
+      if (instance.is.empty) {
+        return { error: `[instance].dimensions: NO ELEMENTS` };
+      }
+      let node = instance[0];
+      const boundingRect = instance.first()?.getBoundingClientRect().toJSON();
+      boundingRect.scrollTopDistance = findParentScrollDistance(node, 0);
+      boundingRect.scrollLeftDistance = findParentScrollDistance(node, 0, false);
+      return boundingRect;
+    },
     HTML: instance => ({
       get: (outer, escaped) => {
         if (instance.is.empty) {
