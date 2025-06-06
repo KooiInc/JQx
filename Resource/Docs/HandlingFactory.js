@@ -1001,7 +1001,7 @@ function clickActionsFactory($) {
     
     dimEx: evt => {
       const dim = $('<p data-id="tmpEx">Hello, where am I at the moment?</p>', getCurrentParagraph(evt))
-        .style({color: "red", fontWeight: "bold"});
+        .style({color: "red", fontWeight: "bold", border: "3px solid red", padding: "5px", textAlign: "center"});
       const dims = JSON.stringify(dim.dimensions, null, 2)
         .replace(/[}{"]/g, "").trim().replace(/\n/g, "<br>");
       $.Popup.show({content: dims, callback: () => dim.remove()});
