@@ -1012,8 +1012,15 @@ See the third example @<div class="linkLike" data-jumpkey="popup_show" data-acti
 </div>
 
 <div data-example>
-  // JQx imported as $ const { debugLog } = $; if (!debugLog.isOn()) { debugLog .on()
-  .toConsole.off() .log("We started logging to div#logBox, enjoy ..."); }
+  // JQx imported as $ 
+const { debugLog } = $; 
+
+if (!debugLog.isOn()) { 
+  debugLog
+    .on()
+    .toConsole.off()
+    .log("We started logging to div#logBox, enjoy ...");
+}
 </div>
 
 <div>There are two extra <i>properties</i> in <code>debugLog</code> to note:</div>
