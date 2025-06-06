@@ -193,6 +193,7 @@ function createNavigationItems({group, displayName}) {
 }
 
 function documentCreationDone() {
+  $(`.docBrowser`).append($.div({class: "spacer"}));
   $(`[data-group="jqx"]`).trigger(`click`);
   Prism.highlightAll();
   delete documentationTemplates.templates;

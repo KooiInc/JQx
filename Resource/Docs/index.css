@@ -26,8 +26,13 @@ body {
     .docBrowser {
       position: relative;
       width: 70%;
-      padding-bottom: 12vh;
       margin: -1.5em 0 0 10.5rem;
+
+      .spacer {
+        position: relative;
+        height: 100vh;
+        visibility: hidden;
+      }
     }
 
     #navigation {
