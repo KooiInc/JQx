@@ -59,7 +59,8 @@ function createDocsGroup(forContainer, header) {
     const chapter = chapterTemplate.content;
     const chapterName = chapterTemplate.dataset.id;
     const paramJSON = chapter.querySelector(`[data-params]`).dataset?.params;
-    const params = paramJSON && !/none/i.test(paramJSON) && createParams(JSON.parse(paramJSON)[0]) || "";
+    const params = paramJSON && !/none/i.test(paramJSON) && createParams(paramJSON) || "";
+    
     const returnValue = escHtml(chapter.querySelector(`[data-return-value]`).dataset.returnValue);
     const chapterTextElement = $.div({class:"description"}, chapter.querySelector(`[data-text]`).innerHTML);
     const isDeprecated = chapterTemplate.dataset.isDeprecated === "true";
@@ -102,9 +103,21 @@ function escHtml(str) {
 }
 
 function createParams(params) {
+  params = JSON.parse(params).reduce((acc, param) => {
+    const [name, value] = Object.entries(param);
+    if (!name || !value) { return acc; }
+    return {...acc, [name]: value};
+  });
+  
+  delete params.instance; // todo
+  
+  if (Object.keys(params).length < 1) {
+    return;
+  }
+  
   const mappedParams = Object.entries(params).reduce((acc, [key, val]) =>
     acc.concat(`<div class="param"><code>${key}</code>: ${escHtml(val || ``)}</div>`), ``)
-    
+ 
   return $.virtual(`<div data-parameters><b>Parameters</b>${mappedParams}</div>`);
 }
 

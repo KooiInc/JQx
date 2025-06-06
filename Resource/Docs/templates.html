@@ -325,11 +325,25 @@ color of <i>all</i> headers, clicking on another header handles the already defi
 </template>
 
 <template data-id="instance_dimensions" class="instance_dimensions" data-is-deprecated="false">
-<div data-params='None'></div>
-<div data-return-value='(Object) <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/DOMRect">DOMRect</a> | undefined'></div>
-<div data-text='1'><div>Retrieve the actual dimensions of the first (root) element in the instance element collection. It actually returns the result of <code>getBoundingClientRect</code>, see <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect">MDN</a> for interpretation of the values.</div>
+<div data-params='[{"instance":""}]'></div>
+<div data-return-value='Object<string, number>'></div>
+<div data-text='1'><div>
+  Retrieve the actual dimensions of the first (root) element in the instance element
+  collection. It actually returns the result of <code>getBoundingClientRect</code> with two
+  extra propperties. See
+  <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect">MDN</a>
+  for interpretation of the values.
+</div>
 
-<div class="note"><b>Note</b>: dimensions is a <i>property</i>, not a function. Usage <code>[JQx instance].dimensions</code>.</div>
+<div>
+  The two extra properties represent the <i>total</i> scroll distance (top:
+  <code>scrollTopdistance</code>, and left: <code>scrollLeftDistance</code>) from all the
+  element parent nodes of the document.
+</div>
+
+<div class="note"><b>Note</b>: dimensions is a <i>property</i>, not a function. Usage <code>[JQx
+  instance].dimensions</code>.
+</div>
 
 <div data-example>##EXAMPLECODE@dimEx##</div></div>
 </template>
@@ -479,7 +493,7 @@ color of <i>all</i> headers, clicking on another header handles the already defi
 </template>
 
 <template data-id="instance_htmlFor" class="instance_htmlFor" data-is-deprecated="false">
-<div data-params='[{"instance":""},{"forQuery":"string.  A (valid) css selector."},{"htmlString":"string. (valid) HTML string."},{"append":"Boolean. Default false"}]'></div>
+<div data-params='[{"forQuery":"string.  A (valid) css selector."},{"htmlString":"string. (valid) HTML string."},{"append":"Boolean. Default false"}]'></div>
 <div data-return-value='JQx Instance'></div>
 <div data-text='1'><div>
   Sets/adds/removes html for one or more elements 
@@ -488,8 +502,10 @@ color of <i>all</i> headers, clicking on another header handles the already defi
 </div>
 
 <div class="note"><b>Notes</b>:</div>
-<ul><li>html from <code>htmlString</code> is always sanitized.</li>
-<li>if <code>htmlString</code> is empty, the element content is removed.</li></ul>
+<ul>
+<li>html from <code>htmlString</code> is always sanitized.</li>
+<li>if <code>htmlString</code> is empty, the element content is removed.</li>
+</ul>
 
 <div data-example>##EXAMPLECODE@htmlForEx##</div>
 </div>
