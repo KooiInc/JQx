@@ -29,10 +29,10 @@ function setupHandling() {
 }
 
 function createGroupChapters() {
-  createDocsGroup($.node(`[data-groupcontainer="static_About"]`), `JQx`);
-  createDocsGroup($.node(`[data-groupcontainer="instance_About"]`), `JQx instance`);
-  createDocsGroup($.node(`[data-groupcontainer="popup_About"]`), `JQx.popup`);
-  createDocsGroup($.node(`[data-groupcontainer="debuglog_About"]`), `JQx.debugLog`);
+  createDocChaptersGroup($.node(`[data-groupcontainer="static_About"]`), `JQx`);
+  createDocChaptersGroup($.node(`[data-groupcontainer="instance_About"]`), `JQx instance`);
+  createDocChaptersGroup($.node(`[data-groupcontainer="popup_About"]`), `JQx.popup`);
+  createDocChaptersGroup($.node(`[data-groupcontainer="debuglog_About"]`), `JQx.debugLog`);
   $.log(`Documentation chapters created ...`);
 }
 
@@ -48,14 +48,15 @@ function createNavigationBlock() {
   $.log(`Navigation block created ...`);
 }
 
-function createDocsGroup(forContainer, header) {
+function createDocChaptersGroup(forContainer, header) {
   let lastChapter = forContainer;
   const groupId = lastChapter.dataset.groupcontainer;
   const prfx = groupId.slice(0, groupId.indexOf(`_`));
-  const staticChapters =
-    documentationTemplates.templates.filter(chapter => chapter.dataset.id.startsWith(prfx) && !/about$/i.test(chapter.dataset.id))
+  const groupChapters =
+    documentationTemplates.templates
+      .filter(chapter => chapter.dataset.id.startsWith(prfx) && !/about$/i.test(chapter.dataset.id))
       .map(chapter => chapter);
-  staticChapters.forEach(chapterTemplate => {
+  groupChapters.forEach(chapterTemplate => {
     const chapter = chapterTemplate.content;
     const chapterName = chapterTemplate.dataset.id;
     const paramJSON = chapter.querySelector(`[data-params]`).dataset?.params;
@@ -76,7 +77,7 @@ function createDocsGroup(forContainer, header) {
       params,
       returns,
       chapterTextElement,
-    ).renderTo(lastChapter, $.at.afterend);
+    );
     
     chapterElement.find(`[data-example]`).forEach( (codeElem, i) => {
       const el$ = codeElem.textContent;
@@ -86,6 +87,8 @@ function createDocsGroup(forContainer, header) {
     });
     
     chapterElement[0].querySelectorAll(`h3.example`).forEach(numberExample);
+    
+    chapterElement.renderTo(lastChapter, $.at.afterend);
     
     lastChapter = chapterElement;
   });
