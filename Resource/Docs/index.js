@@ -78,11 +78,14 @@ function createDocsGroup(forContainer, header) {
       chapterTextElement,
     ).renderTo(lastChapter, $.at.afterend);
     
-    chapterElement.find$(`[data-example]`).each( codeElem => {
+    chapterElement.find(`[data-example]`).forEach( (codeElem, i) => {
       const el$ = codeElem.textContent;
       codeElem.textContent = ``;
-      $(codeElem).replaceWith(createExampleCodeElement(el$));
+      const code = createExampleCodeElement(el$);
+      codeElem.replaceWith(code[0]);
     });
+    
+    chapterElement[0].querySelectorAll(`h3.example`).forEach(numberExample);
     
     lastChapter = chapterElement;
   });
@@ -136,8 +139,10 @@ function createExampleCodeElement(code) {
   }
   
   const theCodeElement = getCodeElement(codeBody);
+  const head = $.h3({className:"example", text: `Example`});
   
-  return $.div({class: "exContainer"}, `<h3 className="example">Example</h3>`)
+  return $.div(
+    {class: "exContainer"}, head)
     .append(theCodeElement)
     .append($.virtual(`<button class="exRunBttn" data-action="${codeId}">Try it</button>`));
 }
@@ -146,6 +151,10 @@ function getChapterName(name, prefix, isDeprecated = false) {
   return `<span class="group">[${prefix}].</span
     ><span ${isDeprecated ? `class="deprecated"` : ""}>${
       name.slice(name.indexOf(`_`) + 1)}</span>`;
+}
+
+function numberExample(el, i) {
+  el.textContent += i > 0 ? ` ${i + 1}` : ``;
 }
 
 function createAboutChapters() {
@@ -159,7 +168,7 @@ function createAboutChapters() {
       return $.div(
         { data: {groupcontainer: groupId}, class: "description" },
         `<h3 class="groupHeader" data-group-id="${groupId}">${displayName}</h3>`)
-        .append(text)
+        .append(text);
     });
   
   $.div({class: `container`})
@@ -171,6 +180,10 @@ function createAboutChapters() {
     const elText = codeElem.textContent;
     codeElem.textContent = ``;
     $(codeElem).replaceWith(createExampleCodeElement(elText));
+  });
+  
+  [...groupElements].forEach(group => {
+    group.find(`h3.example`).forEach(numberExample);
   });
   
   $.log(`"About" chapters created ...`);
