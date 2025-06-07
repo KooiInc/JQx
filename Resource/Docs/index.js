@@ -88,7 +88,7 @@ function createDocChaptersGroup(forContainer, header) {
     
     chapterElement[0].querySelectorAll(`h3.example`).forEach(numberExample);
     
-    chapterElement.renderTo(lastChapter, $.at.afterend);
+    chapterElement.toDOM(lastChapter, $.at.afterend);
     
     lastChapter = chapterElement;
   });
