@@ -50,17 +50,19 @@ function documentHandlingFactory($) {
 
   function handleScroll(evt) {
     const docsTop = evt.target.scrollTop;
+    let marge = 0;
     
-    const nextHeader = $.nodes(`.paragraph, [data-groupcontainer]`)
+    const nextHeader = $.nodes(`.description, .paragraph`)
       .find( el => {
-         const marge = docsTop - el.nextElementSibling?.offsetTop;
-         return marge && marge <= -30;
+         marge = docsTop - el.nextElementSibling?.offsetTop || 0;
+         return marge <= -30;
       } );
     
+    
     if (nextHeader) {
-      const nextNavItem = $(nextHeader).find$(`h3`);
+      const nextNavItem = $(nextHeader.querySelector(`h3`));
       
-      if (!nextNavItem.hasClass(`selected`)) {
+      if (!nextNavItem.is.empty && nextNavItem.hasClass(`selected`)) {
         $(`.navGroup:not(.closed)`).addClass(`closed`);
         $(`.selected`).removeClass(`selected`);
         const itemId = nextNavItem.data.get(`forId`) ?? nextNavItem.data.get(`groupId`);
