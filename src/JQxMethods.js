@@ -16,7 +16,9 @@ import {debugLog} from "./JQxLog.js";
 const loop = (instance, callback) => {
   const cleanCollection = instance.collection.filter(el => !isCommentOrTextNode(el));
   for (let i = 0; i < cleanCollection.length; i += 1) {
-    callback(cleanCollection[i], i); }
+    callback(cleanCollection[i], i);
+  }
+  
   return instance;
 };
 const isIt = ExamineElementFeatureFactory();
@@ -439,7 +441,7 @@ export default {
     removeClass: (instance, ...classNames) =>
       loop(instance, el => el && classNames.forEach(cn => el.classList.remove(cn))),
     renderTo: (instance, root = document.body, at = jqx.insertPositions.end) => {
-      instance.toDOM(root, at);
+      instance.appendTo(root, at);
       return instance;
     },
     replace: (instance, oldChild, newChild) => {
