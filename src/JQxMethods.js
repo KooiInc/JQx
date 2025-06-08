@@ -120,6 +120,9 @@ export default {
       boundingRect.scrollLeftDistance = findParentScrollDistance(node, 0, false);
       return boundingRect;
     },
+    node: instance => {
+      return instance[0];
+    },
     HTML: instance => ({
       get: (outer, escaped) => {
         if (instance.is.empty) {
