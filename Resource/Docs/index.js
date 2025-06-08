@@ -15,18 +15,47 @@ createDocument();
 
 function createDocument() {
   createCopyrightComponent();
-  setupHandling();
   createGroupingChapters();
   createGroupChapters();
   createNavigationBlock();
-  documentCreationDone();
+  finalizeDocumentCreation();
 }
 
 function setupHandling() {
   const handler = clientHandling;
-  $.delegate(`click`, handler);
-  $.delegate(`scroll`, handler);
+  let clicked = false;
+  // wrap handling to avoid propagated/bubbling scroll handling on click
+  $.delegate(`click`, evt => {
+    clicked = true;
+    setTimeout(_ => clicked = false, 1000);
+    return handler(evt);
+  });
+  $.delegate(`scroll`, evt => {
+    if (clicked) { return; }
+    return handler(evt);
+  });
+  
   $.log(`Event handling set ...`);
+}
+
+
+function createGroupingChapters() {
+  const groupElements = orderedGroups
+    .map(({groupId, groupLabel}) => documentationTemplates.templates.find(el => el.dataset.id === groupId))
+    .map(groupTemplate => {
+      const groupId = groupTemplate.dataset.id;
+      const displayName = createGroupHeaderLabel(groupId);
+      const text = groupTemplate.content.querySelector(`[data-text]`).outerHTML;
+      
+      return $.div(
+          { data: {groupcontainer: groupId}, class: "description" },
+          `<h3 class="groupHeader" data-group-id="${groupId}">${displayName}</h3>`)
+        .append(text);
+    });
+  
+  renderGroupingChapters(groupElements);
+  
+  $.log(`"About" chapters created ...`);
 }
 
 function createGroupChapters() {
@@ -42,6 +71,16 @@ function createNavigationBlock() {
   
   $(`.docBrowser`).before($(`#navigation`));
   $.log(`Navigation block created ...`);
+}
+
+function finalizeDocumentCreation() {
+  setupHandling();
+  $(`.docBrowser`).append($.div({class: "spacer"}));
+  $(`[data-group="jqx"]`).trigger(`click`);
+  Prism.highlightAll();
+  delete documentationTemplates.templates;
+  $.log(`Document creation/implementation (including imports and formatting code) took ${
+    ((performance.now() - perform)/1000).toFixed(3)} seconds`);
 }
 
 function createChaptersGroup(forContainer, header) {
@@ -177,25 +216,6 @@ function numberExample(el, i) {
   el.textContent += i > 0 ? ` ${i + 1}` : ``;
 }
 
-function createGroupingChapters() {
-  const groupElements = orderedGroups
-    .map(({groupId, groupLabel}) => documentationTemplates.templates.find(el => el.dataset.id === groupId))
-    .map(groupTemplate => {
-      const groupId = groupTemplate.dataset.id;
-      const displayName = createGroupname(groupId);
-      const text = groupTemplate.content.querySelector(`[data-text]`).outerHTML;
-      
-      return $.div(
-        { data: {groupcontainer: groupId}, class: "description" },
-        `<h3 class="groupHeader" data-group-id="${groupId}">${displayName}</h3>`)
-        .append(text);
-    });
-  
-  renderGroupingChapters(groupElements);
-  
-  $.log(`"About" chapters created ...`);
-}
-
 function renderGroupingChapters(groupElements) {
   $.div(
     {class: `container`},
@@ -208,16 +228,16 @@ function renderGroupingChapters(groupElements) {
   }
 }
 
-function createGroupname(name) {
-  const displayName = name.slice(0, name.indexOf(`_`)).toUpperCase().replace('X', `x`);
+function createGroupHeaderLabel(groupId) {
+  const displayName = groupNameOnly(groupId);
   return displayName.startsWith(`JQx`) ? `<span class="jqxTitle"><b>JQ</b>uery</b>-<b>x</b></span>` : displayName;
 }
 
-function createNavigationItems({groupLabel, groupLabelLC}) {
+function createNavigationItems({groupLabel}) {
   const ul = $(`<ul class="navGroup closed" data-group="${groupLabel.toLowerCase()}"/>`, $.node(`#navigation`));
   ul.append($(`<li class="grouped">${groupLabel}<ul class="navGroupItems"></ul></li>`));
   
-  const data = getNavProps(documentationTemplates.templates);
+  const data = getNavigationElementProps(documentationTemplates.templates);
   
   for (const item of data.filter(v => v.label.startsWith(groupLabel.toLowerCase()))) {
     $(`.navGroupItems`, ul)
@@ -230,28 +250,26 @@ function createNavigationItems({groupLabel, groupLabelLC}) {
   }
 }
 
-function getNavProps(chapters) {
+function groupNameOnly(idString) {
+  return idString.slice(0, idString.indexOf(`_`)).toUpperCase().replace('X', `x`)
+}
+
+function removeGroupname(idString) {
+  return idString.slice(idString.indexOf(`_`) + 1)
+}
+
+function getNavigationElementProps(chapters) {
   const mappedChapterData = [];
   
   for (const chapter of chapters) {
-    const chapterId = chapter.dataset.id;
     mappedChapterData.push({
       label: chapter.dataset.id,
       isDeprecated: chapter.dataset.isDeprecated === "true" === "true",
-      shortName: chapterId.slice(chapterId.indexOf(`_`) + 1)
+      shortName: removeGroupname(chapter.dataset.id)
     });
   }
   
   return mappedChapterData;
-}
-
-function documentCreationDone() {
-  $(`.docBrowser`).append($.div({class: "spacer"}));
-  $(`[data-group="jqx"]`).trigger(`click`);
-  Prism.highlightAll();
-  delete documentationTemplates.templates;
-  $.log(`Document creation/implementation (including imports and formatting code) took ${
-    ((performance.now() - perform)/1000).toFixed(3)} seconds`);
 }
 
 async function getUsedVariablesInTopLevelScope() {
