@@ -1,4 +1,3 @@
-const perform = performance.now();
 import {default as CreateComponent, createOrRetrieveShadowRoot} from "./WebComponentFactory.min.js";
 // ^ see https://cdn.jsdelivr.net/gh/KooiInc/es-webcomponent-factor
 import handlerFactory  from "./HandlingFactory.js";
@@ -9,8 +8,9 @@ const importLink =  isDev ?
   `../../Bundle/jqx.min.js`;
 const $ = (await import(importLink)).default;
 window.$ = $;
+const perform = performance.now();
 const {clientHandling, allExampleActions, documentationTemplates, docContainer, orderedGroups}
-  = await getUsedVariablesInTopLevelScope();
+  = await getVariablesInAllScopes();
 await createCopyrightComponent();
 
 createDocument();
@@ -62,7 +62,7 @@ function finalizeDocumentCreation() {
   $(`[data-group="jqx"]`).trigger(`click`);
   Prism.highlightAll();
   delete documentationTemplates.templates;
-  $.log(`Document creation/implementation (including imports and formatting code) took ${
+  $.log(`Document creation/implementation (without imports) took ${
     ((performance.now() - perform)/1000).toFixed(3)} seconds`);
 }
 
@@ -273,7 +273,7 @@ function getNavigationElementProps(chapters) {
   return mappedChapterData;
 }
 
-async function getUsedVariablesInTopLevelScope() {
+async function getVariablesInAllScopes() {
   const {clientHandling, allExampleActions} = handlerFactory($);
   let documentationTemplates = await fetchAllChaptersFromTemplateDocument();
   const templates = documentationTemplates.templates;

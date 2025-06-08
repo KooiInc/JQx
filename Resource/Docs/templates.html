@@ -103,15 +103,22 @@
 </div>
 
 <div class="note">
-  <b>Note</b>: the examples in this document <i>deliberately</i> use all kinds of JQx methods, to
-  familiarize you with them.
-</div>
-
-<div class="note">
-  <b>Note:</b> this document is <i>completely</i> built using JQx. This is how the html of this page looks:
-</div>
-
-<div data-example>&lt;!DOCTYPE html>
+  <b>Notes</b>:
+  <ul>
+    <li>
+      The examples in this document <i>deliberately</i> use all kinds of JQx methods,
+      to familiarize you with them.</li>
+   <li>
+      In the examples code you'll sometimes find <code>[...].showInExample([click event])</code>
+      and/or <code>[...].removeAfter([seconds])</code>.
+      <div>These instance methods are <i>custom method</i>, created with the static method
+      <div class="linkLike" data-action="jump2Nav" data-jumpkey="static_fn">
+        <b style="color: revert">JQx.fn</b></div>
+      </div>
+    </li>
+<li>
+      This document is <i>completely</i> built using JQx. This is how the html of this page looks
+      <div data-example>&lt;!DOCTYPE html>
 &lt;html lang="en">
 &lt;head>
   &lt;meta charset="UTF-8">
@@ -127,7 +134,12 @@
   &lt;div class="docs">&lt;/div>
   &lt;script src="./index.js" type="module">&lt;/script>
 &lt;/body>
-&lt;/html></div></div>
+&lt;/html>
+    </div>
+  </li>
+  </ul>
+</div>
+</div>
 </template>
 
 <template data-id="instance_text" class="instance_text" data-is-deprecated="false">
@@ -489,7 +501,7 @@ color of <i>all</i> headers, clicking on another header handles the already defi
 
 <div class="note"><b>Note</b>: <code>htmlValue</code> is always sanitized.</div>
 
-<div data-example>##EXAMPLECODE@htmlForEx##</div></div>
+<div data-example>##EXAMPLECODE@htmlEx##</div></div>
 </template>
 
 <template data-id="instance_htmlFor" class="instance_htmlFor" data-is-deprecated="false">

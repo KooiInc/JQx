@@ -225,7 +225,8 @@ h3[data-for-id], [data-group-id] {
   list-style: '\2705';
   vertical-align: top;
   padding: 1px 0 1px 0.2em;
-  line-height: 1rem;
+  margin-top: 0.3em;
+  line-height: 1.2em;
 }
 
 .description ul li div:not(.linkLike) {
@@ -237,6 +238,10 @@ h3[data-for-id], [data-group-id] {
   margin-left: 0.5rem;
   margin-bottom: -0.2rem;
   width: 100%;
+}
+
+.example ~ div {
+  font-weight: normal;
 }
 
 [data-groupcontainer] .description div.exContainer,
