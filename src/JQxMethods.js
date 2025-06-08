@@ -444,7 +444,7 @@ export default {
     removeClass: (instance, ...classNames) =>
       loop(instance, el => el && classNames.forEach(cn => el.classList.remove(cn))),
     renderTo: (instance, root = document.body, at = jqx.insertPositions.end) => {
-      instance.appendTo(root, at);
+      instance.toDOM(root, at);
       return instance;
     },
     replace: (instance, oldChild, newChild) => {
