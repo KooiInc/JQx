@@ -356,7 +356,7 @@ function clickActionsFactory($) {
     },
     
     fnEx2: evt => {
-      $.fn( `colorRed`, me => { me[0].style.color = "red"; return me; } );
+      $.fn( `colorRed`, me => { me.node.style.color = "red"; return me; } );
       const someDiv = $.virtual(`<div data-id="tmpEx">Hello world</div>`);
       $.Popup.show( { content: someDiv.append($(`<div>There we have it</div>`).colorRed()) });
     },
@@ -508,10 +508,10 @@ function clickActionsFactory($) {
       $.editCssRule("button#toggleColor, button#cleanup { margin: 0 5px; }");
       const elem = $('<div class="divExClass redEx">Hello World!</div>', getCurrentParagraph(evt));
       elem.append($.virtual('<button id="toggleColor">toggle</button>')
-        .on("click", (_, self) => $(self[0].closest(`.divExClass`)).toggleClass("redEx")));
+        .on("click", (_, self) => $(self.node.closest(`.divExClass`)).toggleClass("redEx")));
       elem.append($.virtual(`<button id="cleanup">remove</button>`)
         .on("click", (_, self) => {
-          self[0].closest(".divExClass").remove();
+          self.node.closest(".divExClass").remove();
           cleanup();
         }));
     },
@@ -859,7 +859,7 @@ function clickActionsFactory($) {
     showHideEx: evt => {
       if (!$(getCurrentParagraph(evt)).find$(".divExClass").is.empty) { return; }
       const cleanup = self => {
-        self[0].closest(".divExClass").remove();
+        self.node.closest(".divExClass").remove();
         $.removeCssRule(".showHide");
         $.removeCssRule("button#hide, button#show, button#cleanup");
       };
@@ -936,7 +936,7 @@ function clickActionsFactory($) {
           color: "green",
           borderLeft: "12px solid green"} );
       hello3.append($.div(`HTML of hello3: ${hello3.HTML.get(true, true)}`));
-      const hello3GeneratedClassName = [...hello3[0]?.classList]?.shift();
+      const hello3GeneratedClassName = [...hello3.node?.classList]?.shift();
 
       // computed (note: randomNr is a utility function)
       const computedHello3 = $("<div>")
@@ -1099,11 +1099,11 @@ function clickActionsFactory($) {
       return $(evt.target.closest(`.navGroup`)).removeClass("closed");
     },
     jumpTo: key => {
-      const navItem = $(`[data-navitem='${key}']`);
+      const navItem = $(`[data-navitem='${key}']`).node;
       navItem.trigger("click");
 
-      if (navItem[0].offsetTop > $.node("#navigation").offsetHeight) {
-        navItem[0].scrollIntoView();
+      if (navItem.offsetTop > $.node("#navigation").offsetHeight) {
+        navItem.scrollIntoView();
       }
     },
     jump2Nav: evt => {
