@@ -2,6 +2,7 @@ const perform = performance.now();
 import {default as CreateComponent, createOrRetrieveShadowRoot} from "./WebComponentFactory.min.js";
 // ^ see https://cdn.jsdelivr.net/gh/KooiInc/es-webcomponent-factor
 import handlerFactory  from "./HandlingFactory.js";
+const webComponentStyleSheetContent = await fetch(`./cright.css`).then(r => r.text());
 const isDev = location.host.startsWith(`dev`) || location.host.startsWith(`localhost`);
 const importLink =  isDev ?
   `../../index.js` :
@@ -19,28 +20,6 @@ function createDocument() {
   createGroupChapters();
   createNavigationBlock();
   finalizeDocumentCreation();
-}
-
-async function createCopyrightComponent() {
-  const styleSheetContent = await fetch(`./cright.css`).then(r => r.text());
-  CreateComponent( {
-    componentName: `copyright-slotted`,
-    onConnect: (elem) => onConnectCRightWebComponentHandler(elem, styleSheetContent)
-  });
-  
-  $.allowTag(`copyright-slotted`);
-  const ghLink = $.a({slot: `link`, href: `//codeberg.org/KooiInc/JQx`, target: `_top`, text: ` Back to repository`});
-  $.copyrightSlotted(
-    $.span({slot: `year`, class: `yr`, text: String(new Date().getFullYear())}),
-    ghLink.HTML.get(1)).render;
-  $.log(`Copyright component created and inserted.`);
-}
-
-function onConnectCRightWebComponentHandler(elem, styleSheetContent) {
-  const shadow = createOrRetrieveShadowRoot(elem);
-  const componentStyle = Object.assign(document.createElement("style"), {textContent: styleSheetContent});
-  const content = $.div({html: `&copy; <span><slot name="year"/></span> KooiInc <slot name="link"/>`});
-  shadow.append(content.node, componentStyle);
 }
 
 function createGroupingChapters() {
@@ -316,4 +295,25 @@ async function fetchAllChaptersFromTemplateDocument() {
   const templatesElsSortedById = $.div({html: templatesImport}).find$(`template`).collection
     .sort((el1, el2) => el1.dataset.id.localeCompare(el2.dataset.id));
   return {templates: templatesElsSortedById};
+}
+
+function createCopyrightComponent() {
+  CreateComponent( { componentName: `copyright-slotted`, onConnect: copyrightComponentConnectHandler });
+  renderCopyrightComponent();
+  $.log(`Copyright component created and inserted.`);
+}
+
+function renderCopyrightComponent() {
+  $.allowTag(`copyright-slotted`);
+  const ghLink = $.a({slot: `link`, href: `//codeberg.org/KooiInc/JQx`, target: `_top`, text: ` Back to repository`});
+  $.copyrightSlotted(
+    $.span({slot: `year`, class: `yr`, text: String(new Date().getFullYear())}),
+    ghLink.HTML.get(1)).render;
+}
+
+function copyrightComponentConnectHandler(elem) {
+  const shadow = createOrRetrieveShadowRoot(elem);
+  const componentStyle = $.style({textContent: webComponentStyleSheetContent});
+  const content = $.div({html: `&copy; <span><slot name="year"/></span> KooiInc <slot name="link"/>`});
+  shadow.append(content.node, componentStyle.node);
 }
