@@ -1,0 +1,40 @@
+:host {
+  color: #555;
+  display: inline-block;
+  position: fixed;
+  background-color: #fff;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  border-radius: 4px;
+  padding: 2px 0;
+  width: 100vw;
+  text-align: center;
+  box-shadow: 0 2px 14px #999;
+}
+
+::slotted(span.yr) {
+  font-weight: bold;
+  color: green;
+}
+
+::slotted(a[target]) {
+  text-decoration: none;
+  font-weight: bold;
+}
+
+::slotted(a[target]):before {
+  color: rgba(0, 0, 238, 0.7);
+  font-size: 1.1rem;
+  padding-right: 2px;
+  vertical-align: baseline;
+}
+
+::slotted(a[target]):after {
+  content: ' | ';
+  color: #000;
+  font-weight: normal;
+}
+
+::slotted(a[target]:last-child):after { content: ''; margin-right: 2rem; }

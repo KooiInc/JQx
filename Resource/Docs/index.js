@@ -10,34 +10,38 @@ const $ = (await import(importLink)).default;
 window.$ = $;
 const {clientHandling, allExampleActions, documentationTemplates, docContainer, orderedGroups}
   = await getUsedVariablesInTopLevelScope();
+await createCopyrightComponent();
 
 createDocument();
 
 function createDocument() {
-  createCopyrightComponent();
   createGroupingChapters();
   createGroupChapters();
   createNavigationBlock();
   finalizeDocumentCreation();
 }
 
-function setupHandling() {
-  const handler = clientHandling;
-  let clicked = false;
-  // wrap handling to avoid propagated/bubbling scroll handling on click
-  $.delegate(`click`, evt => {
-    clicked = true;
-    setTimeout(_ => clicked = false, 1000);
-    return handler(evt);
-  });
-  $.delegate(`scroll`, evt => {
-    if (clicked) { return; }
-    return handler(evt);
+async function createCopyrightComponent() {
+  const styleSheetContent = await fetch(`./cright.css`).then(r => r.text());
+  CreateComponent( {
+    componentName: `copyright-slotted`,
+    onConnect: (elem) => onConnectCRightWebComponentHandler(elem, styleSheetContent)
   });
   
-  $.log(`Event handling set ...`);
+  $.allowTag(`copyright-slotted`);
+  const ghLink = $.a({slot: `link`, href: `//codeberg.org/KooiInc/JQx`, target: `_top`, text: ` Back to repository`});
+  $.copyrightSlotted(
+    $.span({slot: `year`, class: `yr`, text: String(new Date().getFullYear())}),
+    ghLink.HTML.get(1)).render;
+  $.log(`Copyright component created and inserted.`);
 }
 
+function onConnectCRightWebComponentHandler(elem, styleSheetContent) {
+  const shadow = createOrRetrieveShadowRoot(elem);
+  const componentStyle = Object.assign(document.createElement("style"), {textContent: styleSheetContent});
+  const content = $.div({html: `&copy; <span><slot name="year"/></span> KooiInc <slot name="link"/>`});
+  shadow.append(content.node, componentStyle);
+}
 
 function createGroupingChapters() {
   const groupElements = orderedGroups
@@ -81,6 +85,24 @@ function finalizeDocumentCreation() {
   delete documentationTemplates.templates;
   $.log(`Document creation/implementation (including imports and formatting code) took ${
     ((performance.now() - perform)/1000).toFixed(3)} seconds`);
+}
+
+// ---
+function setupHandling() {
+  const handler = clientHandling;
+  let clicked = false;
+  // wrap handling to avoid propagated/bubbling scroll handling on click
+  $.delegate(`click`, evt => {
+    clicked = true;
+    setTimeout(_ => clicked = false, 1000);
+    return handler(evt);
+  });
+  $.delegate(`scroll`, evt => {
+    if (clicked) { return; }
+    return handler(evt);
+  });
+  
+  $.log(`Event handling set ...`);
 }
 
 function createChaptersGroup(forContainer, header) {
@@ -294,65 +316,4 @@ async function fetchAllChaptersFromTemplateDocument() {
   const templatesElsSortedById = $.div({html: templatesImport}).find$(`template`).collection
     .sort((el1, el2) => el1.dataset.id.localeCompare(el2.dataset.id));
   return {templates: templatesElsSortedById};
-}
-
-function createCopyrightComponent() {
-  CreateComponent( {
-    componentName: `copyright-slotted`,
-    onConnect(elem) {
-      const shadow = createOrRetrieveShadowRoot(elem);
-      const componentStyle = Object.assign(
-        document.createElement("style"),
-        { textContent: `
-          :host {
-            color: #555;
-            display: inline-block;
-            position: fixed;
-            background-color: #fff;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 2;
-            border-radius: 4px;
-            padding: 2px 0;
-            width: 100vw;
-            text-align: center;
-            box-shadow: 0 2px 14px #999;
-          }
-          ::slotted(span.yr) {
-            font-weight: bold;
-            color: green;
-          }
-          ::slotted(a[target]) {
-            text-decoration: none;
-            font-weight: bold;
-          }
-          ::slotted(a[target]):before {
-            color: rgba(0, 0, 238, 0.7);
-            font-size: 1.1rem;
-            padding-right: 2px;
-            vertical-align: baseline;
-          }
-          ::slotted(a[target="_blank"]):before { content: "↗"; }
-          ::slotted(a[target="_top"]):before { content: "↺"; }
-          ::slotted(a[target]):after {
-            content: ' | ';
-            color: #000;
-            font-weight: normal;
-          }
-          ::slotted(a[target]:last-child):after { content: ''; margin-right: 2rem; }`
-        } );
-      const content = Object.assign(
-        document.createElement(`div`), {
-          innerHTML: `&copy; <span><slot name="year"/></span> KooiInc <slot name="link"/>`})
-      shadow.append(componentStyle, content);
-    }
-  });
-  $.allowTag(`copyright-slotted`);
-  const ghLink = $.a({slot: `link`, href: `//codeberg.org/KooiInc/JQx`, target: `_top`, text: `Back to repository`});
-  $.copyrightSlotted(
-    $.span({slot: `year`, class: `yr`, text: String(new Date().getFullYear())}),
-    ghLink.HTML.get(1)
-  ).render;
-  $.log(`Copyright component created and inserted.`);
 }
