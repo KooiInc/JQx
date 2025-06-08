@@ -1,6 +1,6 @@
 {
   "name": "jqx-es",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": false,
   "type": "module",
   "description": "A JQuery alike es20xx module",
