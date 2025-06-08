@@ -7,15 +7,14 @@
 
 # JQx
 
-<h3>JQuery - the good parts redone</h3>
+This module was inspired by the idea that some parts of [JQuery](https://jquery.com) are too good [to ditch](https://youmightnotneedjquery.com/).
 
-This module was inspired by the idea that some JQuery was too good <a target="_blank" href="http://youmightnotneedjquery.com/" rel="nofollow">to ditch</a>.
+JQx is **not** a replacement for JQuery.
 
-It is developed in a modular fashion and uses plain ES20xx, so not really (or really not, take your pick) suitable for older browsers.
+Consider it a set of JQuery alike ES/JS-methods to programmatically ***create***, ***retrieve***, ***modify***, ***style*** and/or ***manipulate***
+(collections of) HTML elements in a HTML document.
 
-The module was rewritten in 2023 in a <i>classfree object oriented</i> fashion, inspired by a <a target="_blank" href="https://youtu.be/XFTOG895C7c?t=2562">Douglas Crockford presentation</a>. 
-
-The objective was and is to ***not*** use `prototype` and `this` in the code.
+The code is written in a modular fashion and uses plain ES20xx, so not really (or really not, take your pick) suitable for older browsers.
 
 ## Documentation/demo
 Documentation can be found @[https://kooiinc.codeberg.page/JQx/Resource/Docs/](https://kooiinc.codeberg.page/JQx/Resource/Docs/).
