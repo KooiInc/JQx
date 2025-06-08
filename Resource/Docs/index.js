@@ -135,7 +135,7 @@ function createCodeElement(codeElemPlaceholder) {
   const el$ = codeElemPlaceholder.textContent;
   codeElemPlaceholder.textContent = ``;
   const code = createExampleCodeElement(el$);
-  codeElemPlaceholder.replaceWith(code[0]);
+  codeElemPlaceholder.replaceWith(code.node);
 }
 
 function createChapterElement(aggregatedChapterProps) {
