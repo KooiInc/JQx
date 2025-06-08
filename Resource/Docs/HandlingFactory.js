@@ -1099,11 +1099,11 @@ function clickActionsFactory($) {
       return $(evt.target.closest(`.navGroup`)).removeClass("closed");
     },
     jumpTo: key => {
-      const navItem = $(`[data-navitem='${key}']`).node;
+      const navItem = $(`[data-navitem='${key}']`);
       navItem.trigger("click");
 
-      if (navItem.offsetTop > $.node("#navigation").offsetHeight) {
-        navItem.scrollIntoView();
+      if (navItem.node.offsetTop > $.node("#navigation").offsetHeight) {
+        navItem.node.scrollIntoView();
       }
     },
     jump2Nav: evt => {
