@@ -1099,12 +1099,7 @@ function clickActionsFactory($) {
       return $(evt.target.closest(`.navGroup`)).removeClass("closed");
     },
     jumpTo: key => {
-      const navItem = $(`[data-navitem='${key}']`);
-      navItem.trigger("click");
-
-      if (navItem.node.offsetTop > $.node("#navigation").offsetHeight) {
-        navItem.node.scrollIntoView();
-      }
+      $(`[data-navitem='${key}']`).trigger("click");
     },
     jump2Nav: evt => {
       const linkOrigin = evt.target.closest("[data-jumpgroup]") || evt.target.closest("[data-jumpkey]");
