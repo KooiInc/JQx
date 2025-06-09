@@ -565,21 +565,30 @@ color of <i>all</i> headers, clicking on another header handles the already defi
 </template>
 
 <template data-id="instance_attr" class="instance_attr" data-is-deprecated="false">
-<div data-params='[{"instance":""},{"keyOrObj":"string | Object<string, string>"},{"value":"string | Object<string, string> | undefined"}]'></div>
+<div data-params='[{"keyOrObj":"string | Object<string, string>"},{"value":"string | undefined"}]'></div>
 <div data-return-value='string | JQx instance'></div>
-<div data-text='1'><div><b>Get</b> (<code>keyOrObj</code> string, <code>[value]</code> empty) attribute for the root element of the JQx Instance  or <b>set</b> attributes for the first (root) element of the JQx Instance element collection.</div>
-
+<div data-text='1'><div>
+  <b>Retrieve</b> (<code>keyOrObj</code> is a string, <code>[value]</code> empty) attribute for the
+  root element of the JQx Instance or <b>set</b> (<code>keyOrObj</code> is a key-value Object,
+  <b>or</b> <code>keyOrObj</code> is a string and <code>[value]</code> is a string)
+  attributes for the first (root) element of the JQx Instance element collection.
+</div>
 <div class="note"><b>Notes</b>:</div> 
 <ul>
   <li>
-    to set <code>data-attribute</code> or <code>style</code>, use <code>{[data/style]: 
-    {[key]: [value], ...}</code> (see example)
+    to set <code>data-attribute</code> use <code>{data: {[key]: [value], ...}}</code> 
+    (see example).
   </li> 
+  <li>
+    <code>data</code> attribute keys may be <a target="_blank" 
+      href="https://developer.mozilla.org/en-US/docs/Glossary/Camel_case"
+      >camel cased</a>. See example.
+  </li>  
   <li>
     To set multiple <code>class</code>-names, use a comma or space separated 
     string of class names 
     <br>(e.g. <code>[instance].attr({class: `class1, class2, ... `})</code>)
-    <div><b class="red">Additional note</b>: setting <code>class</code>
+    <div><b class="red">note</b>: setting <code>class</code>
       using <code>[JQx instance].attr</code> will <i>replace</i> 
       the existing <code>class</code> attribute.
       Use
@@ -588,7 +597,8 @@ color of <i>all</i> headers, clicking on another header handles the already defi
       to <i>add</i> classes to an Element.</div>
    </li>
    <li>
-     All attributes are validated (so, e.g. no <code>onclick</code> etc.)
+     All attributes are validated (so, event handler attributes (e.g. <code>onclick</code>)
+     and/or made up attribute names can not be used.
    </li>
    <li>
       Setting an attribute value ([keyOrObj] returns the JQx instance.
@@ -1454,7 +1464,7 @@ Alias for <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_be
 <template data-id="instance_andThen" class="instance_andThen" data-is-deprecated="false">
 <div data-params='[{"elem2Add":"JQx instance | single HtmlElement | HTML string"},{"before":"Boolean (default value = false)"}]'></div>
 <div data-return-value='JQx instance'></div>
-<div data-text='1'><div><code>.andThen</code> injects [elem2Add] into the parent of the current JQx instance, right <i>before</i> (before = true) or <i>after</i> it. The original instance is replaced with an JQx instance containing both elements in its collection. The return value is the new instance.</div>
+<div data-text='1'><div><code>.andThen</code> injects [elem2Add] into the parent of the current JQx instance, right <i>before</i> (before = true) or <i>after</i> it. The original instance is replaced with a JQx instance containing both elements in its collection. The return value is the new instance.</div>
 
 <div data-example>##EXAMPLECODE@andThenEx##</div></div>
 </template>

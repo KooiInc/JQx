@@ -281,12 +281,21 @@ code:not([class*='language-']) {
   text-align: center;
   border-top: 1px solid #aaa;
 
+  span {
+    &[data-n]:before {
+      content: attr(data-n) ' ';
+      color: red;
+    }
+  }
+
   button {
     margin: 0 5px -2px 5px;
+    color: #555;
     display: inline-block;
     background-color: transparent;
     border: 1px solid #aaa;
     border-radius: 3px;
+    cursor: pointer;
   }
 }
 
