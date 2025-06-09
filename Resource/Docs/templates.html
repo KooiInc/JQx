@@ -228,6 +228,7 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
 <li><code>open</code>: is the first element of the JQx instance collection open (<code>&lt;details></code> or <code>&lt;dialog></code>)</li>
 <li><code>modal</code>: is the first element of the JQx instance collection modal (<code>&lt;dialog></code>)</li>
 <li><code>empty</code>: is the JQx instance element collection empty?</li>
+<li><code>inDOM</code>: does the JQx instance element exist in the DOM?</li>
 <li><code>virtual</code>: does the JQx instance only exist in memory?</li></ul>
 
 <div data-example>##EXAMPLECODE@isEx##</div>
@@ -412,12 +413,6 @@ color of <i>all</i> headers, clicking on another header handles the already defi
 <div class="note"><b>Note</b>: hiding changes the css <code>display</code> property to "none". It may be more useful to use a <code>css class</code> for this.</div>
 
 <div data-example>##EXAMPLECODE@showHideEx##</div></div>
-</template>
-
-<template data-id="instance_removeAttribute" class="instance_removeAttribute" data-is-deprecated="false">
-<div data-params='[{"attrName":"string."}]'></div>
-<div data-return-value='JQx Instance'></div>
-<div data-text='1'><div>Remove some attribute from each element of the element collection of the JQx Instance.</div></div>
 </template>
 
 <template data-id="instance_removeClass" class="instance_removeClass" data-is-deprecated="false">
@@ -1681,4 +1676,17 @@ So removal of <code>.test1, test2 {...}</code> will fail using <code>$.removeCss
 Retrieves the first <code>Node</code> of the instance. Equals <code>[JQx instance][0]</code>, or <code>[JQx instance].first()</code>.
 </div>
 </div>
+</template>
+
+<template data-id="instance_rmAttr" class="instance_rmAttr" data-is-deprecated="false">
+<div data-params='[{"...attrNames":"string[]"}]'></div>
+<div data-return-value='JQx instance'></div>
+<div data-text='1'><div>
+  Removes the given [attrNames] from the <i>first</i> element in the collection
+</div>
+
+<div>
+See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
+  >[JQx instance].is</div> for usage
+</div></div>
 </template>

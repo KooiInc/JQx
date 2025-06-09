@@ -305,8 +305,7 @@ function clickActionsFactory($) {
       const inpDisabled = $.input({
         id: "disabledInput",
         disabled: true,
-        type: "text",
-        placeholder: "I am not enabled"});
+        type: "text"});
       const { is } = inpDisabled;
       const retrieveFeatures = () =>
         `<ul>${
@@ -320,6 +319,7 @@ function clickActionsFactory($) {
       console.log(getActualPopupText().HTML.get(1));
       const reCheckAfterAdded2DOM = () => {
         inpDisabled.toDOM();
+        inpDisabled.attr({placeholder: "I am now in the DOM"}).rmAttr("disabled");
         $.Popup.show({
           content: $.div().append( inpDisabled, getActualPopupText() )
         });
