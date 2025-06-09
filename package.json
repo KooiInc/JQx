@@ -1,9 +1,9 @@
 {
   "name": "jqx-es",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "private": false,
   "type": "module",
-  "description": "A JQuery alike es20xx module",
+  "description": "The good parts of JQuery",
   "keywords": [
     "jquery-subset",
     "es20xx",
