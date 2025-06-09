@@ -786,7 +786,7 @@ function clickActionsFactory($) {
       const textNode = $.text("Some text here");
       const divWithTextNodes = $.div( textNode, commentNode );
       const textContentStringified = [...divWithTextNodes.node.childNodes]
-        .map( el => el.nodeType === 8 ? `&lt;!--${el.data}-->;` : el.data )
+        .map( el => el.nodeType === 8 ? `&lt;!--${el.data}-->` : el.data )
         .join(`<br>`);
       $.div(
          $.b(`The created text nodes`),
@@ -834,22 +834,31 @@ function clickActionsFactory($) {
       }, 2000);
     },
     duplicateEx: evt => {
-      const currentDescription = getCurrentParagraph(evt);
       $.editCssRule(".someClass", {color: "brown"});
-      const initial = $('<div class="someClass">[hello]</div>', currentDescription)
-          .duplicate(true, currentDescription);
-      $( ".someClass", currentDescription )
-        .append(" world!")
-        .prepend("We say: ")
-        .each(el => el.setAttribute("id", `_${ Math.floor(10000 + Math.random() * 10000).toString(16)}` ))
-        .duplicate(true, currentDescription)
-        .replaceClass("someClass", "tmp")
-        .text(" That's right folks. Bye!", true);
-      const outerHtml = $(`.someClass, .tmp`).collection.map(el => $(el).HTML.get(1,1)).join(`<br>`);
-      $.Popup.show({
-        content: outerHtml,
-        callback: $(".someClass, .tmp").remove,
-      });
+      const initial = $('<div data-id="exDuplicate" class="someClass">[hello]</div>')
+        .showInExample(evt, true);
+      
+      const exEl = $('[data-id="exDuplicate"]');
+      const exElDupe = exEl.duplicate();
+      exEl
+        .after(
+          exElDupe
+            .append($.text(" world!"))
+            .prepend($.text("We say: "))
+            .style({fontWeight: "bold"})
+        )
+        .after(
+          exElDupe
+          .duplicate()
+          .replaceClass("someClass", "tmp")
+          .text(" That's right folks. Bye!", true)
+          .style({fontWeight: "normal", fontStyle: "italic"})
+        )
+        .after($.div(
+          `outerHTML `,
+          $.code(`div[data-id="exDuplicate"]`),
+          ` still: ${exEl.HTML.get(1, 1)}`)
+        );
     },
     hasClassEx: evt => {
       const tmpDiv = $('<div class="one two tree">Hello world</div>', getCurrentParagraph(evt));
@@ -1054,27 +1063,55 @@ function clickActionsFactory($) {
         ).showInExample(evt, true);
     },
     computedStyleEx: evt => {
+      if (exampleResultExists(evt.target)) { return; }
+      
       $.editCssRule(".redEx {color: red; font-weight: bold}");
-      $('<p class="redEx">Hello!</p>', getCurrentParagraph(evt));
-      $.Popup.show({
-        content: `
-            <code>$(".redEx").computedStyle("color")</code>: ${
-            $(`.redEx`).computedStyle("color") }<br>
-            <code>$(".redEx").computedStyle("font-weight")</code>: ${
-            $(`.redEx`).computedStyle("font-weight") }`,
-        callback: $(".redEx").remove });
+      $('<p class="redEx">Hello!</p>')
+        .andThen(
+          $.div(
+            `<code>$(".redEx").computedStyle("color")</code>: ${
+               $(`.redEx`).computedStyle("color") }<br>
+               <code>$(".redEx").computedStyle("font-weight")</code>: ${
+               $(`.redEx`).computedStyle("font-weight") }`),
+        ).showInExample(evt).removeAfter(10);
     },
     
     dimEx: evt => {
-      const dim = $('<p data-id="tmpEx">Hello, where am I at the moment?</p>', getCurrentParagraph(evt))
-        .style({color: "red", fontWeight: "bold", border: "3px solid red", padding: "5px", textAlign: "center"});
-      const dims = JSON.stringify(dim.dimensions, null, 2)
-        .replace(/[}{"]/g, "").trim().replace(/\n/g, "<br>");
-      $.Popup.show({content: dims, callback: () => dim.remove()});
+      if (exampleResultExists(evt.target)) { return; }
+      
+      $('<p data-id="tmpExDims">Hello, where am I at the moment?</p>')
+        .style( {
+          color: "red",
+          fontWeight: "bold",
+          border: "3px solid red",
+          padding: "5px",
+          textAlign: "center" } ).showInExample(evt, true);
+      
+      requestAnimationFrame(() => {
+        // note: the element had to be rendered first to be
+        // able to calculate its dimensions.
+        const exElem = $(`[data-id='tmpExDims']`);
+        const dims = Object.entries(exElem.dimensions)
+          .reduce((acc, [key, value]) => [...acc, `${key}: ${value}`], [])
+          .join(`<br>`);
+        exElem.after($.div(dims));
+      });
     },
-    findEx: () => {$.Popup.show( { content: $(".docs").find(`[data-for-id='instance_find']`)[0]?.outerHTML.replace(/</g, "&lt;") } );},
-    find$Ex: () => {
-      $.Popup.show( { content: $(".docs").find$("[data-for-id='instance_find$']").HTML.get(1, 1) } );
+    findEx: evt => {
+      // note: $(`[data-for-id='instance_find']` is the header for this chapter
+      $.div(
+        $.code("$(`.docs`).find(`[data-for-id='instance_find']`)[0].outerHTML"), " =><br>",
+        $(`.docs`).find(`[data-for-id='instance_find']`)[0].outerHTML.replace(/</g, `&lt;`))
+        .showInExample(evt)
+        .removeAfter(10);
+    },
+    find$Ex: evt => {
+      // note: $(`[data-for-id='instance_find$']` is the header for this chapter
+      $.div(
+          $.code("$(`.docs`).find$(`[data-for-id='instance_find$']`).HTML.get(1, 1)"), " =><br>",
+          $(`.docs`).find$(`[data-for-id='instance_find$']`).HTML.get(1, 1))
+        .showInExample(evt)
+        .removeAfter(10);
     },
     firstEx: evt => {
       const jqxElems = $("#navigation li[data-key]");
@@ -1106,27 +1143,25 @@ function clickActionsFactory($) {
       $.editCssRule("[data-is-universe]:after {content: ' ... and the universe!'; color: red;}");
       helloWrld.data.add({isUniverse: true, something: "else", "dashed-prop-given": 1});
       const {all: myDATA} = helloWrld.data;
-      $.Popup.show({
-        content: `<code>helloWrld.data.all</code> =&gt; ${JSON.stringify(helloWrld.data.all)}
-          <br><code>helloWrld.data.get("something")</code> =&gt; ${helloWrld.data.get("something")}
-          <br><code>helloWrld.data.all.isUniverse</code> =&gt; ${helloWrld.data.all.isUniverse}
-          <br><code>helloWrld.data.all["is-universe]</code> =&gt; ${helloWrld.data.all["is-universe"]}
-          <br><code>helloWrld.data.get("is-universe")</code> =&gt; ${helloWrld.data.get("is-universe")}
-          <br><code>helloWrld.data.get("isUniverse")</code> =&gt; ${helloWrld.data.get("isUniverse")}
-          <br><code>helloWrld.data.get("dashed-prop-given")</code> =&gt; ${helloWrld.data.get("dashed-prop-given")}
-          <br><code>helloWrld.data.all.nonexisting</code> =&gt; ${helloWrld.data.all.nonexisting}
-          <br><code>helloWrld.data.get("nonexisting", "no sir, I'm not here")</code> =&gt; ${
-            helloWrld.data.get("nonexisting", "no sir, I'm not here")}
-          <br><code>myDATA.something</code> =&gt; ${myDATA.something}
-          <br><code>myDATA.isUniverse</code> =&gt; ${myDATA.isUniverse}`,
-        callback: () => {
-          helloWrld.data.remove("isUniverse");
-          setTimeout( () => {
-            $.removeCssRule("[data-is-universe]:after");
-            helloWrld.remove();
-          }, 3500);
-        },
-      });
+      helloWrld.andThen(
+        $.ul()
+          .append(
+            $.li(`<code>helloWrld.data.all</code> =&gt; ${JSON.stringify(helloWrld.data.all)}`),
+            $.li(`<code>helloWrld.data.get("something")</code> =&gt; ${helloWrld.data.get("something")}`),
+            $.li(`<code>helloWrld.data.all.isUniverse</code> =&gt; ${helloWrld.data.all.isUniverse}`),
+            $.li(`<code>helloWrld.data.all["is-universe]</code> =&gt; ${helloWrld.data.all["is-universe"]}`),
+            $.li(`<code>helloWrld.data.get("is-universe")</code> =&gt; ${helloWrld.data.get("is-universe")}`),
+            $.li(`<code>helloWrld.data.get("isUniverse")</code> =&gt; ${helloWrld.data.get("isUniverse")}`),
+            $.li(`<code>helloWrld.data.get("dashed-prop-given")</code> =&gt; ${helloWrld.data.get("dashed-prop-given")}`),
+            $.li(`<code>helloWrld.data.all.nonexisting</code> =&gt; ${helloWrld.data.all.nonexisting}`),
+            $.li(`<code>helloWrld.data.get("nonexisting", "no sir, I'm not here")</code> =&gt; ${
+              helloWrld.data.get("nonexisting", "no sir, I'm not here")}`),
+            $.li(`<code>myDATA.something</code> =&gt; ${myDATA.something}`),
+            $.li(`<code>myDATA.isUniverse</code> =&gt; ${myDATA.isUniverse}`),
+          )
+      ).showInExample(evt, true);
+      
+      setTimeout(() => $(`[data-is-universe]`).data.remove("isUniverse"), 3000);
     },
     eachEx: () => {
       const mNameElems = $(`.methodName`);
