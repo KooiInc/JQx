@@ -1139,6 +1139,7 @@ function clickActionsFactory($) {
               jqxElem.HTML.get(1, 1)}</div>` });
     },
     dataEx: evt => {
+      if (exampleResultExists(evt.target)) { return; }
       const helloWrld = $("<div>Hello World again</div>", getCurrentParagraph(evt));
       $.editCssRule("[data-is-universe]:after {content: ' ... and the universe!'; color: red;}");
       helloWrld.data.add({isUniverse: true, something: "else", "dashed-prop-given": 1});
