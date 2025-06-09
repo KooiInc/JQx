@@ -90,27 +90,56 @@ function clickActionsFactory($) {
   }, 1500);
   const exDivStyle = (remove = false) => remove ? $.removeCssRule(`#tmpEx`) : $.editCssRule(`#tmpEx {color: green; font-weight: bold;}`);
   const getCurrentParagraph = evt => $(evt.target.closest(`.exContainer`)).find$(`h3`);
+  const countDownExampleCloser = (counter, exampleTmp) => {
+    const stopBttn = exampleTmp.find$(`span [data-stop]`)?.node;
+    
+    if (!stopBttn || stopBttn?.dataset.stop === "true") {
+      exampleTmp.find$(`.inlineExampleHeader span`).remove();
+      return exampleTmp.find$(`div.inlineExampleHeader`)
+        .append($.button({data: {action: `removeExmple`}, }, `remove`));
+    }
+    
+    const current = +counter.dataset.n;
+    counter.dataset.n = current - 1;
+    counter.textContent = current + ` second${current === 1 ? `` : `s`}`;
+    
+    if (current <= 0) {
+      return exampleTmp.remove();
+    }
+    
+    return setTimeout(_ => countDownExampleCloser(counter, exampleTmp), 1000);
+  }
   $.fn(`showInExample`, (me, evt, at = $.at.after) => {
     const exampleHeader = $(evt.target.closest(`.exContainer`));
     
     if (!exampleHeader.is.empty) {
-      me
-        .prepend($.div(
-          { data:{temporary: "1"},
-            style: "color:red;font-weight:bold;border:1px dotted #999;padding:3px;text-align:center"},
-          `**created example element(s)**`))
-        .renderTo(exampleHeader.find$(`h3`), at);
+      const exTmp = $.div({data: {exTmp: "1"}}).append(
+        me.before($.div(
+          $.div(
+            { data:{tmpHead: "1"},
+              class: "inlineExampleHeader",
+              text: `*created example element(s)*`}),
+        )));
+      exTmp.renderTo(exampleHeader.find$(`h3`), at);
     }
     
     return me;
   });
   $.fn(`removeAfter`, (me, seconds) => {
-    me.find$(`div[data-temporary]`).append(` ... will be removed after ${seconds} second(s)`);
-    setTimeout(() => me.remove(), seconds * 1000);
+    const count = $.span({data: {n: seconds}});
+    const stopBttn = $.button({data:{action: `stopExampleCounter`, stop: "false"}}, `stop`);
+    const counterEl = $.span(` Will be removed in `).append(count, stopBttn);
+    me.parent.find$(`[data-tmp-head]`).append(counterEl);
+    countDownExampleCloser(count.node, me.parent);
     return me;
   });
   
   return {
+    removeExmple: (evt) => {
+      evt.target.closest(`.inlineExampleHeader`).querySelector(`span button[data-stop]`)?.dataset.stop === "true";
+      evt.target.closest(`[data-ex-tmp]`).remove();
+    },
+    stopExampleCounter: evt => evt.target.dataset.stop = "true",
     popupTimedEx: () => {
       // A timed popup message
       const timedText = "Hi, this is a popup! I'll be active for 5 seconds (as long as one don't close me first).";
@@ -204,10 +233,12 @@ function clickActionsFactory($) {
       console.log(evt.target.closest(`.exContainer`))
       const exampleDiv = $(
         '<div id="tmpEx">This is not very useful</div>',
-        getCurrentParagraph(evt), $.at.after );
+        getCurrentParagraph(evt), $.at.after )
+        .addClass(`user`)
+        .showInExample(evt);
+        
       setTimeout(_ => {
-        exampleDiv.addClass("warnUser", "user");
-        setTimeout(exampleDiv.remove, 2000);
+        exampleDiv.addClass("warnUser", "user").removeAfter(4);
       }, 1500);
     },
     appendEx: evt => {
@@ -312,8 +343,9 @@ function clickActionsFactory($) {
       $(`<div id="tmpEx">Hello world.</div>`, getCurrentParagraph(evt))
         .addClass("helloworld")
         .append("<span> And the rest of the universe ... </span>")
-        .text(" (will disappear in a few seconds ...)", true);
-      setTimeout( () => $("#tmpEx").remove(), 3000);
+        .text(" (will disappear in a few seconds ...)", true)
+        .showInExample(evt)
+        .removeAfter(5);
     },
     fnEx: () => {
       $.fn( "addTitle", (me, ttl) => ttl ? me.prop("title", ttl) : me );
@@ -349,7 +381,7 @@ function clickActionsFactory($) {
       const popupPara = $.p("Hello world ...")
        .append( $.i( {class: "exRed"}, $.B(" here we are!") ) )
        .showInExample(evt)
-       .removeAfter(4);
+       .removeAfter(5);
     },
     staticElemEx2: evt =>{
       // extract tag methods from [JQx]
@@ -366,7 +398,7 @@ function clickActionsFactory($) {
       popupPara
         .append(hereWeAre)
         .showInExample(evt)
-        .removeAfter(4);
+        .removeAfter(5);
     },
     
     fnEx2: evt => {
@@ -831,18 +863,14 @@ function clickActionsFactory($) {
         callback: $(".one.two").remove
       } );
     },
-    staticAtEx: () => {
+    staticAtEx: evt => {
       $.editCssRules(
-        ".hello { margin: 0.3rem 0; display: inline-block; }",
-        "h2.hello {margin-right: 0.2rem;");
+        ".hello { margin: 0.3rem 0; display: inline-block; font-style: italic; }",
+        "h2.hello {margin-right: 0.2rem; font-style: normal; color: red}");
       const helloH3 = $.h3({class: "hello"}, "world");
-      const elemContainer = $( `<div>` ).append( helloH3 );
-      $.virtual(`<h2 class="hello">Hello</h2>`, helloH3, $.at.BEFORE);
-      $.Popup.show({
-        content: elemContainer,
-        callback: () => $.removeCssRules(".hello", "h2.hello"),
-        closeAfter: 3,
-      });
+      $(`<div>`).append( helloH3 ).prepend(`<h2 class="hello">Hello</h2>`)
+        .showInExample(evt)
+        .removeAfter(6);
     },
     staticDelegateEx: evt => {
       $.delegate(
