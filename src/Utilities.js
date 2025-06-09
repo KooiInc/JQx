@@ -77,7 +77,7 @@ function ExamineElementFeatureFactory() {
   const noElements = { notInDOM: true, writable: notApplicable, modal: notApplicable, empty: true, open: notApplicable, visible: notApplicable, };
 
   return self => {
-    const firstElem = self[0];
+    const firstElem = self.node;
     
     return firstElem ? {
       get writable() {
@@ -87,7 +87,7 @@ function ExamineElementFeatureFactory() {
         return isModal(firstElem);
       },
       get inDOM() {
-        return !!firstElem.parentNode;
+        return firstElem.isConnected;
       },
       get open() {
         return firstElem.open ?? false;

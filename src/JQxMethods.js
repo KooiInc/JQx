@@ -450,7 +450,10 @@ export default {
       removeFromCollection();
       return instance;
     },
-    removeAttribute: (instance, attrName) => loop(instance, el => el.removeAttribute(attrName)),
+    rmAttr: (instance, ...attrNames) => {
+      attrNames.forEach(attr => instance.node.removeAttribute(attr));
+      return instance;
+    },
     removeClass: (instance, ...classNames) =>
       loop(instance, el => el && classNames.forEach(cn => el.classList.remove(cn))),
     renderTo: (instance, root = document.body, at = jqx.insertPositions.end) => {
