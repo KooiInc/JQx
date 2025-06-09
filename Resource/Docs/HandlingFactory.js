@@ -855,11 +855,16 @@ function clickActionsFactory($) {
       setTimeout(p.remove, 4000);
     },
     setDataEx: evt => {
-      const someDiv = $(`<span>Hello world</span>`, getCurrentParagraph(evt));
-      $.editCssRule("[data-goodbye]::after { content: '...'attr(data-goodbye); }");
+      if (exampleResultExists(evt.target)) { return; }
+      
+      const someDiv = $(`<span data-id="exSetData">Hello world</span>`, getCurrentParagraph(evt))
+        .showInExample(evt).removeAfter(5);
+      
+      $.editCssRule("[data-goodbye]:after { content: '...'attr(data-goodbye); color: red; }")
+      
       setTimeout(() => {
-        someDiv.setData({id: "temporary", goodbye: "and bye again"});
-        setTimeout(() => $("[data-id='temporary']").remove(), 2500);
+        const renderedSomeDiv = $(`[data-id="exSetData"]`)
+        renderedSomeDiv.setData({id: "temporary", goodbye: "and bye again"});
       }, 1500);
     },
     appendToEx: evt => {
