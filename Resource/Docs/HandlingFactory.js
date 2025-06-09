@@ -238,6 +238,8 @@ function clickActionsFactory($) {
       } );
     },
     addClassEx: evt => {
+      if (exampleResultExists(evt.target)) { return; }
+      
       $.editCssRule("#tmpEx.warnUser {color: red; font-weight: bold;}");
       $.editCssRule(".user:before {content: 'Hi user! ';}");
       console.log(evt.target.closest(`.exContainer`))
@@ -252,7 +254,8 @@ function clickActionsFactory($) {
       }, 1500);
     },
     appendEx: evt => {
-      if (!$(`#tmpExAppend`).is.empty) { /* already rendered */ return; }
+      if (exampleResultExists(evt.target)) { return; }
+      
       $.editCssRule(".appended { color: red; cursor: pointer; }");
       const toAppendJQxInstance = $.virtual(
         '<div class="appended">I am an appended JQx instance ...</div>'
@@ -274,7 +277,8 @@ function clickActionsFactory($) {
       }, 2000);
     },
     prependEx: evt => {
-      $("#tmpEx").remove();
+      if (exampleResultExists(evt.target)) { return; }
+      
       exDivStyle();
       $.editCssRule(".appended { color: red; }");
       $('<div id="tmpEx">... hi there!</div>', getCurrentParagraph(evt))
@@ -282,6 +286,8 @@ function clickActionsFactory($) {
       setTimeout($("#tmpEx").remove, 2000);
     },
     afterMeEx: evt => {
+      if (exampleResultExists(evt.target)) { return; }
+      
       $.div("I am div 1").after($("<div>And I am div 2</div>")).showInExample(evt).removeAfter(5);
     },
     beforeMeEx: evt => {
@@ -296,6 +302,8 @@ function clickActionsFactory($) {
       divs.showInExample(evt).removeAfter(30);
     },
     andThenEx: evt => {
+      if (exampleResultExists(evt.target)) { return; }
+      
       const ele1 = $.p("I am the first");
       const ele2 = $.p("I am the second");
       const codeLine1 = '<code>ele1.andThen(ele2)</code>';
@@ -333,6 +341,8 @@ function clickActionsFactory($) {
       });
     },
     closestEx: evt => {
+      if (exampleResultExists(evt.target)) { return; }
+      
       const someDiv = $('<div><b style="color:red">Hello world again</b></div>').showInExample(evt);
       $.Popup.show( {
         content: `
@@ -342,6 +352,8 @@ function clickActionsFactory($) {
       });
     },
     chainEx: evt => {
+      if (exampleResultExists(evt.target)) { return; }
+      
       $.editCssRules("#tmpEx {color: green;}", ".helloworld {font-weight: bold;}");
       exDivStyle();
       $(`<div id="tmpEx">Hello world.</div>`, getCurrentParagraph(evt))
@@ -381,6 +393,8 @@ function clickActionsFactory($) {
         } );
       },
     staticElemEx: evt => {
+      if (exampleResultExists(evt.target)) { return; }
+      
       $.editCssRules(".exRed {color: red;}");
       const popupPara = $.p("Hello world ...")
        .append( $.i( {class: "exRed"}, $.B(" here we are!") ) )
@@ -388,6 +402,8 @@ function clickActionsFactory($) {
        .removeAfter(5);
     },
     staticElemEx2: evt =>{
+      if (exampleResultExists(evt.target)) { return; }
+      
       // extract tag methods from [JQx]
       $.editCssRules(
         ".exRed {color: red;}",
@@ -406,6 +422,8 @@ function clickActionsFactory($) {
     },
     
     fnEx2: evt => {
+      if (exampleResultExists(evt.target)) { return; }
+      
       $.fn( `colorRed`, me => { me.style({color: "red", fontWeight: "bold"}); return me; } );
       const someDiv = $.virtual(`<div data-id="tmpEx">Hello world</div>`)
         .colorRed()
@@ -424,6 +442,8 @@ function clickActionsFactory($) {
       } );
     },
     htmlEx: evt => {
+      if (exampleResultExists(evt.target)) { return; }
+      
       const someDiv = $.virtual(`
         <div data-id='tmpEx'>
           Hello <span>world</span>
@@ -450,6 +470,8 @@ function clickActionsFactory($) {
       } );
     },
     propEx: evt => {
+      if (exampleResultExists(evt.target)) { return; }
+      
       const exElem = $('<div data-id="tmpEx"><b>Hello</b> <span>World</span>! (hover me)</div>')
         .showInExample(evt)
         .removeAfter(15);
@@ -462,6 +484,8 @@ function clickActionsFactory($) {
       );
     },
     removeClassEx: evt => {
+      if (exampleResultExists(evt.target)) { return; }
+      
       $.editCssRule(".exTest { color: red; font-weight: bold; }");
       const exElem = $.virtual('<div data-id="tmpEx"><b>Hello</b> <span class="exTest">World</span>!</div>');
       setTimeout(() => { exElem.find$("span").removeClass("exTest"); }, 2000);
@@ -480,6 +504,8 @@ function clickActionsFactory($) {
         `<code>undefWithDefaultValue</code>: "${undefWithDefaultValue}"`].join("<br>") } );
     },
     editCssRuleEx: evt => {
+      if (exampleResultExists(evt.target)) { return; }
+      
       $.editCssRule("#div1 {margin: 0.3rem; color: green; background-color: #EEE; }");
       $.editCssRule("#div2", {margin: "0.3rem", color: "red", backgroundColor: "#EEE"});
       const div1 = $.virtual('<div id="div1">I am div#div1</div>');
@@ -537,6 +563,8 @@ function clickActionsFactory($) {
         } } );
     },
     virtualEx: evt => {
+      if (exampleResultExists(evt.target)) { return; }
+      
       const test = $.node(".virtual");
       test && test.remove();
       const inDOM = instance => instance.isVirtual ? "Nope" : "Yep";
@@ -553,6 +581,8 @@ function clickActionsFactory($) {
         } } );
     },
     toggleClassEx: evt => {
+      if (exampleResultExists(evt.target)) { return; }
+      
       if (!$(getCurrentParagraph(evt)).find$(".divExClass").is.empty) { return; }
       const cleanup = () => {
         $.removeCssRule(".redEx");
@@ -577,6 +607,8 @@ function clickActionsFactory($) {
       elem.showInExample(evt);
     },
     replaceClassEx: evt => {
+      if (exampleResultExists(evt.target)) { return; }
+      
       const divEx = $('<div><span class="divExClass">Hello World!</span></div>');
       $.editCssRule(".redEx { color: red; }");
       $.editCssRule(".redExUl { text-decoration: underline; }");
@@ -589,6 +621,8 @@ function clickActionsFactory($) {
       divEx.showInExample(evt).removeAfter(5);
     },
     ISEx: evt => {
+      if (exampleResultExists(evt.target)) { return; }
+      
       const someVars = {
         Object: {say: "hello"},
         Array: [1, 2, 3],
@@ -702,12 +736,13 @@ function clickActionsFactory($) {
       $.Popup.show({ content: report } );
     },
     toNodeListEx: evt => {
+      if (exampleResultExists(evt.target)) { return; }
+      
       // create 2 nodes in the DOM tree and retrieve the collection as NodeList
-      $('<div class="ex">**Initial</div>').showInExample(evt);
-      const nodes = $([
+      const initialList = $('<div class="ex2NodeList">**Initial</div>');
+      const nodes = $.virtual([
         '<div id="some" class="toNodelistEx">Hello</div>',
         '<div id="thing" class="toNodelistEx">World</div>'])
-      .showInExample(evt)
       .toNodeList();
       
       // change the text of the nodes in the list
@@ -717,9 +752,10 @@ function clickActionsFactory($) {
       }
       
       // append the nodes (and colorize)
-      $(`<div class="ex">**Created and modified using ${toCodeElement("nodes")}</div>`)
-        .append(...nodes).showInExample(evt);
-      setTimeout($(".ex").remove, 5000);
+      initialList.andThen(
+        $(`<div class="ex">**Created and modified using ${toCodeElement("nodes")}</div>`)
+          .append(...nodes)
+      ).showInExample(evt).closeAfter(10);
     },
     htmlForEx: evt => {
       // note: this example serves both for [JQx instance].html and [JQx instance].htmlFor
@@ -748,6 +784,8 @@ function clickActionsFactory($) {
       } );
     },
     isEmptyEx: evt => {
+      if (exampleResultExists(evt.target)) { return; }
+      
       let someDiv = $.div(
         { data: {id:"tmpEx"} },
         $.b({class: "red"}, "Hello!") )
@@ -784,6 +822,8 @@ function clickActionsFactory($) {
       });
     },
     textOrCommentEx: evt => {
+      if (exampleResultExists(evt.target)) { return; }
+      
       const commentNode = $.text("Some comment here", true);
       const textNode = $.text("Some text here");
       const divWithTextNodes = $.div( textNode, commentNode );
@@ -823,6 +863,8 @@ function clickActionsFactory($) {
       }, 1500);
     },
     appendToEx: evt => {
+      if (exampleResultExists(evt.target)) { return; }
+      
       $.editCssRule(".tmpExAppendTo { color: blue; font-weight: normal; }");
       const helloWorld = $.virtual('<div class="tmpExAppendTo">Hello World</div>');
       const div2Append = $.span({class: "red"}, " ... And bye again");
@@ -875,6 +917,8 @@ function clickActionsFactory($) {
       } );
     },
     staticAtEx: evt => {
+      if (exampleResultExists(evt.target)) { return; }
+      
       $.editCssRules(
         ".hello { margin: 0.3rem 0; display: inline-block; font-style: italic; }",
         "h2.hello {margin-right: 0.2rem; font-style: normal; color: red}");
@@ -1024,6 +1068,8 @@ function clickActionsFactory($) {
         callback: () => $.removeCssRules(`.${hello3GeneratedClassName}, .leftRedBorder`) } );
     },
     attrEx: evt => {
+      if (exampleResultExists(evt.target)) { return; }
+      
       const someDiv = $.div( {
           id: "tmpExAttr",
           data: {id: "#tmpExAttr"},
@@ -1102,6 +1148,8 @@ function clickActionsFactory($) {
       });
     },
     findEx: evt => {
+      if (exampleResultExists(evt.target)) { return; }
+      
       // note: $(`[data-for-id='instance_find']` is the header for this chapter
       $.div(
         $.code("$(`.docs`).find(`[data-for-id='instance_find']`)[0].outerHTML"), " =><br>",
@@ -1110,6 +1158,8 @@ function clickActionsFactory($) {
         .removeAfter(10);
     },
     find$Ex: evt => {
+      if (exampleResultExists(evt.target)) { return; }
+      
       // note: $(`[data-for-id='instance_find$']` is the header for this chapter
       $.div(
           $.code("$(`.docs`).find$(`[data-for-id='instance_find$']`).HTML.get(1, 1)"), " =><br>",
