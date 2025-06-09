@@ -285,6 +285,8 @@ function clickActionsFactory($) {
       $.div("I am div 1").after($("<div>And I am div 2</div>")).showInExample(evt).removeAfter(5);
     },
     beforeMeEx: evt => {
+      if (exampleResultExists(evt.target)) { return; }
+      
       const divs = $("<div>...and I am div 2</div>")
         .before( $.div("I am div 1") )
         .andThen(
@@ -834,6 +836,8 @@ function clickActionsFactory($) {
       }, 2000);
     },
     duplicateEx: evt => {
+      if (exampleResultExists(evt.target)) { return; }
+      
       $.editCssRule(".someClass", {color: "brown"});
       const initial = $('<div data-id="exDuplicate" class="someClass">[hello]</div>')
         .showInExample(evt, true);
@@ -1140,6 +1144,7 @@ function clickActionsFactory($) {
     },
     dataEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
+      
       const helloWrld = $("<div>Hello World again</div>", getCurrentParagraph(evt));
       $.editCssRule("[data-is-universe]:after {content: ' ... and the universe!'; color: red;}");
       helloWrld.data.add({isUniverse: true, something: "else", "dashed-prop-given": 1});
