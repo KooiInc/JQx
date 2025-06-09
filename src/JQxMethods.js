@@ -60,7 +60,8 @@ const css = (el, keyOrKvPairs, value) => {
 };
 const assignAttrValues = (/*NODOC*/el, keyValuePairs) => {
   el && Object.entries(keyValuePairs).forEach(([key, value]) => {
-    if (key.toLowerCase().startsWith(`data`)) {
+    key = toDashedNotation(key);
+    if (key.startsWith(`data`)) {
       return setData(el, value);
     }
     
@@ -253,6 +254,8 @@ export default {
       if (!firstElem) { return instance }
       
       if (!value && IS(keyOrObj, String)) {
+        keyOrObj = toDashedNotation(keyOrObj);
+        
         if (keyOrObj === `class`) {
           return [...firstElem?.classList]?.join(` `);
         }
@@ -261,7 +264,14 @@ export default {
       }
       
       if (IS(keyOrObj, String) && value) {
-        keyOrObj = { [keyOrObj]: value };
+        keyOrObj = toDashedNotation(keyOrObj);
+        
+        switch(true) {
+          case keyOrObj.startsWith(`data-`):
+            keyOrObj = { data: {[keyOrObj.replace(`data-`, ``)]: value } };
+            break;
+          default: keyOrObj = { [keyOrObj]: value };
+        }
       }
       
       if (IS(keyOrObj, Object) && !instance.is.empty) {
