@@ -62,10 +62,12 @@ function finalizeDocumentCreation() {
   $(`[data-group="jqx"]`).trigger(`click`);
   Prism.highlightAll();
   delete documentationTemplates.templates;
+  
   $.log(`Document creation/implementation (without imports) took ${
     ((performance.now() - perform)/1000).toFixed(3)} seconds`);
+  //$(`.exRunBttn`).each(bttn => $(bttn.closest(`.exContainer`)).find(`.example`)[0].append(bttn));
 }
-
+//1em 0 -3.5em 43rem;
 // ---
 function setupHandling() {
   const handler = clientHandling;
@@ -199,12 +201,14 @@ function createExampleCodeElement(code) {
   }
   
   const theCodeElement = getCodeElement(codeBody);
-  const head = $.h3({className:"example", text: `Example`});
+  const head = $.div(
+    $.h3({class:"example", text: `Example`}),
+    $.button({class: "exRunBttn", data: {action: `${codeId}`}}, `Try it`));
   
   return $.div(
     {class: "exContainer"}, head)
     .append(theCodeElement)
-    .append($.virtual(`<button class="exRunBttn" data-action="${codeId}">Try it</button>`));
+    //.append($.virtual(`<button class="exRunBttn" data-action="${codeId}">Try it</button>`));
 }
 
 function getChapterName(name, prefix, isDeprecated = false) {

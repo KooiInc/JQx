@@ -130,7 +130,7 @@ function clickActionsFactory($) {
             )
           )
         );
-      exTmp.renderTo(exampleHeader.find$(`h3`), $.at.after);
+      exampleHeader.find$(`div:first-child`).after(exTmp);
     }
     
     return me;
@@ -956,16 +956,23 @@ function clickActionsFactory($) {
       $(evt.target).attr("disabled", "disabled");
     },
     clearEx: evt => {
-      $.editCssRule('[data-id="tmpEx"] { color: green; font-weight: bold; }');
+      if (exampleResultExists(evt.target)) { return; }
+      
+      $.editCssRule('[data-id="tmpExClr"] { color: green; font-weight: bold; }');
       $.editCssRule(".metoo {color: red;}");
-      $(['<p data-id="tmpEx">I hope they won\'t remove this!</p>',
-        '<div class="metoo">Me too!</div>'], getCurrentParagraph(evt));
-      setTimeout( () => $('[data-id="tmpEx"]').clear(), 1500);
-      setTimeout( () => $(`.metoo`).text("They did it didn't they?"), 2500);
+      const me2Clear = $($.div(
+        {data:{id: "tmpExClr"}},
+         $.div("Here I am."),
+         $.div("Call me Pete."),
+         $.div("I hope they won't remove me!"))
+        .after($('<div class="metoo">Me too! Leave Pete alone!</div>')))
+      .showInExample(evt, true)
+      .removeAfter(10);
+      
       setTimeout( () => {
-        $(".metoo").remove();
-        $.removeCssRule(".metoo");
-      }, 4000);
+        $('[data-id="tmpExClr"]').clear(); // <= clearing
+        setTimeout( () => $(`.metoo`).text("They did it didn't they?"), 1000)
+      }, 2500);
     },
     showHideEx: evt => {
       if (!$(getCurrentParagraph(evt)).find$(".divExClass").is.empty) { return; }
@@ -990,7 +997,6 @@ function clickActionsFactory($) {
         .on( "click", (_, self) => cleanup(self) ) );
     },
     cssEx: evt => {
-      // do not repeat
       if (exampleResultExists(evt.target)) { return; }
       
       const testelem1 = $.virtual('<div data-id="tmpExCss1">Hello #1</div>')

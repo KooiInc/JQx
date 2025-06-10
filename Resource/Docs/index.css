@@ -237,7 +237,7 @@ h3[data-for-id], [data-group-id] {
 .example {
   margin-left: 0.5rem;
   margin-bottom: -0.2rem;
-  width: 100%;
+  display: inline-block;
 }
 
 .example ~ div {
@@ -250,9 +250,7 @@ h3[data-for-id], [data-group-id] {
 }
 
 .exRunBttn {
-  position: relative;
-  display: block;
-  margin: -0.8rem 0 1rem 1rem;
+  margin-left: 0.5em;
 }
 
 code:not([class*='language-']) {
