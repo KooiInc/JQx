@@ -439,6 +439,27 @@ function clickActionsFactory($) {
       
       input.after(valueResults);
     },
+    renderEx: evt => {
+      $.editCssRule(`.HVCentered {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        z-index: 1000;
+        border: 5px solid red;
+        padding: 15px;
+        text-align: center;
+        max-width: 400px;
+      }`);
+      
+      const tmpDiv = $.div({ class: "HVCentered" },
+        $.div("HElLO WORLD"),
+        $.div("(don't worry, I'll remove myself in a few secs)")
+      ) .render;
+      
+      setTimeout(tmpDiv.remove, 5000);
+    },
     htmlEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
       
