@@ -236,17 +236,15 @@ function clickActionsFactory($) {
     addClassEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
       
-      $.editCssRule("#tmpEx.warnUser {color: red; font-weight: bold;}");
-      $.editCssRule(".user:before {content: 'Hi user! ';}");
-      console.log(evt.target.closest(`.exContainer`))
-      const exampleDiv = $(
-        '<div id="tmpEx">This is not very useful</div>',
-        getCurrentParagraph(evt), $.at.after )
-        .addClass(`user`)
-        .showInExample(evt);
-        
-      setTimeout(_ => {
-        exampleDiv.addClass("warnUser", "user").removeAfter(4);
+      $.editCssRules(
+        "#tmpEx.warnUser {color: red; font-weight: bold;}",
+        ".user:before {content: 'Hi user! ';}"
+      );
+      
+      $(`<div id="tmpEx">That's a demo</div>`).showInExample(evt).removeAfter(10);
+      
+      setTimeout(() => {
+        $("#tmpEx").addClass("warnUser", "user");
       }, 1500);
     },
     appendEx: evt => {
@@ -453,10 +451,11 @@ function clickActionsFactory($) {
         max-width: 400px;
       }`);
       
-      const tmpDiv = $.div({ class: "HVCentered" },
+      const tmpDiv = $.div(
+        { class: "HVCentered" },
         $.div("HElLO WORLD"),
-        $.div("(don't worry, I'll remove myself in a few secs)")
-      ) .render;
+        $.div("(don't worry, I'll remove myself in a few secs)") )
+      .render;
       
       setTimeout(tmpDiv.remove, 5000);
     },
