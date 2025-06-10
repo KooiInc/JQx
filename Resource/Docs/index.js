@@ -144,7 +144,7 @@ function getChapterProps(chapterTemplate) {
      chapter,
      chapterName: chapterTemplate.dataset.id,
      paramJSON,
-     params: paramJSON && !/none/i.test(paramJSON) && createParams(paramJSON) || "",
+     params: paramJSON && !/none/i.test(paramJSON) ? createParams(paramJSON) : "",
      returns,
      chapterTextElement: $.div({class:"description"}, chapter.querySelector(`[data-text]`).innerHTML),
      isDeprecated: chapterTemplate.dataset.isDeprecated === "true",
@@ -167,20 +167,21 @@ function escHtml(str) {
     .replace(/&lt;\/code/g, `</code`);
 }
 
-function createParams(params) {
-  params = JSON.parse(params).reduce((acc, param) => {
-    const [name, value] = Object.entries(param);
-    if (!name || !value) { return acc; }
-    return {...acc, [name]: value};
-  });
+function createParams(paramsString) {
+  paramsString = JSON.parse(paramsString).reduce((acc, param) => {
+    const [key, value] = Object.entries(param).shift();
+    return !key || !value || key === "instance"
+      ? acc
+      : {...acc, [key]: value};
+  }, {});
   
-  delete params.instance; // todo
+  delete paramsString.instance;
   
-  if (Object.keys(params).length < 1) {
+  if (Object.keys(paramsString).length < 1) {
     return;
   }
   
-  const mappedParams = Object.entries(params).reduce((acc, [key, val]) =>
+  const mappedParams = Object.entries(paramsString).reduce((acc, [key, val]) =>
     acc.concat(`<div class="param"><code>${key}</code>: ${escHtml(val || ``)}</div>`), ``)
  
   return $.virtual(`<div data-parameters><b>Parameters</b>${mappedParams}</div>`);
@@ -208,7 +209,6 @@ function createExampleCodeElement(code) {
   return $.div(
     {class: "exContainer"}, head)
     .append(theCodeElement)
-    //.append($.virtual(`<button class="exRunBttn" data-action="${codeId}">Try it</button>`));
 }
 
 function getChapterName(name, prefix, isDeprecated = false) {
