@@ -160,7 +160,11 @@ export default {
       const tryParent = jqx(instance[0]?.parentNode);
       return !tryParent.is.empty ? tryParent : instance;
     },
-    render: instance => !instance.is.empty && instance.toDOM() || (jqx.log(`[JQx.render]: empty collection`), undefined),
+    render: instance => {
+      !instance.is.empty && instance.toDOM() || (jqx.log(`[JQx.render]: empty collection`), undefined);
+      return instance;
+    },
+    
     Style: instance => ({
       get computed() { return !instance.is.empty ? getComputedStyle(instance[0]) : {}; },
       inline: styleObj => instance.style(styleObj),
