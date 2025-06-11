@@ -29,7 +29,7 @@ $.fn(`addTitle`, (self, ttl) => {
 
 // activate logging all JQx events (hidden)
 debugLog.on().toConsole.off().reversed.on().hide();
-const back2 = /github/i.test(location.href) ? `_top` : `_blank`;
+const back2 = /github|codeberg/i.test(location.href) ? `_top` : `_blank`;
 
 // create container for all generated html
 $.div(
