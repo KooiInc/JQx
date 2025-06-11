@@ -5,11 +5,9 @@ const libLink = !testBndl && isDev ? "../../index.js" : "../../Bundle/jqx.min.js
 const $ = (await import(libLink)).default;
 const started = performance.now();
 const debug = false;
+const isGithub = /github/i.test(location.href);
 
-if ( isDev ) {
-  document.title = `##DEV## ${document.title}`;
-  $(`link[rel="icon"]`).replaceWith($.LINK({rel: `icon`, href: `./demoIcon.png`, type: `image/png`}));
-}
+injectFavIcon();
 
 // initialize styling for this page
 $.editCssRules(...cssRules);
@@ -44,14 +42,18 @@ const backLinks =
   DIV(
     DIV(`The repository can be found  @ `,
     A( {
-      href: `//codeberg.org/KooiInc/JQx`,
+      href: isGithub
+        ? "//github.com/KooiInc/JQx" : "//codeberg.org/KooiInc/JQx",
       target: back2,
-      text: `https://codeberg.org/KooiInc/JQx` } )),
+      text: isGithub
+        ? "https://github.com/JQx" : "https://codeberg.org/KooiInc/JQx" } )),
     DIV(`The documentation resides @ `,
     A( {
-      href: `//kooiinc.codeberg.page/JQx/Resource/Docs/`,
+      href: isGithub
+        ? "//kooiinc.github.io/JQL/Resource/Docs/" : "//kooiinc.codeberg.page/JQx/Resource/Docs/",
       target: back2,
-      text: `https://kooiinc.codeberg.page/JQx/Resource/Docs/` } ))
+      text: isGithub
+        ? "https://kooiinc.github.io/JQL/Resource/Docs/" : "https://kooiinc.codeberg.page/JQx/Resource/Docs/" } ))
 );
 
 
@@ -142,7 +144,8 @@ if (!debug) {
         "Show custom CSS").on("click", () =>
           showStyling("JQxStylesheet", cssBttns.defaultCSS)),
       BUTTON("Modal popup demo").on(`click`, modalDemo),
-      BUTTON("@Codeberg").on(`click`, () =>  $.Popup.show( { content: backLinks } ) )
+      BUTTON(/github/i.test(location.href) ? "@Github" : "@Codeberg")
+        .on("click", () =>  $.Popup.show( { content: backLinks } ) )
     ] ).appendTo(JQxRoot);
   
   $("button")
@@ -338,6 +341,22 @@ function allComments(root, result = []) {
   }
   
   return result;
+}
+
+function injectFavIcon() {
+  const icons = {
+    github: {href: "https://github.githubassets.com/favicons/favicon.png"},
+    codeberg: {href: "../Common/codebergicon.ico"},
+    local: {href: "../Common/devico.png"},
+  };
+  const currentLink = $(`head link[rel="icon"]`);
+  const link = $.link({rel: "icon"});
+  
+  return /github/i.test(location.href)
+    ? currentLink.replaceWith(link.attr(icons.github))
+    : /codeberg/i.test(location.href)
+      ? currentLink.replaceWith(link.attr(icons.codeberg))
+      : currentLink.replaceWith(link.attr(icons.local));
 }
 
 function showStyling(styleId, bttn) {
