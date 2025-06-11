@@ -16,6 +16,7 @@ await createCopyrightComponent();
 createDocument();
 
 function createDocument() {
+  injectFavIcon();
   createGroupingChapters();
   createGroupChapters();
   createNavigationBlock();
@@ -54,6 +55,22 @@ function createNavigationBlock() {
   
   $(`.docBrowser`).before($(`#navigation`));
   $.log(`Navigation block created ...`);
+}
+
+function injectFavIcon() {
+  const icons = {
+    github: {href: "https://github.githubassets.com/favicons/favicon.png"},
+    codeberg: {href: "../Common/codebergicon.ico"},
+    local: {href: "../Common/devico.png"},
+  };
+  const currentLink = $(`head link[rel="icon"]`);
+  const link = $.link({rel: "icon"});
+  
+  return /github/i.test(location.href)
+    ? currentLink.replaceWith(link.attr(icons.github))
+    : /codeberg/i.test(location.href)
+      ? currentLink.replaceWith(link.attr(icons.codeberg))
+      : currentLink.replaceWith(link.attr(icons.local));
 }
 
 function finalizeDocumentCreation() {
@@ -309,7 +326,20 @@ function createCopyrightComponent() {
 
 function renderCopyrightComponent() {
   $.allowTag(`copyright-slotted`);
-  const ghLink = $.a({slot: `link`, href: `//codeberg.org/KooiInc/JQx`, target: `_top`, text: ` Back to repository`});
+  const backLinks = {
+    github: "//github.com/KooiInc/JQx",
+    codeberg: "//codeberg.org/KooiInc/JQx",
+    local: "#",
+  };
+  
+  const backLink = /github/i.test(location.href)
+    ? backLinks.github
+    : /codeberg/i.test(location.href)
+      ? backLinks.codeberg
+      : backLinks.local;
+  
+  const ghLink = $.a({slot: `link`, href: `${backLink}`, target: `_top`, text: ` Back to repository`});
+  
   $.copyrightSlotted(
     $.span({slot: `year`, class: `yr`, text: String(new Date().getFullYear())}),
     ghLink.HTML.get(1)).render;
