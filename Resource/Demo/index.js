@@ -347,7 +347,7 @@ function injectFavIcon() {
   const icons = {
     github: {href: "https://github.githubassets.com/favicons/favicon.png"},
     codeberg: {href: "../Common/codebergicon.ico"},
-    local: {href: "../Common/devico.png"},
+    local: {href: "../Common/devIco.png"},
   };
   const currentLink = $(`head link[rel="icon"]`);
   const link = $.link({rel: "icon"});
