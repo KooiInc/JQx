@@ -21,7 +21,7 @@ Documentation can be found @[https://kooiinc.codeberg.page/JQx/Resource/Docs/](h
 
 A test and demo of this module can be found @[kooiinc.codeberg.page/JQx/Resource/Demo](https://kooiinc.codeberg.page/JQx/Resource/Demo/).
 
-## * Note *
+### * Note *
 This repository was formerly known as **JQL**, residing on [Github](https://github.com/KooiInc/JQx).  
 The *authorative* code base for this module is now: @[https://codeberg.org/KooiInc/JQx](https://codeberg.org/KooiInc/JQx).
 
