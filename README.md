@@ -7,19 +7,18 @@
 
 # JQx
 
-This module was inspired by the idea that some parts of [JQuery](https://jquery.com) are too good [to ditch](https://youmightnotneedjquery.com/).
-
-JQx is **not** a replacement for JQuery.
-
+This module was inspired by the idea that some parts of [JQuery](https://jquery.com) are too good [to ditch](https://youmightnotneedjquery.com/).  
+JQx is **not** a replacement for JQuery.  
 Consider it a set of JQuery alike ES/JS-methods to programmatically ***create***, ***retrieve***, ***modify***, ***style*** and/or ***manipulate***
 (collections of) HTML elements in a HTML document.
 
 The code is written in a modular fashion and uses plain ES20xx, so not really (or really not, take your pick) suitable for older browsers.
 
-## Documentation/demo
-Documentation can be found @[https://kooiinc.codeberg.page/JQx/Resource/Docs/](https://kooiinc.codeberg.page/JQx/Resource/Docs/).
-
-A test and demo of this module can be found @[kooiinc.codeberg.page/JQx/Resource/Demo](https://kooiinc.codeberg.page/JQx/Resource/Demo/).
+### Documentation/demo
+- Documentation can be found @[Codeberg](https://kooiinc.codeberg.page/JQx/Resource/Docs/)
+or @[Github](https://kooiinc.github.io/JQx/Resource/Docs).  
+- A test and demo of this module can be found @[Codeberg](https://kooiinc.codeberg.page/JQx/Resource/Demo)
+or @[Github](https://kooiinc.github.io/JQx/Resource/Demo).
 
 ### * Note *
 This repository was formerly known as **JQL**, residing on [Github](https://github.com/KooiInc/JQx).  
