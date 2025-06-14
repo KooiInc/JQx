@@ -26,7 +26,7 @@ The *authorative* code base for this module is now: @[https://codeberg.org/KooiI
 
 The NPM package is copied to a new package (see top link). The old NPM package will not be updated and 
 discontinued in due time.  
-The latest JQL Github branch before this operation is preserved as release 1.1.7 (in Github).
+The latest JQL Github branch before this operation is preserved in **./Resource/JQL-last**.
 
 The Github JQL repository is renamed to _**JQx**_ and will, until further notice, be synchronised with this CodeBerg repository. 
 
