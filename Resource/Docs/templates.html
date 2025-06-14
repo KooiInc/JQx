@@ -1,55 +1,59 @@
-<!-- Generated file, last update 2025-06-14 11:13:12 UTC-->
+<!-- Generated file, last update 2025-06-14 12:04:48 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
-<div data-text='1'><div>This module was inspired by the idea that some JQuery was too
-  good <a target="_blank" href="https://youmightnotneedjquery.com/" rel="nofollow">to ditch</a>.
+<div data-text='1'><div>This module was inspired by the idea that some JQuery was too good
+<a target="_blank" href="https://youmightnotneedjquery.com/" rel="nofollow">to ditch</a>.
 </div>
 
 <div>It is developed in a modular fashion and uses plain ES20xx, so not really (or really not,
-  take your pick) suitable for older browsers.
+take your pick) suitable for older browsers.
 </div>
 
-<div>The module originally was written in 2021. In 2023 it was rewritten in a <i>classfree
-  object oriented</i> fashion, inspired by a
-  <a target="_blank" href="https://youtu.be/XFTOG895C7c?t=2562">Douglas Crockford
-    presentation</a>. This means you will very seldom find <code>this</code> in the code.
+<div>
+<h3>Class free object oriented</h3>
+The module originally was written in 2021. In 2023 it was rewritten in a <i>classfree object
+oriented</i> fashion, inspired by a
+<a target="_blank" href="https://youtu.be/XFTOG895C7c?t=2562">Douglas Crockford
+  presentation</a>. This means you will <b>rarerly</b> find <code>this</code> in the code.
 </div>
 
 <div>It is <i>not</i> a replacement for
-  <a target="_blank" href="https://github.com/jquery/jquery">JQuery</a>. Consider it a subset of
-  JQuery <i>alike</i> methods to <i>retrieve</i>, <i>create</i>, <i>modify</i>, <i>style</i> or
-  <i>manipulate</i> (collections of) HTML elements in your HTML document.
+<a target="_blank" href="https://github.com/jquery/jquery">JQuery</a>. Consider it a subset of
+JQuery <i>alike</i> methods to <i>retrieve</i>, <i>create</i>, <i>modify</i>, <i>style</i> or
+<i>manipulate</i> (collections of) HTML elements in your HTML document.
 </div>
 
 <div> An example-/demo-page can be found @<a
-    href="//kooiinc.codeberg.page/JQx/Resource/Docs/" target="_blank"
-  >https://kooiinc.codeberg.page/JQx/Resource/Demo</a>
+  href="//kooiinc.codeberg.page/JQx/Resource/Docs/" target="_blank"
+>https://kooiinc.codeberg.page/JQx/Resource/Demo</a>
 </div>
 
 <div>In the following you'll find documentation for usage of the module, divided into 4
-  chapters:
+chapters:
 </div>
 
 <ul>
-  <li>
-    <div data-action="jump2Nav" data-jumpgroup="static" class="linkLike">STATIC</div>:
-    static methods/properties of the JQx module;
-  </li>
-  <li>
-    <div data-action="jump2Nav" data-jumpgroup="instance" class="linkLike">INSTANCE</div>:
-    all methods/properties applicable to a JQx <i>instance</i>;
-  </li>
-  <li>
-    <div data-action="jump2Nav" data-jumpgroup="popup" class="linkLike">POPUP</div>:
-    JQx includes a module to create (modal) popup messages;
-  </li>
-  <li>
-    <div data-action="jump2Nav" data-jumpgroup="debuglog" class="linkLike">DEBUGLOG</div>:
-    JQx includes a module to extensively log everything it does (you do with it).
-  </li>
+<li>
+  <div data-action="jump2Nav" data-jumpgroup="static" class="linkLike">STATIC</div
+  >: static methods/properties of the JQx module;
+</li>
+<li>
+  <div data-action="jump2Nav" data-jumpgroup="instance" class="linkLike">INSTANCE</div
+  >: all methods/properties applicable to a JQx <i>instance</i>;
+</li>
+<li>
+  <div data-action="jump2Nav" data-jumpgroup="popup" class="linkLike">POPUP</div
+  >: JQx includes a module to create (modal) popup messages;
+</li>
+<li>
+  <div data-action="jump2Nav" data-jumpgroup="debuglog" class="linkLike">DEBUGLOG</div
+  >: JQx includes a module to extensively log everything it does (you do with it).
+</li>
 </ul>
-<h2>JQx instance creation/retrieval</h2>
+
+<div>
+<h3>JQx instance creation/retrieval</h3>
 
 <div class="note"><b>Note</b>: For this document JQx is imported as <code><b>$</b></code> (so
   (the result of) <code>import $ from "[location of JQx]"</code>). Most examples in the
@@ -57,9 +61,9 @@
 </div>
 
 <div>
-  JQx provides a single Function/Object to create and/or retrieve HTML elements and convert the
-  result to a JQx instance. A JQx instance contains a collection of the created or retrieved
-  HTML element(s). These element(s) can be manipulated extensively.
+  JQx provides a single Function/Object to create and/or retrieve HTML elements and convert
+  the result to a JQx instance. A JQx instance contains a collection of the created or
+  retrieved HTML element(s). These element(s) can be manipulated extensively.
 </div>
 
 <div>Element creation or retrieval using the imported JQx-function always results in a JQx
@@ -86,61 +90,64 @@
   </li>
   <li>
     <div><code>$(element: Node | Node[])</code></div>
-    <div>Takes the given <code>element</code>(s) and creates a JQx instance from it/them.</div>
+    <div>Takes the given <code>element</code>(s) and creates a JQx instance from it/them.
+    </div>
   </li>
   <li>
-    <div><code>$[tagname|TAGNAME](attributes Object | string[, (nested) elements/strings])</code></div>
-    <div>Creates a JQx instance from [tagname].
-    See 'Direct element creation' in the
-      <div data-action="jump2Nav" data-jumpgroup="static" class="linkLike">STATIC</div> chapter.
+    <div><code>$[tagname|TAGNAME](attributes Object | string[, (nested)
+      elements/strings])</code></div>
+    <div>Creates a JQx instance from [tagname]. See 'Direct element creation' in the
+      <div data-action="jump2Nav" data-jumpgroup="static" class="linkLike">STATIC</div>
+      chapter.
     </div>
   </li>
 </ul>
-
+</div>
 <div>
-  Most examples in this document can be run (use the [Try it] button). If elements are
-  created/modified in an example, the result is shown within the item at hand (and removed after
-  a few seconds) or in a popup.
+Most examples in this document can be run (use the [Try it] button). If elements are
+created/modified in an example, the result is shown within the item at hand (and removed after
+a few seconds) or in a popup.
 </div>
 
 <div class="note">
-  <b>Notes</b>:
-  <ul>
-    <li>
-      The examples in this document <i>deliberately</i> use all kinds of JQx methods,
-      to familiarize you with them.</li>
-   <li>
-      In the examples code you'll sometimes find <code>[...].showInExample([click event])</code>
-      and/or <code>[...].removeAfter([seconds])</code>.
-      <div>These instance methods are <i>custom method</i>, created with the static method
+<b>Notes</b>:
+<ul>
+  <li>
+    The examples in this document <i>deliberately</i> use all kinds of JQx methods, to
+    familiarize you with them.
+  </li>
+  <li>
+    In the examples code you'll sometimes find <code>[...].showInExample([click event])</code>
+    and/or <code>[...].removeAfter([seconds])</code>.
+    <div>These instance methods are <i>custom method</i>, created with the static method
       <div class="linkLike" data-action="jump2Nav" data-jumpkey="static_fn">
         <b style="color: revert">JQx.fn</b></div>
-      </div>
-    </li>
-<li>
-      This document is <i>completely</i> built using JQx. This is how the html of this page looks
-      <div data-example>&lt;!DOCTYPE html>
-&lt;html lang="en">
-&lt;head>
-  &lt;meta charset="UTF-8">
-  &lt;meta name="viewport" content="width=device-width, initial-scale=1">
-  &lt;title>JQx Documentation&lt;/title>
-  &lt;link rel="icon" href="../Common/codebergicon.ico" type="image/x-icon">
-  &lt;link rel="stylesheet" href="index.css">
-  &lt;link rel="stylesheet" href="../Common/prism.css">
-  &lt;script src="../Common/prism.js">&lt;/script>
-&lt;/head>
-&lt;body>
-  &lt;div id="navigation">&lt;/div>
-  &lt;div class="docs">&lt;/div>
-  &lt;script src="./index.js" type="module">&lt;/script>
-&lt;/body>
-&lt;/html>
     </div>
   </li>
-  </ul>
-</div>
-</div>
+  <li>
+    This document is <i>completely</i> built using JQx. This is how the html of this page
+    looks
+    <div data-example>&lt;!DOCTYPE html>
+      &lt;html lang="en">
+      &lt;head>
+      &lt;meta charset="UTF-8">
+      &lt;meta name="viewport" content="width=device-width, initial-scale=1">
+      &lt;title>JQx Documentation&lt;/title>
+      &lt;link rel="icon" href="../Common/codebergicon.ico" type="image/x-icon">
+      &lt;link rel="stylesheet" href="index.css">
+      &lt;link rel="stylesheet" href="../Common/prism.css">
+      &lt;script src="../Common/prism.js">&lt;/script>
+      &lt;/head>
+      &lt;body>
+      &lt;div id="navigation">&lt;/div>
+      &lt;div class="docs">&lt;/div>
+      &lt;script src="./index.js" type="module">&lt;/script>
+      &lt;/body>
+      &lt;/html>
+    </div>
+  </li>
+</ul>
+</div></div>
 </template>
 
 <template data-id="instance_text" class="instance_text" data-is-deprecated="false">
