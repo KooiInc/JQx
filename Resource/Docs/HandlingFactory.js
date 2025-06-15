@@ -655,6 +655,8 @@ function clickActionsFactory($) {
         Null: null,
         Undefined: undefined,
         Zero: 0,
+        NaN: NaN,
+        Proxy: new Proxy(new Number(42), {}),
         Symbol: Symbol("symbol1"),
       };
       const isNothing = something => $.IS(something, undefined, NaN, null);
@@ -667,11 +669,18 @@ function clickActionsFactory($) {
           `<code>$.IS(someVars.Object, Object)</code>: ${$.IS(someVars.Object, Object)}`,
           `<code>$.IS(someVars.Object, Array)</code>: ${$.IS(someVars.Object, Array)}`,
           `<code>$.IS(someVars.Object, String, Object, Array)</code>: ${$.IS(someVars.Object, String, Object, Array)}`,
+          `<code>$.IS(someVars.Object, String, Array)</code>: ${$.IS(someVars.Object, String, Array)}`,
           `<code>$.IS(someVars.Array, Array)</code>: ${$.IS(someVars.Array, Array)}`,
           `<code>$.IS(someVars.Array, Object)</code>: ${$.IS(someVars.Array, Object)}`,
           `<code>$.IS(someVars.RegExp, RegExp)</code>: ${$.IS(someVars.RegExp, RegExp)}`,
           `<code>$.IS(someVars.Null, undefined)</code>: ${$.IS(someVars.Null, undefined)}`,
           `<code>$.IS(someVars.Null, null)</code>: ${$.IS(someVars.Null, null)}`,
+          `<code>$.IS(someVars.NaN, NaN)</code>: ${$.IS(someVars.NaN, NaN)}`,
+          `<code>$.IS(someVars.NaN, Number)</code>: ${$.IS(someVars.NaN, Number)}`,                   // <= note
+          `<code>$.IS(someVars.Proxy, Object)</code>: ${$.IS(someVars.Proxy, Object)}`,               // <= note
+          `<code>$.IS(someVars.Proxy, Number)</code>: ${$.IS(someVars.Proxy, Number)}`,               // <= note
+          `<code>$.IS(someVars.Proxy, Proxy)</code>: ${$.IS(someVars.Proxy, Proxy)}`,                 // <= note
+          `<code>$.IS(someVars.Proxy, String, Array)</code>: ${$.IS(someVars.Proxy, String, Array)}`, // <= note
           `<code>$.IS(someVars.Zero, Boolean)</code>: ${$.IS(someVars.Zero, Boolean)}`,
           `<code>$.IS(someVars.Symbol, Symbol)</code>: ${$.IS(someVars.Symbol, Symbol)}`,
           `<code>isNothing(someVars.Undefined)</code>: ${isNothing(someVars.Undefined)}`,
