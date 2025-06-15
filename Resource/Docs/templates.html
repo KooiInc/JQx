@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-06-14 13:54:16 UTC-->
+<!-- Generated file, last update 2025-06-15 09:46:02 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -6,6 +6,12 @@
 <h3>Why JQx?</div>
 This module was inspired by the idea that some JQuery was too good
 <a target="_blank" href="https://youmightnotneedjquery.com/" rel="nofollow">to ditch</a>.
+
+<div>It is <i><b>not</b></i> a replacement for
+<a target="_blank" href="https://github.com/jquery/jquery">JQuery</a>. Consider JQx a subset of
+<i>JQuery <b>alike</b></i> methods to <i>retrieve</i>, <i>create</i>, <i>modify</i>, <i>style</i> or
+<i>manipulate</i> (collections of) HTML elements in your HTML document.
+</div>
 
 <div>It is developed in a modular fashion and uses plain ES20xx, so not really (or really not,
 take your pick) suitable for older browsers.
@@ -17,12 +23,6 @@ The module originally was written in 2021. In 2023 it was rewritten in a <i>clas
 oriented</i> fashion, inspired by a
 <a target="_blank" href="https://youtu.be/XFTOG895C7c?t=2562">Douglas Crockford
   presentation</a>. This means you will <b>rarerly</b> find <code>this</code> in the code.
-</div>
-
-<div>It is <i>not</i> a replacement for
-<a target="_blank" href="https://github.com/jquery/jquery">JQuery</a>. Consider it a subset of
-JQuery <i>alike</i> methods to <i>retrieve</i>, <i>create</i>, <i>modify</i>, <i>style</i> or
-<i>manipulate</i> (collections of) HTML elements in your HTML document.
 </div>
 
 <div> An example-/demo-page can be found @<a
@@ -57,7 +57,7 @@ chapters:
 <h3>JQx instance creation/retrieval</h3>
 
 <div class="note"><b>Note</b>: For this document JQx is imported as <code><b>$</b></code> (so
-  (the result of) <code>import $ from "[location of JQx]"</code>). Most examples in the
+  (the result of) <code><b>import $ from "[location of JQx]"</b></code>). Most examples in the
   following use this.
 </div>
 
@@ -68,15 +68,13 @@ chapters:
 </div>
 
 <div>Element creation or retrieval using the imported JQx-function always results in a JQx
-  instance. <br>The syntax is (JQx imported as <code>$</code>)
+  instance. <br>The syntax (with JQx imported as <code><b>$</b></code>)
 </div>
 
 <ul>
   <li>
-    <div>
-      <code>$(html: string | string[][, root: HTMLElement | JQx instance, position:
-        string])</code>
-    </div>
+   <code>$(html: string | string[][, root: HTMLElement | JQx instance, position:
+      string])</code>
     <div>Creates element(s) from a single HTML string or an Array of HTML strings. Using an
       Array of HTML strings creates the elements subsequently. The created element(s) is/are
       appended to <code>root</code> (default <code>document.body</code>) at
@@ -84,19 +82,19 @@ chapters:
     </div>
   </li>
   <li>
-    <div><code>$(cssSelector: string[, root: HTMLElement | JQx instance])</code></div>
+    <code>$(cssSelector: string[, root: HTMLElement | JQx instance])</code>
     <div>Retrieves all Elements from the document using <code>cssSelector</code> (e.g. <code>`div.example,
       h3#someId`</code>) within <code>root</code> (default <code>document</code>).
     </div>
   </li>
   <li>
-    <div><code>$(element: Node | Node[])</code></div>
+    <code>$(element: Node | Node[])</code>
     <div>Takes the given <code>element</code>(s) and creates a JQx instance from it/them.
     </div>
   </li>
   <li>
-    <div><code>$[tagname|TAGNAME](attributes Object | string[, (nested)
-      elements/strings])</code></div>
+    <code>$[tagname|TAGNAME](attributes Object | string[, (nested)
+      elements/strings])</code>
     <div>Creates a JQx instance from [tagname]. See 'Direct element creation' in the
       <div data-action="jump2Nav" data-jumpgroup="static" class="linkLike">STATIC</div>
       chapter.
@@ -776,7 +774,11 @@ import $ from "//kooiinc.github.io/JQx/Bundle/jqx.min.js";
       <b>)</b></code>
   </li>
   <li>
-    <code> <b>$.img(</b> {src: './images/someImg.png'} <b>)</b></code>
+    <code><b>$.img(</b> {src: './images/someImg.png'} <b>)</b></code>
+  </li>
+  <li>
+    <code>const {p, <b>div</b>, ul, li} = <b>$</b>;</code><br>
+    <code><b>div</b>({class="hi", data: {jqx: "true"}}, "Hello!");</code>
   </li>
 </ul>
 
