@@ -118,22 +118,41 @@ function createChaptersGroup(forContainer, header) {
       const chapterElement
         = createChapterElement( {chapterName, header, isDeprecated, params, returns, chapterTextElement});
       
+      let i = 0;
       for (const codeElementPlaceholder of chapterElement.find(`[data-example]`)) {
-        createCodeElement(codeElementPlaceholder);
+        createCodeElement(codeElementPlaceholder, ++i);
       }
       
-      chapterElement.find$(`h3.example`).each(numberExample);
-      chapterElement.toDOM(lastChapter, $.at.afterend);
+      chapterElement.renderTo(lastChapter, $.at.after);
       lastChapter = chapterElement;
     }
   }
 }
 
-function createCodeElement(codeElemPlaceholder) {
+function createCodeElement(codeElemPlaceholder, i) {
   const el$ = codeElemPlaceholder.textContent;
   codeElemPlaceholder.textContent = ``;
-  const code = createExampleCodeElement(el$);
+  const code = createExampleCodeElement(el$, i);
   codeElemPlaceholder.replaceWith(code.node);
+}
+
+function createExampleCodeElement(code, i) {
+  const codeId = code.split(/(##)|@/)[4]
+  const codeBody = allExampleActions[codeId];
+  
+  if (!codeBody) {
+    return getCodeElement(escHtml(code).trim());
+  }
+  
+  const theCodeElement = getCodeElement(codeBody);
+  
+  const head = $.div(
+    $.h3({class:"example", text: `Example${i && i > 1  ? ` ${i}` : ``}`}),
+    $.button({class: "exRunBttn", data: {action: `${codeId}`}}, `Try it`));
+  
+  return $.div(
+      {class: "exContainer"}, head)
+    .append(theCodeElement)
 }
 
 function createChapterElement(aggregatedChapterProps) {
@@ -208,24 +227,6 @@ function getCodeElement(content) {
   return $.pre(
     {class: "line-numbers language-javascript"}, $.code({class: "language-javascript"}, content)
   );
-}
-
-function createExampleCodeElement(code) {
-  const codeId = code.split(/(##)|@/)[4]
-  const codeBody = allExampleActions[codeId];
-  
-  if (!codeBody) {
-    return getCodeElement(escHtml(code).trim());
-  }
-  
-  const theCodeElement = getCodeElement(codeBody);
-  const head = $.div(
-    $.h3({class:"example", text: `Example`}),
-    $.button({class: "exRunBttn", data: {action: `${codeId}`}}, `Try it`));
-  
-  return $.div(
-    {class: "exContainer"}, head)
-    .append(theCodeElement)
 }
 
 function getChapterName(name, prefix, isDeprecated = false) {
