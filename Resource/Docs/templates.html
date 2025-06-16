@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-06-15 11:10:14 UTC-->
+<!-- Generated file, last update 2025-06-16 07:44:17 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -648,18 +648,20 @@ import $ from "//kooiinc.github.io/JQx/Bundle/jqx.min.js";
 
 <ul>
   <li><code>input</code>: A (n Array of) HTML string(s), HTMLElement, JQx instance or a single
-    (simple or complex) css selector. <br><b>Notes</b>:
+    (simple or complex) css selector. 
+    <div><b class="red">Notes</b>:
     <ul>
-      <li>When using an Array, its elements must be of equal types (so an Array of <i>either</i>
+      <li>When using an Array, its elements must be of <i>equal types</i> (so an Array of <i>either</i>
         Nodes (including text nodes), <i>or</i> HTML strings, <i>or</i> JQx instances).
       </li>
-      <li>For creating Text Nodes you can use either <code>$("&lt;text>some text")</code> or
-        <code>$($.text("some text"))</code>. Both can also be Arrays.
+      <li>For creating multiple Text Nodes you can use either <code>$("&lt;text>some text")</code> or
+        <code>$.text("some text")</code>. Both can also be Arrays.
       </li>
       <li>For creating HTML Comment Nodes you can use either <code>$("&lt;!--[comment
-        1]-->")</code> or <code>$($.text("[comment 1]", true))</code>. Both can also be Arrays.
+        1]-->")</code> or <code>$.comment("[comment 1]", true)</code>. Both can also be Arrays.
       </li>
     </ul>
+     </div>
   </li>
 
   <li><code>root</code>: (HTMLElement | JQx Instance) The root element for the [input]. Default is
@@ -1286,7 +1288,7 @@ $.TEMPLATE({id: "myTemplate", innerHTML: "..."})?.toDOM();</div></div>
 </template>
 
 <template data-id="popup_show" class="popup_show" data-is-deprecated="false">
-<div data-params='[{"show_isObject":"<code>{ content[, modal, closeAfter, callback, warnMessage]  }</code>"}]'></div>
+<div data-params='[{"[object]":"{ content:HTML string | JQx instance | Node[, modal:boolean, closeAfter:number, callback:function, warnMessage:string] }"}]'></div>
 <div data-return-value='Nothing'></div>
 <div data-text='1'><div>Create and display a popup 'window'. There is one parameter, which is an Object with the following properties.</div>
 
