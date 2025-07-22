@@ -30,15 +30,15 @@ function createGroupingChapters() {
       const groupId = groupTemplate.dataset.id;
       const displayName = createGroupHeaderLabel(groupId);
       const text = groupTemplate.content.querySelector(`[data-text]`).outerHTML;
-      
+
       return $.div(
           { data: {groupcontainer: groupId}, class: "description" },
           `<h3 class="groupHeader" data-group-id="${groupId}">${displayName}</h3>`)
         .append(text);
     });
-  
+
   renderGroupingChapters(groupElements);
-  
+
   $.log(`"About" chapters created ...`);
 }
 
@@ -52,7 +52,7 @@ function createGroupChapters() {
 
 function createNavigationBlock() {
   for (const group of orderedGroups) { createNavigationItems(group); }
-  
+
   $(`.docBrowser`).before($(`#navigation`));
   $.log(`Navigation block created ...`);
 }
@@ -65,7 +65,7 @@ function injectFavIcon() {
   };
   const currentLink = $(`head link[rel="icon"]`);
   const link = $.link({rel: "icon"});
-  
+
   return /github/i.test(location.href)
     ? currentLink.replaceWith(link.attr(icons.github))
     : /codeberg/i.test(location.href)
@@ -79,10 +79,10 @@ function finalizeDocumentCreation() {
   $(`[data-group="jqx"]`).trigger(`click`);
   Prism.highlightAll();
   delete documentationTemplates.templates;
-  
+
   $.log(`Document creation/implementation (without imports) took ${
     ((performance.now() - perform)/1000).toFixed(3)} seconds`);
-  
+
 }
 
 // ---
@@ -99,7 +99,7 @@ function setupHandling() {
     if (clicked) { return; }
     return handler(evt);
   });
-  
+
   $.log(`Event handling set ...`);
 }
 
@@ -107,22 +107,22 @@ function createChaptersGroup(forContainer, header) {
   let lastChapter = forContainer;
   const groupId = lastChapter.dataset.groupcontainer;
   const prfx = groupId.slice(0, groupId.indexOf(`_`));
-  
+
   for (const groupChapter of documentationTemplates.templates) {
     if (groupChapter.dataset.id.startsWith(prfx) && !/about$/i.test(groupChapter.dataset.id)) {
       const { chapter, chapterName, paramJSON, params, returns, chapterTextElement, isDeprecated }
         = getChapterProps(groupChapter);
-      
+
       isDeprecated && chapterTextElement.prepend(`<b class="red">*Deprecated*</b>`);
-      
+
       const chapterElement
         = createChapterElement( {chapterName, header, isDeprecated, params, returns, chapterTextElement});
-      
+
       let i = 0;
       for (const codeElementPlaceholder of chapterElement.find(`[data-example]`)) {
         createCodeElement(codeElementPlaceholder, ++i);
       }
-      
+
       chapterElement.renderTo(lastChapter, $.at.after);
       lastChapter = chapterElement;
     }
@@ -139,17 +139,17 @@ function createCodeElement(codeElemPlaceholder, i) {
 function createExampleCodeElement(code, i) {
   const codeId = code.split(/(##)|@/)[4]
   const codeBody = allExampleActions[codeId];
-  
+
   if (!codeBody) {
     return getCodeElement(escHtml(code).trim());
   }
-  
+
   const theCodeElement = getCodeElement(codeBody);
-  
+
   const head = $.div(
     $.h3({class:"example", text: `Example${i && i > 1  ? ` ${i}` : ``}`}),
     $.button({class: "exRunBttn", data: {action: `${codeId}`}}, `Try it`));
-  
+
   return $.div(
       {class: "exContainer"}, head)
     .append(theCodeElement)
@@ -157,7 +157,7 @@ function createExampleCodeElement(code, i) {
 
 function createChapterElement(aggregatedChapterProps) {
   const {chapterName, header, isDeprecated, params, returns, chapterTextElement} = aggregatedChapterProps;
-  
+
   return $.div(
     {class: "paragraph", data: {for: chapterName}},
     `<h3 class="methodName" data-for-id="${chapterName}">
@@ -210,16 +210,16 @@ function createParams(paramsString) {
       ? acc
       : {...acc, [key]: value};
   }, {});
-  
+
   delete paramsString.instance;
-  
+
   if (Object.keys(paramsString).length < 1) {
     return;
   }
-  
+
   const mappedParams = Object.entries(paramsString).reduce((acc, [key, val]) =>
     acc.concat(`<div class="param"><code>${key}</code>: ${escHtml(val || ``)}</div>`), ``)
- 
+
   return $.virtual(`<div data-parameters><b>Parameters</b>${mappedParams}</div>`);
 }
 
@@ -244,7 +244,7 @@ function renderGroupingChapters(groupElements) {
     {class: `container`},
     docContainer.append($.div({class: `docBrowser`}, ...groupElements))
   ).render;
-  
+
   for (const group of [...groupElements]) {
     group.find$(`[data-example]`).each( createCodeElement );
     group.find$(`h3.example`).each( numberExample );
@@ -259,9 +259,9 @@ function createGroupHeaderLabel(groupId) {
 function createNavigationItems({groupLabel}) {
   const ul = $(`<ul class="navGroup closed" data-group="${groupLabel.toLowerCase()}"/>`, $.node(`#navigation`));
   ul.append($(`<li class="grouped">${groupLabel}<ul class="navGroupItems"></ul></li>`));
-  
+
   const data = getNavigationElementProps(documentationTemplates.templates);
-  
+
   for (const item of data.filter(v => v.label.startsWith(groupLabel.toLowerCase()))) {
     $(`.navGroupItems`, ul)
     .append($(`
@@ -283,7 +283,7 @@ function removeGroupname(idString) {
 
 function getNavigationElementProps(chapters) {
   const mappedChapterData = [];
-  
+
   for (const chapter of chapters) {
     mappedChapterData.push({
       label: chapter.dataset.id,
@@ -291,7 +291,7 @@ function getNavigationElementProps(chapters) {
       shortName: removeGroupname(chapter.dataset.id)
     });
   }
-  
+
   return mappedChapterData;
 }
 
@@ -332,15 +332,15 @@ function renderCopyrightComponent() {
     codeberg: "//codeberg.org/KooiInc/JQx",
     local: "#",
   };
-  
+
   const backLink = /github/i.test(location.href)
     ? backLinks.github
     : /codeberg/i.test(location.href)
       ? backLinks.codeberg
       : backLinks.local;
-  
+
   const ghLink = $.a({slot: `link`, href: `${backLink}`, target: `_top`, text: ` Back to repository`});
-  
+
   $.copyrightSlotted(
     $.span({slot: `year`, class: `yr`, text: String(new Date().getFullYear())}),
     ghLink.HTML.get(1)).render;

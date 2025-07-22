@@ -1,6 +1,7 @@
 import jqx from "../index.js";
 import {default as tagFNFactory} from "./tinyDOM.js";
-import { IS, maybe, LifeStyleFactory as styleFactory } from "./SyncedExternals.js";
+import {default as IS, maybe} from "./TypeofAnything.js";
+import styleFactory from "./LifeCSS.js";
 const characters4RandomString = [...Array(26)]
   .map((x, i) => String.fromCharCode(i + 65))
   .concat([...Array(26)].map((x, i) => String.fromCharCode(i + 97)))
@@ -68,17 +69,17 @@ function ExamineElementFeatureFactory() {
     return elem.parentNode
       ? !!jqx.nodes(`:is(:read-write)`, elem?.parentNode)?.find(el => el === elem) : false;
   };
-  
+
   const isModal = function(elem) {
     return elem.parentNode
       ? !!jqx.nodes(`:is(:modal)`, elem?.parentNode)?.find(el => el === elem) : false;
   };
-  
+
   const noElements = { notInDOM: true, writable: notApplicable, modal: notApplicable, empty: true, open: notApplicable, visible: notApplicable, };
 
   return self => {
     const firstElem = self.node;
-    
+
     return firstElem ? {
       get writable() {
         return isWritable(firstElem);
