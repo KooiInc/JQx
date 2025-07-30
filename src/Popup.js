@@ -7,7 +7,8 @@ export default function($) {
   $.editCssRules(...styleRules);
   const [popupContent, popupNode] = [$(`#jqxPopupContent`), $.node(`#jqxPopup`)];
   let currentProps = {};
-  [`click`, `keydown`].forEach(evtType => $.delegate(evtType, genericPopupCloseHandler));
+  [`click`, `keydown`].forEach(evtType =>
+    document.addEventListener(evtType, genericPopupCloseHandler, true));
   return Object.freeze({show: initPopup, removeModal});
 
   function initPopup(props) {
@@ -28,7 +29,7 @@ export default function($) {
     const closerIcon = modal ? "" : $.div({ id: "closeHandleIcon"});
     popupContent.append(closerIcon, $.IS(content, String) ? $.div(content) : content);
     popupNode.showModal();
-    return !modal && $.IS(closeAfter, Number) && createTimer(initHidePopup, closeAfter);
+    if (!modal && $.IS(closeAfter, Number)) { createTimer(initHidePopup, closeAfter); }
   }
 
   function hidePopup() {
