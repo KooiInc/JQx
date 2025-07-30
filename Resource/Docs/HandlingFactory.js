@@ -161,11 +161,11 @@ function clickActionsFactory($) {
         Hi. This box is <i>really</i> modal.\
         <br>There is no close icon and clicking outside this box does nothing.\
         <br>In other words: one can only close this using the button below.\
-        <br>Try clicking anywhere outside the box ...\
+        <br>Try clicking anywhere outside the box or pressing &lt;ESC>...\
         <br>Clicking the button closes this box and delivers/displays return value";
       const okMessage = value =>
         //              ^ value will be returned by $.Popup.removeModal(...)
-        $.Popup.show({ content: `Modal closed, it's return value is ${value}.`, closeAfter: 10});
+        $.Popup.show({ content: `Modal closed, its return value is ${value}.`, closeAfter: 10});
       const closeBttn = $.button({data: {id: "modalClose"}}, "Close me")
         .on(`click`, value => $.Popup.removeModal({value: 42, callback: okMessage,}));
 
