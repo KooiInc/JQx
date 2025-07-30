@@ -9,12 +9,12 @@ function documentHandlingFactory($) {
       if (evt.type === `scroll`) {
         return handleScroll(evt);
       }
-      
+
       const groupItem = !evt.target?.closest?.(`[data-key]`) && evt.target.closest(`.navGroup`);
       const itemFromDoc = evt.target?.closest?.(`.methodName`);
       const action = evt.target.closest(`[data-action]`)?.dataset?.action;
       const navItem = evt.target?.dataset?.navitem;
-      
+
       // clicked group name
       if (groupItem) {
         return clickActions.clickNavGroup(evt, groupItem);
@@ -34,7 +34,7 @@ function documentHandlingFactory($) {
     },
     allExampleActions:  Object.entries(clickActions).reduce ( getCodeBody, {} ),
   };
-  
+
   function getCodeBody(acc, [functionName, handlerFunction]) {
     handlerFunction = String(handlerFunction).trim();
     return {
@@ -55,17 +55,17 @@ function documentHandlingFactory($) {
       .find( el => {
          return (docsTop - el.nextElementSibling?.offsetTop || 0) < -40;
       } );
-    
-    
+
+
     if (nextHeader) {
       const nextNavItem = $(`h3`, nextHeader);
-      
+
       if (!nextNavItem.is.empty) {
         $(`.navGroup:not(.closed)`).addClass(`closed`);
         $(`.selected`).removeClass(`selected`);
         const itemId = nextNavItem.data.get(`forId`) ?? nextNavItem.data.get(`groupId`);
         const navItem = $(`[data-navitem="${itemId}"]`);
-        
+
         if (!navItem.is.empty) {
             navItem.addClass(`selected`);
             navItem.closest(`.navGroup`).removeClass(`closed`);
@@ -96,19 +96,19 @@ function clickActionsFactory($) {
   const removeBttn = () => $.button({data: {action: `removeExmple`}, }, `OK (remove)`);
   const countDownExampleCloser = (counter, exampleTmp) => {
     const stopBttn = exampleTmp.find$(`span [data-stop]`)?.node;
-    
+
     if (!stopBttn || stopBttn?.dataset?.stop === "true") {
       exampleTmp.find$(`.inlineExampleHeader span`).remove();
       return exampleTmp.find$(`div.inlineExampleHeader`).append(removeBttn());
     }
-    
+
     const current = +counter.dataset.n;
     counter.textContent = `second${current === 1 ? `` : `s`}`;
-    
+
     if (current <= 0) {
       return exampleTmp.remove();
     }
-    
+
     return setTimeout(_ => {
       counter.dataset.n = `${current - 1}`;
       countDownExampleCloser(counter, exampleTmp);
@@ -116,7 +116,7 @@ function clickActionsFactory($) {
   };
   $.fn(`showInExample`, (me, evt, withRemoveBttn = false) => {
     const exampleHeader = $(evt.target.closest(`.exContainer`));
-    
+
     if (!exampleHeader.is.empty && exampleHeader.find$(`[data-ex-tmp]`).is.empty) {
       const bttn = withRemoveBttn ? removeBttn() : ``;
       const exTmp = $.div({data: {exTmp: "1"}})
@@ -132,7 +132,7 @@ function clickActionsFactory($) {
         );
       exampleHeader.find$(`div:first-child`).after(exTmp);
     }
-    
+
     return me;
   });
   $.fn(`removeAfter`, (me, seconds) => {
@@ -143,7 +143,7 @@ function clickActionsFactory($) {
     countDownExampleCloser(count.node, me.parent);
     return me;
   });
-  
+
   return {
     removeExmple: (evt) => {
       evt.target.closest(`.inlineExampleHeader`).querySelector(`span button[data-stop]`)?.dataset.stop === "true";
@@ -155,25 +155,26 @@ function clickActionsFactory($) {
       const timedText = "Hi, this is a popup! I'll be active for 5 seconds (as long as one don't close me first).";
       $.Popup.createTimed( timedText, 5, () => $.Popup.createTimed("I am closing", 2) );
     },
-    popupCreateModalEx: () => {
-      // A modal popup message
+    popupCreateModalWithReturnvalueEx: () => {
+      // A modal popup message returning a value.
       const modalBoxText = "\
         Hi. This box is <i>really</i> modal.\
         <br>There is no close icon and clicking outside this box does nothing.\
         <br>In other words: one can only close this using the button below.\
-        <br>Try clicking anywhere outside the box ...";
-      const closeBttn = $.button({data: {id: "modalClose"}}, "Close me");
-      $.delegate("click", "[data-id='modalClose']", $.Popup.removeModal);
-      const okMessage = () => $.Popup.show({ content: `Modal closed, we're ok, bye.`, closeAfter: 2});
-      const message = $.div(
-        modalBoxText,
-        $.div({style: "margin-top: 0.6rem;"}, closeBttn)
-      );
-      $.Popup.create(
-        message,
-        true,
-        okMessage,
-        "There's only one escape here!" );
+        <br>Try clicking anywhere outside the box ...\
+        <br>Clicking the button closes this box and delivers/displays return value";
+      const okMessage = value =>
+        //              ^ value will be returned by $.Popup.removeModal(...)
+        $.Popup.show({ content: `Modal closed, it's return value is ${value}.`, closeAfter: 10});
+      const closeBttn = $.button({data: {id: "modalClose"}}, "Close me")
+        .on(`click`, value => $.Popup.removeModal({value: 42, callback: okMessage,}));
+
+      $.Popup.show({
+        content: $.div(
+          modalBoxText,
+          $.div({style: "margin-top: 0.6rem; text-align: center"}, closeBttn)),
+        modal: true,
+        warnMessage: "There's only one escape here!"} );
     },
     popupShowModalEx: () => {
       // A modal popup message
@@ -187,7 +188,7 @@ function clickActionsFactory($) {
       const okMessage = () => $.Popup.show({ content: `Modal closed, we're ok, bye.`, closeAfter: 2});
       const message = $.div(
         modalBoxText,
-        $.div({style: "margin-top: 0.6rem;"}, closeBttn)
+        $.div({style: "margin-top: 0.6rem; text-align: center"}, closeBttn)
       );
       $.Popup.show({
         content: message,
@@ -207,10 +208,10 @@ function clickActionsFactory($) {
     },
     renderToEx(evt) {
       if (exampleResultExists(evt.target)) { return; }
-      
+
        $.div({style: "color:red;font-weight:bold", class: "exRT"}, `WORLD!`)
         .showInExample(evt).removeAfter(10);
-      
+
       setTimeout(_ => $.span(`HELLO `).renderTo($(`.exRT`), $.at.start), 2000);
     },
     popupShowEx: () => {
@@ -235,26 +236,26 @@ function clickActionsFactory($) {
     },
     addClassEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       $.editCssRules(
         "#tmpEx.warnUser {color: red; font-weight: bold;}",
         ".user:before {content: 'Hi user! ';}"
       );
-      
+
       $(`<div id="tmpEx">That's a demo</div>`).showInExample(evt).removeAfter(10);
-      
+
       setTimeout(() => {
         $("#tmpEx").addClass("warnUser", "user");
       }, 1500);
     },
     appendEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       $.editCssRule(".appended { color: red; cursor: pointer; }");
       const toAppendJQxInstance = $.virtual(
         '<div class="appended">I am an appended JQx instance ...</div>'
       ).on("click", () => alert("HELLO!"));
-      
+
       const elem2Append = $.div({id: "tmpExAppend"}, "Hi there! Wait a sec ... ")
         .append(
           toAppendJQxInstance,
@@ -263,7 +264,7 @@ function clickActionsFactory($) {
           Object.assign( document.createElement("div"), {textContent: "Appended element"})
         )
         .showInExample(evt, true);
-      
+
       setTimeout(() => {
         toAppendJQxInstance
           .html("Changed innerHTML, handler is preserved (click me)")
@@ -272,7 +273,7 @@ function clickActionsFactory($) {
     },
     prependEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       $.editCssRule(".appended { color: red; }");
       $.div().prepend(
         $('<div id="tmpExPrepend">... hi there!</div>'),    // <= second
@@ -281,12 +282,12 @@ function clickActionsFactory($) {
     },
     afterMeEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       $.div("I am div 1").after($("<div>And I am div 2</div>")).showInExample(evt).removeAfter(5);
     },
     beforeMeEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       const divs = $("<div>...and I am div 2</div>")
         .before( $.div("I am div 1") )
         .andThen(
@@ -297,7 +298,7 @@ function clickActionsFactory($) {
     },
     andThenEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       const ele1 = $.p("I am the first");
       const ele2 = $.p("I am the second");
       const codeLine1 = '<code>ele1.andThen(ele2)</code>';
@@ -328,7 +329,7 @@ function clickActionsFactory($) {
           content: $.div().append( inpDisabled, getActualPopupText() )
         });
       }
-      
+
       $.Popup.show({
         content: getActualPopupText(),
         callback: reCheckAfterAdded2DOM,
@@ -336,7 +337,7 @@ function clickActionsFactory($) {
     },
     closestEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       const someDiv = $('<div><b style="color:red">Hello world again</b></div>').showInExample(evt);
       $.Popup.show( {
         content: `
@@ -347,7 +348,7 @@ function clickActionsFactory($) {
     },
     chainEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       $.editCssRules("#tmpEx {color: green;}", ".helloworld {font-weight: bold;}");
       exDivStyle();
       $(`<div id="tmpEx">Hello world.</div>`, getCurrentParagraph(evt))
@@ -388,7 +389,7 @@ function clickActionsFactory($) {
       },
     staticElemEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       $.editCssRules(".exRed {color: red;}");
       const popupPara = $.p("Hello world ...")
        .append( $.i( {class: "exRed"}, $.B(" here we are!") ) )
@@ -397,7 +398,7 @@ function clickActionsFactory($) {
     },
     staticElemEx2: evt =>{
       if (exampleResultExists(evt.target)) { return; }
-      
+
       // extract tag methods from [JQx]
       $.editCssRules(
         ".exRed {color: red;}",
@@ -414,10 +415,10 @@ function clickActionsFactory($) {
         .showInExample(evt)
         .removeAfter(5);
     },
-    
+
     fnEx2: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       $.fn( `colorRed`, me => { me.style({color: "red", fontWeight: "bold"}); return me; } );
       const someDiv = $.virtual(`<div data-id="tmpEx">Hello world</div>`)
         .colorRed()
@@ -427,14 +428,14 @@ function clickActionsFactory($) {
     valEx: evt => {
       $.input({data: {inputId: "inputEx", type: "text"}, value: "hello world"})
         .showInExample(evt, true);
-      
+
       const input = $("[data-input-id]");
       const valueResults = $.ul(
         $.li(`Initial value <code>input.val()</code> => ${ input.val()}`),
         $.li(`Empty input: <code>input.val("")</code> => ${ input.val("").val()}`),
         $.li(`New value: <code>input.val("hi there")</code> => ${ input.val("hi there").val()}`)
       );
-      
+
       input.after(valueResults);
     },
     renderEx: evt => {
@@ -450,18 +451,18 @@ function clickActionsFactory($) {
         text-align: center;
         max-width: 400px;
       }`);
-      
+
       const tmpDiv = $.div(
         { class: "HVCentered" },
         $.div("HElLO WORLD"),
         $.div("(don't worry, I'll remove myself in a few secs)") )
       .render;
-      
+
       setTimeout(tmpDiv.remove, 5000);
     },
     htmlEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       const someDiv = $.virtual(`
         <div data-id='tmpEx'>
           Hello <span>world</span>
@@ -471,7 +472,7 @@ function clickActionsFactory($) {
         setTimeout(() =>
           $('[data-id="tmpEx"] span').html(" And bye again", true), 1500);
       }, 1000);
-      
+
       someDiv
         .showInExample(evt)
         .removeAfter(10);
@@ -492,12 +493,12 @@ function clickActionsFactory($) {
     },
     propEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       const exElem = $('<div data-id="tmpEx"><b>Hello</b> <span>World</span>! (hover me)</div>')
         .showInExample(evt)
         .removeAfter(15);
       exElem.prop({title: "now I have a title", onclick: 'javascript:alert("hello!")'});
-      
+
       $.Popup.show( {
         content: `<code>exElem.prop("title")</code> =&gt; ${exElem.prop("title")}
           <br><code>exElem.prop("onclick")</code> =&gt; ${exElem.prop("onclick")}`,
@@ -506,12 +507,12 @@ function clickActionsFactory($) {
     },
     removeClassEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       $.editCssRule(".exRemoveClassTest { color: red; font-weight: bold; }");
       $.virtual('<div data-id="tmpEx"><b>Hello</b> <span class="exRemoveClassTest">World</span>!</div>')
         .showInExample(evt)
         .removeAfter(10);
-      
+
       setTimeout(() => $("span.exRemoveClassTest").removeClass("exRemoveClassTest"), 2000);
     },
     getDataEx: evt => {
@@ -526,7 +527,7 @@ function clickActionsFactory($) {
     },
     editCssRuleEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       $.editCssRule("#div1 {margin: 0.3rem; color: green; background-color: #EEE; }");
       $.editCssRule("#div2", {margin: "0.3rem", color: "red", backgroundColor: "#EEE"});
       const div1 = $.virtual('<div id="div1">I am div#div1</div>');
@@ -542,7 +543,7 @@ function clickActionsFactory($) {
         "#div1 { margin: 0.3rem; color: green; background-color: #EEE; }",
         "#div2 { margin: 0.3rem; color: red; background-color: #EEE; }"
       );
-      
+
       $.Popup.show( {
         content: $(`<div>`).append(div1, div2),
         callback: () => $.removeCssRules("#div1", "#div2") } );
@@ -585,7 +586,7 @@ function clickActionsFactory($) {
     },
     virtualEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       const test = $.node(".virtual");
       test && test.remove();
       const inDOM = instance => instance.isVirtual ? "Nope" : "Yep";
@@ -603,43 +604,43 @@ function clickActionsFactory($) {
     },
     toggleClassEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       $.editCssRule(".redEx { color: red; }");
       $.editCssRule("button#toggleColor, button#cleanup { margin: 0 5px; }");
       const elem = $('<div class="divExClass redEx">Hello World!</div>');
-      
+
       elem.append(
         $.button({id: "toggleColor", data: {action: "toggleClassBttnClick"}}, `toggle`)
       );
-      
+
       elem.showInExample(evt, true);
-      
+
       /*
         toggleClassbttnClick lambda:
         ----------------------------
         evt => $(evt.target.closest(".divExClass")).toggleClass("redEx");
        */
-      
+
     },
     toggleClassBttnClick: evt => {
         $(evt.target.closest(".divExClass")).toggleClass("redEx");
     },
     replaceClassEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       $.editCssRules(
         ".redEx { color: red; transition: color 1.8s 0s ease-in; }",
         ".redExUl { text-decoration: underline; }"
       );
-      
-      
+
+
       $(`
         <div class="exReplaceClass">
           Hello <span class="divExClass">world!</span>
         </div>`)
       .showInExample(evt)
       .removeAfter(10);
-      
+
       setTimeout(() => {
         $(`.exReplaceClass`).find$(`span`)
           .replaceClass("divExClass", "redEx", "redExUl");
@@ -647,7 +648,7 @@ function clickActionsFactory($) {
     },
     ISEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       const someVars = {
         Object: {say: "hello"},
         Array: [1, 2, 3],
@@ -727,7 +728,7 @@ function clickActionsFactory($) {
 
       // create reference to initialEl.HTML
       const { HTML } = initialEl;
-      
+
       // set initial
       HTML.set("'nough said").data.set({iteration: "set"});
 
@@ -771,20 +772,20 @@ function clickActionsFactory($) {
     },
     toNodeListEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       // create 2 nodes in the DOM tree and retrieve the collection as NodeList
       const initialList = $('<div class="ex2NodeList">**Initial</div>');
       const nodes = $.virtual([
         '<div id="some" class="toNodelistEx">Hello</div>',
         '<div id="thing" class="toNodelistEx">World</div>'])
       .toNodeList();
-      
+
       // change the text of the nodes in the list
       for (const node of nodes) {
         node.textContent += "!";
         node.style.color = "red";
       }
-      
+
       // append the nodes (and colorize)
       initialList.andThen(
         $.div(
@@ -819,13 +820,13 @@ function clickActionsFactory($) {
     },
     isEmptyEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       $.div(
         { data: {id: "tmpExIsEmpty"} },
         $.b({class: "red"}, "Hello! "),
         $.b("World!"))
       .showInExample(evt, true);
-      
+
       const someDiv = $("[data-id='tmpExIsEmpty']");
       $.Popup.show( {
         content: `
@@ -858,7 +859,7 @@ function clickActionsFactory($) {
     },
     textOrCommentEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       const commentNode = $.text("Some comment here", true);
       const textNode = $.text("Some text here");
       const divWithTextNodes = $.div( textNode, commentNode );
@@ -886,18 +887,18 @@ function clickActionsFactory($) {
     },
     lenEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       $(`<p>There are <b>${$(`h3`).length}</b> &lt;h3>-elements within this document</p>`)
         .showInExample(evt).removeAfter(4);
     },
     setDataEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       $(`<span data-id="exSetData">Hello world</span>`, getCurrentParagraph(evt))
         .showInExample(evt).removeAfter(10);
-      
+
       $.editCssRule("[data-goodbye]:after { content: '...'attr(data-goodbye); color: red; }")
-      
+
       setTimeout(() => {
         const exDiv = $(`[data-id="exSetData"]`)
         exDiv.setData({id: "temporary", goodbye: "and bye again"});
@@ -905,12 +906,12 @@ function clickActionsFactory($) {
     },
     appendToEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       $.editCssRule(".tmpExAppendTo { color: blue; font-weight: normal; }");
       const helloWorld = $.virtual('<div class="tmpExAppendTo">Hello World</div>');
       const div2Append = $.span({class: "red"}, " ... And bye again");
       helloWorld.showInExample(evt, true);
-      
+
       setTimeout(() => {
         // note: showInExample wrapped [helloWorld],
         // so we retrieve the original element first:
@@ -920,11 +921,11 @@ function clickActionsFactory($) {
     },
     duplicateEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       $.editCssRule(".someClass", {color: "brown"});
       const initial = $('<div data-id="exDuplicate" class="someClass">[hello]</div>')
         .showInExample(evt, true);
-      
+
       const exEl = $('[data-id="exDuplicate"]');
       const exElDupe = exEl.duplicate();
       exEl
@@ -951,7 +952,7 @@ function clickActionsFactory($) {
       const tmpDiv = $('<div data-id="tmpExHC" class="one two tree">[Hello world]</div>')
         .showInExample(evt, true);
       const tmpDivFromWrapped = $('[data-id="tmpExHC"]');
-      
+
       tmpDivFromWrapped.after($.ul(
         $.li($.code(`tmpDivFromWrapped.hasClass("one", "tree")`), `=&gt; ${tmpDivFromWrapped.hasClass("one", "tree")}`),
         $.li($.code(`tmpDivFromWrapped.hasClass("one", "four")`), `=&gt; ${tmpDivFromWrapped.hasClass("one", "four")}`),
@@ -962,7 +963,7 @@ function clickActionsFactory($) {
     },
     staticAtEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       $.editCssRules(
         ".hello { margin: 0.3rem 0; display: inline-block; font-style: italic; }",
         "h2.hello {margin-right: 0.2rem; font-style: normal; color: red}");
@@ -977,7 +978,7 @@ function clickActionsFactory($) {
         "[data-for-id='static_delegate']",
         function(evt) {
           const $target = $(evt.target);
-          
+
           if (!$target.prop("title")) {
             $target.prop({title: "click to toggle the color of all headers"});
           }
@@ -996,7 +997,7 @@ function clickActionsFactory($) {
     },
     clearEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       $.editCssRule('[data-id="tmpExClr"] { color: green; }');
       $.editCssRule(".metoo {color: red;}");
       const me2Clear = $($.div(
@@ -1007,7 +1008,7 @@ function clickActionsFactory($) {
         .after($('<div class="metoo">Me too! Leave Pete alone!</div>')))
       .showInExample(evt)
       .removeAfter(10);
-      
+
       setTimeout( () => {
         $('[data-id="tmpExClr"]').clear(); // <= clearing
         setTimeout( () => $(`.metoo`).text("They did it didn't they?"), 1000)
@@ -1020,7 +1021,7 @@ function clickActionsFactory($) {
     },
     showHideEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       $.editCssRule(".divExShowHide { display: block; color: red; font-weight: bold; }");
       $.editCssRule("button#hide, button#show, button#cleanup { margin-right: 5px; }");
       const elem = $('\
@@ -1032,7 +1033,7 @@ function clickActionsFactory($) {
         $.button({id: "hide", text: "hide", data: {action: "showHideBttnClick", hide: true}}),
         $.button({id: "hide", text: "show", data: {action: "showHideBttnClick"}}),
       );
-      
+
       /**
       the showHideBttnClick lambda:
       -----------------------------
@@ -1045,7 +1046,7 @@ function clickActionsFactory($) {
     },
     cssEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       const testelem1 = $.virtual('<div data-id="tmpExCss1">Hello #1</div>')
         .css({paddingLeft: "4px", color: "white", backgroundColor: "#000"})
          //  ^ class name will be created
@@ -1063,9 +1064,9 @@ function clickActionsFactory($) {
     styleRulingsEx: evt => {
       $.div({class: "StyleEx"}, "Hello").append($.span(" world"))
         .showInExample(evt).removeAfter(10);
-      
+
       const hello = $(".StyleEx");
-      
+
       hello.Style.byRule( {
         classes2Apply: ["test1", "boring"],
         rules: [".test1 { color: green }", ".boring {backgroundColor: #EEE;}"] } );
@@ -1124,7 +1125,7 @@ function clickActionsFactory($) {
     },
     attrEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       const someDiv = $.div( {
           id: "tmpExAttr",
           data: {id: "#tmpExAttr"},
@@ -1141,7 +1142,7 @@ function clickActionsFactory($) {
         data: {myTitle: "title as data", meaningOfLife: 42, "make-it-so": "engage!"},
         onclick: _ => alert("O NO!"), // <= not allowed
       })
-      
+
       function attrField(attr, str) {
         return $.li(
           $.code(`someDiv.attr("${attr}")`),
@@ -1169,7 +1170,7 @@ function clickActionsFactory($) {
     },
     computedStyleEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       $.editCssRule(".redEx {color: red; font-weight: bold}");
       $('<p class="redEx">Hello!</p>')
         .andThen(
@@ -1180,10 +1181,10 @@ function clickActionsFactory($) {
                $(`.redEx`).computedStyle("font-weight") }`),
         ).showInExample(evt).removeAfter(10);
     },
-    
+
     dimEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       $('<p data-id="tmpExDims">Hello, where am I at the moment?</p>')
         .style( {
           color: "red",
@@ -1191,7 +1192,7 @@ function clickActionsFactory($) {
           border: "3px solid red",
           padding: "5px",
           textAlign: "center" } ).showInExample(evt, true);
-      
+
       requestAnimationFrame(() => {
         // note: the element had to be rendered first to be
         // able to calculate its dimensions.
@@ -1204,7 +1205,7 @@ function clickActionsFactory($) {
     },
     findEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       // note: $(`[data-for-id='instance_find']` is the header for this chapter
       $.div(
         $.code("$(`.docs`).find(`[data-for-id='instance_find']`)[0].outerHTML"), " =><br>",
@@ -1214,7 +1215,7 @@ function clickActionsFactory($) {
     },
     find$Ex: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       // note: $(`[data-for-id='instance_find$']` is the header for this chapter
       $.div(
           $.code("$(`.docs`).find$(`[data-for-id='instance_find$']`).HTML.get(1, 1)"), " =><br>",
@@ -1249,7 +1250,7 @@ function clickActionsFactory($) {
     },
     dataEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
-      
+
       const helloWrld = $("<div>Hello World again</div>", getCurrentParagraph(evt));
       $.editCssRule("[data-is-universe]:after {content: ' ... and the universe!'; color: red;}");
       helloWrld.data.add({isUniverse: true, something: "else", "dashed-prop-given": 1});
@@ -1271,7 +1272,7 @@ function clickActionsFactory($) {
             $.li(`<code>myDATA.isUniverse</code> =&gt; ${myDATA.isUniverse}`),
           )
       ).showInExample(evt, true);
-      
+
       setTimeout(() => $(`[data-is-universe]`).data.remove("isUniverse"), 3000);
     },
     eachEx: () => {
@@ -1289,7 +1290,7 @@ function clickActionsFactory($) {
       $.node(`h3[data-group-id="${selectChapter}"]`).scrollIntoView();
       $(`.selected`).removeClass("selected");
       $(`ul.navGroupItems li:first-child div[data-navitem]`, groupItem).addClass("selected");
-      
+
       if(!isOpen) {
         groupItem$.removeClass("closed");
       }
@@ -1306,7 +1307,7 @@ function clickActionsFactory($) {
       aboutNavItem.scrollIntoView();
       $(".selected").removeClass("selected");
       $(evt.target).addClass("selected");
-      
+
       return $(evt.target.closest(`.navGroup`)).removeClass("closed");
     },
     jumpTo: key => {
@@ -1314,12 +1315,12 @@ function clickActionsFactory($) {
     },
     jump2Nav: evt => {
       const linkOrigin = evt.target.closest("[data-jumpgroup]") || evt.target.closest("[data-jumpkey]");
-      
+
       if (linkOrigin) {
         const toGroup = linkOrigin.dataset.jumpgroup;
         const toKey = linkOrigin.dataset.jumpkey;
         const jumpTo = toGroup ? $(`[data-group='${toGroup}']`) : $(`[data-navitem="${toKey}"]`);
-        
+
         return jumpTo.trigger("click");
       }
     }

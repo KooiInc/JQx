@@ -45,7 +45,7 @@ function createGroupingChapters() {
 function createGroupChapters() {
   createChaptersGroup($.node(`[data-groupcontainer="static_About"]`), `JQx`);
   createChaptersGroup($.node(`[data-groupcontainer="instance_About"]`), `JQx instance`);
-  createChaptersGroup($.node(`[data-groupcontainer="popup_About"]`), `JQx.popup`);
+  createChaptersGroup($.node(`[data-groupcontainer="popup_About"]`), `JQx.Popup`);
   createChaptersGroup($.node(`[data-groupcontainer="debuglog_About"]`), `JQx.debugLog`);
   $.log(`Documentation chapters created ...`);
 }

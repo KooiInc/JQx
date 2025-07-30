@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-07-06 08:59:41 UTC-->
+<!-- Generated file, last update 2025-07-30 08:38:25 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -932,50 +932,51 @@ When <code>indexOrSelector</code> has a value, retrieves the first matching elem
 <template data-id="popup_About" class="popup_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
-<div data-text='1'><div>Popup is a small module for creating (modal) popups. By default it is not initialized. You can initialize it using the <code>Popup</code> getter: <code>const popup = [JQx].Popup</code>, or use it directly (<code>[JQx].Popup.show(...)</code>). Also available as <code>[JQx].popup</code> (deprectated, may disappear without notice)</div>
+<div data-text='1'><div>Popup is a small module for creating (modal) popups. By default it is not initialized.</div> 
 
-<div>Once initialized you can use the 4 methods the module contains, documented in the following.</div>
-
-</div>
-</template>
-
-<template data-id="popup_create" class="popup_create" data-is-deprecated="false">
-<div data-params='[{"message":"JQx instance | Node | HTML string | string"},{"isModalOrCallback":"Boolean | Function."},{"modalCallback":"Function. Optional function to call after closing a modal popup."},{"modalWarning":"Optional warning text when a user tries to close a modal popup without the preferred action."}]'></div>
-<div data-return-value='Nothing'></div>
-<div data-text='1'><div>Create a popup. When <code>isModalOrCallback</code> is a boolean and true, the window can not be automatically closed, use <code>removeModal</code> for that.</div>
-
-<div>When <code>isModalOrCallback</code> is a function it will be called after the popup is closed. Other <a href="https://developer.mozilla.org/en-US/docs/Glossary/Truthy" target="_blank"><i>truthy</i></a> values create a modal popup.</div>
-
-<div class="note"><b>Note</b>: <code>[JQx].Popup.create</code> is a legacy method. It is replaced with the more versatile (less convoluted) <div class="linkLike" data-jumpkey="popup_show" data-action="jump2Nav">show</div> method.</div>
-
-<div>When <code>modalCallback</code> is a function, it will be called after a <i>modal</i> popup is closed.</div>
-
-<div>The examples demonstrate both a modal popup and a regular one.</div>
-
-<div data-example>##EXAMPLECODE@popupCreateEx##</div>
-
-<div data-example>##EXAMPLECODE@popupCreateModalEx##</div></div>
-</template>
-
-<template data-id="popup_createTimed" class="popup_createTimed" data-is-deprecated="false">
-<div data-params='[{"message":"string. A text or (valid) HTML string."},{"closeAfter":"Number. The number of seconds after the popup closes itself. Default 2."},{"callback":"Function. Optional function to call after closing the popup."}]'></div>
-<div data-return-value='Nothing'></div>
-<div data-text='1'><div>
-  Create a (non modal) popup, that closes itself after <code>closeAfter</code> seconds.
+<div>
+You can initialize it using the <code>Popup</code> getter: <code>const popup = [JQx].Popup</code>, or use it directly (<code>[JQx].Popup.show(...)</code>).
 </div>
 
+<div>Once initialized you can use the two methods the module contains, documented in the following.</div>
 
-<div data-example>##EXAMPLECODE@popupTimedEx##</div>
+<div class="note">
+  <b>Note</b>: the earlier deprecated methods (<code>create</code>, <code>createTimed</code>)
+  are now removed.
 </div>
+
+<div>
+  You can of course create your own popup methods, for example:
+</div>
+
+<div data-example>
+function createPopup(content, callback) {
+  return $.Popup.show({content, callback })
+}
+
+function createTimedPopup(content, timeout, callback) {
+  return $.Popup.show({content, callback, closeAfter: timeout})
+}
+</div></div>
 </template>
 
 <template data-id="popup_removeModal" class="popup_removeModal" data-is-deprecated="false">
-<div data-params='None'></div>
+<div data-params='[{"[object]":"{callback: function, value: any}"}]'></div>
 <div data-return-value='Nothing'></div>
 <div data-text='1'><div>
-Remove a modal popup. 
+  Remove a modal popup, optionally with a <code>callback</code>
+  and or a return <code>value</code>.
+</div>
 
-See the third example @<div class="linkLike" data-jumpkey="popup_show" data-action="jump2Nav">[JQx].Popup.show</div>.</div></div>
+<div class="note">
+  <b>Note</b>: for a modal popup <code>callback</code> can either be given
+  as <code>removeModal</code> parameter or as parameter in the <code>show</code> method.
+</div>
+
+<div data-example>##EXAMPLECODE@popupCreateModalWithReturnvalueEx##</div>
+
+
+</div>
 </template>
 
 <template data-id="static_log" class="static_log" data-is-deprecated="false">
@@ -1288,7 +1289,7 @@ $.TEMPLATE({id: "myTemplate", innerHTML: "..."})?.toDOM();</div></div>
 </template>
 
 <template data-id="popup_show" class="popup_show" data-is-deprecated="false">
-<div data-params='[{"[object]":"{ content:HTML string | JQx instance | Node[, modal:boolean, closeAfter:number, callback:function, warnMessage:string] }"}]'></div>
+<div data-params='[{"props":"{ content:HTML string | JQx instance | Node[, modal:boolean, closeAfter:number, callback:function, warnMessage:string] }"}]'></div>
 <div data-return-value='Nothing'></div>
 <div data-text='1'><div>Create and display a popup 'window'. There is one parameter, which is an Object with the following properties.</div>
 
