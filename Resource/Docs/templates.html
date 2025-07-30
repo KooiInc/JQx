@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-07-30 08:38:25 UTC-->
+<!-- Generated file, last update 2025-07-30 08:57:33 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -935,10 +935,17 @@ When <code>indexOrSelector</code> has a value, retrieves the first matching elem
 <div data-text='1'><div>Popup is a small module for creating (modal) popups. By default it is not initialized.</div> 
 
 <div>
-You can initialize it using the <code>Popup</code> getter: <code>const popup = [JQx].Popup</code>, or use it directly (<code>[JQx].Popup.show(...)</code>).
+  You can initialize it using the <code>Popup</code> getter: <code>const popup = [JQx].Popup</code>,   
+  or use it directly (<code>[JQx].Popup.show(...)</code>).
 </div>
 
-<div>Once initialized you can use the two methods the module contains, documented in the following.</div>
+<div>
+  The (renewed) <code>Popup</code> module uses a 
+  <a target="_blank" 
+     href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog"
+  >dialog</a> element. A (non modal) popup box can be closed by pressing &lt;ESC>, or clicking
+  the checkmark icon (top right) or anywhere outside the box.
+</div>
 
 <div class="note">
   <b>Note</b>: the earlier deprecated methods (<code>create</code>, <code>createTimed</code>)
@@ -1297,17 +1304,15 @@ $.TEMPLATE({id: "myTemplate", innerHTML: "..."})?.toDOM();</div></div>
 <li>[<code>modal</code>]: (Boolean) <code>true</code> makes the popup modal (a popup without a closer icon, which can only be closed using some handler withing its' content);</li>
 <li>[<code>closeAfter</code>]: (Number) the number of seconds after which the popup closes itself (ignored when <code>modal</code>);</li>
 <li>[<code>callback</code>]: (Function) a function that will be executed after closing the popup;</li>
-<li>[<code>warnMessage</code>]: (JQx instance | HTML string | string) a warning shown when the user tries to close the modal popup (e.g. by clicking outside it).</li></ul>
+<li>[<code>warnMessage</code>]: (JQx instance | HTML string | string) a warning shown when the user tries to close a modal popup (e.g. by clicking outside it).</li></ul>
 
-<div>The only property that should have a value is <code>content</code>.</div>
+<div>The only obligatory parameter is <code>content</code>.</div>
 
 <div>The examples demonstrate a regular and modal popup.</div>
-
 
 <div data-example>##EXAMPLECODE@popupShowEx##</div>
 
 <div data-example>##EXAMPLECODE@popupShowTimedEx##</div>
-
 
 <div data-example>##EXAMPLECODE@popupShowModalEx##</div></div>
 </template>

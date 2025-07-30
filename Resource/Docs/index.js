@@ -2,7 +2,7 @@ import {default as CreateComponent, createOrRetrieveShadowRoot} from "./WebCompo
 // ^ see https://cdn.jsdelivr.net/gh/KooiInc/es-webcomponent-factor
 import handlerFactory  from "./HandlingFactory.js";
 const webComponentStyleSheetContent = await fetch(`./cright.css`).then(r => r.text());
-const isDev = location.host.startsWith(`dev`) || location.host.startsWith(`localhost`);
+const isDev = false; //location.host.startsWith(`dev`) || location.host.startsWith(`localhost`);
 const importLink =  isDev ?
   `../../index.js` :
   `../../Bundle/jqx.min.js`;

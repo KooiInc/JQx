@@ -219,7 +219,8 @@ function clickActionsFactory($) {
       $.Popup.show( {
         content: $.div(
             "Here's a popup message.",
-            $.div("Close it by clicking the checkmark icon or anywhere outside the box")
+            $.div("Close it by either pressing &lt;ESC>, clicking the top right " +
+              "checkmark icon or anywhere outside the box")
           )
       } );
     },
