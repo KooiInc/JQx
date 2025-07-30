@@ -42,10 +42,10 @@ function smallHelpersFactory() {
   const setCollectionFromCssSelector = (input, root, self) => {
     const selectorRoot = root !== document.body && (IS(input, String) && input.toLowerCase() !== "body") ? root : document;
     let errorStr = undefined;
-    
+
     try { self.collection = [...selectorRoot.querySelectorAll(input)]; }
     catch (err) { errorStr = `Invalid CSS querySelector. [${!IS(input, String) ? `Nothing valid given!` : input}]`; }
-    
+
     return errorStr ?? `CSS querySelector "${input}", output ${self.collection.length} element(s)`;
   };
   const addHandlerId = instance => {
@@ -57,7 +57,7 @@ function smallHelpersFactory() {
     .filter( ([,cando]) => cando)
     .map( ([key,]) => key)
     .sort( (a, b) => a.localeCompare(b));
-  
+
   return {
     instanceMethods, instanceGetters,isCommentOrTextNode, isNode, isComment, isText,
     isHtmlString, isArrayOfHtmlElements, isArrayOfHtmlStrings, ElemArray2HtmlString,
@@ -103,7 +103,7 @@ function allowances(jqx) {
       const webComponentTagName = isWebComponent && tagName;
       tagName =  isWebComponent ? toCamelcase(tagName) : tagName.toLowerCase();
       tagLib.allowTag(tagName);
-      
+
       if (!IS(jqx[tagName], Function)) {
         Object.defineProperties( jqx, addGetters(tagName, true, jqx, webComponentTagName) );
       }
@@ -111,7 +111,7 @@ function allowances(jqx) {
     prohibit: tagName => {
       tagName = tagName.toLowerCase();
       tagLib.prohibitTag(tagName);
-      
+
       if (IS(jqx[tagName], Function)) {
         Object.defineProperties( jqx, addGetters(tagName, false, jqx) );
       }
@@ -136,7 +136,7 @@ function delegateFactory(handle) {
       handlers.push(origin);
       origin = undefined;
     }
-    
+
     return handlers.forEach(handler => handle(type, origin, handler));
   }
 }
@@ -156,13 +156,13 @@ function virtualFactory(jqx) {
 
 function combineObjectSources(...sources) {
   const result = {};
-  
+
   for (const source of sources) {
     const descriptors = Object.getOwnPropertyDescriptors(source);
     Object.entries(descriptors).forEach( ([key, descriptor]) =>
       !(key in result) && Object.defineProperty(result, key, descriptor) );
   }
-  
+
   return result;
 }
 
@@ -173,7 +173,7 @@ function tagNotAllowed(tagName) {
 
 function tagGetterFactory(tagName, cando, jqx, webComponentTagName) {
   tagName = toDashedNotation(webComponentTagName || tagName.toLowerCase());
-  
+
   return {
     get() {
       return  (...args) => {
@@ -189,7 +189,7 @@ function tagGetterFactory(tagName, cando, jqx, webComponentTagName) {
 function addGetters(tag, cando, jqx, webComponentTagName) {
   tag = tag.toLowerCase();
   const jqxGetterForThisTag = tagGetterFactory(tag, cando, jqx, webComponentTagName);
-  
+
   return webComponentTagName
     ? { [webComponentTagName]: jqxGetterForThisTag, [toCamelcase(webComponentTagName)]: jqxGetterForThisTag, }
     : { [tag]: jqxGetterForThisTag, [tag.toUpperCase()]: jqxGetterForThisTag, };
