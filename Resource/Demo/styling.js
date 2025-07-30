@@ -12,18 +12,6 @@ export default [
     position: absolute;
     inset: 0;
   }`,
-  `pre[class*='language-'] {
-    position: relative;
-    display: block;
-   }`,
-  `code:not([class*='language-']) {
-    background-color: rgb(227, 230, 232);
-    color: rgb(12, 13, 14);
-    padding: 2px 4px;
-    display: inline;
-    border-radius: 4px;
-    margin: 1px 0;
-  }`,
   `.green {
     color: green;
   }`,
@@ -62,9 +50,8 @@ export default [
   `.upDownFader.down {
     max-height: calc(100% - 1px);
     position: relative;
-    width: 840px;
+    width: 100%;
     opacity: 1;
-    overflow: auto;
   }`,
   `#bttnblock { margin-top: 1em; }`,
   `#logBttn[data-on='0']:before { content: 'Show logs'; }`,
@@ -74,11 +61,6 @@ export default [
     font-size: 1.2rem;
   }`,
   `.cmmt { color: #888; }`,
-  `.cssView {
-     white-space: pre;
-     padding-bottom: 1rem;
-     overflow: hidden;
-  }`,
   `@media screen and (width < 1400px) {
     #bttnblock button {
      margin-top: 0.4rem;
@@ -88,5 +70,11 @@ export default [
   `b.attention {
     color: red;
     fontSize: 1.2em;
-   }`
+   }`,
+   `[data-js-view-box] {
+    max-height: 50vh;
+    overflow: auto;
+    position: relative;
+   }`,
+  `[data-css-view-box] { padding: 0.5em; }`,
 ];

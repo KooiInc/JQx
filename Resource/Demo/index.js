@@ -43,17 +43,21 @@ const backLinks =
     DIV(`The repository can be found  @ `,
     A( {
       href: isGithub
-        ? "//github.com/KooiInc/JQx" : "//codeberg.org/KooiInc/JQx",
+        ? "//github.com/KooiInc/JQx"
+        : "//codeberg.org/KooiInc/JQx",
       target: back2,
       text: isGithub
-        ? "https://github.com/JQx" : "https://codeberg.org/KooiInc/JQx" } )),
+        ? "https://github.com/JQx"
+        : "https://codeberg.org/KooiInc/JQx" } )),
     DIV(`The documentation resides @ `,
     A( {
       href: isGithub
-        ? "//kooiinc.github.io/JQL/Resource/Docs/" : "//kooiinc.codeberg.page/JQx/Resource/Docs/",
+        ? "//kooiinc.github.io/JQL/Resource/Docs/"
+        : "//kooiinc.codeberg.page/JQx/Resource/Docs/",
       target: back2,
       text: isGithub
-        ? "https://kooiinc.github.io/JQL/Resource/Docs/" : "https://kooiinc.codeberg.page/JQx/Resource/Docs/" } ))
+        ? "https://kooiinc.github.io/JQL/Resource/Docs/"
+        : "https://kooiinc.codeberg.page/JQx/Resource/Docs/" } ))
 );
 
 
@@ -67,12 +71,13 @@ if (!debug) {
     P( B({class: `arrRight`, html: `&#8594;`}, ),
       ` Check the HTML source &mdash; right click anywhere, and select 'View page source'.`)
   ).appendTo(JQxRoot);
-  
+
 // add all event handling delegates defined in function [getDelegates4Document]
   getDelegates4Document()
     .forEach(([type, targetedHandlers]) =>
-      targetedHandlers.forEach(handler =>
-        $.delegate(type, handler.target, ...handler.handlers)));
+      targetedHandlers.forEach( handler => {
+        $.delegate(type, handler.target, ...handler.handlers);
+      }));
 
 // generic delegates (on document) from the static $.delegate
   const someClicks = [
@@ -83,7 +88,7 @@ if (!debug) {
   const msg = `hi there, you won't see me`;
   $(`<div id="nohandling" onclick="alert('${msg}')"></div>`)
     .html(`<h1>Hell! O world.</h1>`).appendTo(JQxRoot);
-  
+
 // script and data attribute will be removed, but you can add data-attributes later
 // styles are inline here
   $([
@@ -125,7 +130,7 @@ if (!debug) {
     evt =>
       showStyling(evt.target.dataset?.sheetId,
         cssBttns[evt.target.dataset?.switchBttn]));
-  
+
   DIV({id: "bttnblock"}).append(...[
       BUTTON({
         id: "logBttn",
@@ -147,7 +152,7 @@ if (!debug) {
       BUTTON(/github/i.test(location.href) ? "@Github" : "@Codeberg")
         .on("click", () =>  $.Popup.show( { content: backLinks } ) )
     ] ).appendTo(JQxRoot);
-  
+
   $("button")
     .style({marginRight: "4px"})
     .each((btn, i) => btn.dataset.index = `bttn-${i}`); // each demo
@@ -165,6 +170,7 @@ if (!debug) {
   .prepend($$("<span>Some </span>"))
   .html(" examples", true)
   .appendTo(JQxRoot);
+
 // styled with intermediate class
   $$(`<div id="helloworld"/>`)
   .text("Example: hello ... world")
@@ -197,9 +203,11 @@ if (!debug) {
   $( COMMENT(`Comment @ #JQxRoot beforebegin (verify it in DOM tree)`),
     JQxRoot, $.at.BeforeBegin);
   $( COMMENT(`Comment @ #JQxRoot beforebegin (verify it in DOM tree)`),
-    JQxRoot, $.at.BeforeBegin);
+      JQxRoot, $.at.BeforeBegin)
+
   $(`<!--Comment @ #bttnblock afterend (verify it in DOM tree) -->`,
     $(`#bttnblock`), $.at.AfterEnd);
+
   $(`<!--Comment @ #bttnblock afterbegin (so, prepend) verify it in DOM tree) -->`,
     $(`#bttnblock`), $.at.AfterBegin);
 
@@ -213,7 +221,7 @@ if (!debug) {
 
   // append actual code to document
   injectCode(JQxRoot).then(_ => `code injected`);
-  
+
   $(`#logBox`).style({maxWidth: `${JQxRoot.dimensions.width}px`, marginTop: 0});
   const donePerf = (performance.now() - started) / 1000;
   const perfMessage =
@@ -224,14 +232,15 @@ if (!debug) {
 /* DEBUG EXIT POINT */
 
 // show actual code
+// class: `language-javascript`
 async function injectCode(root = document.body) {
   return await fetch("./index.js").then(r => r.text())
     .then(r =>
         DIV({ class: `upDownFader`, id: `code` },
-          $.pre({ class: `language-javascript line-numbers` },
-            $.code({ class: `language-javascript line-numbers`}, r.replace(/</g, `&lt;`))
+          $.pre({ data: {jsViewBox: true}, class: `language-javascript` },
+            $.code(r.replace(/</g, `&lt;`))
           ) ).renderTo(root, $.insertPositions.beforeend)
-    ).then(_ => setTimeout(Prism.highlightAll));
+    ).then(_ => setTimeout(hljs.highlightAll));
 }
 
 // create a few delegated handler methods
@@ -256,26 +265,24 @@ function getDelegates4Document() {
       handlers: [(_, self) => logActivation(self, !+(self.data.get(`on`, 1))),],
     }, {
       target: `#showComments`,
-      handlers: [
-        _ => {
-          const content = $.virtual(`<div>`)
-            .append($(`<h3>*All Comments in this document:</h3>`)
-              .Style.inline({marginTop: 0, marginBottom: `0.5rem`}))
-            .HTML.append(allComments([...document.childNodes]).join(``));
-          $.Popup.show({content});
-        },
-      ]
+      handlers: [function(evt) {
+        const comments = $.div(allComments([...document.childNodes]).join(`\n`));
+        const head = $.h3(`*All Comments in this document:`)
+          .Style.inline({marginTop: 0, marginBottom: `0.5rem`});
+        const content = $.div( head, comments );
+        return $.Popup.show({content});
+      },]
     }, {
       target: `.codeVwr`,
       handlers: [
         (_, self) => {
           const codeElem = $(`#${self.data.get(`forid`)}`);
-          
+
           if (!+self.data.get(`hidden`)) {
             codeElem.removeClass(`down`);
             return self.data.add({updown: '\u25bc View ', hidden: 1})
           }
-          
+
           $(`.down`).each(el => el.classList.remove(`down`));
           $(`[data-forid]`).data.add({updown: '\u25bc View ', hidden: 1});
           codeElem.addClass(`down`);
@@ -315,22 +322,22 @@ function modalDemo() {
 
 function allComments(root, result = []) {
   for (const node of root) {
-    
+
     if (node.childNodes && node.childNodes.length) {
       allComments([...node.childNodes], result);
     }
-    
+
     if (node.nodeType === 8) {
       const parent = node.parentNode;
       let parentStr;
-      
+
       if (parent) {
         const className = parent.classList.length && `.${[...parent.classList][0]}` || ``;
         parentStr = `&#8226; in <b>${
           parent.nodeName.toLowerCase()}${
           parent.id ? `#${parent.id}` : className ? className : ``}</b>`;
       }
-      
+
       const spacing = `&nbsp;`.repeat(7);
       result.push(`<div class="cmmt">${parentStr ?? `&#8226; in <b>??</b>`}<br>${
         `&nbsp;`.repeat(2)}&lt;!--${
@@ -339,7 +346,7 @@ function allComments(root, result = []) {
             .replace(/\n/g, `<br>${spacing}`)}--&gt;</div>`);
     }
   }
-  
+
   return result;
 }
 
@@ -351,7 +358,7 @@ function injectFavIcon() {
   };
   const currentLink = $(`head link[rel="icon"]`);
   const link = $.link({rel: "icon"});
-  
+
   return /github/i.test(location.href)
     ? currentLink.replaceWith(link.attr(icons.github))
     : /codeberg/i.test(location.href)
@@ -359,35 +366,15 @@ function injectFavIcon() {
       : currentLink.replaceWith(link.attr(icons.local));
 }
 
-function showStyling(styleId, bttn) {
-  $.log(`wtf ${styleId}`);
-  const theStyle = $(`style#${styleId}`);
-  if (theStyle.is.empty) {
-    return;
-  }
-  const getMediaRuleSelector = rule => rule.cssText.split(/\{/).shift().trim();
-  const rules = theStyle[0].sheet.cssRules;
-  const mapRule = (rule, selector) => `${selector} {\n  ${
-    rule.cssText
-      .replace(/(data:image)(.+[^;])+;/, `$1 [...]");`)
-      .split(/[{}]/)[1]
-      .split(`;`)
-      .join(`;\n  `)
-      .replace(/\s+$/, ``)}\n}`;
-  const mapping = rule => {
-    const mediaRules = rule.media;
-    const selectr = mediaRules ? getMediaRuleSelector(rule) : rule.selectorText;
-    return mediaRules
-      ? `${selectr} {\n    ${[...rule.cssRules].map(mapping)
-        .join(``)
-        .replace(/{\n/g, `{\n    `)
-        .replace(/;\n/g, `;\n    `)
-        .replace(/\n}/, `\n}`)}\n}`
-      : `${mapRule(rule, selectr)}`;
-  };
-  const mappedCSS = [...rules].map(mapping).join(`\n\n`);
-  return $.Popup.show({
-    content: $$(`<div class="cssView"><h3>style#${styleId} current content</h3>${
-      mappedCSS}</div>`).prepend($$(`<p></p>`).append(bttn.HTML.get(1)))
-  });
+function getStyleRules4Display() {
+  $.editCssRule(`[data-css-view-box] {padding: 0.5em;}`);
+  const theStyle = $(`style#JQxStylesheet`);
+  const rules = theStyle.node.sheet.cssRules;
+  const stringified = [...rules].map(rule => rule.cssText.replace(/url\([^\)]+\)/, `url([...])`)).join('');
+  return css_beautify(stringified, {indent_size: 2, indent_char: ` `, end_with_newline: true })
+}
+
+function showStyling() {
+  $.Popup.show({content: $.pre({data: {cssViewBox: true}}, getStyleRules4Display()) } );
+  hljs.highlightElement($.node(`[data-css-view-box]`));
 }
