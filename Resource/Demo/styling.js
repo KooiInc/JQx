@@ -76,5 +76,5 @@ export default [
     overflow: auto;
     position: relative;
    }`,
-  `[data-css-view-box] { padding: 0.5em; }`,
+  `[data-css-view-box] { padding: 1.5rem; }`,
 ];

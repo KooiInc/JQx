@@ -1,3 +1,4 @@
+
 import cssRules from "./styling.js";
 const isDev = /dev|local/i.test(location.href);
 const testBndl = false;
@@ -367,7 +368,6 @@ function injectFavIcon() {
 }
 
 function getStyleRules4Display() {
-  $.editCssRule(`[data-css-view-box] {padding: 0.5em;}`);
   const theStyle = $(`style#JQxStylesheet`);
   const rules = theStyle.node.sheet.cssRules;
   const stringified = [...rules].map(rule => rule.cssText.replace(/url\([^\)]+\)/, `url([...])`)).join('');
@@ -375,6 +375,15 @@ function getStyleRules4Display() {
 }
 
 function showStyling() {
-  $.Popup.show({content: $.pre({data: {cssViewBox: true}}, getStyleRules4Display()) } );
+  $.editCssRules(`#jqxPopupContent {
+    padding: 0 !important;
+    background-color: transparent !important;
+    border: transparent 1px solid !important}`);
+  $.Popup.show( {
+    content: $.pre({data: {cssViewBox: true}}, getStyleRules4Display()),
+    callback: () =>
+      $.editCssRules(`#jqxPopupContent {padding: initial; background-color: initial; border: initial}`) }
+  );
+
   hljs.highlightElement($.node(`[data-css-view-box]`));
 }
