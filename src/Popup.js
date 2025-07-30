@@ -1,89 +1,69 @@
-import { popupStyling } from "./EmbedResources.js";
-import { randomString } from "./Utilities.js";
+import { popupStyling as styleRules } from "./EmbedResources.js";
 
-export default newPopupFactory;
+export default function($) {
+  if (!$(`#jqxPopup`).isEmpty()) { return; }
 
-function newPopupFactory($) {
-  const editRule = $.createStyle(`JQxPopupCSS`);
-  popupStyling.forEach( rule => editRule(rule) );
-  let callbackOnClose = {};
-  let isModal, modalWarning, timeout;
-  const warnTemplate = $.virtual(`<div class="popup-warn">`);
-  const popupContainer = $(`<div class="popupContainer">`)
-    .append( $(`<span class="closeHandleIcon">`) )
-    .append( $(`<div class="content">`) );
-  const [closer, txtBox] = [$(`.popupContainer > .closeHandleIcon`), $( `.popupContainer > .content` )];
-  const positionCloser = () => {
-    if ( closer.hasClass(`popup-active`) ) {
-      const {x, y, width} = txtBox.dimensions;
-      closer.style({top: `${y - 12}px`, left: `${x + width - 12}px`});
-    } };
-  const warn = () => {
-    modalWarning && $(`.popup-warn`).clear().append($(`<div>${modalWarning}</div>`));
-    txtBox.addClass(`popup-warn-active`); };
-  const removeModal = () => { isModal = false; remove(closer.first()); };
-  const timed = (seconds, callback) => timeout = setTimeout( () => remove(closer[0]), +seconds * 1000 );
-  $.delegate(`click`, `.popupContainer, .closeHandleIcon`, evt => remove(evt.target));
-  $.delegate(`click`, `.popupContainer .content`, (_, self) => isModal && self.removeClass(`popup-warn-active`));
-  $.delegate(`resize`, positionCloser);
+  $.dialog({id: `jqxPopup`}, $.div({ id: "jqxPopupContent" })).render;
+  $.editCssRules(...styleRules);
+  const [popupContent, popupNode] = [$(`#jqxPopupContent`), $.node(`#jqxPopup`)];
+  let currentProps = {};
+  [`click`, `keydown`].forEach(evtType => $.delegate(evtType, genericPopupCloseHandler));
+  return Object.freeze({show: initPopup, removeModal});
 
-  return {
-    show: createAndShowPupup,
-    create: (message, isModalOrCallback, modalCallback, modalWarning) => { /*legacy*/
-      const isModal = $.IS(isModalOrCallback, Boolean) ? isModalOrCallback : false;
-      createAndShowPupup({
-        content: message, modal: isModal,
-        callback: isModal ? modalCallback : isModalOrCallback, warnMessage: modalWarning, }); },
-    createTimed: (message, closeAfter, callback) => /*legacy*/
-      createAndShowPupup({content: message, closeAfter, callback}),
-    removeModal,
-  };
-  
-  function createAndShowPupup( { content, modal, closeAfter, callback, warnMessage } ) {
-    if (content) {
-      content = $.IS(content, Node) ? jqx(content) : content;
-      clearTimeout(timeout);
-      isModal = modal ?? false;
-      modalWarning = $.IS(warnMessage, String) && `${warnMessage?.trim()}`.length || warnMessage?.isJQx
-        ? warnMessage : undefined;
-      txtBox.clear().append(content.isJQx ? content : $(`<div>${content}</div>`));
-      isModal && warnMessage && txtBox.append(warnTemplate.duplicate());
-      popupContainer.addClass(`popup-active`);
-      
-      if ($.IS(callback, Function)) {
-        const tmpId = randomString();
-        popupContainer.data.set( {callbackId:  tmpId} );
-        callbackOnClose[tmpId] = callback;
-      }
-
-      if (!isModal) {
-        if ($.IS(+closeAfter, Number)) {
-          const callbackId = popupContainer.data.get(`callbackId`);
-          const callback = callbackId && callbackOnClose[callbackId];
-          timed(closeAfter, callback);
-        }
-        closer.addClass(`popup-active`);
-        positionCloser();
-      }
-
-      return true;
-    }
-    return console.error(`Popup creation needs at least some text to show`);
+  function initPopup(props) {
+    if (popupNode.open) { return; }
+    currentProps = {...props};
+    let {content} = currentProps;
+    return !($.IS(content, String, HTMLElement) || content?.isJQx) ? true : showPopup();
   }
 
-  function remove(origin) {
-    if (!isModal && !origin.closest(`.content`)) {
-      clearTimeout(timeout);
-      txtBox.clear();
-      const callbackId = popupContainer.data.get(`callbackId`);
-      popupContainer.data.remove(`callbackId`);
-      $(`.popup-active`).removeClass(`popup-active`);
-      const cb = callbackId && callbackOnClose[callbackId];
-      if ($.IS(cb, Function)) { cb(); }
-      if (callbackId) { delete callbackOnClose[callbackId]; }
-      modalWarning = ``;
-      return;
+  function initHidePopup() {
+    return currentProps.modal ? failModalClose(currentProps.warnMessage) : hidePopup();
+  }
+
+  function showPopup() {
+    popupContent.clear();
+    let {content, modal, closeAfter} = currentProps;
+    modal = $.IS(modal, Boolean) ? modal : false;
+    const closerIcon = modal ? "" : $.div({ id: "closeHandleIcon"});
+    popupContent.append(closerIcon, $.IS(content, String) ? $.div(content) : content);
+    popupNode.showModal();
+    return !modal && $.IS(closeAfter, Number) && createTimer(initHidePopup, closeAfter);
+  }
+
+  function hidePopup() {
+    popupNode.close(currentProps.returnValue);
+    return $.IS(currentProps.callback, Function) ? currentProps.callback(currentProps.returnValue) : true;
+  }
+
+  function removeModal({callback, value} = {}) {
+    currentProps.returnValue = value;
+    currentProps.modal = false;
+    currentProps.callback = callback || currentProps.callback;
+    initHidePopup();
+  }
+
+  function genericPopupCloseHandler(evt) {
+    currentProps.activeTimer && clearTimeout(currentProps.activeTimer);
+    const escPressed = evt.key === `Escape`;
+    escPressed && evt.preventDefault();
+    return escPressed || evt.target.closest(`#closeHandleIcon`) ||
+    (evt.type !== `keydown` && !evt.target.closest(`#jqxPopupContent`)) ? initHidePopup() : true;
+  }
+
+  function createTimer(callback, seconds) {
+    if ($.IS(callback, Function) && $.IS(seconds, Number) && seconds > 0) {
+      currentProps.activeTimer = setTimeout(callback, seconds * 1000);
     }
-    return isModal && warn();
+  }
+
+  function failModalClose(warnMessage) {
+    if (!$.IS(warnMessage, String, HTMLElement, Proxy)) { return; }
+    let modalWarningBox = popupContent.find$(`.warn`);
+    switch(true) {
+      case modalWarningBox.is.empty: modalWarningBox = $.div({class: `warn`}, warnMessage);
+      default: popupContent.append(modalWarningBox.addClass(`active`));
+        createTimer(() => popupContent.find$(`.warn`).removeClass(`active`), 2);
+    }
   }
 }
