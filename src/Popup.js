@@ -47,8 +47,9 @@ export default function($) {
     currentProps.activeTimer && clearTimeout(currentProps.activeTimer);
     const escPressed = evt.key === `Escape`;
     escPressed && evt.preventDefault();
-    return escPressed || evt.target.closest(`#closeHandleIcon`) ||
-    (evt.type !== `keydown` && !evt.target.closest(`#jqxPopupContent`)) ? initHidePopup() : true;
+    if (escPressed || evt.target.closest(`#closeHandleIcon`) ||
+      (evt.type !== `keydown` && !evt.target.closest(`#jqxPopupContent`))) { initHidePopup() }
+    return document.activeElement.blur();
   }
 
   function createTimer(callback, seconds) {
