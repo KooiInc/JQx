@@ -985,8 +985,8 @@ function clickActionsFactory($) {
         //   the [name] value prevents that
         //   clicking the 'try it' button
         //   multiple times re-adds the handler
-        //   every time (which may have adverse
-        //   effects).
+        //   every time (which may have
+        //   adverse/unexpected effects).
       });
 
       function delegateExampleHandler(_, self) {
