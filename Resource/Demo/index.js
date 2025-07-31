@@ -77,7 +77,7 @@ if (!debug) {
   getDelegates4Document()
     .forEach(([type, targetedHandlers]) =>
       targetedHandlers.forEach( handler => {
-        $.delegate(type, handler.target, ...handler.handlers);
+        $.delegateCaptured({type, origin: handler.target, handlers: handler.handlers});
       }));
 
 // generic delegates (on document) from the static $.delegate

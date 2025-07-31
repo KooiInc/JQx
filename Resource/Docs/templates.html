@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-07-30 08:57:33 UTC-->
+<!-- Generated file, last update 2025-07-31 13:11:23 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -312,36 +312,20 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
 <div data-example>##EXAMPLECODE@appendToEx##</div></div>
 </template>
 
-<template data-id="static_delegate" class="static_delegate" data-is-deprecated="false">
+<template data-id="static_delegate" class="static_delegate" data-is-deprecated="true">
 <div data-params='[{"type":"string. Event type (e.g. <code>click</code>) to listen for"},{"origin":"string. Optional selector to identify the element to assign listener to (e.g. <code>#someId</code>)"},{"...handlers":"One or more lambda functions"}]'></div>
-<div data-return-value='JQx Instance'></div>
-<div data-text='1'><div>Create targeted event listeners/handlers. </div>
+<div data-return-value='Nothing'></div>
+<div data-text='1'><!--DEPRECATED-->
 
-<div class="note"><b>Note</b>: <a target="_blank" href="https://en.wikipedia.org/wiki/DOM_events">non bubbling events</a> are delegated using <code>{capture: true}</code>. This concerns the following events:</div>
+<div class="note">
+  <b>Note</b>: <code>delegate</code is marked as <i>deprecated</i> and will in due
+    time be replaced with
+  <div class="linkLike" 
+    data-action="jump2Nav" 
+    data-jumpkey="static_delegateCaptured">delegateCaptured</div>.
+</div>
 
-<ul>
-  <li><code>load</code></li>
-  <li><code>unload</code></li>
-  <li><code>scroll</code></li>
-  <li><code>focus</code></li>
-  <li><code>blur</code></li>
-  <li><code>DOMNodeRemovedFromDocument</code></li>
-  <li><code>DOMNodeInsertedIntoDocument</code></li>
-  <li><code>loadstart</code></li>
-  <li><code>progress</code></li>
-  <li><code>error</code></li>
-  <li><code>abort</code></li>
-  <li><code>load</code></li>
-  <li><code>loadend</code></li>
-  <li><code>pointerenter</code></li>
-  <li><code>pointerleave</code></li>
-  <li><code>readystatechange</code></li>
-</ul>
-
-<div>The example creates a click listener/handler for the header of this chapter (<b>[JQx].delegate</b>). The handler changes the color of all headers (by changing the value of the corresponding variable within <code>:root</code>). It is a specific click handler for this header only (but all headers are affected: so click on the header of this chapter changes the 
-color of <i>all</i> headers, clicking on another header handles the already defined click handler (scroll to it)).</div>
-
-<div data-example>##EXAMPLECODE@staticDelegateEx##</div></div>
+<div>Create targeted event listeners/handlers.</div></div>
 </template>
 
 <template data-id="instance_dimensions" class="instance_dimensions" data-is-deprecated="false">
@@ -1716,4 +1700,93 @@ Retrieves the first <code>Node</code> of the instance. Equals <code>[JQx instanc
 See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
   >[JQx instance].is</div> for usage
 </div></div>
+</template>
+
+<template data-id="static_delegateCaptured" class="static_delegateCaptured" data-is-deprecated="false">
+<div data-params='[{"[object]":"{type:string, origin:string, handlers|function|array<function>, capture:boolean}"}]'></div>
+<div data-return-value='Nothing'></div>
+<div data-text='1'><div>
+  <code>delegateCaptured</code> works the same as <code>delegate</code>, but gives you 
+  control over the propagation of
+  <a target="_blank" 
+      href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#usecapture">capturing phase</a> 
+  (non capturing or capturing).
+</div>
+
+<h3>Parameters (* = obligatory)</h3>
+<ul>
+  <li>
+    <code>type</code>*: (case insensitive) the event type (e.g. "click", "MouseEnter")
+  </li>
+
+  <li>
+    <code>handlers</code>*: a single handler function or an array of such functions.
+    <div>The function signature is <code>[handlerfunction](event, self)</code> where</div>
+    <div> 
+      <code>event</code> is the triggering event and <code>self</code> 
+       is the JQx instance (if applicable).</div> 
+    <div>Both may be omitted</div>
+  </li>
+
+  <li>
+    <code>origin</code>: a (complex) css selector 
+    (e.g. <code>"#someElem:not([data-dont])"</code> or 
+       <code>".clickthis"</code>).
+    <div>
+       If present, the handler(s) is/are bound to the elements
+       found with this selector
+    </div>
+  </li>
+
+  <li>
+    <code>capture</code>: equivalent to
+    <a target="_blank" 
+      href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#usecapture">useCapture</a> for
+    <code>[Element].addEventListener</code>. Defaults to false.
+  </li>
+
+  <li>
+    <code>name</code>: because of the way <code>origin</code> binds to a handler
+    (it is wrapped into a new anonymous function), to be sure a handler can not be re-added 
+    a name (string) can be provided. 
+    <div>Without <code>origin</code> and when <code>handler(s)</code> is/are 
+    named function(s) a name is not necessary.</div>
+    <div>See the example.</div>
+  </li>
+
+</ul>
+
+<div class="note"><b>Note</b>: <a target="_blank" href="https://en.wikipedia.org/wiki/DOM_events">non bubbling events</a> are always delegated using <code>{capture: true}</code>. This concerns the following events:</div>
+
+<ul>
+  <li><code>load</code></li>
+  <li><code>unload</code></li>
+  <li><code>scroll</code></li>
+  <li><code>focus</code></li>
+  <li><code>blur</code></li>
+  <li><code>DOMNodeRemovedFromDocument</code></li>
+  <li><code>DOMNodeInsertedIntoDocument</code></li>
+  <li><code>loadstart</code></li>
+  <li><code>progress</code></li>
+  <li><code>error</code></li>
+  <li><code>abort</code></li>
+  <li><code>load</code></li>
+  <li><code>loadend</code></li>
+  <li><code>pointerenter</code></li>
+  <li><code>pointerleave</code></li>
+  <li><code>readystatechange</code></li>
+</ul>
+
+<div>
+  The example creates a click listener/handler for the header of this chapter 
+  (<b>[JQx].delegateCaptured</b>). 
+  The handler changes the color of all headers (by changing the value of the 
+  corresponding variable within <code>:root</code>). It is a specific click 
+  handler for this header only (but all headers are affected: so click on the 
+  header of <i>this</i> chapter changes the color of <i>all</i> headers, 
+  clicking on another header handles the already defined click handler 
+  for it (i.e. scroll to it)).
+</div>
+
+<div data-example>##EXAMPLECODE@staticDelegateCapturedEx##</div></div>
 </template>

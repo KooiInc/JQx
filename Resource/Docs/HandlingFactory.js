@@ -973,28 +973,35 @@ function clickActionsFactory($) {
         .showInExample(evt)
         .removeAfter(6);
     },
-    staticDelegateEx: evt => {
-      $.delegate(
-        "click",
-        "[data-for-id='static_delegate']",
-        function(evt) {
-          const $target = $(evt.target);
+    staticDelegateCapturedEx: evt => {
+      $.delegateCaptured({
+        type: "click",
+        origin: "[data-for-id='static_delegateCaptured']",
+        handlers: delegateExampleHandler,
+        name: "delegateExampleHandler"
+        // ^ a name *must* be provided to avoid
+        //   adding the handler more than once.
+        //   In the case of this example
+        //   the [name] value prevents that
+        //   clicking the 'try it' button
+        //   multiple times re-adds the handler
+        //   every time (which may have adverse
+        //   effects).
+      });
 
-          if (!$target.prop("title")) {
-            $target.prop({title: "click to toggle the color of all headers"});
-          }
-
-          if ($target.Style.computed.color === "rgb(0, 0, 255)") {
-            return $.editCssRule(":root { --method-head-color: rgb(224, 59, 59); }");
-          }
-
-          return $.editCssRule(":root { --method-head-color: blue; }");
+      function delegateExampleHandler(_, self) {
+        if (!self.prop("title")) {
+          self.prop({title: "click to toggle the color of all headers"});
         }
-      );
-      // invoke the handler
-      $(`[data-for-id='static_delegate']`).trigger("click");
-      // disable the 'Try it` button
-      $(evt.target).attr("disabled", "disabled");
+
+        if (self.Style.computed.color === "rgb(0, 0, 255)") {
+          return $.editCssRule(":root { --method-head-color: rgb(224, 59, 59); }");
+        }
+
+        return $.editCssRule(":root { --method-head-color: blue; }");
+      }
+      // invoke the handler (all [JQx].* headers are re-colored)
+      $(`[data-for-id='static_delegateCaptured']`).trigger("click");
     },
     clearEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
