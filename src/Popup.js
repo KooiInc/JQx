@@ -7,8 +7,11 @@ export default function($) {
   $.editCssRules(...styleRules);
   const [popupContent, popupNode] = [$(`#jqxPopupContent`), $.node(`#jqxPopup`)];
   let currentProps = {};
-  [`click`, `keydown`].forEach(evtType =>
-    document.addEventListener(evtType, genericPopupCloseHandler, true));
+  [`click`, `keydown`].forEach( evtType => $.delegateCaptured({
+    type: evtType,
+    handlers: genericPopupCloseHandler,
+    name: "genericPopupCloseHandler",
+    capture: true }) );
   return Object.freeze({show: initPopup, removeModal});
 
   function initPopup(props) {
@@ -34,7 +37,8 @@ export default function($) {
 
   function hidePopup() {
     popupNode.close(currentProps.returnValue);
-    return $.IS(currentProps.callback, Function) ? currentProps.callback(currentProps.returnValue) : true;
+    if ($.IS(currentProps.callback, Function)) { currentProps.callback(currentProps.returnValue); }
+    currentProps = {};
   }
 
   function removeModal({callback, value} = {}) {
@@ -45,6 +49,7 @@ export default function($) {
   }
 
   function genericPopupCloseHandler(evt) {
+    if ( Object.keys(currentProps).length < 1 ) { return; }
     currentProps.activeTimer && clearTimeout(currentProps.activeTimer);
     const escPressed = evt.key === `Escape`;
     escPressed && evt.preventDefault();

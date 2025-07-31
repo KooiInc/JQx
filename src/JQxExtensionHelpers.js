@@ -131,13 +131,25 @@ function cssRemove(...rules) {
 }
 
 function delegateFactory(handle) {
-  return function(type, origin, ...handlers) {
+  return function(type, origin, ...eventHandlers) {
     if (IS(origin, Function)) {
-      handlers.push(origin);
+      eventHandlers.push(origin);
       origin = undefined;
     }
 
-    return handlers.forEach(handler => handle(type, origin, handler));
+    return eventHandlers.forEach(handler => handle({eventType: type, selector: origin, callback: handler}));
+  }
+}
+
+function delegateCaptureFactory(handle) {
+  return function({type, origin, handlers, name, capture} = {}) {
+    if (!IS(handlers, Function, Array)) { return; }
+    handlers = IS(handlers, Function) ? [handlers] : handlers;
+    const params = {eventType: type, selector: origin, capture, name};
+
+    handlers.forEach(handler => {
+      if (IS(handler, Function)) { handle({...params, callback: handler}) }
+    });
   }
 }
 
@@ -211,6 +223,7 @@ function staticTagsLambda(jqx) {
 function staticMethodsFactory(jqx) {
   const editCssRule = (ruleOrSelector, ruleObject) => cssRuleEdit(ruleOrSelector, ruleObject);
   const allowProhibit = allowances(jqx);
+  const handle = HandleFactory();
   return {
     debugLog,
     log: (...args) => Log(`fromStatic`, ...args),
@@ -219,7 +232,8 @@ function staticMethodsFactory(jqx) {
     editCssRules: (...rules) => rules.forEach(rule => cssRuleEdit(rule)),
     editCssRule,
     get setStyle() { /*deprecated*/return editCssRule; },
-    delegate: delegateFactory(HandleFactory()),
+    delegate: delegateFactory(handle),
+    delegateCaptured: delegateCaptureFactory(handle),
     virtual: virtualFactory(jqx),
     get fn() { return addFn; },
     allowTag: allowProhibit.allow,

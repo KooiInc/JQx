@@ -1,5 +1,5 @@
 import jqx from "../index.js";
-let handlers = {};
+const handlers = {};
 const shouldCaptureEventTypes = [
   `load`, `unload`, `scroll`, `focus`, `blur`, `DOMNodeRemovedFromDocument`,
   `DOMNodeInsertedIntoDocument`, `loadstart`, `progress`, `error`, `abort`,
@@ -15,17 +15,23 @@ export default () => {
     };
   };
 
-  const addListenerIfNotExisting = (eventType, capture) => {
-    if (!handlers[eventType]) {
-      addEventListener(eventType, metaHandler, getCapture(eventType));
+  const addAndStoreListener = (eventType, handler, capture, name) => {
+    if (!handlers[eventType]) { handlers[eventType] = new Map(); }
+    const delegateExists = handlers[eventType].has(handler) ||
+      [...handlers[eventType].values()].find(h => h.name && h.name === name);
+
+    if (!delegateExists) {
+      addEventListener(eventType, handler, capture || getCapture(eventType));
+      const handlerValue = { name: name || handler.name, capture: capture || getCapture(eventType) };
+      handlers[eventType].set(handler, handlerValue);
     }
   };
 
-  return (eventType, HIDselector, callback, capture = false) => { /*NODOC*/
-    addListenerIfNotExisting(eventType, capture);
-    const fn = !HIDselector ? callback : createHandlerForHID(HIDselector, callback);
-    handlers = handlers[eventType]
-      ? {...handlers, [eventType]: handlers[eventType].concat(fn)}
-      : {...handlers, [eventType]: [fn]};
+  return ( {eventType, selector, callback, name, capture = false} = {} ) => { /*NODOC*/
+    if (!(jqx.IS(eventType, String) || eventType?.length < 1) || !jqx.IS(callback, Function)) { return; }
+    eventType = eventType.toLowerCase();
+    capture = jqx.IS(capture, Boolean) ? capture : false;
+    const fn = !jqx.IS(selector, String) ? callback : createHandlerForHID(selector, callback);
+    addAndStoreListener(eventType, fn, capture, name);
   };
 };

@@ -18,7 +18,7 @@ const loop = (instance, callback) => {
   for (let i = 0; i < cleanCollection.length; i += 1) {
     callback(cleanCollection[i], i);
   }
-  
+
   return instance;
 };
 const isIt = ExamineElementFeatureFactory();
@@ -64,7 +64,7 @@ const assignAttrValues = (/*NODOC*/el, keyValuePairs) => {
     if (key.startsWith(`data`)) {
       return setData(el, value);
     }
-    
+
     if (IS(value, String) && checkProp(key)) {
       el.setAttribute(key, value.split(/[, ]/)?.join(` `));
     }
@@ -164,7 +164,7 @@ export default {
       !instance.is.empty && instance.toDOM() || (jqx.log(`[JQx.render]: empty collection`), undefined);
       return instance;
     },
-    
+
     Style: instance => ({
       get computed() { return !instance.is.empty ? getComputedStyle(instance[0]) : {}; },
       inline: styleObj => instance.style(styleObj),
@@ -178,20 +178,20 @@ export default {
         const addClassNameOrID = isSingleRule && !classes2Apply.length ? rules.split(`{`)[0].trim() : ``;
         rules = rules && IS(rules, String) ? [rules] : rules;
         classes2Apply = classes2Apply && IS(classes2Apply, String) ? [classes2Apply] : classes2Apply;
-        
+
         if (rules?.length || classes2Apply?.length) {
           rules?.length && jqx.editCssRules(...rules);
           classes2Apply?.forEach(selector => instance.addClass(selector));
         }
-        
+
         if (addClassNameOrID?.startsWith(`.`)) {
           instance.addClass(addClassNameOrID.slice(1));
         }
-        
+
         if (addClassNameOrID?.startsWith(`#`) && !instance.attr(`id`)) {
           instance.prop({id: addClassNameOrID.slice(1)});
         }
-        
+
         return instance;
       },
     }),
@@ -205,16 +205,16 @@ export default {
         logDebug(`[JQx instance].[beforeMe | afterMe | andThen]: insufficient input [${elem2Add}]`, );
         return instance;
       }
-      
+
       elem2Add = elem2Add?.isJQx
         ? elem2Add.collection
         : IS(elem2Add, Node) ? jqx.virtual(elem2Add).collection
           : jqx.virtual(createElementFromHtmlString(elem2Add)).collection;
-      
+
       const [index, method, reCollected] = before
         ? [0, `before`, elem2Add.concat(instance.collection)]
         : [instance.collection.length - 1, `after`, instance.collection.concat(elem2Add)];
-      
+
       instance[index][method](...elem2Add);
       instance.collection = reCollected;
       return instance;
@@ -222,7 +222,7 @@ export default {
     append: (instance, ...elems2Append) => {
       if (!instance.is.empty && elems2Append.length) {
         const shouldMove = instance.length === 1;
-        
+
         for (let elem2Append of elems2Append) {
           if (!elem2Append.isJQx && IS(elem2Append, String)) {
             const elem2Append4Test = elem2Append.trim();
@@ -230,11 +230,11 @@ export default {
             let toAppend = isPlainString ? jqx.text(elem2Append) : createElementFromHtmlString(elem2Append);
             loop(instance, el => el.append(shouldMove ? toAppend : cloneAndDestroy(toAppend)));
           }
-          
+
           if (isNode(elem2Append)) {
             loop(instance, el => el.append(shouldMove ? elem2Append : cloneAndDestroy(elem2Append)));
           }
-          
+
           if (elem2Append.isJQx && !elem2Append.is.empty) {
             loop(instance, el =>
               elem2Append.collection.forEach(elem =>
@@ -254,22 +254,22 @@ export default {
     },
     attr: (instance, keyOrObj, value) => {
       const firstElem = instance[0];
-      
+
       if (!firstElem) { return instance }
-      
+
       if (!value && IS(keyOrObj, String)) {
         keyOrObj = toDashedNotation(keyOrObj);
-        
+
         if (keyOrObj === `class`) {
           return [...firstElem?.classList]?.join(` `);
         }
-        
+
         return firstElem?.getAttribute(keyOrObj);
       }
-      
+
       if (IS(keyOrObj, String) && value) {
         keyOrObj = toDashedNotation(keyOrObj);
-        
+
         switch(true) {
           case keyOrObj.startsWith(`data-`):
             keyOrObj = { data: {[keyOrObj.replace(`data-`, ``)]: value } };
@@ -277,11 +277,11 @@ export default {
           default: keyOrObj = { [keyOrObj]: value };
         }
       }
-      
+
       if (IS(keyOrObj, Object) && !instance.is.empty) {
         assignAttrValues(firstElem, keyOrObj);
       }
-      
+
       return instance;
     },
     before,
@@ -322,41 +322,41 @@ export default {
     hide: instance => loop(instance, el => applyStyle(el, {display: `none !important`})),
     html: (instance, htmlValue, append) => {
       if (htmlValue === undefined) {
-        return instance[0]?.getHTML();
+        return instance?.[0]?.getHTML();
       }
-      
+
       if (!instance.isEmpty()) {
         const nwElement = createElementFromHtmlString(`<div>${htmlValue.isJQx ? htmlValue.HTML.get(true) : htmlValue}</div>`);
-        
+
         if (!IS(nwElement, Comment)) {
           const cb = el => {
             if (!append) { el.textContent = ``; }
-            
+
             return el.insertAdjacentHTML(jqx.at.end, nwElement.getHTML());
           }
           return loop(instance, cb);
         }
       }
-      
+
       return instance;
     },
     htmlFor: (instance, forQuery, htmlString = "", append = false) => {
       if (forQuery && instance.collection.length) {
         if (!forQuery || !IS(htmlString, String)) { return instance; }
-        
+
         const el2Change = instance.find$(forQuery);
-        
+
         if (el2Change.length < 1) { return instance; }
-        
+
         const nwElement = createElementFromHtmlString(`<span>${htmlString}</span>`);
-        
+
         el2Change.each(el => {
           if (!append) { el.textContent = ``; }
-          el.insertAdjacentHTML(jqx.at.end, nwElement.getHTML());
+          el.insertAdjacentHTML(jqx.at.end, nwElement?.getHTML());
         });
-        
+
       }
-      
+
       return instance;
     },
     isEmpty: instance => instance.collection.length < 1,
@@ -368,13 +368,13 @@ export default {
           jqx.delegate(type, cssSelector4Handler, cb);
         });
       }
-      
+
       return instance;
     },
     prepend: (instance, ...elems2Prepend) => {
       if (!instance.is.empty && elems2Prepend) {
         const shouldMove = instance.length === 1;
-        
+
         for (let elem2Prepend of elems2Prepend) {
           if (IS(elem2Prepend, String)) {
             elem2Prepend = elem2Prepend.trim();
@@ -383,11 +383,11 @@ export default {
             toPrepend = shouldMove ? toPrepend : cloneAndDestroy(toPrepend);
             loop(instance, el => el.prepend(toPrepend.cloneNode(true)));
           }
-          
+
           if (isNode(elem2Prepend)) {
             loop(instance, el => el.prepend(shouldMove ? elem2Prepend : cloneAndDestroy(elem2Prepend)));
           }
-          
+
           if (elem2Prepend.isJQx && !elem2Prepend.is.empty) {
             elem2Prepend.collection.length > 1 && elem2Prepend.collection.reverse();
             loop(instance, el => loop( elem2Prepend, elem => el.prepend(shouldMove ? elem : cloneAndDestroy(elem)) ) );
@@ -395,14 +395,14 @@ export default {
           }
         }
       }
-      
+
       return instance;
     },
     prependTo: (instance, prependTo) => {
       if (!prependTo.isJQx) {
         prependTo = jqx.virtual(prependTo);
       }
-      
+
       prependTo.prepend(instance);
       return instance;
     },
@@ -412,28 +412,28 @@ export default {
           ? instance[0]?.dataset[nameOrProperties.slice(nameOrProperties.indexOf(`-`)+1)]
           : instance[0]?.[nameOrProperties];
       }
-      
+
       const props = !IS(nameOrProperties, Object) ? { [nameOrProperties]: value } : nameOrProperties;
       Object.entries(props).forEach( ([propName, propValue]) => {
         propName = propName.trim();
-        
+
         if (propValue && !checkProp(propName) || !propValue) {
           return false;
         }
-        
+
         const isId = propName.toLowerCase() === `id`;
-        
+
         if (isId) { return instance[0].id = propValue; }
-        
+
         loop(instance, el => {
           if (propName.startsWith(`data`)) {
             return el.dataset[propName.slice(propName.indexOf(`-`)+1)] = propValue;
           }
-          
+
           el[propName] = propValue;
         });
       });
-      
+
       return instance;
     },
     remove: (instance, selector) => {
@@ -441,7 +441,7 @@ export default {
       const remover = el => el.remove();
       const removeFromCollection = () =>
         instance.collection = instance.collection.filter(el => document.documentElement.contains(el));
-      
+
       if (selector) {
         const selectedElements = instance.find$(selector);
         if (!selectedElements.is.empty) {
@@ -466,33 +466,33 @@ export default {
     },
     replace: (instance, oldChild, newChild) => {
       const firstElem = instance[0];
-      
+
       if (!oldChild || (!newChild || !IS(newChild, HTMLElement) && !newChild.isJQx)) {
         console.error(`JQx replace: invalid replacement value`);
         return instance;
       }
-      
+
       if (newChild.isJQx) {
         newChild = newChild[0];
       }
-      
+
       if (IS(newChild, NodeList)) {
         newChild = newChild[0];
       }
-      
+
       if (firstElem && oldChild) {
         oldChild = IS(oldChild, String)
           ? firstElem.querySelectorAll(oldChild)
           : oldChild.isJQx
             ? oldChild.collection
             : oldChild;
-        
+
         if (IS(oldChild, HTMLElement, NodeList, Array) && IS(newChild, HTMLElement)) {
           (IS(oldChild, HTMLElement) ? [oldChild] : [...oldChild])
             .forEach(chld => chld.replaceWith(newChild.cloneNode(true)));
         }
       }
-      
+
       return instance;
     },
     replaceClass: (instance, className, ...nwClassNames) => loop( instance, el => {
@@ -502,12 +502,12 @@ export default {
     replaceMe: (instance, newChild) => /*NODOC*/ instance.replaceWith(newChild),
     replaceWith: (instance, newChild) => {
       newChild = IS(newChild, Element) ? newChild : newChild.isJQx ? newChild[0] : undefined;
-      
+
       if (newChild) {
         instance[0].replaceWith(newChild);
         instance = jqx.virtual(newChild);
       }
-      
+
       return instance;
     },
     setData: (instance, keyValuePairs) => loop(instance, el => setData(el, keyValuePairs)),
@@ -517,14 +517,14 @@ export default {
         if (IS(indexOrSelector, String)) {
           return instance.find$(indexOrSelector);
         }
-        
+
         if (IS(indexOrSelector, Number)) {
           return jqx(instance.collection[indexOrSelector]);
         }
-        
+
         return jqx(instance.collection[0]);
       }
-      
+
       return instance;
     },
     style: (instance, keyOrKvPairs, value) => {
@@ -532,7 +532,7 @@ export default {
         if (value && IS(keyOrKvPairs, String)) {
           keyOrKvPairs = { [keyOrKvPairs]: value || `none` };
         }
-        
+
         applyStyle(el, keyOrKvPairs);
       };
       return loop(instance, loopCollectionLambda);
@@ -546,7 +546,7 @@ export default {
     toDOM: (instance, root = document.body, position = insertPositions.BeforeEnd) => {
       if (instance.isVirtual) { instance.isVirtual = false; }
       instance.collection = inject2DOMTree(instance.collection, root, position);
-      
+
       return instance;
     },
     toggleClass: (instance, className) => loop(instance, el => el.classList.toggle(className)),
@@ -560,17 +560,17 @@ export default {
     },
     val: (instance, newValue) => {
       const firstElem = instance[0];
-      
+
       if (!firstElem || !IS(firstElem, HTMLInputElement, HTMLSelectElement, HTMLTextAreaElement)) {
         return instance;
       }
-      
+
       if (newValue === undefined) {
         return firstElem.value;
       }
-      
+
       firstElem.value = !IS(newValue, String) ? "" : newValue;
-      
+
       return instance;
     },
   },
