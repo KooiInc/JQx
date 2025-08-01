@@ -3,6 +3,7 @@ export default [
     font: normal 13px/16px verdana, arial;
     margin: 2rem;
   }`,
+  `#jqxPopup[open] #jqxPopupContent.cssDisplay { padding: 0; }`,
   `#JQxRoot {
     position: relative;
     margin: 2rem auto;
