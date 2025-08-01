@@ -375,17 +375,21 @@ function getStyleRules4Display() {
 }
 
 function showStyling() {
-  $.editCssRules(`#jqxPopupContent {
-    padding: 0 !important;
-    background-color: transparent !important;
-    border: transparent 1px solid !important}`);
-  $.Popup.show( {
-    content: $.div(
-      $.h3({style:"text-align:center;margin:0.2em 0 -0.3em 0"},
-        `The actual style rules of style#JQxStylesheet`),
-      $.pre({data: {cssViewBox: true}}, getStyleRules4Display())),
-    callback: () =>
-      $.editCssRules(`#jqxPopupContent {padding: initial; background-color: initial; border: initial}`) }
+  const popupContent = $(`#jqxPopupContent`);
+  $.editCssRules(`
+    /* added for display of css in demo */
+    #jqxPopup[open] #jqxPopupContent.cssDisplay { padding: 0; }`);
+  popupContent.addClass(`cssDisplay`);
+  $.Popup.show({
+      content: $.div(
+        $.h3({style: "text-align:center;margin:0.5em 0 0.4em 0"},
+          `The actual style rules of style#JQxStylesheet`),
+        $.div({style: "text-align:center;margin:0.2em 0 0.2em 0"},
+          `<b style="color:red">Note</b>: 
+             <code>#jqxPopup[open][...].cssDisplay</code> was just added `),
+        $.pre({data: {cssViewBox: true}}, getStyleRules4Display())),
+      callback: () => popupContent.removeClass(`cssDisplay`),
+    }
   );
 
   hljs.highlightElement($.node(`[data-css-view-box]`));

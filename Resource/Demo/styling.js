@@ -29,6 +29,14 @@ export default [
     padding: 3px;
     font-weight: bold;
   }`,
+  `code {
+    background-color: rgb(227, 230, 232);
+    color: rgb(12, 13, 14);
+    padding: 0 4px;
+    display: inline-block;
+    border-radius: 4px;
+    margin: 1px 0;
+   }`,
   `.codeVwr {
     cursor: pointer;
     color: #777;
