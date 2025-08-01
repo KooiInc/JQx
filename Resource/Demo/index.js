@@ -370,19 +370,24 @@ function injectFavIcon() {
 function getStyleRules4Display() {
   const theStyle = $(`style#JQxStylesheet`);
   const rules = theStyle.node.sheet.cssRules;
-  const stringified = [...rules].map(rule => rule.cssText.replace(/url\([^\)]+\)/, `url([...])`)).join('');
+  const stringified = [...rules]
+    .map(rule => rule.cssText.replace(/url\([^\)]+\)/, `url([...])`))
+    .join('')
+    .replace(
+      `#jqxPopup[open] #jqxPopupContent.cssDisplay`,
+      `/* to display the popup for custom css */\n#jqxPopup[open] #jqxPopupContent.cssDisplay`);
   return css_beautify(stringified, {indent_size: 2, indent_char: ` `, end_with_newline: true })
 }
 
 function showStyling() {
-  const popupContent = $(`#jqxPopupContent`);
-  popupContent.addClass(`cssDisplay`);
+  const [popupContent, displayClass] = [$(`#jqxPopupContent`), `cssDisplay`];
+  popupContent.addClass(displayClass);
   $.Popup.show({
       content: $.div(
         $.h3({style: "text-align:center;margin:0.5em 0 0.4em 0"},
           `The actual style rules of style#JQxStylesheet`),
         $.pre({data: {cssViewBox: true}}, getStyleRules4Display())),
-      callback: () => popupContent.removeClass(`cssDisplay`),
+      callback: () => popupContent.removeClass(displayClass),
     }
   );
 
