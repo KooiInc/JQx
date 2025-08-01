@@ -380,7 +380,10 @@ function showStyling() {
     background-color: transparent !important;
     border: transparent 1px solid !important}`);
   $.Popup.show( {
-    content: $.pre({data: {cssViewBox: true}}, getStyleRules4Display()),
+    content: $.div(
+      $.h3({style:"text-align:center;margin:0.2em 0 -0.3em 0"},
+        `The actual style rules of style#JQxStylesheet`),
+      $.pre({data: {cssViewBox: true}}, getStyleRules4Display())),
     callback: () =>
       $.editCssRules(`#jqxPopupContent {padding: initial; background-color: initial; border: initial}`) }
   );

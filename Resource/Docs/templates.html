@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-07-31 14:31:00 UTC-->
+<!-- Generated file, last update 2025-08-01 09:04:01 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -1703,7 +1703,7 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 </template>
 
 <template data-id="static_delegateCaptured" class="static_delegateCaptured" data-is-deprecated="false">
-<div data-params='[{"[object]":"{type:string, origin:string, handlers|function|array<function>, capture:boolean}"}]'></div>
+<div data-params='[{"spec":"{type:string, selector:string, handlers|function|array<function>, capture:boolean}"}]'></div>
 <div data-return-value='Nothing'></div>
 <div data-text='1'><div>
   <code>delegateCaptured</code> works the same as <code>delegate</code>, but gives you 
@@ -1729,13 +1729,15 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
   </li>
 
   <li>
-    <code>origin</code>: a (complex) css selector 
+    <code>selector</code>: a (complex) css selector 
     (e.g. <code>"#someElem:not([data-dont])"</code> or 
        <code>".clickthis"</code>).
     <div>
        If present, the handler(s) is/are bound to the elements
        found with this selector
     </div>
+    <div class="note"><b>Note</b>: previously called <code>origin</code>. This
+      name may still be used instead.</div> 
   </li>
 
   <li>
