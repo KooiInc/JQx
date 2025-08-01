@@ -142,10 +142,11 @@ function delegateFactory(handle) {
 }
 
 function delegateCaptureFactory(handle) {
-  return function({type, origin, handlers, name, capture} = {}) {
+  return function(spec) {
+    let {type, origin, selector, handlers, name, capture} = spec;
     if (!IS(handlers, Function, Array)) { return; }
     handlers = IS(handlers, Function) ? [handlers] : handlers;
-    const params = {eventType: type, selector: origin, capture, name};
+    const params = {eventType: type, selector: selector || origin, capture, name};
 
     handlers.forEach(handler => {
       if (IS(handler, Function)) { handle({...params, callback: handler}) }

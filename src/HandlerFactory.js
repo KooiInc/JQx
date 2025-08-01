@@ -6,11 +6,9 @@ const shouldCaptureEventTypes = [
   `load`, `loadend`, `pointerenter`, `pointerleave`, `readystatechange`];
 const getCapture = eventType => !!(shouldCaptureEventTypes.find(t => t === eventType));
 export default () => {
-  const metaHandler = evt => handlers[evt.type].forEach(handler => handler(evt));
-
-  const createHandlerForHID = (HID, callback) => {
+  const wrapHandlerFunction = (selector, callback) => {
     return evt => {
-      const target = evt.target?.closest?.(HID);
+      const target = evt.target?.closest?.(selector);
       return target && callback(evt, jqx(target));
     };
   };
@@ -27,11 +25,12 @@ export default () => {
     }
   };
 
-  return ( {eventType, selector, callback, name, capture = false} = {} ) => { /*NODOC*/
+  return function(spec) { /*NODOC*/
+    let {eventType, selector, callback, name, capture} = spec;
     if (!(jqx.IS(eventType, String) || eventType?.length < 1) || !jqx.IS(callback, Function)) { return; }
     eventType = eventType.toLowerCase();
     capture = jqx.IS(capture, Boolean) ? capture : false;
-    const fn = !jqx.IS(selector, String) ? callback : createHandlerForHID(selector, callback);
-    addAndStoreListener(eventType, fn, capture, name);
+    const handler = !jqx.IS(selector, String) ? callback : wrapHandlerFunction(selector, callback);
+    addAndStoreListener(eventType, handler, capture, name);
   };
 };
