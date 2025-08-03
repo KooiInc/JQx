@@ -11,6 +11,10 @@ const randomNr = (max, min = 0) => {
   [max, min] = [Math.floor(max), Math.ceil(min)];
   return Math.floor( ([...crypto.getRandomValues(new Uint32Array(1))].shift() / 2 ** 32 ) * (max - min + 1) + min );
 };
+const isNonEmptyString = (str, minlen = 1) => {
+  minlen = IS(minlen, Number) && minlen || 1;
+  return IS(str, String) && str.length >= minlen;
+};
 const shuffle = array => {
   let i = array.length;
   while (i--) {
@@ -80,7 +84,7 @@ function ExamineElementFeatureFactory() {
   return self => {
     const firstElem = self.node;
 
-    return firstElem ? {
+    return IS(firstElem, Node) ? {
       get writable() {
         return isWritable(firstElem);
       },
@@ -113,6 +117,7 @@ export {
   IS,
   maybe,
   randomString,
+  isNonEmptyString,
   toDashedNotation,
   toCamelcase,
   truncateHtmlStr,
