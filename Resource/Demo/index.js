@@ -80,10 +80,15 @@ if (!debug) {
         $.delegateCaptured({type, origin: handler.target, handlers: handler.handlers});
       }));
 
-// generic delegates (on document) from the static $.delegate
-  const someClicks = [
-    evt => evt.target.closest(`.exampleText`) && log(`HI from div.exampleText (you clicked it)`)];
-  $.delegate(`click`, ...someClicks);
+// generic delegates (on document) from the static $.delegateCaptured
+  const clickOrMouseover = (evt, me) => {
+    // me = evt.target
+    return me.closest(`.exampleText`) && log(`HI from div.exampleText (you ${
+      evt.type === `click` ? `clicked it` : `you moved your mouse out of div.exampleText`})`);
+  };
+
+  // handle more than one event type
+  $.delegateCaptured({type: [`mouseout`, `click`], handlers: clickOrMouseover});
 
 // onclick is not allowed, so will be removed on element creation
   const msg = `hi there, you won't see me`;
@@ -371,7 +376,7 @@ function getStyleRules4Display() {
   const theStyle = $(`style#JQxStylesheet`);
   const rules = theStyle.node.sheet.cssRules;
   const stringified = [...rules]
-    .map(rule => rule.cssText.replace(/url\([^\)]+\)/, `url([...])`))
+    .map(rule => rule.cssText.replace(/url\([^)]+\)/, `url([...])`))
     .join('')
     .replace(
       `#jqxPopup[open] #jqxPopupContent.cssDisplay`,

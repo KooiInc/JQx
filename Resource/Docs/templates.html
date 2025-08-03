@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-08-01 09:04:01 UTC-->
+<!-- Generated file, last update 2025-08-03 12:04:43 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -1703,7 +1703,7 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 </template>
 
 <template data-id="static_delegateCaptured" class="static_delegateCaptured" data-is-deprecated="false">
-<div data-params='[{"spec":"{type:string, selector:string, handlers|function|array<function>, capture:boolean}"}]'></div>
+<div data-params='[{"spec":"{type:string|array<string>, selector:string, handlers|function|array<function>, capture:boolean}"}]'></div>
 <div data-return-value='Nothing'></div>
 <div data-text='1'><div>
   <code>delegateCaptured</code> works the same as <code>delegate</code>, but gives you 
@@ -1716,7 +1716,9 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 <h3>Parameters (* = obligatory)</h3>
 <ul>
   <li>
-    <code>type</code>*: (case insensitive) the event type (e.g. "click", "MouseEnter")
+    <code>type</code>*: (case insensitive) the event type (e.g. "click", "MouseEnter").
+    <div>To apply the handler(s) to several event types, use an array, 
+    E.g. <code>type: ["click", "mouseenter"]</code></div>
   </li>
 
   <li>
