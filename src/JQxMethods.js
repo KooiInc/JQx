@@ -11,7 +11,7 @@ import {
 } from "./JQxExtensionHelpers.js";
 import {ATTRS} from "./EmbedResources.js";
 import jqx from "../index.js";
-import {ExamineElementFeatureFactory, toDashedNotation, toCamelcase, escHtml} from "./Utilities.js";
+import {ExamineElementFeatureFactory, isNonEmptyString, toDashedNotation, toCamelcase, escHtml} from "./Utilities.js";
 import {debugLog} from "./JQxLog.js";
 const loop = (instance, callback) => {
   const cleanCollection = instance.collection.filter(el => !isCommentOrTextNode(el));
@@ -132,9 +132,7 @@ export default {
       boundingRect.scrollLeftDistance = findParentScrollDistance(node, 0, false);
       return boundingRect;
     },
-    node: instance => {
-      return instance[0];
-    },
+    node: instance => { return instance[0]; },
     HTML: instance => ({
       get: (outer, escaped) => {
         if (instance.is.empty) {
@@ -238,7 +236,7 @@ export default {
         const shouldMove = instance.length === 1;
 
         for (let elem2Append of elems2Append) {
-          if (!elem2Append.isJQx && IS(elem2Append, String)) {
+          if (!elem2Append.isJQx && isNonEmptyString(elem2Append)) {
             const elem2Append4Test = elem2Append.trim();
             const isPlainString = !/^<(.+)[^>]+>$/m.test(elem2Append4Test);
             let toAppend = isPlainString ? jqx.text(elem2Append) : createElementFromHtmlString(elem2Append);
@@ -271,7 +269,7 @@ export default {
 
       if (!firstElem) { return instance }
 
-      if (!value && IS(keyOrObj, String)) {
+      if (!value && isNonEmptyString(keyOrObj)) {
         keyOrObj = toDashedNotation(keyOrObj);
 
         if (keyOrObj === `class`) {
@@ -281,7 +279,7 @@ export default {
         return firstElem?.getAttribute(keyOrObj);
       }
 
-      if (IS(keyOrObj, String) && value) {
+      if (isNonEmptyString(keyOrObj) && value) {
         keyOrObj = toDashedNotation(keyOrObj);
 
         switch(true) {
@@ -302,7 +300,7 @@ export default {
     beforeMe: before,
     clear: instance => loop(instance, emptyElement),
     closest: (instance, selector) => {
-      const theClosest = IS(selector, String) ? instance[0].closest(selector) : null;
+      const theClosest = isNonEmptyString(selector) ? instance[0].closest(selector) : null;
       return theClosest ? jqx(theClosest) : instance
     },
     computedStyle: (instance, property) => instance.first() && getComputedStyle(instance.first())[property],
@@ -356,7 +354,7 @@ export default {
     },
     htmlFor: (instance, forQuery, htmlString = "", append = false) => {
       if (forQuery && instance.collection.length) {
-        if (!forQuery || !IS(htmlString, String)) { return instance; }
+        if (!forQuery || !isNonEmptyString(htmlString)) { return instance; }
 
         const el2Change = instance.find$(forQuery);
 
@@ -390,7 +388,7 @@ export default {
         const shouldMove = instance.length === 1;
 
         for (let elem2Prepend of elems2Prepend) {
-          if (IS(elem2Prepend, String)) {
+          if (isNonEmptyString(elem2Prepend)) {
             elem2Prepend = elem2Prepend.trim();
             const isPlainString = !/^<(.+)[^>]+>$/m.test(elem2Prepend);
             let toPrepend = isPlainString ? jqx.text(elem2Prepend) : createElementFromHtmlString(elem2Prepend);
