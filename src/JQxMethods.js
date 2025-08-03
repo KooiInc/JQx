@@ -334,11 +334,14 @@ export default {
     hide: instance => loop(instance, el => applyStyle(el, {display: `none !important`})),
     html: (instance, htmlValue, append) => {
       if (htmlValue === undefined) {
-        return instance?.[0]?.getHTML && instance?.[0]?.getHTML();
+        const node = instance.node;
+        return node?.getHTML && node.getHTML() || ``;
       }
 
       if (!instance.isEmpty()) {
-        const nwElement = createElementFromHtmlString(`<div>${htmlValue.isJQx ? htmlValue.HTML.get(true) : htmlValue}</div>`);
+        const nwElement = createElementFromHtmlString(
+          `<div>${htmlValue.isJQx ? htmlValue.HTML.get(true) : htmlValue}</div>`
+        );
 
         if (!IS(nwElement, Comment)) {
           const cb = el => {
