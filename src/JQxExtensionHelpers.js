@@ -6,7 +6,8 @@ import HandleFactory from "./HandlerFactory.js";
 import tagLib from "./HTMLTags.js";
 import {
   randomString, toDashedNotation, IS, truncateHtmlStr, tagFNFactory as $T,
-  truncate2SingleStr, logTime, hex2RGBA, styleFactory, toCamelcase
+  truncate2SingleStr, logTime, hex2RGBA, styleFactory, toCamelcase,
+  isNonEmptyString,
 } from "./Utilities.js";
 let static4Docs = {};
 const {
@@ -80,7 +81,7 @@ function wrapGetter(method, instance) {
 function proxyKeyFactory(self, key, instance) {
   switch(true) {
     case IS(key, Symbol): return self;
-    case IS(+key, Number): return self.collection?.[key] || `ELEMENT WITH INDEX ${key} NOT FOUND`;
+    case IS(+key, Number): return self.collection?.[key] || undefined;
     case !!(key in instanceGetters): return wrapGetter(instanceGetters[key], instance)();
     case !!(key in instanceMethods): return wrapExtension(instanceMethods[key], instance);
     default: return self[key];
@@ -153,7 +154,7 @@ function delegateCaptureFactory(handle) {
     const doHandle = handler => IS(handler, Function) && handle({...params, callback: handler});
 
     if (IS(type, Array)) {
-      const types = type.filter(t => IS(t, String));
+      const types = type.filter(t => isNonEmptyString(String));
 
       if (types.length > 0) {
         for (const type of types) {
