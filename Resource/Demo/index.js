@@ -73,30 +73,30 @@ if (!debug) {
       ` Check the HTML source &mdash; right click anywhere, and select 'View page source'.`)
   ).appendTo(JQxRoot);
 
-// add all event handling delegates defined in function [getDelegates4Document]
+  // add all event handling delegates defined in function [getDelegates4Document]
   getDelegates4Document()
     .forEach(([type, targetedHandlers]) =>
       targetedHandlers.forEach( handler => {
         $.delegateCaptured({type, origin: handler.target, handlers: handler.handlers});
       }));
 
-// generic delegates (on document) from the static $.delegateCaptured
+  // generic delegates (on document) from the static $.delegateCaptured
   const clickOrMouseover = (evt, me) => {
-    // me = evt.target
+    // [me] => evt.target
     return me.closest(`.exampleText`) && log(`HI from div.exampleText (you ${
-      evt.type === `click` ? `clicked it` : `you moved your mouse out of div.exampleText`})`);
+      evt.type === `click` ? `clicked it` : `you moved your mouse pointer out of me`})`);
   };
 
   // handle more than one event type
   $.delegateCaptured({type: [`mouseout`, `click`], handlers: clickOrMouseover});
 
-// onclick is not allowed, so will be removed on element creation
+  // onclick is not allowed, so will be removed on element creation
   const msg = `hi there, you won't see me`;
   $(`<div id="nohandling" onclick="alert('${msg}')"></div>`)
     .html(`<h1>Hell! O world.</h1>`).appendTo(JQxRoot);
 
-// script and data attribute will be removed, but you can add data-attributes later
-// styles are inline here
+  // script and data attribute will be removed, but you can add data-attributes later
+  // styles are inline here
   $([
       `<script id="noscripts">alert('hi');</script>`,
       `<div data-cando="1" id="delegates">Hi 1</div>`
@@ -105,8 +105,8 @@ if (!debug) {
     .html(` [you may <b><i>click</i> me</b>] `, true)
     .style({cursor: `pointer`});
 
-// <notallowed> is ... well ... not allowed, so will be removed
-// styles inline
+  // <notallowed> is ... well ... not allowed, so will be removed
+  // styles inline
   $([`<notallowed id="removal_imminent"></notallowed>`,
     `<div>Hi 2</div>`])
     .text(` [Hey! I am clickable too!]`, true)
@@ -123,7 +123,7 @@ if (!debug) {
     })
     .appendTo(JQxRoot);
 
-// create a few buttons. Some already contain an event handler (delegated)
+  // create a few buttons. Some already contain an event handler (delegated)
   const cssBttns = {
     defaultCSS: BUTTON({
       data: {sheetId: `JQxPopupCSS`, switchBttn: `popupCSS`},
@@ -163,7 +163,7 @@ if (!debug) {
     .style({marginRight: "4px"})
     .each((btn, i) => btn.dataset.index = `bttn-${i}`); // each demo
 
-// styled via named class .exampleText
+  // styled via named class .exampleText
   $$(`<div>styling`)
   .css({
     className: "exampleText",
@@ -177,7 +177,7 @@ if (!debug) {
   .html(" examples", true)
   .appendTo(JQxRoot);
 
-// styled with intermediate class
+  // styled with intermediate class
   $$(`<div id="helloworld"/>`)
   .text("Example: hello ... world")
   .append($("<span> OK</span>"))
@@ -191,7 +191,7 @@ if (!debug) {
   .find$("span")
   .css({className: "okRed", color: "red"});
 
-// append multiline comment to p#JQxRoot
+  // append multiline comment to p#JQxRoot
   COMMENT(`Hi, I am a multiline HTML-comment.
      So, you can add plain comments using JQx
      A comment may be injected into a child
@@ -199,13 +199,13 @@ if (!debug) {
      combined with a position`)
   .appendTo(JQxRoot),
 
-// a comment can also be appended using append/appendTo/prepend/prependTo
+  // a comment can also be appended using append/appendTo/prepend/prependTo
   $$(`<!--I was appended to div#JQxRoot using .appendTo-->`)
     .appendTo(JQxRoot);
   $$(`<!--I was PREpended to div#JQxRoot using .prependTo-->`)
     .prependTo(JQxRoot);
 
-// comment insertion test (note: this works with before-/afterMe/andThen too now)
+  // comment insertion test (note: this works with before-/afterMe/andThen too now)
   $( COMMENT(`Comment @ #JQxRoot beforebegin (verify it in DOM tree)`),
     JQxRoot, $.at.BeforeBegin);
   $( COMMENT(`Comment @ #JQxRoot beforebegin (verify it in DOM tree)`),
@@ -217,8 +217,8 @@ if (!debug) {
   $(`<!--Comment @ #bttnblock afterbegin (so, prepend) verify it in DOM tree) -->`,
     $(`#bttnblock`), $.at.AfterBegin);
 
-// display code of this file
-// -------------------------
+  // display code of this file
+  // -------------------------
   DIV({
     class: `exampleText codeVwr`,
     data: {updown: `\u25BC View `, forid: `code`, hidden: 1} },
