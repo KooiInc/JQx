@@ -7,9 +7,8 @@ export default function($) {
   $.editCssRules(...styleRules);
   const [popupContent, popupNode] = [$(`#jqxPopupContent`), $.node(`#jqxPopup`)];
   let currentProps = {};
-  [`click`, `keydown`].forEach( evtType => $.delegateCaptured( {
-    type: evtType, handlers: genericPopupCloseHandler, capture: true } )
-  );
+  $.delegateCaptured( { type: [`click`, `keydown`], handlers: genericPopupCloseHandler, capture: true } );
+
   return Object.freeze({show: initPopup, removeModal});
 
   function initPopup(props) {

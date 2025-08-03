@@ -150,10 +150,22 @@ function delegateCaptureFactory(handle) {
     if (!IS(handlers, Function, Array)) { return; }
     handlers = IS(handlers, Function) ? [handlers] : handlers;
     const params = {eventType: type, selector: selector || origin, capture, name};
+    const doHandle = handler => IS(handler, Function) && handle({...params, callback: handler});
 
-    for (const handler of handlers) {
-      if (IS(handler, Function)) { handle({...params, callback: handler}) }
+    if (IS(type, Array)) {
+      const types = type.filter(t => IS(t, String));
+
+      if (types.length > 0) {
+        for (const type of types) {
+          params.eventType = type;
+          for (const handler of handlers) { doHandle(handler); }
+        }
+
+        return true;
+      }
     }
+
+    for (const handler of handlers) { doHandle(handler); }
   }
 }
 
