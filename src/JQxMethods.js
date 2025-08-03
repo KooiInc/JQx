@@ -336,7 +336,7 @@ export default {
     hide: instance => loop(instance, el => applyStyle(el, {display: `none !important`})),
     html: (instance, htmlValue, append) => {
       if (htmlValue === undefined) {
-        return instance?.[0]?.getHTML();
+        return instance?.[0]?.getHTML && instance?.[0]?.getHTML();
       }
 
       if (!instance.isEmpty()) {
@@ -380,7 +380,7 @@ export default {
         for (const cb of callback || []) {
           const cssSelector4Handler = addHandlerId(instance);
           jqx.delegate(type, cssSelector4Handler, cb);
-        };
+        }
       }
 
       return instance;
@@ -469,7 +469,7 @@ export default {
       return instance;
     },
     rmAttr: (instance, ...attrNames) => {
-      for (const attr of attrNames) { instance.node.removeAttribute(attr); };
+      for (const attr of attrNames) { instance.node.removeAttribute(attr); }
       return instance;
     },
     removeClass: (instance, ...classNames) =>
@@ -511,7 +511,7 @@ export default {
     },
     replaceClass: (instance, className, ...nwClassNames) => loop( instance, el => {
         el.classList.remove(className);
-        for (const name of nwClassNames) { el.classList.add(name); };
+        for (const name of nwClassNames) { el.classList.add(name); }
       } ),
     replaceMe: (instance, newChild) => /*NODOC*/ instance.replaceWith(newChild),
     replaceWith: (instance, newChild) => {
