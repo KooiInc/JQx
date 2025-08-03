@@ -89,10 +89,9 @@ function proxyKeyFactory(self, key, instance) {
 
 function addJQxStaticMethods(jqx) {
   const staticMethods = defaultStaticMethodsFactory(jqx);
-  Object.entries(Object.getOwnPropertyDescriptors(staticMethods))
-    .forEach( ([key, descriptor]) => {
-      Object.defineProperty(jqx, key, descriptor);
-      Object.defineProperty(static4Docs, key, descriptor); } );
+  for (const [key, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(staticMethods))) {
+    Object.defineProperty(jqx, key, descriptor);
+    Object.defineProperty(static4Docs, key, descriptor); }
   return jqx;
 }
 
@@ -126,8 +125,10 @@ function cssRemove(...rules) {
       ? ruleStr.split(`,`).map(v => v.trim())
       : [ruleStr.slice(1, -1)];
   }
-  rules.map(rule => rule.startsWith(`!`) ? rule.slice(1, -1) : rule)
-    .forEach(rule => cssRuleEdit(rule, {removeRule: 1}));
+
+  for (const rule of rules.map(rule => rule.startsWith(`!`) ? rule.slice(1, -1) : rule)) {
+    cssRuleEdit(rule, {removeRule: 1});
+  }
 }
 
 function delegateFactory(handle) {
@@ -137,7 +138,9 @@ function delegateFactory(handle) {
       origin = undefined;
     }
 
-    return eventHandlers.forEach(handler => handle({eventType: type, selector: origin, callback: handler}));
+    for (const handler of eventHandlers) {
+      handle({eventType: type, selector: origin, callback: handler})
+    }
   }
 }
 
@@ -148,9 +151,9 @@ function delegateCaptureFactory(handle) {
     handlers = IS(handlers, Function) ? [handlers] : handlers;
     const params = {eventType: type, selector: selector || origin, capture, name};
 
-    handlers.forEach(handler => {
+    for (const handler of handlers) {
       if (IS(handler, Function)) { handle({...params, callback: handler}) }
-    });
+    }
   }
 }
 
@@ -160,8 +163,9 @@ function virtualFactory(jqx) {
     position = position && Object.values(insertPositions).find(pos => position === pos) ? position : undefined;
     const virtualElem = jqx(html, document.createElement(`br`));
     if (root && !IS(root, HTMLBRElement)) {
-      virtualElem.collection.forEach(elem =>
-        position ? root.insertAdjacentElement(position, elem) : root.append(elem));
+      for (const elem of virtualElem.collection) {
+        position ? root.insertAdjacentElement(position, elem) : root.append(elem);
+      }
     }
     return virtualElem;
   }
@@ -172,8 +176,9 @@ function combineObjectSources(...sources) {
 
   for (const source of sources) {
     const descriptors = Object.getOwnPropertyDescriptors(source);
-    Object.entries(descriptors).forEach( ([key, descriptor]) =>
-      !(key in result) && Object.defineProperty(result, key, descriptor) );
+    for (const [key, descriptor] of Object.entries(descriptors)) {
+      !(key in result) && Object.defineProperty(result, key, descriptor);
+    }
   }
 
   return result;
@@ -230,7 +235,7 @@ function staticMethodsFactory(jqx) {
     log: (...args) => Log(`fromStatic`, ...args),
     insertPositions,
     get at() { return insertPositions; },
-    editCssRules: (...rules) => rules.forEach(rule => cssRuleEdit(rule)),
+    editCssRules: (...rules) => { for (const rule of rules) { cssRuleEdit(rule); } },
     editCssRule,
     get setStyle() { /*deprecated*/return editCssRule; },
     delegate: delegateFactory(handle),

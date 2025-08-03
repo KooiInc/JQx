@@ -31,8 +31,11 @@ const cloneAndDestroy = elem => {
   return cloned;
 };
 const setData = (el, keyValuePairs) => {
-  el && IS(keyValuePairs, Object) &&
-  Object.entries(keyValuePairs).forEach(([key, value]) => el.setAttribute(`data-${toDashedNotation(key)}`, value));
+  if (el && IS(keyValuePairs, Object)) {
+    for (const [key, value] of Object.entries(keyValuePairs)) {
+      el.setAttribute(`data-${toDashedNotation(key)}`, value);
+    }
+  }
 };
 const before = (instance, elem2AddBefore) => {
   return instance.andThen(elem2AddBefore, true);
@@ -59,20 +62,22 @@ const css = (el, keyOrKvPairs, value) => {
   el.classList.add(nwClass);
 };
 const assignAttrValues = (/*NODOC*/el, keyValuePairs) => {
-  el && Object.entries(keyValuePairs).forEach(([key, value]) => {
-    key = toDashedNotation(key);
-    if (key.startsWith(`data`)) {
-      return setData(el, value);
-    }
+  if (el) {
+    for (let [key, value] of Object.entries(keyValuePairs)) {
+      key = toDashedNotation(key);
+      if (key.startsWith(`data`)) {
+        return setData(el, value);
+      }
 
-    if (IS(value, String) && checkProp(key)) {
-      el.setAttribute(key, value.split(/[, ]/)?.join(` `));
+      if (IS(value, String) && checkProp(key)) {
+        el.setAttribute(key, value.split(/[, ]/)?.join(` `));
+      }
     }
-  });
+  }
 };
 const applyStyle = (el, rules) => {
   if (IS(rules, Object)) {
-    Object.entries(rules).forEach(([key, value]) => {
+    for (let [key, value] of Object.entries(rules)) {
       let priority;
       if (/!important/i.test(value)) {
         value = value.slice(0, value.indexOf(`!`)).trim();
@@ -80,7 +85,7 @@ const applyStyle = (el, rules) => {
       }
 
       el.style.setProperty(toDashedNotation(key), value, priority)
-    } );
+    }
   }
 };
 const datasetKeyProxy = { get(obj, key) { return obj[toCamelcase(key)] || obj[key]; }, enumerable: false, configurable: false };
@@ -96,14 +101,20 @@ export default {
     data: instance => ({
       get all() { return new Proxy(instance[0]?.dataset ?? {}, datasetKeyProxy); },
       set: (valuesObj = {}) => {
-        !instance.is.empty && IS(valuesObj, Object) && Object.entries(valuesObj)
-          .forEach( ([key,value]) => instance.setData( { [key]: value} ) );
+        if (!instance.is.empty && IS(valuesObj, Object)) {
+          for (const [key, value] of Object.entries(valuesObj)) {
+            instance.setData( { [key]: value} );
+          }
+        }
         return instance;
       },
       get: (key, whenUndefined) => instance.data.all[key] ?? whenUndefined,
       add: (valuesObj = {}) => {
-        !instance.is.empty && IS(valuesObj, Object) && Object.entries(valuesObj)
-          .forEach( ([key,value]) => instance.setData( { [key]: value} ) );
+        if (!instance.is.empty && IS(valuesObj, Object)) {
+          for (const [key, value] of Object.entries(valuesObj)) {
+            instance.setData( { [key]: value} );
+          }
+        }
         return instance;
       },
       remove: key => {
@@ -181,7 +192,10 @@ export default {
 
         if (rules?.length || classes2Apply?.length) {
           rules?.length && jqx.editCssRules(...rules);
-          classes2Apply?.forEach(selector => instance.addClass(selector));
+
+          if (classes2Apply) {
+            for(const selector of classes2Apply) { instance.addClass(selector); }
+          }
         }
 
         if (addClassNameOrID?.startsWith(`.`)) {
@@ -363,10 +377,10 @@ export default {
     nth$: (instance, indexOrSelector) => instance.single(indexOrSelector),
     on: (instance, type, ...callback) => {
       if (instance.collection.length) {
-        callback?.forEach(cb => {
+        for (const cb of callback || []) {
           const cssSelector4Handler = addHandlerId(instance);
           jqx.delegate(type, cssSelector4Handler, cb);
-        });
+        };
       }
 
       return instance;
@@ -414,7 +428,7 @@ export default {
       }
 
       const props = !IS(nameOrProperties, Object) ? { [nameOrProperties]: value } : nameOrProperties;
-      Object.entries(props).forEach( ([propName, propValue]) => {
+      for (let [propName, propValue] of Object.entries(props)) {
         propName = propName.trim();
 
         if (propValue && !checkProp(propName) || !propValue) {
@@ -432,7 +446,7 @@ export default {
 
           el[propName] = propValue;
         });
-      });
+      }
 
       return instance;
     },
@@ -455,11 +469,11 @@ export default {
       return instance;
     },
     rmAttr: (instance, ...attrNames) => {
-      attrNames.forEach(attr => instance.node.removeAttribute(attr));
+      for (const attr of attrNames) { instance.node.removeAttribute(attr); };
       return instance;
     },
     removeClass: (instance, ...classNames) =>
-      loop(instance, el => el && classNames.forEach(cn => el.classList.remove(cn))),
+      loop(instance, el => { if (el) { for (const cn of classNames) { el.classList.remove(cn); } } }),
     renderTo: (instance, root = document.body, at = jqx.insertPositions.end) => {
       instance.toDOM(root, at);
       return instance;
@@ -497,7 +511,7 @@ export default {
     },
     replaceClass: (instance, className, ...nwClassNames) => loop( instance, el => {
         el.classList.remove(className);
-        nwClassNames.forEach(name => el.classList.add(name));
+        for (const name of nwClassNames) { el.classList.add(name); };
       } ),
     replaceMe: (instance, newChild) => /*NODOC*/ instance.replaceWith(newChild),
     replaceWith: (instance, newChild) => {
