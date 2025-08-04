@@ -16,6 +16,13 @@ $.editCssRules(...cssRules);
 // use jqx in the developer console
 window.jqx = $;
 
+// add event handling defined in function [getDelegates4Document]
+getDelegates4Document().forEach(([type, targetedHandlers]) =>
+  targetedHandlers.forEach( handler => {
+    $.handle({type, origin: handler.target, handlers: handler.handlers});
+  })
+);
+
 // initialize some statics from $
 const {virtual: $$, log, debugLog} = $;
 const {DIV, H2, SPAN, I, B, P, U, A, BUTTON, COMMENT, BR, LINK} = $;
@@ -73,12 +80,7 @@ if (!debug) {
       ` Check the HTML source &mdash; right click anywhere, and select 'View page source'.`)
   ).appendTo(JQxRoot);
 
-  // add all event handling delegates defined in function [getDelegates4Document]
-  getDelegates4Document()
-    .forEach(([type, targetedHandlers]) =>
-      targetedHandlers.forEach( handler => {
-        $.delegateCaptured({type, origin: handler.target, handlers: handler.handlers});
-      }));
+
 
   // generic delegates (on document) from the static $.delegateCaptured
   const clickOrMouseover = (evt, me) => {
