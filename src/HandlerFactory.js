@@ -5,7 +5,7 @@ const shouldCaptureEventTypes = [
   `DOMNodeInsertedIntoDocument`, `loadstart`, `progress`, `error`, `abort`,
   `load`, `loadend`, `pointerenter`, `pointerleave`, `readystatechange`];
 const getCapture = eventType => !!(shouldCaptureEventTypes.find(t => t === eventType));
-export default () => {
+export default function() {
   const wrapHandlerFunction = (selector, callback) => {
     return evt => {
       const target = evt.target?.closest?.(selector);

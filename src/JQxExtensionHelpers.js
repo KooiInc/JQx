@@ -243,6 +243,7 @@ function staticMethodsFactory(jqx) {
   const editCssRule = (ruleOrSelector, ruleObject) => cssRuleEdit(ruleOrSelector, ruleObject);
   const allowProhibit = allowances(jqx);
   const handle = HandleFactory();
+  const capturedHandling = delegateCaptureFactory(handle);
   return {
     debugLog,
     log: (...args) => Log(`fromStatic`, ...args),
@@ -252,7 +253,8 @@ function staticMethodsFactory(jqx) {
     editCssRule,
     get setStyle() { /*deprecated*/return editCssRule; },
     delegate: delegateFactory(handle),
-    delegateCaptured: delegateCaptureFactory(handle),
+    delegateCaptured: capturedHandling,
+    handle: capturedHandling,
     virtual: virtualFactory(jqx),
     get fn() { return addFn; },
     allowTag: allowProhibit.allow,
