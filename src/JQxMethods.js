@@ -377,10 +377,14 @@ export default {
     isEmpty: instance => instance.collection.length < 1,
     nth$: (instance, indexOrSelector) => instance.single(indexOrSelector),
     on: (instance, type, ...callback) => {
-      if (instance.collection.length) {
+      if (instance.collection.length && IS(type, String, Array)) {
+        type = IS(type, Array) ? type.filter(t => isNonEmptyString(String)) : type;
+
+        if (!type.length > 0 || !callback.length > 0) { return instance; }
+
         for (const cb of callback || []) {
           const cssSelector4Handler = addHandlerId(instance);
-          jqx.delegate(type, cssSelector4Handler, cb);
+          jqx.handle({type, selector: cssSelector4Handler, handlers: cb});
         }
       }
 

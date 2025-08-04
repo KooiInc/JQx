@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-08-04 07:11:34 UTC-->
+<!-- Generated file, last update 2025-08-04 07:47:01 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -445,11 +445,13 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
 </template>
 
 <template data-id="instance_on" class="instance_on" data-is-deprecated="false">
-<div data-params='[{"instance":""},{"type":"string. The event type (e.g. \"click\", \"keyup\")"},{"...callback":"Function[]. One or more handler functions (lambdas)"}]'></div>
+<div data-params='[{"type":"string|array<string>. The event type (e.g. \"click\", \"keyup\")"},{"...callback":"Function[]. One or more handler functions (lambdas)"}]'></div>
 <div data-return-value='JQx Instance'></div>
 <div data-text='1'><div>Add listener and handler lambda('s) for the JQx Instance root element.</div>
 
 <div>The lambda signature is <code>[handler function](event, JQxInstance)</code>.</div>
+
+<div><code>type</code> may be an Array of strings (e.g. <code>["click", "input"]</code>)</div>
 
 <div>See <div data-action="jump2Nav" data-jumpkey="instance_toggleClass" class="linkLike">the toggleClass documentation</div> for examplary usage.</div></div>
 </template>
