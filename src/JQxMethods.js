@@ -382,7 +382,7 @@ export default {
 
         if (!type.length > 0 || !callback.length > 0) { return instance; }
 
-        for (const cb of callback || []) {
+        for (const cb of callback) {
           const cssSelector4Handler = addHandlerId(instance);
           jqx.handle({type, selector: cssSelector4Handler, handlers: cb});
         }
