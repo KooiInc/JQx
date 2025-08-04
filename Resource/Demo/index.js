@@ -1,4 +1,3 @@
-
 import cssRules from "./styling.js";
 const isDev = /dev|local/i.test(location.href);
 const testBndl = false;
@@ -27,50 +26,28 @@ getDelegates4Document().forEach(([type, targetedHandlers]) =>
 const {virtual: $$, log, debugLog} = $;
 const {DIV, H2, SPAN, I, B, P, U, A, BUTTON, COMMENT, BR, LINK} = $;
 
-// a helper extension
-$.fn(`addTitle`, (self, ttl) => {
-  self.prop(`title`, ttl);
-  return self;
-});
-
-// activate logging all JQx events (hidden)
-debugLog.on().toConsole.off().reversed.on().hide();
-const back2 = /github|codeberg/i.test(location.href) ? `_top` : `_blank`;
-
-// create container for all generated html
-$.div(
-    {id: `container`, class: `MAIN`})
-  .append(
-    $.div( { id: `JQxRoot` }).append($.comment(`div#JQxRoot contains all generated html`))
-  ).style({margin: `1rem auto`}).toDOM();
-
-const JQxRoot = $(`#JQxRoot`).prepend($(`#logBox`));
-
-const backLinks =
-  DIV(
-    DIV(`The repository can be found  @ `,
-    A( {
-      href: isGithub
-        ? "//github.com/KooiInc/JQx"
-        : "//codeberg.org/KooiInc/JQx",
-      target: back2,
-      text: isGithub
-        ? "https://github.com/JQx"
-        : "https://codeberg.org/KooiInc/JQx" } )),
-    DIV(`The documentation resides @ `,
-    A( {
-      href: isGithub
-        ? "//kooiinc.github.io/JQL/Resource/Docs/"
-        : "//kooiinc.codeberg.page/JQx/Resource/Docs/",
-      target: back2,
-      text: isGithub
-        ? "https://kooiinc.github.io/JQL/Resource/Docs/"
-        : "https://kooiinc.codeberg.page/JQx/Resource/Docs/" } ))
-);
-
-
-/* ENTRY POINT  */
+/* MAIN  */
 if (!debug) {
+  // a helper extension
+  $.fn(`addTitle`, (self, ttl) => {
+    self.prop(`title`, ttl);
+    return self;
+  });
+
+  // activate logging all JQx events (hidden)
+  debugLog.on().toConsole.off().reversed.on().hide();
+  const back2 = /github|codeberg/i.test(location.href) ? `_top` : `_blank`;
+
+  // create container for all generated html
+  $.div(
+      {id: `container`, class: `MAIN`})
+    .append(
+      $.div( { id: `JQxRoot` }).append($.comment(`div#JQxRoot contains all generated html`))
+    ).style({margin: `1rem auto`}).toDOM();
+
+  const JQxRoot = $(`#JQxRoot`).prepend($(`#logBox`));
+  const backLinks = getBacklinks();
+
   // create the header content
   DIV( { id: `StyledPara`, class: `thickBorder` },
     H2( `Demo & test JQueryLike (JQx) library`),
@@ -358,6 +335,31 @@ function allComments(root, result = []) {
   return result;
 }
 
+// create links for popup
+function getBacklinks() {
+  return DIV(
+      DIV(`The repository can be found  @ `,
+        A( {
+          href: isGithub
+            ? "//github.com/KooiInc/JQx"
+            : "//codeberg.org/KooiInc/JQx",
+          target: "_top",
+          text: isGithub
+            ? "https://github.com/JQx"
+            : "https://codeberg.org/KooiInc/JQx" } )),
+      DIV(`The documentation resides @ `,
+        A( {
+          href: isGithub
+            ? "//kooiinc.github.io/JQL/Resource/Docs/"
+            : "//kooiinc.codeberg.page/JQx/Resource/Docs/",
+          target: "_blank",
+          text: isGithub
+            ? "https://kooiinc.github.io/JQL/Resource/Docs/"
+            : "https://kooiinc.codeberg.page/JQx/Resource/Docs/" } ))
+    );
+}
+
+// location dependent favicon
 function injectFavIcon() {
   const icons = {
     github: {href: "https://github.githubassets.com/favicons/favicon.png"},
@@ -374,18 +376,7 @@ function injectFavIcon() {
       : currentLink.replaceWith(link.attr(icons.local));
 }
 
-function getStyleRules4Display() {
-  const theStyle = $(`style#JQxStylesheet`);
-  const rules = theStyle.node.sheet.cssRules;
-  const stringified = [...rules]
-    .map(rule => rule.cssText.replace(/url\([^)]+\)/, `url([...])`))
-    .join('')
-    .replace(
-      `#jqxPopup[open] #jqxPopupContent.cssDisplay`,
-      `/* to display the popup for custom css */\n#jqxPopup[open] #jqxPopupContent.cssDisplay`);
-  return css_beautify(stringified, {indent_size: 2, indent_char: ` `, end_with_newline: true })
-}
-
+// for popup style rules
 function showStyling() {
   const [popupContent, displayClass] = [$(`#jqxPopupContent`), `cssDisplay`];
   popupContent.addClass(displayClass);
@@ -399,4 +390,16 @@ function showStyling() {
   );
 
   hljs.highlightElement($.node(`[data-css-view-box]`));
+}
+
+function getStyleRules4Display() {
+  const theStyle = $(`style#JQxStylesheet`);
+  const rules = theStyle.node.sheet.cssRules;
+  const stringified = [...rules]
+    .map(rule => rule.cssText.replace(/url\([^)]+\)/, `url([...])`))
+    .join('')
+    .replace(
+      `#jqxPopup[open] #jqxPopupContent.cssDisplay`,
+      `/* to display the popup for custom css */\n#jqxPopup[open] #jqxPopupContent.cssDisplay`);
+  return css_beautify(stringified, {indent_size: 2, indent_char: ` `, end_with_newline: true })
 }
