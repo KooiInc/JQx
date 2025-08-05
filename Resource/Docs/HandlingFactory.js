@@ -974,7 +974,7 @@ function clickActionsFactory($) {
         .removeAfter(6);
     },
     staticDelegateCapturedEx: evt => {
-      $.delegateCaptured({
+      $.delegateCaptured/* or $.handle */({
         type: "click",
         origin: "[data-for-id='static_delegateCaptured']",
         handlers: delegateExampleHandler,

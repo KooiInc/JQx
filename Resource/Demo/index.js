@@ -88,10 +88,10 @@ if (!debug) {
   // styles inline
   $([`<notallowed id="removal_imminent"></notallowed>`,
     `<div>Hi 2</div>`])
-    .text(` [Hey! I am clickable too!]`, true)
+    .text(` [Hey! You can click AND hover me!]`, true)
     .style({color: `red`, marginTop: `0.7rem`, cursor: `pointer`})
     // add a click handlers
-    .on(`click`, (_, self) => {
+    .on(`click, mouseover`, (evt, self) => {
       const currentColor = self.first().style.color;
       // o look, a state machine ;)
       self.style({
