@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-08-05 11:27:58 UTC-->
+<!-- Generated file, last update 2025-08-05 12:11:10 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -313,12 +313,12 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
 </template>
 
 <template data-id="static_delegate" class="static_delegate" data-is-deprecated="true">
-<div data-params='[{"type":"string. Event type (e.g. <code>click</code>) to listen for"},{"origin":"string. Optional selector to identify the element to assign listener to (e.g. <code>#someId</code>)"},{"...handlers":"One or more lambda functions"}]'></div>
+<div data-params='[{"type":"string. Event type (e.g. <code>click</code>) to listen for"},{"origin":"string. Optional selector to identify the element to assign listener to (e.g. <code>#someId</code>)"},{"...eventHandlers":""}]'></div>
 <div data-return-value='Nothing'></div>
 <div data-text='1'><!--DEPRECATED-->
 
 <div class="note">
-  <b>Note</b>: <code>delegate</code is marked as <i>deprecated</i> and will in due
+  <b>Note</b>: <code>delegate</code> is marked as <i>deprecated</i> and may in due
     time be replaced with
   <div class="linkLike" 
     data-action="jump2Nav" 
@@ -1725,7 +1725,7 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 <div data-return-value='Nothing'></div>
 <div data-text='1'><div>
   <code>delegateCaptured</code> replaces <code>[JQx].delegate</code>. With it you
-  can add listeners (callbacks) to events (e.g. <code>submit</code>, <code>cancel</code>).
+  can add listeners (aka handlers/callbacks) to events (e.g. <code>submit</code>, <code>cancel</code>).
 </div>
 
 <div>
@@ -1750,10 +1750,10 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
       <ul>
         <li>a single event type (e.g. <code>"input"</code>)
         <li>a string of comma delimited event types (e.g. <code>"click, input"</code>) or
-        <li>or an Array of strings (e.g. <code>["click", "input"]</code>)</li>
+        <li>an Array of strings (e.g. <code>["click", "input"]</code>)</li>
       </ul>
       <div>
-         In case of multiple event type, <code>...callback</code> will be applied to all event types.
+         In case of multiple event types, <code>handlers</code> will be applied to all event types.
       </div>
     </div>
   </li>
@@ -1766,7 +1766,9 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
        <code>[handlerfunction](event, self)</code> where</div>
     <div> 
       <code>event</code> is the triggering event and <code>self</code> 
-       is the JQx instance (if applicable).</div> 
+       is the event target <i>or</i> a JQx instance 
+       (if <code>selector</code> was provided, 
+       check using <code>self.isJQx</code>).</div> 
     <div>Both may be omitted</div>
   </li>
 

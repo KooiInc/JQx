@@ -215,13 +215,13 @@ function delegateFactory(listen) {
 
 function delegateCaptureFactory(listen) {
   return function(spec) {
-    let {type, origin, selector, handlers, name, capture} = spec;
+    let {type, origin, selector, handlers, name, capture, once} = spec;
     const typesResolved = resolveEventTypeParameter(type);
 
     if (!IS(handlers, Function, Array)) { return; }
 
     handlers = IS(handlers, Function) ? [handlers] : handlers;
-    const params = {eventType: typesResolved, selector: selector || origin, capture, name};
+    const params = {eventType: typesResolved, selector: selector || origin, capture, name, once};
     const doHandle = handler => IS(handler, Function) && listen({...params, callback: handler});
 
     switch(true) {
