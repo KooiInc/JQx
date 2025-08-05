@@ -111,11 +111,6 @@ if (!debug) {
       data: {sheetId: `JQxStylesheet`, switchBttn: `defaultCSS`},
       text: `show default css` }),
   };
-  $.delegate(`click`, `[data-switch-bttn]`,
-    evt =>
-      showStyling(evt.target.dataset?.sheetId,
-        cssBttns[evt.target.dataset?.switchBttn]));
-
   DIV({id: "bttnblock"}).append(...[
       BUTTON({
         id: "logBttn",

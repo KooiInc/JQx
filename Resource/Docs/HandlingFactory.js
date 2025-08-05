@@ -184,7 +184,7 @@ function clickActionsFactory($) {
         <br>In other words: one can only close this using the button below.\
         <br>Try clicking anywhere outside the box ...";
       const closeBttn = $.button({data: {id: "modalClose2"}}, "Close me");
-      $.delegate("click", "[data-id='modalClose2']", $.Popup.removeModal);
+      $.handle({type: "click", selector: "[data-id='modalClose2']", handlers: $.Popup.removeModal});
       const okMessage = () => $.Popup.show({ content: `Modal closed, we're ok, bye.`, closeAfter: 2});
       const message = $.div(
         modalBoxText,

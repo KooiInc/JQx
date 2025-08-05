@@ -90,14 +90,16 @@ function setupHandling() {
   const handler = clientHandling;
   let clicked = false;
   // wrap handling to avoid propagated/bubbling scroll handling on click
-  $.delegate(`click`, evt => {
-    clicked = true;
-    setTimeout(_ => clicked = false, 1000);
-    return handler(evt);
+  $.handle({type: `click`, handlers: evt => {
+      clicked = true;
+      setTimeout(_ => clicked = false, 1000);
+      return handler(evt);
+    }
   });
-  $.delegate(`scroll`, evt => {
-    if (clicked) { return; }
-    return handler(evt);
+  $.handle({type: `scroll`, handlers: evt => {
+      if (clicked) { return; }
+      return handler(evt);
+    }
   });
 
   $.log(`Event handling set ...`);
