@@ -11,7 +11,13 @@ import {
 } from "./JQxExtensionHelpers.js";
 import {ATTRS} from "./EmbedResources.js";
 import jqx from "../index.js";
-import {ExamineElementFeatureFactory, isNonEmptyString, toDashedNotation, toCamelcase, escHtml} from "./Utilities.js";
+import {
+  ExamineElementFeatureFactory,
+  isNonEmptyString,
+  toDashedNotation,
+  toCamelcase,
+  escHtml,
+  resolveEventTypeParameter } from "./Utilities.js";
 import {debugLog} from "./JQxLog.js";
 const loop = (instance, callback) => {
   const cleanCollection = instance.collection.filter(el => !isCommentOrTextNode(el));
@@ -378,14 +384,9 @@ export default {
     nth$: (instance, indexOrSelector) => instance.single(indexOrSelector),
     on: (instance, type, ...callback) => {
       if (instance.collection.length && IS(type, String, Array)) {
-        type = IS(type, Array) ? type.filter(t => isNonEmptyString(String)) : type;
-
-        if (!type.length > 0 || !callback.length > 0) { return instance; }
-
-        for (const cb of callback) {
-          const cssSelector4Handler = addHandlerId(instance);
-          jqx.handle({type, selector: cssSelector4Handler, handlers: cb});
-        }
+        if (type?.length < 1 || callback.length < 1) { return instance; }
+        const cssSelector4Handler = addHandlerId(instance);
+        jqx.handle({type, selector: cssSelector4Handler, handlers: callback});
       }
 
       return instance;

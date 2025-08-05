@@ -11,9 +11,15 @@ const randomNr = (max, min = 0) => {
   [max, min] = [Math.floor(max), Math.ceil(min)];
   return Math.floor( ([...crypto.getRandomValues(new Uint32Array(1))].shift() / 2 ** 32 ) * (max - min + 1) + min );
 };
-const isNonEmptyString = (str, minlen = 1) => {
+const isNonEmptyString = function(str, minlen = 1) {
   minlen = IS(minlen, Number) && minlen || 1;
   return IS(str, String) && str.length >= minlen;
+};
+const resolveEventTypeParameter = function(maybeTypes) {
+  maybeTypes = IS(maybeTypes, String) && /,/.test(maybeTypes) ? maybeTypes.split(`,`) : maybeTypes;
+  return IS(maybeTypes, Array)
+    ? maybeTypes.filter(t => isNonEmptyString(t)).map(t => t.trim().toLowerCase())
+    : maybeTypes?.trim().toLowerCase() || ``;
 };
 const shuffle = array => {
   let i = array.length;
@@ -129,4 +135,5 @@ export {
   ExamineElementFeatureFactory,
   styleFactory,
   tagFNFactory,
+  resolveEventTypeParameter,
 };

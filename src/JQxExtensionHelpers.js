@@ -7,7 +7,7 @@ import tagLib from "./HTMLTags.js";
 import {
   randomString, toDashedNotation, IS, truncateHtmlStr, tagFNFactory as $T,
   truncate2SingleStr, logTime, hex2RGBA, styleFactory, toCamelcase,
-  isNonEmptyString,
+  isNonEmptyString, resolveEventTypeParameter,
 } from "./Utilities.js";
 let static4Docs = {};
 const {
@@ -139,34 +139,31 @@ function delegateFactory(handle) {
       origin = undefined;
     }
 
-    for (const handler of eventHandlers) {
-      handle({eventType: type, selector: origin, callback: handler})
-    }
+    return handle({eventType: type, selector: origin, callback: eventHandlers})
   }
 }
 
 function delegateCaptureFactory(handle) {
   return function(spec) {
     let {type, origin, selector, handlers, name, capture} = spec;
+    const typesResolved = resolveEventTypeParameter(type);
+
     if (!IS(handlers, Function, Array)) { return; }
+
     handlers = IS(handlers, Function) ? [handlers] : handlers;
-    const params = {eventType: type, selector: selector || origin, capture, name};
+    const params = {eventType: typesResolved, selector: selector || origin, capture, name};
     const doHandle = handler => IS(handler, Function) && handle({...params, callback: handler});
 
-    if (IS(type, Array)) {
-      const types = type.filter(t => isNonEmptyString(String));
-
-      if (types.length > 0) {
-        for (const type of types) {
+    switch(true) {
+      case IS(typesResolved, Array) && typesResolved.length > 0:
+        for (const type of typesResolved) {
           params.eventType = type;
           for (const handler of handlers) { doHandle(handler); }
         }
-
-        return true;
-      }
+        return;
+      default:
+        for (const handler of handlers) { doHandle(handler); }
     }
-
-    for (const handler of handlers) { doHandle(handler); }
   }
 }
 

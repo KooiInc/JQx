@@ -7,7 +7,7 @@ export default function($) {
   $.editCssRules(...styleRules);
   const [popupContent, popupNode] = [$(`#jqxPopupContent`), $.node(`#jqxPopup`)];
   let currentProps = {};
-  $.delegateCaptured( { type: [`click`, `keydown`], handlers: genericPopupCloseHandler, capture: true } );
+  $.handle( { type: `click, cancel`, handlers: genericPopupCloseHandler, capture: true } );
 
   return Object.freeze({show: initPopup, removeModal});
 
@@ -48,10 +48,11 @@ export default function($) {
   function genericPopupCloseHandler(evt) {
     if ( Object.keys(currentProps).length < 1 || !popupNode.open ) { return; }
     currentProps.activeTimer && clearTimeout(currentProps.activeTimer);
-    const escPressed = evt.key === `Escape`;
-    escPressed && evt.preventDefault();
-    if (escPressed || evt.target.closest(`#closeHandleIcon`) ||
-      (evt.type !== `keydown` && !evt.target.closest(`#jqxPopupContent`))) { initHidePopup() }
+    const canceled = evt.type === `cancel`;
+
+    if (canceled || evt.target.closest(`#closeHandleIcon`) ||
+      (!evt.target.closest(`#jqxPopupContent`))) { initHidePopup() }
+    canceled && evt.preventDefault();
     return document.activeElement.blur();
   }
 
