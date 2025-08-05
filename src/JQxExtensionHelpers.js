@@ -132,41 +132,6 @@ function cssRemove(...rules) {
   }
 }
 
-function delegateFactory(handle) {
-  return function(type, origin, ...eventHandlers) {
-    if (IS(origin, Function)) {
-      eventHandlers.push(origin);
-      origin = undefined;
-    }
-
-    return handle({eventType: type, selector: origin, callback: eventHandlers})
-  }
-}
-
-function delegateCaptureFactory(handle) {
-  return function(spec) {
-    let {type, origin, selector, handlers, name, capture} = spec;
-    const typesResolved = resolveEventTypeParameter(type);
-
-    if (!IS(handlers, Function, Array)) { return; }
-
-    handlers = IS(handlers, Function) ? [handlers] : handlers;
-    const params = {eventType: typesResolved, selector: selector || origin, capture, name};
-    const doHandle = handler => IS(handler, Function) && handle({...params, callback: handler});
-
-    switch(true) {
-      case IS(typesResolved, Array) && typesResolved.length > 0:
-        for (const type of typesResolved) {
-          params.eventType = type;
-          for (const handler of handlers) { doHandle(handler); }
-        }
-        return;
-      default:
-        for (const handler of handlers) { doHandle(handler); }
-    }
-  }
-}
-
 function virtualFactory(jqx) {
   return function(html, root, position) {
     root = root?.isJQx ? root?.[0] : root;
@@ -236,6 +201,42 @@ function staticTagsLambda(jqx) {
   }
 }
 
+function delegateFactory(listen) {
+  return function(type, origin, ...eventHandlers) {
+
+    if (IS(origin, Function)) {
+      eventHandlers.push(origin);
+      origin = undefined;
+    }
+
+    listen({type, selector: origin, handlers: eventHandlers});
+  }
+}
+
+function delegateCaptureFactory(listen) {
+  return function(spec) {
+    let {type, origin, selector, handlers, name, capture} = spec;
+    const typesResolved = resolveEventTypeParameter(type);
+
+    if (!IS(handlers, Function, Array)) { return; }
+
+    handlers = IS(handlers, Function) ? [handlers] : handlers;
+    const params = {eventType: typesResolved, selector: selector || origin, capture, name};
+    const doHandle = handler => IS(handler, Function) && listen({...params, callback: handler});
+
+    switch(true) {
+      case IS(typesResolved, Array) && typesResolved.length > 0:
+        for (const type of typesResolved) {
+          params.eventType = type;
+          for (const handler of handlers) { doHandle(handler); }
+        }
+        return;
+      default:
+        for (const handler of handlers) { doHandle(handler); }
+    }
+  }
+}
+
 function staticMethodsFactory(jqx) {
   const editCssRule = (ruleOrSelector, ruleObject) => cssRuleEdit(ruleOrSelector, ruleObject);
   const allowProhibit = allowances(jqx);
@@ -249,7 +250,7 @@ function staticMethodsFactory(jqx) {
     editCssRules: (...rules) => { for (const rule of rules) { cssRuleEdit(rule); } },
     editCssRule,
     get setStyle() { /*deprecated*/return editCssRule; },
-    delegate: delegateFactory(handle),
+    delegate: delegateFactory(capturedHandling),
     delegateCaptured: capturedHandling,
     handle: capturedHandling,
     virtual: virtualFactory(jqx),

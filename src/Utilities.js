@@ -19,7 +19,7 @@ const resolveEventTypeParameter = function(maybeTypes) {
   maybeTypes = IS(maybeTypes, String) && /,/.test(maybeTypes) ? maybeTypes.split(`,`) : maybeTypes;
   return IS(maybeTypes, Array)
     ? maybeTypes.filter(t => isNonEmptyString(t)).map(t => t.trim().toLowerCase())
-    : maybeTypes?.trim().toLowerCase() || ``;
+    : IS(maybeTypes, String) && maybeTypes?.trim().toLowerCase() || ``;
 };
 const shuffle = array => {
   let i = array.length;

@@ -29,7 +29,9 @@ export default function() {
     let {eventType, selector, callback, name, capture, once} = spec;
     if (!(jqx.IS(eventType, String) || eventType?.length < 1) || !jqx.IS(callback, Function)) { return; }
     capture = jqx.IS(capture, Boolean) ? capture : false;
-    const handler = !jqx.IS(selector, String) ? evt => callback(evt, evt.target) : wrapHandlerFunction(selector, callback);
+    const handler = !jqx.IS(selector, String)
+      ? evt => callback(evt, evt.target)
+      : wrapHandlerFunction(selector, callback);
     addAndStoreListener(eventType, handler, capture, once, name);
   };
 };
