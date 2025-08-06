@@ -2,7 +2,7 @@ import { createElementFromHtmlString, insertPositions, inject2DOMTree, cleanupHt
 import { debugLog, Log, systemLog } from "./JQxLog.js";
 import allMethods from "./JQxMethods.js";
 import PopupFactory from "./Popup.js";
-import HandleFactory from "./HandlerFactory.js";
+import {listeners, default as HandleFactory} from "./HandlerFactory.js";
 import tagLib from "./HTMLTags.js";
 import {
   randomString, toDashedNotation, IS, truncateHtmlStr, tagFNFactory as $T,
@@ -215,15 +215,18 @@ function delegateFactory(listen) {
 
 function delegateCaptureFactory(listen) {
   return function(spec) {
-    let {type, origin, selector, handlers, name, capture, once} = spec;
+    let {type, origin, selector, handlers, name, capture, once, canRemove} = spec;
     const typesResolved = resolveEventTypeParameter(type);
-
+    const specifiedName = name;
     if (!IS(handlers, Function, Array)) { return; }
-
     handlers = IS(handlers, Function) ? [handlers] : handlers;
-    const params = {eventType: typesResolved, selector: selector || origin, capture, name, once};
-    const doHandle = handler => IS(handler, Function) && listen({...params, callback: handler});
-
+    canRemove = IS(canRemove, Boolean) ? canRemove : false;
+    const params = { eventType: typesResolved, selector: selector || origin, capture,
+      name: specifiedName, once, canRemove};
+    const doHandle = handler => {
+      params.name = specifiedName;
+      IS(handler, Function) && listen({...params, callback: handler});
+    }
     switch(true) {
       case IS(typesResolved, Array) && typesResolved.length > 0:
         for (const type of typesResolved) {
@@ -234,6 +237,14 @@ function delegateCaptureFactory(listen) {
       default:
         for (const handler of handlers) { doHandle(handler); }
     }
+  }
+}
+
+function getNamedListener(type, name) {
+  name = isNonEmptyString(name) ? name : undefined;
+  type = isNonEmptyString(type) ? type : undefined;
+  if (name && type) {
+    return [...listeners[type].values()].find(h => (h.name || ``) === name);
   }
 }
 
@@ -250,6 +261,7 @@ function staticMethodsFactory(jqx) {
     editCssRules: (...rules) => { for (const rule of rules) { cssRuleEdit(rule); } },
     editCssRule,
     get setStyle() { /*deprecated*/return editCssRule; },
+    getNamedListener,
     delegate: delegateFactory(capturedHandling),
     delegateCaptured: capturedHandling,
     handle: capturedHandling,
