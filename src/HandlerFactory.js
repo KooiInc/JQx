@@ -45,15 +45,15 @@ function HandleFactory() {
       ? function() { console.error(`An anonymous listener can not be removed`); }
       : !abortcontroller
         ? function(evt) {
-            console.error(`Listener for [${evt?.type || `unknown event`} with name ${
-              name} not marked as removable`);
+            console.error(`Listener for event type [${eventType}] with name [${
+              name}] is not marked as removable`);
           }
         : function removeHandler() {
           abortcontroller.abort();
           const toRemove = [...handlerStore[eventType].entries()].find(([k, v]) => v.name === name);
           handlerStore[eventType].delete(toRemove[0]);
           setTimeout( () =>
-            console.warn(`Listener for event type [${eventType}] with name: [${
+            console.warn(`Listener for event type [${eventType}] with name [${
               name}] was removed`), 100 );
           }
   }
