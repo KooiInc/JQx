@@ -41,15 +41,21 @@ function HandleFactory() {
 
   function removeHandlerFactory(spec) {
     const {abortcontroller, name, eventType} = spec;
-    return !name || !abortcontroller
-      ? function() { setTimeout( () => console.error(
-          !name ? `An anonymous listener can not be removed` : `listener not marked as removable`), 100);
-      } : function removeHandler(message, evt) {
+    return !name
+      ? function() { console.error(`An anonymous listener can not be removed`); }
+      : !abortcontroller
+        ? function(evt) {
+            console.error(`Listener for [${evt?.type || `unknown event`} with name ${
+              name} not marked as removable`);
+          }
+        : function removeHandler() {
           abortcontroller.abort();
-          setTimeout( () => console.warn(`Listener [${name}] ${message || "was removed"}`), 100 );
           const toRemove = [...handlerStore[eventType].entries()].find(([k, v]) => v.name === name);
           handlerStore[eventType].delete(toRemove[0]);
-      }
+          setTimeout( () =>
+            console.warn(`Listener for event type [${eventType}] with name: [${
+              name}] was removed`), 100 );
+          }
   }
 
   function addAndStoreListener(spec) {
