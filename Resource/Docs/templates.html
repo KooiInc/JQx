@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-08-05 12:11:10 UTC-->
+<!-- Generated file, last update 2025-08-06 13:39:31 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -1712,7 +1712,7 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 </template>
 
 <template data-id="static_handle" class="static_handle" data-is-deprecated="false">
-<div data-params='[{"spec":"{type:string|array<string>, selector:string, handlers|function|array<function>, once:boolean, capture:boolean}"}]'></div>
+<div data-params='[{"spec":"{type, selector, handlers, capture, once, canRemove}"}]'></div>
 <div data-return-value='Nothing'></div>
 <div data-text='1'>Alias for <div class="linkLike" 
   data-action="jump2Nav" 
@@ -1721,7 +1721,7 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 </template>
 
 <template data-id="static_delegateCaptured" class="static_delegateCaptured" data-is-deprecated="false">
-<div data-params='[{"spec":"{type:string|array<string>, selector:string, handlers|function|array<function>, capture:boolean, once:boolean}"}]'></div>
+<div data-params='[{"spec":"{type, selector, handlers, capture, once, canRemove}"}]'></div>
 <div data-return-value='Nothing'></div>
 <div data-text='1'><div>
   <code>delegateCaptured</code> replaces <code>[JQx].delegate</code>. With it you
@@ -1729,11 +1729,7 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 </div>
 
 <div>
-  It enables adding one or more listeners to one or more events and
-  control over the propagation of
-  <a target="_blank" 
-      href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#usecapture">capturing phase</a> 
-  (non capturing or capturing).
+  It enables adding one or more listeners to one or more events.
 </div>
 
 <div class="note"><b>Note</b>: every listener uses 
@@ -1745,7 +1741,7 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 <h3>Parameters (* = obligatory)</h3>
 <ul>
   <li>
-    <code>type</code>*: (case insensitive) the event type. May be: 
+    <code>type: string | array&lt;string></code>*: (case insensitive) the event type. May be: 
     <div>
       <ul>
         <li>a single event type (e.g. <code>"input"</code>)
@@ -1753,27 +1749,41 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
         <li>an Array of strings (e.g. <code>["click", "input"]</code>)</li>
       </ul>
       <div>
-         In case of multiple event types, <code>handlers</code> will be applied to all event types.
+         In case of multiple event types, <code>handlers</code> will be applied 
+         to all given event types.
       </div>
     </div>
   </li>
 
   <li>
-    <code>handlers</code>*: a single handler/listener/callback function 
-     or an array of such functions.
+    <code>handlers: function | array&lt;function></code>*: 
+     a single handler/listener/callback function or an array of functions.
     <div>
        The handler function signature is 
-       <code>[handlerfunction](event, self)</code> where</div>
+       <code>[handlerfunction](event, self[, remove])</code> where</div>
     <div> 
-      <code>event</code> is the triggering event and <code>self</code> 
-       is the event target <i>or</i> a JQx instance 
-       (if <code>selector</code> was provided, 
-       check using <code>self.isJQx</code>).</div> 
-    <div>Both may be omitted</div>
+      <ul>
+      <li><code>event</code> is the triggering event</li>
+      <li>
+        <code>self</code> is the event target <i>or</i> a JQx instance 
+        (if <code>selector</code> was provided, 
+        check using <code>self.isJQx</code>).</li>
+      <li>
+        <code>remove(message:string)</code> is a function to remove
+         the assigned handler. This will be active if the listener
+         has a <code>name</code> (minimal 4 characters) <i>and</i> 
+         <code>canRemove</code> is true.
+         See a usage example at <div 
+              class="linkLike"
+              data-action="jump2Nav" 
+              data-jumpkey="static_getNamedListener">
+           [JQx]/getNamedListener</div>
+    </ul>
+    </div> 
   </li>
 
   <li>
-    <code>selector</code>: a (complex) css selector 
+    <code>selector: string</code>: a (complex) css selector 
     (e.g. <code>"#someElem:not([data-dont])"</code> or 
        <code>".clickthis"</code>).
     <div>
@@ -1785,45 +1795,66 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
   </li>
 
   <li>
-    <code>capture</code> (default false): equivalent to
+    <code>capture: boolean</code> (default false): equivalent to
     <a target="_blank" 
-      href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#usecapture">useCapture</a> for
-    <code>[Element].addEventListener</code>.
+      href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#usecapture"
+      >useCapture</a> for <code>[Element].addEventListener</code>.
   </li>
 
-  <li><code>once</code> (default false): remove the listener(s) after invocation.
+  <li><code>once: boolean</code> (default false): remove the listener(s) after invocation.
 
   <li>
-    <code>name</code>: because of the way <code>origin</code> binds to a handler
+    <code>name: string</code>: because of the way <code>origin</code> binds to a handler
     (it is wrapped into a new anonymous function), to be sure a handler can not be re-added 
-    a name (string) can be provided.
+    a <i>unique</i> name (string, at least 4 characters) can be provided.
+    <div>A name is obligatory if you want to be able to remove a listener 
+        (<code>canRemove: true</code>).
     <div>Without <code>origin</code> and when <code>handler(s)</code> is/are 
     named function(s) a name is not necessary.</div>
     <div>See the example.</div>
   </li>
 
+  <li>
+    <code>canRemove: boolean</code>: if <code>true</code> and <code>name</code> is not empty 
+    you can use the <code>remove</code> parameter to remove the 
+    listener function.
+  </li>
+
 </ul>
 
-<div class="note"><b>Note</b>: <a target="_blank" href="https://en.wikipedia.org/wiki/DOM_events">non bubbling events</a> are always delegated using <code>{capture: true}</code>. This concerns the following events:</div>
+<div>
+  <details>
+  <summary>
+    A note about <i>non bubbling</i> event types
+    </span>
+  </summary>
+  <div>
+      <a target="_blank" href="https://en.wikipedia.org/wiki/DOM_events"
+      >non bubbling events</a> are always delegated using <code>{capture: true}</code>.
+  <div>
+  <div>The event types concerned are:</div>
+  <ul>
+    <li><code>load</code></li>
+    <li><code>unload</code></li>
+    <li><code>scroll</code></li>
+    <li><code>focus</code></li>
+    <li><code>blur</code></li>
+    <li><code>DOMNodeRemovedFromDocument</code></li>
+    <li><code>DOMNodeInsertedIntoDocument</code></li>
+    <li><code>loadstart</code></li>
+    <li><code>progress</code></li>
+    <li><code>error</code></li>
+    <li><code>abort</code></li>
+    <li><code>load</code></li>
+    <li><code>loadend</code></li>
+    <li><code>pointerenter</code></li>
+    <li><code>pointerleave</code></li>
+    <li><code>readystatechange</code></li>
+  </ul>
+  </div> 
+  </details>
 
-<ul>
-  <li><code>load</code></li>
-  <li><code>unload</code></li>
-  <li><code>scroll</code></li>
-  <li><code>focus</code></li>
-  <li><code>blur</code></li>
-  <li><code>DOMNodeRemovedFromDocument</code></li>
-  <li><code>DOMNodeInsertedIntoDocument</code></li>
-  <li><code>loadstart</code></li>
-  <li><code>progress</code></li>
-  <li><code>error</code></li>
-  <li><code>abort</code></li>
-  <li><code>load</code></li>
-  <li><code>loadend</code></li>
-  <li><code>pointerenter</code></li>
-  <li><code>pointerleave</code></li>
-  <li><code>readystatechange</code></li>
-</ul>
+</div>
 
 <div>
   The example creates a click listener/handler for the header of this chapter 
@@ -1837,4 +1868,29 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 </div>
 
 <div data-example>##EXAMPLECODE@staticDelegateCapturedEx##</div></div>
+</template>
+
+<template data-id="static_getNamedListener" class="static_getNamedListener" data-is-deprecated="false">
+<div data-params='[{"type":"string"},{"name":"string"}]'></div>
+<div data-return-value='{name, remove, capture} | undefined'></div>
+<div data-text='1'><div>
+  <code>getNamedListener</code> delivers (when a <i>named</i> listener was found)
+  an Object.
+</div>
+
+<div>
+  When the listener was initialized using <code>canRemove: true</code>, 
+  the <code>remove</code> property of the return value is a function which can
+  be used to remove the listener. <code>getNamedListener</code> can also be 
+  used to check if a (named) listener is already present.
+</div>
+
+<div>
+  The example demonstrates two ways to remove listeners, and a way
+  to determine the existence of a certain (named) listener.
+
+<div data-example>##EXAMPLECODE@getNamedListenerEx##</div>
+
+
+</div>
 </template>

@@ -16,6 +16,12 @@ export default [
   `.green {
     color: green;
   }`,
+  `details { 
+     cursor: pointer;
+     & summmary:hover {
+        text-decoration: underline;
+     } 
+   }`,
   `#StyledPara { padding: 6px; }`,
   `#StyledPara h2 { marginTop: 6px; }`,
   `.thickBorder {
@@ -24,7 +30,7 @@ export default [
     padding: 0 0.5rem;
   }`,
   `a.InternalLink {
-    textDecoration: none;
+    text-decoration: none;
     color: blue;
     background-color: #EEE;
     padding: 3px;

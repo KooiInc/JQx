@@ -206,6 +206,68 @@ function clickActionsFactory($) {
         )
       );
     },
+    getNamedListenerEx(evt) {
+      if (exampleResultExists(evt.target)) { return; }
+
+      $.handle({
+        type: `click`,
+        selector: `button[data-create]`,
+        name: `createHandler`,
+        handlers: function(evt, me) {
+          const isAlreadyListening = $.getNamedListener(`click`, `handleExec`);
+          if (!isAlreadyListening) {
+            $.handle( {
+              type: "click, contextmenu",
+              selector: `button[data-exec]`,
+              canRemove: true,
+              handlers: function handleExec(evt, me, remove) {
+                if (evt.type === "contextmenu") {
+                  evt.preventDefault();
+                  const nRightClicks = +(me.data.get(`rightclicks`) || 0) + 1;
+                  me.data.set({rightclicks: nRightClicks});
+                  // remove the 'contextmenu' (right click) listener after 3 invocations
+                  if (nRightClicks > 3) {
+                    remove();
+                    me.data.set({rightclicks: "0"});
+                    return $.Popup.show( {
+                      content: `You removed the right click handler (by right clicking a 4th time;)`,
+                      closeAfter: 3
+                    } );
+                  }
+                  return $.Popup.show({ content: `Right click #${nRightClicks}`, closeAfter: 1 })
+                }
+                $.Popup.show({ content: `You clicked. Yep. I'm handled`, closeAfter: 3 });
+              },
+            });
+          }
+
+          $.Popup.show( {
+            content: isAlreadyListening
+              ? `Already listening` : `handler created, click [execute] button`,
+            closeAfter: 2
+          } );
+        }
+      });
+
+      $.handle({
+        type: `click`,
+        selector: `button[data-remove]`,
+        handlers: function(evt, me) {
+          $.getNamedListener(`click`, `handleExec`)?.remove();
+          $.getNamedListener(`contextmenu`, `handleExec`)?.remove();
+          return $.Popup.show( {
+            content: `listeners (click, right click) removed, (right) click the [execute] button to verify`,
+            closeAfter: 4
+          } );
+        }
+      });
+
+      const bttnCreate = $.button({class: `exRunBttn`,
+        text: `create a listener for the [execute] button`, data: {create: 1}});
+      const bttnListen = $.button({class: `exRunBttn`, text: `execute`, data: {exec: 1, rightclicks: 0}});
+      const bttnRemove = $.button({class: `exRunBttn`, text: `remove`, data: {remove: 1}});
+      $.div(bttnCreate, bttnListen, bttnRemove).showInExample(evt, true);
+    },
     renderToEx(evt) {
       if (exampleResultExists(evt.target)) { return; }
 

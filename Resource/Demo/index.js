@@ -72,7 +72,7 @@ if (!debug) {
   // onclick is not allowed, so will be removed on element creation
   const msg = `hi there, you won't see me`;
   $(`<div id="nohandling" onclick="alert('${msg}')"></div>`)
-    .html(`<h1>Hell! O world.</h1>`).appendTo(JQxRoot);
+    .html(`<h1>H e l l o  w o r l d</h1>`).appendTo(JQxRoot);
 
   // script and data attribute will be removed, but you can add data-attributes later
   // styles are inline here
@@ -90,7 +90,7 @@ if (!debug) {
     `<div>Hi 2</div>`])
     .text(` [Hey! You can click AND hover me!]`, true)
     .style({color: `red`, marginTop: `0.7rem`, cursor: `pointer`})
-    // add a click handlers
+    // add a click and mouseover handler in one go
     .on(`click, mouseover`, (evt, self) => {
       const currentColor = self.first().style.color;
       // o look, a state machine ;)
@@ -195,7 +195,7 @@ if (!debug) {
   // -------------------------
   DIV({
     class: `exampleText codeVwr`,
-    data: {updown: `\u25BC View `, forid: `code`, hidden: 1} },
+    data: {updown: `\u25BC Display `, forid: `code`, hidden: 1} },
     `code used in this example (index.js)`)
   .appendTo(JQxRoot);
 
@@ -260,11 +260,11 @@ function getDelegates4Document() {
 
           if (!+self.data.get(`hidden`)) {
             codeElem.removeClass(`down`);
-            return self.data.add({updown: '\u25bc View ', hidden: 1})
+            return self.data.add({updown: '\u25bc Display ', hidden: 1})
           }
 
           $(`.down`).each(el => el.classList.remove(`down`));
-          $(`[data-forid]`).data.add({updown: '\u25bc View ', hidden: 1});
+          $(`[data-forid]`).data.add({updown: '\u25bc Display ', hidden: 1});
           codeElem.addClass(`down`);
           self.data.add({updown: '\u25b2 Hide ', hidden: 0});
         }
