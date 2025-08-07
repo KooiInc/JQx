@@ -219,7 +219,7 @@ async function injectCode(root = document.body) {
         DIV({ class: `upDownFader`, id: `code` },
           $.pre({ data: {jsViewBox: true}, class: `language-javascript` },
             $.code(r.replace(/</g, `&lt;`))
-          ) ).renderTo(root, $.insertPositions.beforeend)
+          ) ).renderTo(root, $.at.beforeend)
     ).then(_ => setTimeout(hljs.highlightAll));
 }
 
