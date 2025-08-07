@@ -17,7 +17,6 @@ import {
   toDashedNotation,
   toCamelcase,
   escHtml, } from "./Utilities.js";
-//import {debugLog} from "./JQxLog.js";
 const loop = (instance, callback) => {
   const cleanCollection = instance.collection.filter(el => !isCommentOrTextNode(el));
   for (let i = 0; i < cleanCollection.length; i += 1) {
