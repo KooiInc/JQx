@@ -1,6 +1,4 @@
-<div align="center">
-  <!-- bundlephobia is broken! ... and fixed. --><a href="https://bundlephobia.com/package/jqx-es@latest" rel="nofollow"
-    ><img src="https://badgen.net/bundlephobia/min/jqx-es"></a>
+<div>
   <a target="_blank" href="https://www.npmjs.com/package/jqx-es"
     ><img src="https://img.shields.io/npm/v/jqx-es.svg?labelColor=cb3837&logo=npm&color=dcfdd9"></a>
 </div>
