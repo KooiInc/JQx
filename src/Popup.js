@@ -74,6 +74,7 @@ export default function($) {
   function failModalClose(warnMessage) {
     if (!$.IS(warnMessage, String, HTMLElement, Proxy)) { return; }
     let modalWarningBox = popupContent.find$(`.warn`);
+    // note: fall trough is intentional.
     switch(true) {
       case modalWarningBox.is.empty: modalWarningBox = $.div({class: `warn`}, warnMessage);
       default: popupContent.append(modalWarningBox.addClass(`active`));
