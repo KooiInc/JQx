@@ -19,10 +19,16 @@ function logFactory(jqx) {
     Object.assign(document.createElement(`textarea`), {innerHTML: something}).textContent || something;
 
   function createLogElement(jqx) {
+    // note: jqx is not fully proxified here ...
     const jqx_logger_element_name = useHtml ? `div` : `pre`;
-    const loggingFieldSet = `<div id="logBox"><div class="legend"><div></div></div><${
-      jqx_logger_element_name} id="jqx_logger"></${jqx_logger_element_name}></div>`;
-    element2DOM(createElementFromHtmlString(loggingFieldSet), undefined, insertPositions.AfterBegin);
+    const loggingFieldSet = `
+      <div id="logBox">
+      <div class="legend">
+        <div><!--legend text--></div>
+      </div>
+      <${jqx_logger_element_name} id="jqx_logger"></${jqx_logger_element_name}>`;
+    const logBoxElement = createElementFromHtmlString(loggingFieldSet);
+    element2DOM(logBoxElement, undefined, insertPositions.AfterBegin);
     return jqx.node(logBoxTextBoxId);
   }
 
