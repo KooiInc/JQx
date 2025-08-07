@@ -1,8 +1,8 @@
 export default documentHandlingFactory;
 
-function documentHandlingFactory($) {
-  const clickActions = clickActionsFactory($);
-  $.editCssRules(`[data-id="tmpEx"], #tmpEx { white-space: normal; padding-top: 5px;}`, `.test, .warn { color: red; }`);
+function documentHandlingFactory(jqx) {
+  const clickActions = clickActionsFactory(jqx);
+  jqx.editCssRules(`[data-id="tmpEx"], #tmpEx { white-space: normal; padding-top: 5px;}`, `.test, .warn { color: red; }`);
 
   return {
     clientHandling: function(evt) {
@@ -51,20 +51,20 @@ function documentHandlingFactory($) {
   function handleScroll(evt) {
     const docsTop = evt.target.scrollTop;
     let marge = 0;
-    const nextHeader = $.nodes(`.description, .paragraph`)
+    const nextHeader = jqx.nodes(`.description, .paragraph`)
       .find( el => {
          return (docsTop - el.nextElementSibling?.offsetTop || 0) < -40;
       } );
 
 
     if (nextHeader) {
-      const nextNavItem = $(`h3`, nextHeader);
+      const nextNavItem = jqx(`h3`, nextHeader);
 
       if (!nextNavItem.is.empty) {
-        $(`.navGroup:not(.closed)`).addClass(`closed`);
-        $(`.selected`).removeClass(`selected`);
+        jqx(`.navGroup:not(.closed)`).addClass(`closed`);
+        jqx(`.selected`).removeClass(`selected`);
         const itemId = nextNavItem.data.get(`forId`) ?? nextNavItem.data.get(`groupId`);
-        const navItem = $(`[data-navitem="${itemId}"]`);
+        const navItem = jqx(`[data-navitem="${itemId}"]`);
 
         if (!navItem.is.empty) {
             navItem.addClass(`selected`);
