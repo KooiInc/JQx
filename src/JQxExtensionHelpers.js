@@ -243,6 +243,17 @@ function getNamedListener(type, name) {
   }
 }
 
+function popupGetter(jqx) {
+  if (!jqx.activePopup) {
+    Object.defineProperty(
+      jqx, `activePopup`, {
+        value: PopupFactory(jqx),
+        enumerable: false
+      } );
+  }
+  return jqx.activePopup;
+}
+
 function staticMethodsFactory(jqx) {
   const { debugLog, Log, systemLog } = logFactory(jqx);
   const { factoryExtensions, instanceExtensions } = allMethodsFactory(jqx);
@@ -257,40 +268,30 @@ function staticMethodsFactory(jqx) {
   const capturedHandling = delegateCaptureFactory(handle);
 
   return {
-    debugLog,
     log(...args) { Log(`fromStatic`, ...args); },
     editCssRules(...rules) { for (const rule of rules) { cssRuleEdit(rule); } },
-    editCssRule,
-    getNamedListener,
-    delegate: delegateFactory(capturedHandling),
-    delegateCaptured: capturedHandling,
-    handle: capturedHandling,
-    virtual: virtualFactory(jqx),
-    allowTag: allowProhibit.allow,
-    prohibitTag: allowProhibit.prohibit,
-    popup: () => jqx.Popup,
     createStyle(id) { return styleFactory({createWithId: id || `jqx${randomString()}`}); },
     editStylesheet(id) { return styleFactory({createWithId: id || `jqx${randomString()}`}); },
-    removeCssRule: cssRemove,
-    removeCssRules: cssRemove,
     text(str, isComment = false) { return isComment ? jqx.comment(str) : document.createTextNode(str); },
     node(selector, root = document) { return root.querySelector(selector, root); },
     nodes(selector, root = document) {return [...root.querySelectorAll(selector, root)]; },
+    get editCssRule() { return editCssRule; },
+    get getNamedListener() { return getNamedListener; },
+    get debugLog() { return debugLog },
+    get virtual() { return virtualFactory(jqx); },
+    get allowTag() { return allowProhibit.allow; },
+    get prohibitTag() { return allowProhibit.prohibit; },
+    get removeCssRule() { return cssRemove; },
+    get removeCssRules() { return cssRemove; },
+    get delegate()  { return delegateFactory(capturedHandling); },
+    get delegateCaptured() { return capturedHandling; } ,
+    get handle() { return  capturedHandling; },
     get at() { return insertPositions; },
     get setStyle() { /*deprecated*/return editCssRule; },
     get fn() { return addFn; },
     get lenient() { return tagLib.allowUnknownHtmlTags; },
     get IS() { return IS; },
-    get Popup() {
-      if (!jqx.activePopup) {
-        Object.defineProperty(
-          jqx, `activePopup`, {
-            value: PopupFactory(jqx),
-            enumerable: false
-          } );
-      }
-      return jqx.activePopup;
-    },
+    get Popup() { return popupGetter(jqx); },
   };
 }
 /* endregion functions */
