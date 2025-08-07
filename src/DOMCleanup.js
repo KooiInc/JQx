@@ -1,7 +1,6 @@
-import { truncate2SingleStr, IS } from "./JQxExtensionHelpers.js";
+import { truncate2SingleStr, IS, debugLog } from "./JQxExtensionHelpers.js";
 import cleanupTagInfo from "./HTMLTags.js";
 import {ATTRS} from "./EmbedResources.js";
-import {debugLog} from "./JQxLog.js";
 import {escHtml} from "./Utilities.js";
 
 let logElementCreationErrors2Console = true;
@@ -31,7 +30,7 @@ const cleanupHtml = el2Clean => {
     rawHTML: el2Clean?.parentElement?.getHTML() ?? `no html`,
     removed: { },
   }
-  
+
   if (IS(el2Clean, HTMLElement)) {
     [...el2Clean.childNodes].forEach(child => {
       if (child?.children?.length) {
@@ -58,11 +57,11 @@ const cleanupHtml = el2Clean => {
             }
           });
       }
-      
+
       const allowed = elementCheck(child) ||
         child.constructor === CharacterData ||
         child.constructor === Comment;
-      
+
       if (!allowed) {
         const tag = (child?.outerHTML || child?.textContent).trim();
         let tagValue = truncate2SingleStr(tag, 60) ?? `EMPTY`;

@@ -1,5 +1,5 @@
 import { createElementFromHtmlString, insertPositions, inject2DOMTree, cleanupHtml } from "./DOM.js";
-import { debugLog, Log, systemLog } from "./JQxLog.js";
+import logFactory from "./JQxLog.js";
 import allMethodsFactory from "./JQxMethods.js";
 import PopupFactory from "./Popup.js";
 import { listeners, default as HandleFactory } from "./HandlerFactory.js";
@@ -10,7 +10,7 @@ import {
   isNonEmptyString, resolveEventTypeParameter,
 } from "./Utilities.js";
 let static4Docs = {};
-let instanceGetters, instanceMethods, $;
+let instanceGetters, instanceMethods, $, systemLogger, debugLogger;
 
 const {
   isCommentOrTextNode, isNode,
@@ -147,14 +147,12 @@ function virtualFactory(jqx) {
 
 function combineObjectSources(...sources) {
   const result = {};
-
   for (const source of sources) {
     const descriptors = Object.getOwnPropertyDescriptors(source);
     for (const [key, descriptor] of Object.entries(descriptors)) {
       !(key in result) && Object.defineProperty(result, key, descriptor);
     }
   }
-
   return result;
 }
 
@@ -165,7 +163,6 @@ function tagNotAllowed(tagName) {
 
 function tagGetterFactory(tagName, cando, jqx, webComponentTagName) {
   tagName = toDashedNotation(webComponentTagName || tagName.toLowerCase());
-
   return {
     get() {
       return  (...args) => {
@@ -181,7 +178,6 @@ function tagGetterFactory(tagName, cando, jqx, webComponentTagName) {
 function addGetters(tag, cando, jqx, webComponentTagName) {
   tag = tag.toLowerCase();
   const jqxGetterForThisTag = tagGetterFactory(tag, cando, jqx, webComponentTagName);
-
   return webComponentTagName
     ? { [webComponentTagName]: jqxGetterForThisTag, [toCamelcase(webComponentTagName)]: jqxGetterForThisTag, }
     : { [tag]: jqxGetterForThisTag, [tag.toUpperCase()]: jqxGetterForThisTag, };
@@ -222,10 +218,6 @@ function delegateCaptureFactory(listen) {
     canRemove = IS(canRemove, Boolean) ? canRemove : false;
     const params = { eventType: typesResolved, selector: selector || origin, capture,
       name: specifiedName, once, canRemove};
-    const doHandle = handler => {
-      params.name = specifiedName;
-      IS(handler, Function) && listen({...params, callback: handler});
-    }
     switch(true) {
       case IS(typesResolved, Array) && typesResolved.length > 0:
         for (const type of typesResolved) {
@@ -233,8 +225,12 @@ function delegateCaptureFactory(listen) {
           for (const handler of handlers) { doHandle(handler); }
         }
         return;
-      default:
-        for (const handler of handlers) { doHandle(handler); }
+      default: for (const handler of handlers) { doHandle(handler); }
+    }
+
+    function doHandle(handler) {
+      params.name = specifiedName;
+      IS(handler, Function) && listen({...params, callback: handler});
     }
   }
 }
@@ -248,30 +244,41 @@ function getNamedListener(type, name) {
 }
 
 function staticMethodsFactory(jqx) {
-  $ = jqx;
+  const { debugLog, Log, systemLog } = logFactory(jqx);
   const { factoryExtensions, instanceExtensions } = allMethodsFactory(jqx);
+  systemLogger = systemLog;
+  debugLogger = debugLog;
   instanceGetters = factoryExtensions;
   instanceMethods = instanceExtensions;
+  $ = jqx;
   const editCssRule = (ruleOrSelector, ruleObject) => cssRuleEdit(ruleOrSelector, ruleObject);
   const allowProhibit = allowances(jqx);
   const handle = HandleFactory(jqx);
   const capturedHandling = delegateCaptureFactory(handle);
+
   return {
     debugLog,
-    log: (...args) => Log(`fromStatic`, ...args),
-    insertPositions,
-    get at() { return insertPositions; },
-    editCssRules: (...rules) => { for (const rule of rules) { cssRuleEdit(rule); } },
+    log(...args) { Log(`fromStatic`, ...args); },
+    editCssRules(...rules) { for (const rule of rules) { cssRuleEdit(rule); } },
     editCssRule,
-    get setStyle() { /*deprecated*/return editCssRule; },
     getNamedListener,
     delegate: delegateFactory(capturedHandling),
     delegateCaptured: capturedHandling,
     handle: capturedHandling,
     virtual: virtualFactory(jqx),
-    get fn() { return addFn; },
     allowTag: allowProhibit.allow,
     prohibitTag: allowProhibit.prohibit,
+    popup: () => jqx.Popup,
+    createStyle(id) { return styleFactory({createWithId: id || `jqx${randomString()}`}); },
+    editStylesheet(id) { return styleFactory({createWithId: id || `jqx${randomString()}`}); },
+    removeCssRule: cssRemove,
+    removeCssRules: cssRemove,
+    text(str, isComment = false) { return isComment ? jqx.comment(str) : document.createTextNode(str); },
+    node(selector, root = document) { return root.querySelector(selector, root); },
+    nodes(selector, root = document) {return [...root.querySelectorAll(selector, root)]; },
+    get at() { return insertPositions; },
+    get setStyle() { /*deprecated*/return editCssRule; },
+    get fn() { return addFn; },
     get lenient() { return tagLib.allowUnknownHtmlTags; },
     get IS() { return IS; },
     get Popup() {
@@ -284,18 +291,9 @@ function staticMethodsFactory(jqx) {
       }
       return jqx.activePopup;
     },
-    popup: () => jqx.Popup,
-    createStyle: id => styleFactory({createWithId: id || `jqx${randomString()}`}),
-    editStylesheet: id => styleFactory({createWithId: id || `jqx${randomString()}`}),
-    removeCssRule: cssRemove,
-    removeCssRules: cssRemove,
-    text: (str, isComment = false) => isComment ? jqx.comment(str) : document.createTextNode(str),
-    node: (selector, root = document) => root.querySelector(selector, root),
-    nodes: (selector, root = document) => [...root.querySelectorAll(selector, root)],
   };
 }
 /* endregion functions */
-
 export {
   hex2RGBA,
   addHandlerId,
@@ -317,7 +315,8 @@ export {
   addJQxStaticMethods,
   createElementFromHtmlString,
   insertPositions,
-  systemLog,
+  systemLogger as systemLog,
+  debugLogger as debugLog,
   IS,
   static4Docs,
   elems4Docs,
