@@ -7,7 +7,7 @@ export default function($) {
   $.editCssRules(...styleRules);
   const [popupContent, popupNode] = [$(`#jqxPopupContent`), $.node(`#jqxPopup`)];
   let currentProps = {};
-  $.handle( { type: `click, cancel`, handlers: genericPopupCloseHandler, capture: true } );
+  $.handle( { type: `click, keydown`, handlers: genericPopupCloseHandler, capture: true } );
 
   return Object.freeze({show: initPopup, removeModal});
 
@@ -19,7 +19,11 @@ export default function($) {
   }
 
   function initHidePopup() {
-    return currentProps.modal ? failModalClose(currentProps.warnMessage) : hidePopup();
+    if (currentProps.modal) {
+      return failModalClose(currentProps.warnMessage)
+    }
+
+    return hidePopup();
   }
 
   function showPopup() {
@@ -47,12 +51,17 @@ export default function($) {
 
   function genericPopupCloseHandler(evt) {
     if ( Object.keys(currentProps).length < 1 || !popupNode.open ) { return; }
-    currentProps.activeTimer && clearTimeout(currentProps.activeTimer);
-    const canceled = evt.type === `cancel`;
 
-    if (canceled || evt.target.closest(`#closeHandleIcon`) ||
-      (!evt.target.closest(`#jqxPopupContent`))) { initHidePopup() }
-    canceled && evt.preventDefault();
+    if (evt.type === `keydown` && /s/i.test(evt.key)) {
+      evt.preventDefault();
+    }
+
+    currentProps.activeTimer && clearTimeout(currentProps.activeTimer);
+
+    if (evt.target.closest(`#closeHandleIcon`) || !evt.target.closest(`#jqxPopupContent`)) {
+      initHidePopup();
+    }
+
     return document.activeElement.blur();
   }
 
