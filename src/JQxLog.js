@@ -1,6 +1,6 @@
-import jqx from "../index.js";
-import {createElementFromHtmlString, element2DOM, insertPositions} from "./DOM.js";
-import {IS, logTime,} from "./JQxExtensionHelpers.js";
+import { logTime } from "./Utilities.js";
+import { createElementFromHtmlString, element2DOM, insertPositions } from "./DOM.js";
+import {IS, jqx} from "./JQxExtensionHelpers.js";
 import {logStyling} from "./EmbedResources.js";
 let logSystem = false;
 let useLogging = false;
@@ -10,7 +10,6 @@ let useHtml = true;
 let editLogRule;
 const getLogBox = () => jqx(`#logBox`);
 const logBoxTextBoxId = `#jqx_logger`;
-
 const setStyling4Log = setStyle => { logStyling?.forEach(selector => setStyle(selector)); };
 
 const createLogElement = () => {

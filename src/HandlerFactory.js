@@ -1,14 +1,13 @@
-import jqx from "../index.js";
-import {isNonEmptyString} from "./Utilities.js";
+import { isNonEmptyString } from "./Utilities.js";
 const handlerStore = {};
 const shouldCaptureEventTypes = [
   `load`, `unload`, `scroll`, `focus`, `blur`, `DOMNodeRemovedFromDocument`,
   `DOMNodeInsertedIntoDocument`, `loadstart`, `progress`, `error`, `abort`,
   `load`, `loadend`, `pointerenter`, `pointerleave`, `readystatechange`];
 const getCapture = eventType => !!(shouldCaptureEventTypes.find(t => t === eventType));
-export {handlerStore as listeners, HandleFactory as default};
+export { handlerStore as listeners, HandleFactory as default };
 
-function HandleFactory() {
+function HandleFactory(jqx) {
   return function(spec) { /*NODOC*/
     let {eventType, selector, callback, name, capture, once, canRemove} = spec;
 

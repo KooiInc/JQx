@@ -1,4 +1,3 @@
-import jqx from "../index.js";
 import {default as tagFNFactory} from "./tinyDOM.js";
 import {default as IS, maybe} from "./TypeofAnything.js";
 import styleFactory from "./LifeCSS.js";
@@ -76,13 +75,11 @@ function ExamineElementFeatureFactory() {
   };
   const notApplicable = `n/a`;
   const isWritable = function(elem) {
-    return elem.parentNode
-      ? !!jqx.nodes(`:is(:read-write)`, elem?.parentNode)?.find(el => el === elem) : false;
+    return [...elem.parentNode.querySelectorAll(`:is(:read-write)`)]?.find(el => el === elem) ?? false;
   };
 
   const isModal = function(elem) {
-    return elem.parentNode
-      ? !!jqx.nodes(`:is(:modal)`, elem?.parentNode)?.find(el => el === elem) : false;
+    return [...elem.parentNode.querySelectorAll(`:is(:modal)`)]?.find(el => el === elem) ?? false;
   };
 
   const noElements = { notInDOM: true, writable: notApplicable, modal: notApplicable, empty: true, open: notApplicable, visible: notApplicable, };

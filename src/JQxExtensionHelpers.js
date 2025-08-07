@@ -1,8 +1,8 @@
-import { createElementFromHtmlString, insertPositions, inject2DOMTree, cleanupHtml, ATTRS} from "./DOM.js";
+import { createElementFromHtmlString, insertPositions, inject2DOMTree, cleanupHtml } from "./DOM.js";
 import { debugLog, Log, systemLog } from "./JQxLog.js";
-import allMethods from "./JQxMethods.js";
+import allMethodsFactory from "./JQxMethods.js";
 import PopupFactory from "./Popup.js";
-import {listeners, default as HandleFactory} from "./HandlerFactory.js";
+import { listeners, default as HandleFactory } from "./HandlerFactory.js";
 import tagLib from "./HTMLTags.js";
 import {
   randomString, toDashedNotation, IS, truncateHtmlStr, tagFNFactory as $T,
@@ -10,8 +10,10 @@ import {
   isNonEmptyString, resolveEventTypeParameter,
 } from "./Utilities.js";
 let static4Docs = {};
+let instanceGetters, instanceMethods, $;
+
 const {
-  instanceMethods, instanceGetters,isCommentOrTextNode, isNode,
+  isCommentOrTextNode, isNode,
   isHtmlString, isArrayOfHtmlElements, isArrayOfHtmlStrings, ElemArray2HtmlString,
   input2Collection, setCollectionFromCssSelector, addHandlerId, cssRuleEdit,
   addFn, elems4Docs } = smallHelpersFactory();
@@ -20,8 +22,6 @@ const {
 function smallHelpersFactory() {
   const cssRuleEdit = styleFactory( { createWithId: `JQxStylesheet` } );
   const addFn = (name, fn) => instanceMethods[name] = (self, ...params) => fn(self, ...params);
-  const instanceMethods = allMethods.instanceExtensions;
-  const instanceGetters = allMethods.factoryExtensions;
   const isCommentOrTextNode = elem => IS(elem, Comment, Text);
   const isNode = input => IS(input, Text, HTMLElement, Comment);
   const isComment = input => IS(input, Comment);
@@ -60,10 +60,9 @@ function smallHelpersFactory() {
     .sort( (a, b) => a.localeCompare(b));
 
   return {
-    instanceMethods, instanceGetters,isCommentOrTextNode, isNode, isComment, isText,
-    isHtmlString, isArrayOfHtmlElements, isArrayOfHtmlStrings, ElemArray2HtmlString,
-    input2Collection, setCollectionFromCssSelector, addHandlerId, cssRuleEdit,
-    addFn, elems4Docs };
+    isCommentOrTextNode, isNode, isComment, isText, isHtmlString, isArrayOfHtmlElements,
+    isArrayOfHtmlStrings, ElemArray2HtmlString, input2Collection, setCollectionFromCssSelector,
+    addHandlerId, cssRuleEdit, addFn, elems4Docs };
 }
 
 function proxify(instance) {
@@ -249,9 +248,13 @@ function getNamedListener(type, name) {
 }
 
 function staticMethodsFactory(jqx) {
+  $ = jqx;
+  const { factoryExtensions, instanceExtensions } = allMethodsFactory(jqx);
+  instanceGetters = factoryExtensions;
+  instanceMethods = instanceExtensions;
   const editCssRule = (ruleOrSelector, ruleObject) => cssRuleEdit(ruleOrSelector, ruleObject);
   const allowProhibit = allowances(jqx);
-  const handle = HandleFactory();
+  const handle = HandleFactory(jqx);
   const capturedHandling = delegateCaptureFactory(handle);
   return {
     debugLog,
@@ -318,4 +321,5 @@ export {
   IS,
   static4Docs,
   elems4Docs,
+  $ as jqx,
 };
