@@ -52,7 +52,7 @@ export default function($) {
   function genericPopupCloseHandler(evt) {
     if ( Object.keys(currentProps).length < 1 || !popupNode.open ) { return; }
 
-    if (evt.type === `keydown` && /s/i.test(evt.key)) {
+    if (evt.key === `Escape`) {
       evt.preventDefault();
     }
 
