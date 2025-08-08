@@ -1,9 +1,8 @@
 const svgImg = `url('data:image/svg+xml\\3butf8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22iso-8859-1%22%3F%3E%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20version%3D%221.1%22%20id%3D%22Layer_1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20128%20128%22%20style%3D%22enable-background%3Anew%200%200%20128%20128%3B%22%20xml%3Aspace%3D%22preserve%22%3E%3Crect%20x%3D%22-368%22%20y%3D%226%22%20style%3D%22display%3Anone%3Bfill%3A%23E0E0E0%3B%22%20width%3D%22866%22%20height%3D%221018%22%2F%3E%3Ccircle%20style%3D%22fill%3A%23FFFFFF%3B%22%20cx%3D%2264%22%20cy%3D%2264%22%20r%3D%2248%22%2F%3E%3Ccircle%20style%3D%22fill%3A%238CCFB9%3B%22%20cx%3D%2264%22%20cy%3D%2264%22%20r%3D%2239%22%2F%3E%3Ccircle%20style%3D%22fill%3Anone%3Bstroke%3A%23444B54%3Bstroke-width%3A6%3Bstroke-miterlimit%3A10%3B%22%20cx%3D%2264%22%20cy%3D%2264%22%20r%3D%2248%22%2F%3E%3Cpolyline%20style%3D%22fill%3Anone%3Bstroke%3A%23FFFFFF%3Bstroke-width%3A6%3Bstroke-linecap%3Around%3Bstroke-miterlimit%3A10%3B%22%20points%3D%2242%2C69%2055.55%2C81%20%20%2086%2C46%20%22%2F%3E%3C%2Fsvg%3E')`;
-let logStyling = getLogStyling();
 let popupStyling = getPopupStyling();
 const ATTRS = getAttrs();
 const allTags = getPermissions();
-export {logStyling, popupStyling, ATTRS, allTags};
+export {popupStyling, ATTRS, allTags};
 
 function getAttrs() {
   return {
@@ -16,20 +15,6 @@ function getAttrs() {
 
 function getPermissions() {
   return {a:true,area:true,audio:false,br:true,base:true,body:true,button:true,canvas:true,comment:true,dl:true,data:true,datalist:true,div:true,em:true, embed:false,fieldset:true,font:true,footer:true,form:false,hr:true,head:true,header:true,output:true,iframe:false,frameset:false,img:true,input:true,li:true,label:true,legend:true,link:true,map:true,mark:true,menu:true,media:true,meta:true,nav:true,meter:true,ol:true,object:false,optgroup:true,option:true,p:true,param:true,picture:true,pre:true,progress:false,quote:true,script:false,select:true,source:true,span:true,style:true,caption:true,td:true,col:true,table:true,tr:true,template:false,textarea:true,time:true,title:true,track:true,details:true,ul:true,video:true,del:true,ins:true,slot:true,blockquote:true,svg:true,dialog:true,summary:true,main:true,address:true,colgroup:true,tbody:true,tfoot:true,thead:true,th:true,dd:true,dt:true,figcaption:true,figure:true,i:true,b:true,code:true,h1:true,h2:true,h3:true,h4:true,abbr:true,bdo:true,dfn:true,kbd:true,q:true,rb:true,rp:true,rt:true,ruby:true,s:true,strike:true,samp:true,small:true,strong:true,sup:true,sub:true,u:true,var:true,wbr:true,nobr:true,tt:true,noscript:true};
-}
-
-function getLogStyling() {
-  return [
-    "#logBox{min-width:0px;max-width:0px;min-height:0px;max-height:0px;width:0;height:0;z-index:-1;border:none;padding:0px;overflow:hidden;transition:all 0.3s ease;margin-top:-100px;}",
-    "#logBox.visible{background-color:rgb(255, 255, 224);z-index:1;position:static;border:1px dotted rgb(153, 153, 153);max-width:50vw;min-width:30vw;min-height:10vh;max-height:90vh;overflow:auto;width:50vw;height:20vh;margin:1rem 0px;padding:0px 8px 19px;resize:both;}",
-    "#logBox.visible .legend{position:absolute;}",
-    "#logBox .legend{text-align:center;margin-top:-1em;width:inherit;max-width:inherit;}",
-    "#logBox .legend div{text-align:center;display:inline-block;max-width:inherit;height:1.2rem;background-color:rgb(119, 119, 119);padding:2px 10px;color:rgb(255, 255, 255);box-shadow:rgb(119 119 119) 2px 1px 10px;border-radius:4px;}",
-    "#logBox .legend div:before{content:'JQx Logging (chronological)';}",
-    "#logBox .legend.reversed div:before{content:'JQx Logging (reversed)';}",
-    "#logBox #jqx_logger{marginTop:0.7rem;lineHeight:1.4em;font-family:consolas,monospace;whiteSpace:pre-wrap;maxWidth:inherit;padding-left:100px;}",
-    "#logBox #jqx_logger div.entry{text-indent:-100px;whiteSpace:normal;}",
-  ]
 }
 
 function getPopupStyling() {

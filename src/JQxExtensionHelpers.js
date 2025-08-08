@@ -220,7 +220,7 @@ function popupGetter(jqx) {
   return jqx.activePopup;
 }
 
-function logger() {
+function loggerFactory() {
   return Object.freeze({
     get on() { return systemLog.on; },
     get off() { return systemLog.off; },
@@ -246,18 +246,19 @@ function staticMethodsFactory(jqx) {
   instanceGetters = factoryExtensions;
   instanceMethods = instanceExtensions;
   $ = jqx;
-  const {editCssRule, createStyle, editCssRules, allowProhibit, handle, capturedHandling,log} = getStaticMethods(jqx);
+  const { editCssRule, createStyle, editCssRules,
+    allowProhibit, handle, capturedHandling, log } = getStaticMethods(jqx);
 
   return {
     log,
-    logger,
     editCssRules,
     createStyle,
     editStylesheet: createStyle,
+    editCssRule,
     text: (str, isComment = false) => isComment ? jqx.comment(str) : document.createTextNode(str),
     node: (selector, root = document) => root.querySelector(selector, root),
     nodes: (selector, root = document) =>  [...root.querySelectorAll(selector, root)],
-    get editCssRule() { return editCssRule; },
+    get logger() { return loggerFactory() },
     get getNamedListener() { return getNamedListener; },
     get virtual() { return virtualFactory(jqx); },
     get allowTag() { return allowProhibit.allow; },

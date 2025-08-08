@@ -94,7 +94,7 @@ function hex2RGBA(hex, opacity = 100) {
 }
 
 function escHtml(html) {
-  return html.replace(/</g, `&lt;`);
+  return html.replace(/</g, `&lt;`).replace(/>/g, `&gt;`);
 }
 
 function extensionHelpers() {
@@ -216,7 +216,8 @@ function systemLogFactory() {
   }
 
   function logLines(...args) {
-    return `<div>${args.map(arg => escHtml(arg)).join(`</div><div>`)}<div>`;
+    return `<div>${args.map(arg => `${logTime()} ✔ ${escHtml(arg)}`)
+      .join(`</div>\n<div>`)}<div>`;
   }
 
   Object.defineProperties(systemLogger, {
