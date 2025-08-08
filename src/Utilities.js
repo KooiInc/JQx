@@ -1,65 +1,141 @@
 import {default as tagFNFactory} from "./tinyDOM.js";
 import {default as IS, maybe} from "./TypeofAnything.js";
 import styleFactory from "./LifeCSS.js";
+
 const characters4RandomString = [...Array(26)]
   .map((x, i) => String.fromCharCode(i + 65))
   .concat([...Array(26)].map((x, i) => String.fromCharCode(i + 97)))
   .concat([...Array(10)].map((x, i) => `${i}`));
-const pad0 = (nr, n=2) => `${nr}`.padStart(n, `0`);
-const randomNr = (max, min = 0) => {
+const systemLog = systemLogFactory();
+
+function pad0(nr, n=2) {
+  return `${nr}`.padStart(n, `0`);
+}
+
+function randomNr(max, min = 0) {
   [max, min] = [Math.floor(max), Math.ceil(min)];
   return Math.floor( ([...crypto.getRandomValues(new Uint32Array(1))].shift() / 2 ** 32 ) * (max - min + 1) + min );
-};
-const isNonEmptyString = function(str, minlen = 1) {
+}
+
+function isNonEmptyString(str, minlen = 1) {
   minlen = IS(minlen, Number) && minlen || 1;
   return IS(str, String) && str.length >= minlen;
-};
-const resolveEventTypeParameter = function(maybeTypes) {
+}
+
+function resolveEventTypeParameter (maybeTypes) {
   maybeTypes = IS(maybeTypes, String) && /,/.test(maybeTypes) ? maybeTypes.split(`,`) : maybeTypes;
   return IS(maybeTypes, Array)
     ? maybeTypes.filter(t => isNonEmptyString(t)).map(t => t.trim().toLowerCase())
     : IS(maybeTypes, String) && maybeTypes?.trim().toLowerCase() || ``;
-};
-const shuffle = array => {
+}
+
+function shuffle(array) {
   let i = array.length;
   while (i--) {
     const ri = randomNr(i);
     [array[i], array[ri]] = [array[ri], array[i]];
   }
   return array;
-};
-const hex2Full = hex => {
+}
+
+function hex2Full(hex) {
   hex = (hex.trim().startsWith("#") ? hex.slice(1) : hex).trim();
   return hex.length === 3 ? [...hex].map(v => v + v).join("") : hex;
-};
-const truncateHtmlStr = (str, maxLength = 120) => `${str}`.trim()
-  .slice(0, maxLength)
-  .replace(/>\s+</g, `><`)
-  .replace(/</g, `&lt;`)
-  .replace(/\s{2,}/g, ` `)
-  .replace(/\n/g, `\\n`) + (str.length > maxLength ? ` &hellip;` : ``).trim();
-const toDashedNotation = str2Convert =>str2Convert.replace(/[A-Z]/g, a => `-${a.toLowerCase()}`).replace(/^-|-$/, ``);
-const ucFirst = ([first, ...theRest]) => `${first.toUpperCase()}${theRest.join(``)}`;
-const toCamelcase = str2Convert =>
-  IS(str2Convert, String) ? str2Convert.toLowerCase()
-    .split(`-`)
-    .map( (str, i) => i && `${ucFirst(str)}` || str)
-    .join(``) : str2Convert;
-const randomString = () => `_${shuffle(characters4RandomString).slice(0, 8).join(``)}`;
-const truncate2SingleStr = (str, maxLength = 120) =>
-  truncateHtmlStr(str, maxLength).replace(/&lt;/g, `<`);
-const logTime = () => ((d) =>
-  `[${pad0(d.getHours())}:${pad0(d.getMinutes())}:${
-    pad0(d.getSeconds())}.${pad0(d.getMilliseconds(), 3)}]`)(new Date());
-const hex2RGBA = function (hex, opacity = 100) {
+}
+
+function truncateHtmlStr(str, maxLength = 120) {
+ return `${str}`
+   .trim()
+   .slice(0, maxLength)
+   .replace(/>\s+</g, `><`)
+   .replace(/</g, `&lt;`)
+   .replace(/\s{2,}/g, ` `)
+   .replace(/\n/g, `\\n`) + (str.length > maxLength ? ` &hellip;` : ``).trim();
+}
+
+function toDashedNotation(str2Convert) {
+  return str2Convert.replace(/[A-Z]/g, a => `-${a.toLowerCase()}`).replace(/^-|-$/, ``);
+}
+
+function ucFirst([first, ...theRest]) {
+  return `${first.toUpperCase()}${theRest.join(``)}`;
+}
+
+function toCamelcase(str2Convert) {
+  return IS(str2Convert, String)
+    ? str2Convert.toLowerCase()
+      .split(`-`)
+      .map( (str, i) => i && `${ucFirst(str)}` || str)
+      .join(``)
+    : str2Convert;
+}
+
+function randomString() {
+  return `_${shuffle(characters4RandomString).slice(0, 8).join(``)}`;
+}
+
+function truncate2SingleStr(str, maxLength = 120) {
+  return truncateHtmlStr(str, maxLength).replace(/&lt;/g, `<`);
+}
+
+function logTime() {
+  return ((d) =>
+    `[${pad0(d.getHours())}:${pad0(d.getMinutes())}:${
+      pad0(d.getSeconds())}.${pad0(d.getMilliseconds(), 3)}]`)(new Date());
+}
+
+function hex2RGBA(hex, opacity = 100) {
   hex = hex2Full(hex.slice(1));
   const op = opacity % 100 !== 0;
   return `rgb${op ? "a" : ""}(${
     parseInt(hex.slice(0, 2), 16)}, ${
     parseInt(hex.slice(2, 4), 16)}, ${
     parseInt(hex.slice(-2), 16)}${op ? `, ${opacity / 100}` : ""})`;
-};
-const escHtml = html => html.replace(/</g, `&lt;`);
+}
+
+function escHtml(html) {
+  return html.replace(/</g, `&lt;`);
+}
+
+function extensionHelpers() {
+  const isCommentOrTextNode = elem => IS(elem, Comment, Text);
+  const isNode = input => IS(input, Text, HTMLElement, Comment);
+  const isComment = input => IS(input, Comment);
+  const isText = input => IS(input, Text);
+  const isHtmlString = input => IS(input, String) && /^<|>$/.test(`${input}`.trim());
+  const isArrayOfHtmlStrings = input => IS(input, Array) && !input?.find(s => !isHtmlString(s));
+  const isArrayOfHtmlElements = input => IS(input, Array) && !input?.find(el => !isNode(el));
+  const ElemArray2HtmlString = elems => elems?.filter(el => el).reduce((acc, el) =>
+    acc.concat(isComment(el) ? `<!--${el.data}-->`
+      : isCommentOrTextNode(el) ?  el.textContent
+        : el.outerHTML), ``);
+  const input2Collection = input =>
+    !input ? []
+      : IS(input, Proxy) ? [input.EL]
+        : IS(input, NodeList) ? [...input]
+          : isNode(input) ? [input]
+            : isArrayOfHtmlElements(input) ? input
+              : input.isJQx ? input.collection : undefined;
+  const setCollectionFromCssSelector = (input, root, self) => {
+    const selectorRoot = root !== document.body && (IS(input, String) && input.toLowerCase() !== "body") ? root : document;
+    let errorStr = undefined;
+
+    try { self.collection = [...selectorRoot.querySelectorAll(input)]; }
+    catch (err) { errorStr = `Invalid CSS querySelector. [${!IS(input, String) ? `Nothing valid given!` : input}]`; }
+
+    return errorStr ?? `CSS querySelector "${input}", output ${self.collection.length} element(s)`;
+  };
+  const addHandlerId = instance => {
+    const handleId = instance.data.get(`hid`) || `HID${randomString()}`;
+    instance.data.add({hid: handleId});
+    return `[data-hid="${handleId}"]`;
+  };
+
+  return {
+    isCommentOrTextNode, isNode, isComment, isText, isHtmlString, isArrayOfHtmlElements,
+    isArrayOfHtmlStrings, ElemArray2HtmlString, input2Collection, setCollectionFromCssSelector,
+    addHandlerId };
+}
 
 function ExamineElementFeatureFactory() {
   const isVisible = function(el) {
@@ -116,6 +192,42 @@ function ExamineElementFeatureFactory() {
   };
 }
 
+function decodeForConsole(something) {
+  return IS(something, String) &&
+    Object.assign(document.createElement(`textarea`), {innerHTML: something}).textContent || something;
+}
+
+function systemLogFactory() {
+  let on = false;
+  const systemLogger = {
+    get on() { on = true; return systemLogger; },
+    get off() { on = false; return systemLogger; },
+  };
+
+  function error(...args) {
+    for (const arg of args) { console.error(`${logTime()} ✔ ${decodeForConsole(arg)}`); }
+    return systemLogger;
+  }
+
+  function log(...args) {
+    if (!on) { return systemLogger; }
+    for (const arg of args) { console.log(`${logTime()} ✔ ${decodeForConsole(arg)}`); }
+    return systemLogger;
+  }
+
+  function logLines(...args) {
+    return `<div>${args.map(arg => escHtml(arg)).join(`</div><div>`)}<div>`;
+  }
+
+  Object.defineProperties(systemLogger, {
+    log: {value: log, enumerable: false},
+    logLines: {value: logLines, enumerable: false},
+    error: {value: error, enumerable: false},
+  });
+
+  return Object.freeze(systemLogger);
+}
+
 export {
   IS,
   maybe,
@@ -133,4 +245,6 @@ export {
   styleFactory,
   tagFNFactory,
   resolveEventTypeParameter,
+  extensionHelpers,
+  systemLog,
 };

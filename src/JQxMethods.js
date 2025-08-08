@@ -3,12 +3,11 @@ import {
   IS,
   addHandlerId,
   isNode,
-  randomString,
   inject2DOMTree,
   isCommentOrTextNode,
   truncateHtmlStr,
-  systemLog,
-  debugLog,
+  // systemLog,
+  // debugLog,
 } from "./JQxExtensionHelpers.js";
 import {ATTRS} from "./EmbedResources.js";
 import {
@@ -16,6 +15,7 @@ import {
   isNonEmptyString,
   toDashedNotation,
   toCamelcase,
+  randomString,
   escHtml, } from "./Utilities.js";
 const loop = (instance, callback) => {
   const cleanCollection = instance.collection.filter(el => !isCommentOrTextNode(el));

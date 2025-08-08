@@ -1,68 +1,34 @@
 import { createElementFromHtmlString, insertPositions, inject2DOMTree, cleanupHtml } from "./DOM.js";
-import logFactory from "./JQxLog.js";
 import allMethodsFactory from "./JQxMethods.js";
 import PopupFactory from "./Popup.js";
 import { listeners, default as HandleFactory } from "./HandlerFactory.js";
 import tagLib from "./HTMLTags.js";
 import {
   randomString, toDashedNotation, IS, truncateHtmlStr, tagFNFactory as $T,
-  truncate2SingleStr, logTime, hex2RGBA, styleFactory, toCamelcase,
-  isNonEmptyString, resolveEventTypeParameter,
+  truncate2SingleStr, styleFactory, toCamelcase, systemLog,
+  isNonEmptyString, resolveEventTypeParameter, extensionHelpers,
 } from "./Utilities.js";
-let static4Docs = {};
-let instanceGetters, instanceMethods, $, systemLogger, debugLogger;
 
+let static4Docs = {};
+let instanceGetters, instanceMethods, $;
 const {
-  isCommentOrTextNode, isNode,
-  isHtmlString, isArrayOfHtmlElements, isArrayOfHtmlStrings, ElemArray2HtmlString,
-  input2Collection, setCollectionFromCssSelector, addHandlerId, cssRuleEdit,
-  addFn, elems4Docs } = smallHelpersFactory();
+  isCommentOrTextNode, isNode, isComment, isText, isHtmlString, isArrayOfHtmlElements,
+  isArrayOfHtmlStrings, ElemArray2HtmlString, input2Collection, setCollectionFromCssSelector,
+  addHandlerId, cssRuleEdit, addFn
+} = localHelpersFactory();
+
+// todo: clean this up
+export {
+  addHandlerId, isHtmlString, isNode, isArrayOfHtmlStrings, isArrayOfHtmlElements, isCommentOrTextNode,
+  inject2DOMTree, ElemArray2HtmlString, input2Collection, setCollectionFromCssSelector,
+  truncateHtmlStr, truncate2SingleStr, proxify, addJQxStaticMethods, createElementFromHtmlString,
+  insertPositions, IS, $ as jqx, };
 
 /* region functions */
-function smallHelpersFactory() {
-  const cssRuleEdit = styleFactory( { createWithId: `JQxStylesheet` } );
+function localHelpersFactory() {
+  const cssRuleEdit = styleFactory({createWithId: `JQxStylesheet`});
   const addFn = (name, fn) => instanceMethods[name] = (self, ...params) => fn(self, ...params);
-  const isCommentOrTextNode = elem => IS(elem, Comment, Text);
-  const isNode = input => IS(input, Text, HTMLElement, Comment);
-  const isComment = input => IS(input, Comment);
-  const isText = input => IS(input, Text);
-  const isHtmlString = input => IS(input, String) && /^<|>$/.test(`${input}`.trim());
-  const isArrayOfHtmlStrings = input => IS(input, Array) && !input?.find(s => !isHtmlString(s));
-  const isArrayOfHtmlElements = input => IS(input, Array) && !input?.find(el => !isNode(el));
-  const ElemArray2HtmlString = elems => elems?.filter(el => el).reduce((acc, el) =>
-    acc.concat(isComment(el) ? `<!--${el.data}-->`
-      : isCommentOrTextNode(el) ?  el.textContent
-        : el.outerHTML), ``);
-  const input2Collection = input =>
-    !input ? []
-      : IS(input, Proxy) ? [input.EL]
-        : IS(input, NodeList) ? [...input]
-          : isNode(input) ? [input]
-            : isArrayOfHtmlElements(input) ? input
-              : input.isJQx ? input.collection : undefined;
-  const setCollectionFromCssSelector = (input, root, self) => {
-    const selectorRoot = root !== document.body && (IS(input, String) && input.toLowerCase() !== "body") ? root : document;
-    let errorStr = undefined;
-
-    try { self.collection = [...selectorRoot.querySelectorAll(input)]; }
-    catch (err) { errorStr = `Invalid CSS querySelector. [${!IS(input, String) ? `Nothing valid given!` : input}]`; }
-
-    return errorStr ?? `CSS querySelector "${input}", output ${self.collection.length} element(s)`;
-  };
-  const addHandlerId = instance => {
-    const handleId = instance.data.get(`hid`) || `HID${randomString()}`;
-    instance.data.add({hid: handleId});
-    return `[data-hid="${handleId}"]`;
-  };
-  const elems4Docs = Object.entries(tagLib.tagsRaw)
-    .filter( ([,cando]) => cando)
-    .map( ([key,]) => key)
-    .sort( (a, b) => a.localeCompare(b));
-
-  return {
-    isCommentOrTextNode, isNode, isComment, isText, isHtmlString, isArrayOfHtmlElements,
-    isArrayOfHtmlStrings, ElemArray2HtmlString, input2Collection, setCollectionFromCssSelector,
-    addHandlerId, cssRuleEdit, addFn, elems4Docs };
+  return {...extensionHelpers(), ...{cssRuleEdit, addFn, }};
 }
 
 function proxify(instance) {
@@ -81,8 +47,8 @@ function proxyKeyFactory(self, key, instance) {
   switch(true) {
     case IS(key, Symbol): return self;
     case IS(+key, Number): return self.collection?.[key] || undefined;
-    case !!(key in instanceGetters): return wrapGetter(instanceGetters[key], instance)();
-    case !!(key in instanceMethods): return wrapExtension(instanceMethods[key], instance);
+    case (key in instanceGetters): return wrapGetter(instanceGetters[key], instance)();
+    case (key in instanceMethods): return wrapExtension(instanceMethods[key], instance);
     default: return self[key];
   }
 }
@@ -197,14 +163,14 @@ function staticTagsLambda(jqx) {
 }
 
 function delegateFactory(listen) {
-  return function(type, origin, ...eventHandlers) {
+  return function(type, selector, ...listeners) {
 
-    if (IS(origin, Function)) {
-      eventHandlers.push(origin);
-      origin = undefined;
+    if (IS(selector, Function)) {
+      listeners.push(selector);
+      selector = undefined;
     }
 
-    listen({type, selector: origin, handlers: eventHandlers});
+    listen({type, selector: selector, handlers: listeners});
   }
 }
 
@@ -254,30 +220,40 @@ function popupGetter(jqx) {
   return jqx.activePopup;
 }
 
+function logger() {
+  return Object.freeze({
+    get on() { return systemLog.on; },
+    get off() { return systemLog.off; },
+    get log() { return systemLog.log; },
+    get logLines() { return systemLog.logLines; },
+    get error() { return systemLog.error; },
+  });
+}
+
 function staticMethodsFactory(jqx) {
-  const { debugLog, Log, systemLog } = logFactory(jqx);
   const { factoryExtensions, instanceExtensions } = allMethodsFactory(jqx);
-  systemLogger = systemLog;
-  debugLogger = debugLog;
   instanceGetters = factoryExtensions;
   instanceMethods = instanceExtensions;
   $ = jqx;
   const editCssRule = (ruleOrSelector, ruleObject) => cssRuleEdit(ruleOrSelector, ruleObject);
+  const createStyle = id => styleFactory({createWithId: id || `jqx${randomString()}`});
+  const editCssRules = (...rules) => { for (const rule of rules) { cssRuleEdit(rule); } };
   const allowProhibit = allowances(jqx);
   const handle = HandleFactory(jqx);
   const capturedHandling = delegateCaptureFactory(handle);
+  const log = (...line) => systemLog.on.log(...line).off;
 
   return {
-    log(...args) { Log(`fromStatic`, ...args); },
-    editCssRules(...rules) { for (const rule of rules) { cssRuleEdit(rule); } },
-    createStyle(id) { return styleFactory({createWithId: id || `jqx${randomString()}`}); },
-    editStylesheet(id) { return styleFactory({createWithId: id || `jqx${randomString()}`}); },
-    text(str, isComment = false) { return isComment ? jqx.comment(str) : document.createTextNode(str); },
-    node(selector, root = document) { return root.querySelector(selector, root); },
-    nodes(selector, root = document) {return [...root.querySelectorAll(selector, root)]; },
+    log,
+    logger,
+    editCssRules,
+    createStyle,
+    editStylesheet: createStyle,
+    text: (str, isComment = false) => isComment ? jqx.comment(str) : document.createTextNode(str),
+    node: (selector, root = document) => root.querySelector(selector, root),
+    nodes: (selector, root = document) =>  [...root.querySelectorAll(selector, root)],
     get editCssRule() { return editCssRule; },
     get getNamedListener() { return getNamedListener; },
-    get debugLog() { return debugLog },
     get virtual() { return virtualFactory(jqx); },
     get allowTag() { return allowProhibit.allow; },
     get prohibitTag() { return allowProhibit.prohibit; },
@@ -295,31 +271,3 @@ function staticMethodsFactory(jqx) {
   };
 }
 /* endregion functions */
-export {
-  hex2RGBA,
-  addHandlerId,
-  isHtmlString,
-  isNode,
-  logTime,
-  toDashedNotation,
-  randomString,
-  isArrayOfHtmlStrings,
-  isArrayOfHtmlElements,
-  isCommentOrTextNode,
-  inject2DOMTree,
-  ElemArray2HtmlString,
-  input2Collection,
-  setCollectionFromCssSelector,
-  truncateHtmlStr,
-  truncate2SingleStr,
-  proxify,
-  addJQxStaticMethods,
-  createElementFromHtmlString,
-  insertPositions,
-  systemLogger as systemLog,
-  debugLogger as debugLog,
-  IS,
-  static4Docs,
-  elems4Docs,
-  $ as jqx,
-};

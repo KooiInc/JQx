@@ -1,7 +1,7 @@
-import { truncate2SingleStr, IS, debugLog } from "./JQxExtensionHelpers.js";
+import { truncate2SingleStr, IS/*, debugLog*/ } from "./JQxExtensionHelpers.js";
 import cleanupTagInfo from "./HTMLTags.js";
 import {ATTRS} from "./EmbedResources.js";
-import {escHtml} from "./Utilities.js";
+import {escHtml, systemLog} from "./Utilities.js";
 
 let logElementCreationErrors2Console = true;
 const attrRegExpStore = {
@@ -15,7 +15,7 @@ const logContingentErrors = elCreationInfo => {
     const msgs = Object.entries(elCreationInfo.removed)
       .reduce( (acc, [k, v]) => [...acc, `${escHtml(k)} => ${v}`], [])
       .join(`\\000A`);
-    debugLog.log(`JQx HTML creation errors: ${debugLog.isConsole ? msgs : escHtml(msgs)}`);
+    systemLog.log(`JQx HTML creation errors: ${msgs}`);
   }
 };
 const elementCheck = function(child) {
