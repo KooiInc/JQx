@@ -46,7 +46,6 @@ function createGroupChapters() {
   createChaptersGroup($.node(`[data-groupcontainer="static_About"]`), `JQx`);
   createChaptersGroup($.node(`[data-groupcontainer="instance_About"]`), `JQx instance`);
   createChaptersGroup($.node(`[data-groupcontainer="popup_About"]`), `JQx.Popup`);
-  createChaptersGroup($.node(`[data-groupcontainer="debuglog_About"]`), `JQx.debugLog`);
   $.log(`Documentation chapters created ...`);
 }
 
@@ -307,7 +306,6 @@ async function getVariablesInAllScopes() {
     { groupId: `static_About`, groupLabel: `Static` },
     { groupId: `instance_About`, groupLabel: `Instance` },
     { groupId: `popup_About`, groupLabel: `Popup` },
-    { groupId: `debuglog_About`, groupLabel: `Debuglog` }
   ];
   return {clientHandling, allExampleActions, documentationTemplates, docContainer, orderedGroups};
 }

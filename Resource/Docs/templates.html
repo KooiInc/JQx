@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-08-07 15:48:06 UTC-->
+<!-- Generated file, last update 2025-08-08 14:15:58 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -313,7 +313,7 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
 </template>
 
 <template data-id="static_delegate" class="static_delegate" data-is-deprecated="true">
-<div data-params='[{"type":"string. Event type (e.g. <code>click</code>) to listen for"},{"origin":"string. Optional selector to identify the element to assign listener to (e.g. <code>#someId</code>)"},{"...eventHandlers":""}]'></div>
+<div data-params='[{"type":"string. Event type (e.g. <code>click</code>) to listen for"},{"selector":"string. Optional selector to identify the element to assign listener to (e.g. <code>#someId</code>)"},{"...listeners":"array<function> | function"}]'></div>
 <div data-return-value='Nothing'></div>
 <div data-text='1'><!--DEPRECATED-->
 
@@ -968,11 +968,18 @@ function createTimedPopup(content, timeout, callback) {
 </template>
 
 <template data-id="static_log" class="static_log" data-is-deprecated="false">
-<div data-params='[{"...args":"string[]"}]'></div>
+<div data-params='[{"...line":"string[]"}]'></div>
 <div data-return-value='JQx.debugLog: function'></div>
-<div data-text='1'><div>Equivalent to <div class="linkLike" data-jumpkey="debuglog_log" data-action="jump2Nav">log</div> in <div class="linkLike" data-jumpgroup="debuglog" data-action="jump2Nav">debugLog</div>, but for intermediate logging to console (so <code>debugLog</code> doesn't have to be set to 'on').</div>
+<div data-text='1'><div>
+  log one or more strings to the console (browser web developer tools).
+</div>
 
-<div>While loading this document this logging was called several times. See the console for that.</div></div>
+<div> 
+  See <div class="linkLike"
+    data-action="jump2Nav" 
+    data-jumpkey="static_logger">[JQx].logger</div> 
+  for more information.
+</div></div>
 </template>
 
 <template data-id="static_nodes" class="static_nodes" data-is-deprecated="false">
@@ -1432,7 +1439,7 @@ In html and css a data-attribute like <code>helloWorld</code> will show up as <c
 </template>
 
 <template data-id="static_IS" class="static_IS" data-is-deprecated="false">
-<div data-params='None'></div>
+<div data-params='[{"anything":"any value. May also be undefined, null, Symbol, NaN."},{"...shouldBe":"ES Constructor[]"}]'></div>
 <div data-return-value='string |  boolean'></div>
 <div data-text='1'><div><code>[JQx].IS</code> is a utility method. Syntax:</div>
 
@@ -1516,7 +1523,7 @@ So removal of <code>.test1, test2 {...}</code> will fail using <code>$.removeCss
 
 <template data-id="static_lenient" class="static_lenient" data-is-deprecated="false">
 <div data-params='None'></div>
-<div data-return-value='void'></div>
+<div data-return-value='{on, off}'></div>
 <div data-text='1'><div>
   A few HTML tags are prohibited (e.g. <code>script</code>). One can override it using
   <code>$.lenient</code>. It is an <code>Object</code> with two methods:
@@ -1709,7 +1716,7 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 </template>
 
 <template data-id="static_delegateCaptured" class="static_delegateCaptured" data-is-deprecated="false">
-<div data-params='[{"spec":"{type, selector, handlers, capture, once, canRemove}"}]'></div>
+<div data-params='[{"spec":"{type, name, selector, handlers, capture, once, canRemove}"}]'></div>
 <div data-return-value='Nothing'></div>
 <div data-text='1'><div>
   <code>delegateCaptured</code> replaces <code>[JQx].delegate</code>. With it you
@@ -1881,4 +1888,65 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 
 
 </div>
+</template>
+
+<template data-id="static_logger" class="static_logger" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='{on, off, log, logLines, error}'></div>
+<div data-text='1'><div>
+  <code>[JQx].logger</code> controls the logging. 
+</div>
+
+<ul>
+  <li>
+    <code>logger.on</code>: (getter) enable logging
+  </li>
+  <li>
+    <code>logger.off</code>: (getter) disable logging
+  </li>
+  <li>
+    <code>logger.log(...line)</code>: log one or several [line]s to the console.
+  </li>
+  <li>
+    <code>logger.logLines(...line)</code>: return one or several [line]s as div string(s).
+  </li>
+  <li>
+    <code>logger.error(...line)</code>: log one or more [line]s as error(s) to the console.
+  </li>
+</ul>
+
+<div class="note">
+  <b>Notes</b>: 
+  <ul>
+    <li>
+      Every log line is prefixed with the exact time of logging.
+    </li>
+    <li>
+      When the input for <code>logger.logLines</code> contains html,
+      it will be escaped. For example:
+      <div>
+         <code>logger.logLines("&lt;div>Hello&lt/div>")</code> results in 
+         "&lt;div>[hh:mm:ss.ms] ✔ &amp;lt;div&amp;gt;Hello&amp;lt;/div&amp;gt;&lt;div>"
+      </div>
+
+    </li>
+    <li>
+      With the exception of <code>logger.logLines</code>
+      all properties return the logger, so chaining 
+      is possible.
+    </li>
+    <li>
+      When logging is enabled, <b><i>every</i></b>
+      JQx action is logged to the console.
+      <div>
+        The <code>on</code> and <code>off</code> getters returns the logger,
+        so you can use <code>[JQx].logger.on.log("...").off]</code>
+        to log once.
+        <div>
+          This is actually what <code>[JQX].log</code> does.
+        </div> 
+       </div>
+    </li>
+  </ul> 
+</div></div>
 </template>

@@ -14,6 +14,7 @@ $.editCssRules(...cssRules);
 
 // use jqx in the developer console
 window.jqx = $;
+$.logger.on;
 
 // add event handling defined in function [getDelegates4Document]
 getDelegates4Document().forEach(([type, targetedHandlers]) =>
@@ -23,7 +24,7 @@ getDelegates4Document().forEach(([type, targetedHandlers]) =>
 );
 
 // initialize some statics from $
-const {virtual: $$, log, debugLog} = $;
+const {virtual: $$, log,} = $;
 const {DIV, H2, SPAN, I, B, P, U, A, BUTTON, COMMENT, BR, LINK} = $;
 
 /* MAIN  */
@@ -34,8 +35,6 @@ if (!debug) {
     return self;
   });
 
-  // activate logging all JQx events (hidden)
-  debugLog.on().toConsole.off().reversed.on().hide();
   const back2 = /github|codeberg/i.test(location.href) ? `_top` : `_blank`;
 
   // create container for all generated html
@@ -57,22 +56,10 @@ if (!debug) {
       ` Check the HTML source &mdash; right click anywhere, and select 'View page source'.`)
   ).appendTo(JQxRoot);
 
-
-
-  // generic delegates (on document) from the static $.delegateCaptured
-  const clickOrMouseover = (evt, me) => {
-    // [me] => evt.target
-    return me.closest(`.exampleText`) && log(`HI from div.exampleText (you ${
-      evt.type === `click` ? `clicked it` : `you moved your mouse pointer out of me`})`);
-  };
-
-  // handle more than one event type
-  $.delegateCaptured({type: [`mouseout`, `click`], handlers: clickOrMouseover});
-
   // onclick is not allowed, so will be removed on element creation
   const msg = `hi there, you won't see me`;
   $(`<div id="nohandling" onclick="alert('${msg}')"></div>`)
-    .html(`<h1>H e l l o  w o r l d</h1>`).appendTo(JQxRoot);
+    .html(`<h1>H e l l o  &nbsp;w o r l d</h1>`).appendTo(JQxRoot);
 
   // script and data attribute will be removed, but you can add data-attributes later
   // styles are inline here
@@ -90,15 +77,22 @@ if (!debug) {
     `<div>Hi 2</div>`])
     .text(` [Hey! You can click AND hover me!]`, true)
     .style({color: `red`, marginTop: `0.7rem`, cursor: `pointer`})
-    // add a click and mouseover handler in one go
+    // add a click AND mouseover listener in one go
     .on(`click, mouseover`, (evt, self) => {
       const currentColor = self.first().style.color;
-      // o look, a state machine ;)
-      self.style({
-        color: currentColor === `red`
-          ? `green` : currentColor === `orange`
-            ? `red` : `orange`
-      });
+
+      switch(true) {
+        case evt.type === `click`:
+          // o look, a state machine ;)
+          self.style({
+            color: currentColor === `red`
+              ? `green` : currentColor === `orange`
+                ? `red` : `orange`
+          });
+          return log(`HI from div.exampleText (you  clicked me)`);
+        default:
+          return log(`HI from div.exampleText (you moved your mouse pointer over me)`);
+      }
     })
     .appendTo(JQxRoot);
 
@@ -112,13 +106,6 @@ if (!debug) {
       text: `show default css` }),
   };
   DIV({id: "bttnblock"}).append(...[
-      BUTTON({
-        id: "logBttn",
-        data: {on: "0"},
-        title: "show/hide the logged activities" }),
-      BUTTON({
-        id: "clearLog",
-        text: "Clear Log box" }).on(`click`, () => debugLog.clear()),
       BUTTON({
         id: "showComments",
         text: "Show document comments",
@@ -241,9 +228,6 @@ function getDelegates4Document() {
         },
       ]
     }, {
-      target: `#logBttn`,
-      handlers: [(_, self) => logActivation(self, !+(self.data.get(`on`, 1))),],
-    }, {
       target: `#showComments`,
       handlers: [function(evt) {
         const comments = $.div(allComments([...document.childNodes]).join(`\n`));
@@ -271,14 +255,6 @@ function getDelegates4Document() {
       ]
     }]
   });
-}
-
-// Some methods used in handler delegates
-function logActivation(logBttn, active = true) {
-  if (!logBttn.is.empty) {
-    logBttn.data.add({on: +active});
-    debugLog[active ? `show` : `hide`]();
-  }
 }
 
 function modalDemo() {
