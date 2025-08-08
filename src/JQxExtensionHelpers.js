@@ -230,11 +230,7 @@ function logger() {
   });
 }
 
-function staticMethodsFactory(jqx) {
-  const { factoryExtensions, instanceExtensions } = allMethodsFactory(jqx);
-  instanceGetters = factoryExtensions;
-  instanceMethods = instanceExtensions;
-  $ = jqx;
+function getStaticMethods(jqx) {
   const editCssRule = (ruleOrSelector, ruleObject) => cssRuleEdit(ruleOrSelector, ruleObject);
   const createStyle = id => styleFactory({createWithId: id || `jqx${randomString()}`});
   const editCssRules = (...rules) => { for (const rule of rules) { cssRuleEdit(rule); } };
@@ -242,6 +238,15 @@ function staticMethodsFactory(jqx) {
   const handle = HandleFactory(jqx);
   const capturedHandling = delegateCaptureFactory(handle);
   const log = (...line) => systemLog.on.log(...line).off;
+  return {editCssRule, createStyle, editCssRules, allowProhibit, handle, capturedHandling,log};
+}
+
+function staticMethodsFactory(jqx) {
+  const { factoryExtensions, instanceExtensions } = allMethodsFactory(jqx);
+  instanceGetters = factoryExtensions;
+  instanceMethods = instanceExtensions;
+  $ = jqx;
+  const {editCssRule, createStyle, editCssRules, allowProhibit, handle, capturedHandling,log} = getStaticMethods(jqx);
 
   return {
     log,
