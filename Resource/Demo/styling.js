@@ -68,7 +68,10 @@ export default [
     width: 100%;
     opacity: 1;
   }`,
-  `#bttnblock { margin-top: 1em; }`,
+  `#bttnblock { 
+     margin-top: 1em;
+     text-align: center; 
+  }`,
   `#logBttn[data-on='0']:before { content: 'Show logs'; }`,
   `#logBttn[data-on='1']:before { content: 'Hide logs'; }`,
   `b.arrRight {

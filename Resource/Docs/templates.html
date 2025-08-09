@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-08-09 07:00:34 UTC-->
+<!-- Generated file, last update 2025-08-09 08:17:53 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -1914,7 +1914,7 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
     <code>logger.error(...line)</code>: log one or more [line]s as error(s) to the console.
   </li>
   <li>
-    <code>logger.backLog()</code>: retrieves all log entries (array<strings>).
+    <code>logger.backLog()</code>: retrieves all log entries (array&lt;strings>).
   </li>
 </ul>
 
@@ -1931,10 +1931,15 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
         entries within the document, the HTML of the entries should be (html-)escaped.
       </div>
       <div>
-        A q&d way to do that may be 
+        You can use 
+         <div 
+           class="linkLike" 
+           data-action="jump2Nav" 
+           data-jumpkey="static_escHtml">[JQx].escHtml
+         </div> for that.
       </div>
       <div>
-        <code>$.logger.backLog.slice(-6).map(v => $.div(v).HTML.get(false, 1))</code>
+        For example: <code>$.logger.backLog.slice(-6).map(v => $.escHtml(v))</code>
       </div> 
     </li>
     <li>
@@ -1955,4 +1960,16 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
     </li>
   </ul> 
 </div></div>
+</template>
+
+<template data-id="static_escHtml" class="static_escHtml" data-is-deprecated="false">
+<div data-params='[{"html":"string"}]'></div>
+<div data-return-value='string'></div>
+<div data-text='1'>Escapes html in a string to display it as raw html in the document. For example:
+
+<div>
+  <code>$.escHtml("&lt;div>Hello&lt;/div>")</code> => "&amp;lt;div&amp;gt;Hello&amp;lt;/div&amp;gt;" 
+</div>
+
+</div>
 </template>
