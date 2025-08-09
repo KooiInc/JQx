@@ -106,6 +106,7 @@ if (!debug) {
       text: `show default css` }),
   };
   DIV({id: "bttnblock"}).append(...[
+      BUTTON({id: "showLogEntries", text: "show log"}).on(`click`, showBacklog),
       BUTTON({
         id: "showComments",
         text: "Show document comments",
@@ -273,6 +274,17 @@ function modalDemo() {
     modal: true,
     callback: callbackAfterClose,
     warnMessage: `There's only <b><i>one</i></b> escape`,
+  });
+}
+
+function showBacklog() {
+  $(`#jqxPopupContent`).style({maxWidth: `90vw`});
+  const backLog = $.logger.backLog.map(v => $.escHtml(v))
+  $.Popup.show({
+    content: $.div(
+      $.h3(`The current JQx log entries (reversed, latest first)`),
+      $.pre(backLog.join(`\n`))),
+    callback: () => $(`#jqxPopupContent`).style({maxWidth: ``})
   });
 }
 
