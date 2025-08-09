@@ -123,18 +123,12 @@ function combineObjectSources(...sources) {
   return result;
 }
 
-function tagNotAllowed(tagName) {
-  console.error(`JQx: "${tagName}" not allowed, not rendered`);
-  return undefined;
-}
-
 function tagGetterFactory(tagName, cando, jqx, webComponentTagName) {
   tagName = toDashedNotation(webComponentTagName || tagName.toLowerCase());
   return {
     get() {
       return  (...args) => {
-        if (!cando) { return tagNotAllowed(tagName) }
-        return jqx.virtual(cleanupHtml($T[tagName](...args)));
+        return cando ? jqx.virtual(cleanupHtml($T[tagName](...args))) : undefined;
       }
     },
     enumerable: false,

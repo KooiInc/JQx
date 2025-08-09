@@ -15,7 +15,7 @@ const logContingentErrors = elCreationInfo => {
     const msgs = Object.entries(elCreationInfo.removed)
       .reduce( (acc, [k, v]) => [...acc, `${escHtml(k)} => ${v}`], [])
       .join(`\\000A`);
-    systemLog.error(`JQx HTML creation errors: ${msgs}`);
+    systemLog.error(`JQx: HTML creation error(s): ${msgs}`);
   }
 };
 const elementCheck = function(child) {

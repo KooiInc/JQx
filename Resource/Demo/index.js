@@ -43,7 +43,6 @@ if (!debug) {
       $.div( { id: `JQxRoot` }).append($.comment(`div#JQxRoot contains all generated html`))
     ).style({margin: `1rem auto`}).toDOM();
 
-  const JQxRoot = $(`#JQxRoot`).prepend($(`#logBox`));
   const backLinks = getBacklinks();
 
   // create the header content
@@ -189,7 +188,6 @@ if (!debug) {
   // append actual code to document
   injectCode(JQxRoot).then(_ => `code injected`);
 
-  $(`#logBox`).style({maxWidth: `${JQxRoot.dimensions.width}px`, marginTop: 0});
   const donePerf = (performance.now() - started) / 1000;
   const perfMessage =
     $.div(`Page creation took ${donePerf.toFixed(3)} seconds`)

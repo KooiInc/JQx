@@ -32,7 +32,8 @@ function HandleFactory(jqx) {
       : { handler: evt => {
             const target = evt.target?.closest?.(selector);
             return target && callback(evt, jqx(target), remove);
-          }, remove
+          },
+          remove
         };
 
     if (abortcontroller) {

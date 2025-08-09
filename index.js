@@ -76,13 +76,8 @@ function JQxFactory() {
 
         systemLog.log(`${logStr}`);
         systemLog.log(`*Created ${instance.isVirtual ? `VIRTUAL ` : ``}[${
-          truncateHtmlStr(ElemArray2HtmlString(instance.collection) ||
+          truncateHtmlStr(ElemArray2HtmlString(instance.collection).trim() ||
             "sanitized: no elements remaining", logLineLength)}]`);
-
-        if (errors.length) {
-          systemLog.error(`JQx: illegal html, not rendered: "${
-            errors.reduce( (acc, el) => acc.concat(`${el.textContent}\n`), ``).trim()}"` );
-        }
 
         if (!instance.isVirtual) {
           inject2DOMTree(instance.collection, root, position);

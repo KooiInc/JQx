@@ -122,8 +122,10 @@ function extensionHelpers() {
 
     try { self.collection = [...selectorRoot.querySelectorAll(input)]; }
     catch (err) { errorStr = `Invalid CSS querySelector. [${!IS(input, String) ? `Nothing valid given!` : input}]`; }
-
-    return errorStr ?? `CSS querySelector "${input}", output ${self.collection.length} element(s)`;
+    const collectionLen = self.collection.length;
+    return collectionLen < 1
+      ? `CSS querySelector "${input}", output: nothing`
+      : errorStr ?? `CSS querySelector "${input}", output ${collectionLen} element${collectionLen > 1 ? `s` : ``}`;
   };
   const addHandlerId = instance => {
     const handleId = instance.data.get(`hid`) || `HID${randomString()}`;

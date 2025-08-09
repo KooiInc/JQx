@@ -1,14 +1,13 @@
 import { popupStyling as styleRules } from "./EmbedResources.js";
 
 export default function($) {
-  if (!$(`#jqxPopup`).isEmpty()) { return; }
-
+  if ($.node(`#jqxPopup`)) { return; }
+  $.logger.log(`JQx: [JQx].Popup first call. Dialog element created.`);
   $.dialog({id: `jqxPopup`}, $.div({ id: "jqxPopupContent" })).render;
   $.editCssRules(...styleRules);
   const [popupContent, popupNode] = [$(`#jqxPopupContent`), $.node(`#jqxPopup`)];
   let currentProps = {};
   $.handle( { type: `click, keydown`, handlers: genericPopupCloseHandler, capture: true } );
-
   return Object.freeze({show: initPopup, removeModal});
 
   function initPopup(props) {
