@@ -49,6 +49,7 @@ function documentHandlingFactory(jqx) {
   }
 
   function handleScroll(evt) {
+    if (!evt.target.classList.contains(`container`)) { return; }
     const docsTop = evt.target.scrollTop;
     let marge = 0;
     const nextHeader = jqx.nodes(`.description, .paragraph`)
@@ -310,6 +311,33 @@ function clickActionsFactory($) {
       setTimeout(() => {
         $("#tmpEx").addClass("warnUser", "user");
       }, 1500);
+    },
+    showLogEx: evt => {
+      if (exampleResultExists(evt.target)) { return; }
+
+      $.handle({type: `click`, selector: "#backlogBttn", handlers: showBacklog, once: true});
+      $.button({text: `show log entries`, id: `backlogBttn`}).showInExample(evt, true);
+
+      function showBacklog(evt) {
+        // adjust the popup width temporary
+        $(`#jqxPopupContent`).style({maxWidth: `90vw`});
+
+        // retrieve the log entries backlog (from $.logger)
+        const backLog = $.logger.backLog.map(v => $.escHtml(v));
+
+        $.Popup.show({
+          content: $.div(
+            $.h3(`The current JQx log entries (reversed, latest first)`),
+            $.pre(backLog.join(`\n`))),
+          callback: () => {
+            $(`#jqxPopupContent`).style({maxWidth: ``});
+
+            // close the example after closing the popup
+            // because the handler for button#backlogBttn was removed (once: true)
+            $(evt.target.closest(`[data-ex-tmp]`).querySelector(`button`)).trigger(`click`);
+          }
+        });
+      }
     },
     appendEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
@@ -1036,9 +1064,10 @@ function clickActionsFactory($) {
         .removeAfter(6);
     },
     staticDelegateCapturedEx: evt => {
+      const listenerInPlace = $.getNamedListener("click", "delegateExampleHandler");
       $.delegateCaptured/* or $.handle */({
         type: "click",
-        origin: "[data-for-id='static_delegateCaptured']",
+        selector: "[data-for-id='static_delegateCaptured']",
         handlers: delegateExampleHandler,
         name: "delegateExampleHandler"
         // ^ a name *must* be provided to avoid
@@ -1062,8 +1091,14 @@ function clickActionsFactory($) {
 
         return $.editCssRule(":root { --method-head-color: blue; }");
       }
-      // invoke the handler (all [JQx].* headers are re-colored)
-      $(`[data-for-id='static_delegateCaptured']`).trigger("click");
+
+      // display listener state and invoke the handler (all [JQx].* headers are re-colored)
+      $.Popup.show( {
+        content: `${listenerInPlace ? `Listener in place` : `Listener assigned`}. 
+          Will be invoked after this popup is closed`,
+        callback: () => $(`[data-for-id='static_delegateCaptured']`).trigger("click"),
+        closeAfter: 3
+      } );
     },
     clearEx: evt => {
       if (exampleResultExists(evt.target)) { return; }

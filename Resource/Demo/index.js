@@ -74,7 +74,7 @@ if (!debug) {
   // styles inline
   $([`<notallowed id="removal_imminent"></notallowed>`,
     `<div>Hi 2</div>`])
-    .text(` [Hey! You can click AND hover me!]`, true)
+    .text(` [Hey! You can click AND hover me! (see log)]`, true)
     .style({color: `red`, marginTop: `0.7rem`, cursor: `pointer`})
     // add a click AND mouseover listener in one go
     .on(`click, mouseover`, (evt, self) => {
