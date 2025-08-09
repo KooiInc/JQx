@@ -51,7 +51,7 @@ const cleanupHtml = el2Clean => {
             if (evilValue || evilAttrib) {
               let val = truncate2SingleStr(attr.value || `none`, 60);
               val += val.length === 60 ? `...` : ``;
-              elCreationInfo.removed[`${attr.name}`] = `attribute/property (-value) not allowed, removed. Value: ${
+              elCreationInfo.removed[`${attr.name}`] = `attribute/property/value not allowed, removed. Value: ${
                 val}`;
               child.removeAttribute(attr.name);
             }
