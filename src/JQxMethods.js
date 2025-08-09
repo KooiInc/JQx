@@ -6,8 +6,6 @@ import {
   inject2DOMTree,
   isCommentOrTextNode,
   truncateHtmlStr,
-  // systemLog,
-  // debugLog,
 } from "./JQxExtensionHelpers.js";
 import {ATTRS} from "./EmbedResources.js";
 import {
@@ -16,7 +14,9 @@ import {
   toDashedNotation,
   toCamelcase,
   randomString,
-  escHtml, } from "./Utilities.js";
+  escHtml,
+  systemLog,
+} from "./Utilities.js";
 const loop = (instance, callback) => {
   const cleanCollection = instance.collection.filter(el => !isCommentOrTextNode(el));
   for (let i = 0; i < cleanCollection.length; i += 1) {
@@ -486,7 +486,7 @@ function instanceExtensionsFactory(jqx) {
       return instance;
     },
     remove: (instance, selector) => {
-      systemLog(`remove ${truncateHtmlStr(instance.HTML.get(1), 40)}${selector ? ` /w selector ${selector}` : ``}`);
+      systemLog.log(`remove ${truncateHtmlStr(instance.HTML.get(1), 40)}${selector ? ` /w selector ${selector}` : ``}`);
       const remover = el => el.remove();
       const removeFromCollection = () =>
         instance.collection = instance.collection.filter(el => document.documentElement.contains(el));
