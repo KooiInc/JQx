@@ -14,7 +14,6 @@ $.editCssRules(...cssRules);
 
 // use jqx in the developer console
 window.jqx = $;
-$.logger.on;
 
 // add event handling defined in function [getDelegates4Document]
 getDelegates4Document().forEach(([type, targetedHandlers]) =>
