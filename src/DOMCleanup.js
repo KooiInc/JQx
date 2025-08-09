@@ -8,14 +8,14 @@ const attrRegExpStore = {
   data: /data-[\-\w.\p{L}]/ui, // data-* minimal 1 character after dash
   validURL: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i,
   whiteSpace: /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205F\u3000]/g,
-  notAllowedValues: /javascript|injected|noreferrer|alert|DataURL/gi
+  notAllowedValues: /^javascript|injected|noreferrer|alert|DataURL/gi
 };
 const logContingentErrors = elCreationInfo => {
   if (logElementCreationErrors2Console && Object.keys(elCreationInfo.removed).length) {
     const msgs = Object.entries(elCreationInfo.removed)
       .reduce( (acc, [k, v]) => [...acc, `${escHtml(k)} => ${v}`], [])
       .join(`\\000A`);
-    systemLog.log(`JQx HTML creation errors: ${msgs}`);
+    systemLog.error(`JQx HTML creation errors: ${msgs}`);
   }
 };
 const elementCheck = function(child) {
