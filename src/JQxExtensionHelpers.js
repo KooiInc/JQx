@@ -5,12 +5,11 @@ import { listeners, default as HandleFactory } from "./HandlerFactory.js";
 import tagLib from "./HTMLTags.js";
 import {
   randomString, toDashedNotation, IS, truncateHtmlStr, tagFNFactory as $T,
-  truncate2SingleStr, styleFactory, toCamelcase, systemLog,
+  truncate2SingleStr, styleFactory, toCamelcase, systemLog, escHtml,
   isNonEmptyString, resolveEventTypeParameter, extensionHelpers,
 } from "./Utilities.js";
 
-let static4Docs = {};
-let instanceGetters, instanceMethods, $;
+let instanceGetters, instanceMethods;
 const {
   isCommentOrTextNode, isNode, isComment, isText, isHtmlString, isArrayOfHtmlElements,
   isArrayOfHtmlStrings, ElemArray2HtmlString, input2Collection, setCollectionFromCssSelector,
@@ -22,7 +21,7 @@ export {
   addHandlerId, isHtmlString, isNode, isArrayOfHtmlStrings, isArrayOfHtmlElements, isCommentOrTextNode,
   inject2DOMTree, ElemArray2HtmlString, input2Collection, setCollectionFromCssSelector,
   truncateHtmlStr, truncate2SingleStr, proxify, addJQxStaticMethods, createElementFromHtmlString,
-  insertPositions, IS, $ as jqx, };
+  insertPositions, IS, };
 
 /* region functions */
 function localHelpersFactory() {
@@ -55,9 +54,11 @@ function proxyKeyFactory(self, key, instance) {
 
 function addJQxStaticMethods(jqx) {
   const staticMethods = defaultStaticMethodsFactory(jqx);
+
   for (const [key, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(staticMethods))) {
     Object.defineProperty(jqx, key, descriptor);
-    Object.defineProperty(static4Docs, key, descriptor); }
+  }
+
   return jqx;
 }
 
@@ -220,17 +221,7 @@ function popupGetter(jqx) {
   return jqx.activePopup;
 }
 
-function loggerFactory() {
-  return Object.freeze({
-    get on() { return systemLog.on; },
-    get off() { return systemLog.off; },
-    get log() { return systemLog.log; },
-    get logLines() { return systemLog.logLines; },
-    get error() { return systemLog.error; },
-  });
-}
-
-function getStaticMethods(jqx) {
+function getSelectedStaticMethods(jqx) {
   const editCssRule = (ruleOrSelector, ruleObject) => cssRuleEdit(ruleOrSelector, ruleObject);
   const createStyle = id => styleFactory({createWithId: id || `jqx${randomString()}`});
   const editCssRules = (...rules) => { for (const rule of rules) { cssRuleEdit(rule); } };
@@ -245,9 +236,8 @@ function staticMethodsFactory(jqx) {
   const { factoryExtensions, instanceExtensions } = allMethodsFactory(jqx);
   instanceGetters = factoryExtensions;
   instanceMethods = instanceExtensions;
-  $ = jqx;
-  const { editCssRule, createStyle, editCssRules,
-    allowProhibit, handle, capturedHandling, log } = getStaticMethods(jqx);
+  const { editCssRule, createStyle, editCssRules, allowProhibit, handle, capturedHandling, log } =
+    getSelectedStaticMethods(jqx);
 
   return {
     log,
@@ -255,10 +245,12 @@ function staticMethodsFactory(jqx) {
     createStyle,
     editStylesheet: createStyle,
     editCssRule,
+    escHtml,
+    logger: systemLog,
     text: (str, isComment = false) => isComment ? jqx.comment(str) : document.createTextNode(str),
     node: (selector, root = document) => root.querySelector(selector, root),
     nodes: (selector, root = document) =>  [...root.querySelectorAll(selector, root)],
-    get logger() { return loggerFactory() },
+    //get logger() { return loggerFactory() },
     get getNamedListener() { return getNamedListener; },
     get virtual() { return virtualFactory(jqx); },
     get allowTag() { return allowProhibit.allow; },

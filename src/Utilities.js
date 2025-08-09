@@ -199,30 +199,28 @@ function decodeForConsole(something) {
 
 function systemLogFactory() {
   let on = false;
+  const backLog = [];
   const systemLogger = {
     get on() { on = true; return systemLogger; },
     get off() { on = false; return systemLogger; },
+    get backLog() { return backLog; },
   };
 
   function error(...args) {
-    for (const arg of args) { console.error(`${logTime()} ✔ ${decodeForConsole(arg)}`); }
+    backLog.unshift(...args.map(arg => `${logTime()} ⨻ ${decodeForConsole(arg)}`));
+    console.error(backLog.slice(0, args.length).join(`\n`));
     return systemLogger;
   }
 
   function log(...args) {
+    backLog.unshift(...args.map(arg => `${logTime()} ✔ ${decodeForConsole(arg)}`));
     if (!on) { return systemLogger; }
-    for (const arg of args) { console.log(`${logTime()} ✔ ${decodeForConsole(arg)}`); }
+    console.log(backLog.slice(0, args.length).join(`\n`));
     return systemLogger;
-  }
-
-  function logLines(...args) {
-    return `<div>${args.map(arg => `${logTime()} ✔ ${escHtml(arg)}`)
-      .join(`</div>\n<div>`)}<div>`;
   }
 
   Object.defineProperties(systemLogger, {
     log: {value: log, enumerable: false},
-    logLines: {value: logLines, enumerable: false},
     error: {value: error, enumerable: false},
   });
 

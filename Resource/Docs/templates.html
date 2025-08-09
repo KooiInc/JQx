@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-08-08 14:15:58 UTC-->
+<!-- Generated file, last update 2025-08-09 07:00:34 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -1892,26 +1892,29 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 
 <template data-id="static_logger" class="static_logger" data-is-deprecated="false">
 <div data-params='None'></div>
-<div data-return-value='{on, off, log, logLines, error}'></div>
+<div data-return-value='{on, off, backLog, log, error}'></div>
 <div data-text='1'><div>
-  <code>[JQx].logger</code> controls the logging. 
+  <code>[JQx].logger</code> controls logging to the console. 
+  JQx actions and custom logged messages are logged to a <code>backLog</code> store.
 </div>
 
 <ul>
   <li>
-    <code>logger.on</code>: (getter) enable logging
+    <code>logger.on</code>: (getter) enable logging. When enabled, log entries are
+    written to the console.
   </li>
   <li>
-    <code>logger.off</code>: (getter) disable logging
+    <code>logger.off</code>: (getter) disable logging. When disabled only 
+    error messages are written to the console.
   </li>
   <li>
-    <code>logger.log(...line)</code>: log one or several [line]s to the console.
-  </li>
-  <li>
-    <code>logger.logLines(...line)</code>: return one or several [line]s as div string(s).
+    <code>logger.log(...line)</code>: log and store one or several [line]s to the console.
   </li>
   <li>
     <code>logger.error(...line)</code>: log one or more [line]s as error(s) to the console.
+  </li>
+  <li>
+    <code>logger.backLog()</code>: retrieves all log entries (array<strings>).
   </li>
 </ul>
 
@@ -1922,25 +1925,28 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
       Every log line is prefixed with the exact time of logging.
     </li>
     <li>
-      When the input for <code>logger.logLines</code> contains html,
-      it will be escaped. For example:
+      The backLog is an array of everything logged, in a reversed order (latest first). 
       <div>
-         <code>logger.logLines("&lt;div>Hello&lt/div>")</code> results in 
-         "&lt;div>[hh:mm:ss.ms] ✔ &amp;lt;div&amp;gt;Hello&amp;lt;/div&amp;gt;&lt;div>"
+        It may contain HTML strings. When you want to display
+        entries within the document, the HTML of the entries should be (html-)escaped.
       </div>
-
+      <div>
+        A q&d way to do that may be 
+      </div>
+      <div>
+        <code>$.logger.backLog.slice(-6).map(v => $.div(v).HTML.get(false, 1))</code>
+      </div> 
     </li>
     <li>
-      With the exception of <code>logger.logLines</code>
-      all properties return the logger, so chaining 
+      All properties except <code>backLog</code> return the logger, so chaining 
       is possible.
     </li>
     <li>
       When logging is enabled, <b><i>every</i></b>
       JQx action is logged to the console.
       <div>
-        The <code>on</code> and <code>off</code> getters returns the logger,
-        so you can use <code>[JQx].logger.on.log("...").off]</code>
+        The <code>on</code> and <code>off</code> getters return the logger,
+        so you can use <code>[JQx].logger.on.log("...").off</code>
         to log once.
         <div>
           This is actually what <code>[JQX].log</code> does.
