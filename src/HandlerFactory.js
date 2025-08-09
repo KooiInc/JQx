@@ -17,16 +17,16 @@ function HandleFactory(jqx) {
         name = name || (!/handlers$/.test(callback.name) && callback.name) || undefined;
         capture = jqx.IS(capture, Boolean) ? capture : false;
         once = jqx.IS(once, Boolean) ? once : false;
-        canRemove = isNonEmptyString(name, 4) && jqx.IS(canRemove, Boolean) ? canRemove : false;
-        const { handler, signal, remove } = wrapHandlerFunction({selector, callback, canRemove, name, eventType});
+        canRemove = isNonEmptyString(name, 4) && jqx.IS(canRemove, Boolean) ? canRemove : once;
+        const { handler, signal, remove } = wrapHandlerFunction({selector, callback, canRemove, once, name, eventType});
         return addAndStoreListener({eventType, handler, capture, once, signal, remove, name});
     }
   };
 
   function wrapHandlerFunction(spec) {
-    const {selector, callback, canRemove, name, eventType} = spec;
-    const abortcontroller = canRemove && new AbortController();
-    const remove = removeHandlerFactory({abortcontroller, name, eventType});
+    const {selector, callback, canRemove, name, eventType, once} = spec;
+    const abortcontroller = (canRemove || once) && new AbortController();
+    const remove = removeHandlerFactory({once, abortcontroller, name, eventType});
     const listener = !selector
       ? { handler: evt => callback(evt, evt.target, remove), remove}
       : { handler: evt => {
@@ -34,17 +34,29 @@ function HandleFactory(jqx) {
             return target && callback(evt, jqx(target), remove);
           }, remove
         };
-    if (abortcontroller) { listener.signal = abortcontroller.signal; }
+
+    if (abortcontroller) {
+      listener.signal = abortcontroller.signal;
+      if (once) {
+          return {
+            handler: (evt, me) => {
+              listener.handler(evt, me);
+              remove();
+          }
+        }
+      }
+    }
+
     return listener;
   }
 
   function removeHandlerFactory(spec) {
-    const {abortcontroller, name, eventType} = spec;
+    const {once, abortcontroller, name, eventType} = spec;
     return !name
-      ? function() { console.error(`An anonymous listener can not be removed`); }
+      ? function() { jqx.logger.error(`An anonymous listener can not be removed`); }
       : !abortcontroller
         ? function(evt) {
-            console.error(`Listener for event type [${eventType}] with name [${
+            jqx.logger.error(`Listener for event type [${eventType}] with name [${
               name}] is not marked as removable`);
           }
         : function removeHandler() {
@@ -52,14 +64,13 @@ function HandleFactory(jqx) {
           const toRemove = [...handlerStore[eventType].entries()].find(([k, v]) => v.name === name);
           handlerStore[eventType].delete(toRemove[0]);
           setTimeout( () =>
-            console.warn(`Listener for event type [${eventType}] with name [${
-              name}] was removed`), 100 );
+            jqx.logger.log(`Listener for event type [${eventType}] with name [${
+              name}] was removed${once ? ` (once active, so handled once).` : ``}`), 100 );
           }
   }
 
   function addAndStoreListener(spec) {
     const {eventType, handler, capture, once, signal, remove, name} = spec;
-    if (once) { return addEventListener(eventType, handler, {once}); }
     if (!handlerStore[eventType]) { handlerStore[eventType] = new Map(); }
     const delegateExists = handlerStore[eventType].has(handler) ||
       [...handlerStore[eventType].values()].find(h => (h.name || ``) === name);
