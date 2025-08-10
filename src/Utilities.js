@@ -50,11 +50,6 @@ function shuffle(array) {
   return array;
 }
 
-function hex2Full(hex) {
-  hex = (hex.trim().startsWith("#") ? hex.slice(1) : hex).trim();
-  return hex.length === 3 ? [...hex].map(v => v + v).join("") : hex;
-}
-
 function truncateHtmlStr(str, maxLength = 120) {
  return `${str}`
    .trim()
@@ -94,15 +89,6 @@ function logTime() {
   return ((d) =>
     `[${pad0(d.getHours())}:${pad0(d.getMinutes())}:${
       pad0(d.getSeconds())}.${pad0(d.getMilliseconds(), 3)}]`)(new Date());
-}
-
-function hex2RGBA(hex, opacity = 100) {
-  hex = hex2Full(hex.slice(1));
-  const op = opacity % 100 !== 0;
-  return `rgb${op ? "a" : ""}(${
-    parseInt(hex.slice(0, 2), 16)}, ${
-    parseInt(hex.slice(2, 4), 16)}, ${
-    parseInt(hex.slice(-2), 16)}${op ? `, ${opacity / 100}` : ""})`;
 }
 
 function escHtml(html) {
@@ -298,7 +284,6 @@ export {
   truncate2SingleStr,
   logTime,
   randomNr,
-  hex2RGBA,
   escHtml,
   ExamineElementFeatureFactory,
   styleFactory,

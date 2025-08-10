@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-08-10 05:34:31 UTC-->
+<!-- Generated file, last update 2025-08-10 14:41:04 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -138,7 +138,7 @@ a few seconds) or in a popup.
   &lt;div class="docs">&lt;/div>
   &lt;script src="./index.js" type="module">&lt;/script>
 &lt;/body>
-&lt;/html>
+&lt;/html>    
     </div>
   </li>
 </ul>
@@ -158,18 +158,18 @@ Otherwise returns the JQx Instance.</div></div>
 <div data-params='[{"cb":"Function. The lambda function to appy to every element of the collection."}]'></div>
 <div data-return-value='JQx Instance'></div>
 <div data-text='1'><div>
- Loops through every element of the instance collection and applies the
+ Loops through every element of the instance collection and applies the 
  given callback function to it.
 </div>
 
 <div>
   The signature of the callback function is <code>(element, [i]) => {...}</code>.
-  Elements that are not <code>HTMLElement</code> (e.g. <code>Comment</code> or text
+  Elements that are not <code>HTMLElement</code> (e.g. <code>Comment</code> or text 
   nodes) are <i>not</i> processed.
 </div>
 
 <div>
-  Click the [Try it] button twice and watch the <b><i>method name headers</i></b>
+  Click the [Try it] button twice and watch the <b><i>method name headers</i></b> 
   for a demo.
 </div>
 
@@ -258,14 +258,14 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
 <div data-params='[{"instance":""},{"root":"HTMLElement. Default <code>document.body</code>"},{"position":"String. One of \"beforeend\", \"afterbegin\", \"beforebegin\", \"afterend\". Default: \"beforeend\""}]'></div>
 <div data-return-value='JQx Instance'></div>
 <div data-text='1'><div>
-  Add a 'virtual' element (an element created in memory, using the <code>
-  [instance].virtual</code> or the <code>[JQx constructor][tagName]</code> method)
-  to the DOM.
+  Add a 'virtual' element (an element created in memory, using the <code> 
+  [instance].virtual</code> or the <code>[JQx constructor][tagName]</code> method) 
+  to the DOM. 
 </div>
 
 <div>
-  Defaults to adding the element to the body, but <code>root</code> may be any element (if
-  the DOM allows it). See <div class="linkLike" data-jumpkey="static_virtual"
+  Defaults to adding the element to the body, but <code>root</code> may be any element (if 
+  the DOM allows it). See <div class="linkLike" data-jumpkey="static_virtual" 
   data-action="jump2Nav">virtual</div> documentation for an example.
 </div></div>
 </template>
@@ -287,10 +287,10 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
 
 <ul>
   <li>when the JQx Instance to append to is empty, nothing will happen.</li>
-  <li>If (one of) elems2Append consists of html string(s), they should contain valid html
-  (e.g., no flow content in elements expecting phrasing content, so for example no <code>&lt;h1></code> within <code>&lt;p></code>).
+  <li>If (one of) elems2Append consists of html string(s), they should contain valid html 
+  (e.g., no flow content in elements expecting phrasing content, so for example no <code>&lt;h1></code> within <code>&lt;p></code>). 
   The HTML is always sanitized.</li>
-  <li>Already existing (in DOM) <code>elems2Append</code> are <i>moved</i> to the JQx instance when the JQx instance to append to has one element in
+  <li>Already existing (in DOM) <code>elems2Append</code> are <i>moved</i> to the JQx instance when the JQx instance to append to has one element in 
     its collection, <b>but</b></li>
   <li><code>elems2Append</code> (if JQx instance or Node) are <i>cloned and stripped of their id</i> when the JQx instance collection to append to contains more then one element.</li>
 </ul>
@@ -316,8 +316,8 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
 <div class="note">
   <b>Note</b>: <code>delegate</code> is marked as <i>deprecated</i> and may in due
     time be replaced with
-  <div class="linkLike"
-    data-action="jump2Nav"
+  <div class="linkLike" 
+    data-action="jump2Nav" 
     data-jumpkey="static_delegateCaptured">delegateCaptured</div>.
 </div>
 
@@ -464,7 +464,7 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
 <div data-return-value='string'></div>
 <div data-text='1'><div>Retrieves the complete html for the first (root) element of the JQx Instance.</div>
 
-<div class="note"><b>Note</b>: <code>.outerHtml</code> is a <i><b>property</b></i> (not a method).
+<div class="note"><b>Note</b>: <code>.outerHtml</code> is a <i><b>property</b></i> (not a method). 
  It is also possible to use the <code>HTML</code> for this: <code>[instance].HTML.get(true)</code>.
  See: <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_HTML">[JQx instance].HTML</div>
 </div>
@@ -499,8 +499,8 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
 <div data-params='[{"forQuery":"string.  A (valid) css selector."},{"htmlString":"string. (valid) HTML string."},{"append":"Boolean. Default false"}]'></div>
 <div data-return-value='JQx Instance'></div>
 <div data-text='1'><div>
-  Sets/adds/removes html for one or more elements
-  (identified with a <code>forQuery</code>) within the element
+  Sets/adds/removes html for one or more elements 
+  (identified with a <code>forQuery</code>) within the element 
   collection of the JQx Instance.
 </div>
 
@@ -526,13 +526,13 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
 <ul>
   <li>When (one of) <code>elems2Prepend</code> is a collection of elements (e.g. retrieved from <code>$(`.example`)</code>), the elements from the collection will be prepended in reversed order.
   <li>When the JQx Instance to append to is empty, nothing will happen.</li>
-  <li>If (one of) elems2Prepend consists of html string(s), they should contain valid html
-    (e.g., no flow content in elements expecting phrasing content, so for example no <code>&lt;h1></code> within <code>&lt;p></code>).
+  <li>If (one of) elems2Prepend consists of html string(s), they should contain valid html 
+    (e.g., no flow content in elements expecting phrasing content, so for example no <code>&lt;h1></code> within <code>&lt;p></code>). 
     The HTML is always sanitized.</li>
   <li>When (one of) <code>elems2Prepend</code>, a textNode is prepended.</li>
-  <li>Already existing (in DOM) <code>elems2Prepend</code> are <i>moved</i> to the JQx instance when the JQx instance to prepend to has one element in
+  <li>Already existing (in DOM) <code>elems2Prepend</code> are <i>moved</i> to the JQx instance when the JQx instance to prepend to has one element in 
     its collection, <b>but</b></li>
-  <li><code>elems2Prepend</code> (if JQx instance or Node) are <i>cloned and stripped of their id</i>
+  <li><code>elems2Prepend</code> (if JQx instance or Node) are <i>cloned and stripped of their id</i> 
     when the JQx instance collection to append to contains more then one element.</li>
 </ul>
 
@@ -564,27 +564,27 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
   <b>or</b> <code>keyOrObj</code> is a string and <code>[value]</code> is a string)
   attributes for the first (root) element of the JQx Instance element collection.
 </div>
-<div class="note"><b>Notes</b>:</div>
+<div class="note"><b>Notes</b>:</div> 
 <ul>
   <li>
-    to set <code>data-attribute</code> use <code>{data: {[key]: [value], ...}}</code>
+    to set <code>data-attribute</code> use <code>{data: {[key]: [value], ...}}</code> 
     (see example).
-  </li>
+  </li> 
   <li>
-    <code>data</code> attribute keys may be <a target="_blank"
+    <code>data</code> attribute keys may be <a target="_blank" 
       href="https://developer.mozilla.org/en-US/docs/Glossary/Camel_case"
       >camel cased</a>. See example.
-  </li>
+  </li>  
   <li>
-    To set multiple <code>class</code>-names, use a comma or space separated
-    string of class names
+    To set multiple <code>class</code>-names, use a comma or space separated 
+    string of class names 
     <br>(e.g. <code>[instance].attr({class: `class1, class2, ... `})</code>)
     <div><b class="red">note</b>: setting <code>class</code>
-      using <code>[JQx instance].attr</code> will <i>replace</i>
+      using <code>[JQx instance].attr</code> will <i>replace</i> 
       the existing <code>class</code> attribute.
       Use
       <div class="linkLike" data-action="jump2Nav"
-         data-jumpkey="instance_addClass">[JQx instance].addClass</div>
+         data-jumpkey="instance_addClass">[JQx instance].addClass</div> 
       to <i>add</i> classes to an Element.</div>
    </li>
    <li>
@@ -595,7 +595,7 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
       Setting an attribute value ([keyOrObj] returns the JQx instance.
     </li>
    <li>
-     See all information on attributes and properties @<a target="_blank"
+     See all information on attributes and properties @<a target="_blank" 
        href="https://javascript.info/dom-attributes-and-properties">javascript.info</a>
     </li>
 </ul>
@@ -637,7 +637,7 @@ import $ from "//kooiinc.github.io/JQx/Bundle/jqx.min.js";
 
 <ul>
   <li><code>input</code>: A (n Array of) HTML string(s), HTMLElement, JQx instance or a single
-    (simple or complex) css selector.
+    (simple or complex) css selector. 
     <div><b class="red">Notes</b>:
     <ul>
       <li>When using an Array, its elements must be of <i>equal types</i> (so an Array of <i>either</i>
@@ -808,11 +808,11 @@ import $ from "//kooiinc.github.io/JQx/Bundle/jqx.min.js";
 <div data-text='1'>  <div>
     <div>
       <div>Show each element of the element collection of the JQx instance.</div>
-
+  
       <div class="note"><b>Note</b>: this will reset the <code>display</code> css property. For
         more granular showing/hiding elements, use your own css classes.
       </div>
-
+  
       <div data-example>##EXAMPLECODE@showHideEx##</div>
     </div>
   </div></div>
@@ -822,7 +822,7 @@ import $ from "//kooiinc.github.io/JQx/Bundle/jqx.min.js";
 <div data-params='[{"instance":""},{"indexOrSelector":"string | number. An optional (valid) css selector."}]'></div>
 <div data-return-value='JQx Instance'></div>
 <div data-text='1'><div>
-When <code>indexOrSelector</code> has a value, retrieves the first matching element from a JQx Instance collection, or retrieves the first (root) element from the collection. The result will be a new JQx Instance
+When <code>indexOrSelector</code> has a value, retrieves the first matching element from a JQx Instance collection, or retrieves the first (root) element from the collection. The result will be a new JQx Instance 
 (<b class="red">note</b>: its collection may be empty).</div>
 
 <div class="note"><b>Note</b>: retrieve a single element with a number is zero based.</div>
@@ -909,16 +909,16 @@ When <code>indexOrSelector</code> has a value, retrieves the first matching elem
 <template data-id="popup_About" class="popup_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
-<div data-text='1'><div>Popup is a small module for creating (modal) popups. By default it is not initialized.</div>
+<div data-text='1'><div>Popup is a small module for creating (modal) popups. By default it is not initialized.</div> 
 
 <div>
-  You can initialize it using the <code>Popup</code> getter: <code>const popup = [JQx].Popup</code>,
+  You can initialize it using the <code>Popup</code> getter: <code>const popup = [JQx].Popup</code>,   
   or use it directly (<code>[JQx].Popup.show(...)</code>).
 </div>
 
 <div>
-  The (renewed) <code>Popup</code> module uses a
-  <a target="_blank"
+  The (renewed) <code>Popup</code> module uses a 
+  <a target="_blank" 
      href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog"
   >dialog</a> element. A (non modal) popup box can be closed by pressing &lt;ESC>, or clicking
   the checkmark icon (top right) or anywhere outside the box.
@@ -959,6 +959,7 @@ function createTimedPopup(content, timeout, callback) {
 
 <div data-example>##EXAMPLECODE@popupCreateModalWithReturnvalueEx##</div>
 
+
 </div>
 </template>
 
@@ -969,10 +970,10 @@ function createTimedPopup(content, timeout, callback) {
   log one or more strings to the console (browser web developer tools).
 </div>
 
-<div>
+<div> 
   See <div class="linkLike"
-    data-action="jump2Nav"
-    data-jumpkey="static_logger">[JQx].logger</div>
+    data-action="jump2Nav" 
+    data-jumpkey="static_logger">[JQx].logger</div> 
   for more information.
 </div></div>
 </template>
@@ -1001,10 +1002,10 @@ function createTimedPopup(content, timeout, callback) {
 <div data-text='1'><!--DEPRECATED-->
 
 <div>
-  Alias of <div class="linkLike"
-  data-action="jump2Nav"
-  data-jumpkey="static_editStylesheet">editStylesheet</div>.
-  This method is kept for backward
+  Alias of <div class="linkLike" 
+  data-action="jump2Nav" 
+  data-jumpkey="static_editStylesheet">editStylesheet</div>. 
+  This method is kept for backward 
   compatibility. <b class="red">Note</b>: it may disappear someday!
 </div></div>
 </template>
@@ -1028,9 +1029,9 @@ function createTimedPopup(content, timeout, callback) {
 <div data-text='1'><!--DEPRECATED-->
 
 <div>
-  Alias of <div class="linkLike"
-   data-action="jump2Nav"
-   data-jumpkey="static_editCssRule">editCssRule</div>. The method is kept for backward
+  Alias of <div class="linkLike" 
+   data-action="jump2Nav" 
+   data-jumpkey="static_editCssRule">editCssRule</div>. The method is kept for backward 
   compatibility. <b class="red">Note</b>: it may disappear someday!
 </div>
 
@@ -1046,9 +1047,9 @@ function createTimedPopup(content, timeout, callback) {
 <div><b>Notes</b>:</div>
 <ul>
 <li>[...rules] may also be a single comma delimited string of several css selectors</li>
-<li>When a rule has several cssSelectors in one rule (e.g. <code>.test1, test2 {...}</code>, surround the rule to remove
+<li>When a rule has several cssSelectors in one rule (e.g. <code>.test1, test2 {...}</code>, surround the rule to remove 
   with exclamation marks: <code>$.removeCssRule(`!.test1, test2!`)</code></li>
-<li>The selector to remove should be <i>exactly</i> the selector you used to create it.
+<li>The selector to remove should be <i>exactly</i> the selector you used to create it. 
 So removal of <code>.test1, test2 {...}</code> will fail using <code>$.removeCssRule(`!.test1,test2!`)</code></li>
 <li>For clarity <div class="linkLike" data-action="jump2Nav" data-jumpkey="static_removeCssRules">removeCssRules</div> exists also. Both <code>removeCssRule</code> and <code>removeCssRule<b style="color:red">s</b></code> work exactly the same.</li>
 </ul>
@@ -1127,13 +1128,13 @@ $.TEMPLATE({id: "myTemplate", innerHTML: "..."}).render;</div>
 <b>Notes</b>
   <ul>
     <li>
-      using <code>allowTag</code> may introduce
+      using <code>allowTag</code> may introduce 
       security problems. <b class="warn">Handle with care</b>!
      </li>
     <li>
-      This  method can also be used to allow <i>custom element</i> (web components) tags.
-      <br>The top bar of this documentation is a web component
-      (<code>&lt;copyright-slotted></code>), created with
+      This  method can also be used to allow <i>custom element</i> (web components) tags. 
+      <br>The top bar of this documentation is a web component 
+      (<code>&lt;copyright-slotted></code>), created with 
       <a target="_blank" href="https://github.com/KooiInc/es-webcomponent-factory"
        >es-webcomponent-factory</a>
     </li>
@@ -1195,7 +1196,7 @@ $.TEMPLATE({id: "myTemplate", innerHTML: "..."})?.toDOM();</div></div>
 <ul>
 <li><code>[JQx instance].data</code> is a <i>static property</i>;</li>
 <li><code>[JQx instance].data</code>'s methods are applied to the first element of the JQx instance collection;</li>
-<li>The handling of casing for data-attributes is a bit weird and poorly documented imho.
+<li>The handling of casing for data-attributes is a bit weird and poorly documented imho. 
 In html and css a data-attribute like <code>helloWorld</code> will show up as <code>hello-world</code>, for setting of/retrieval from the <code>dataset</code> it should be <code>helloWorld</code>. The methods of <code>[JQx instance].data</code> mitigate this (in other words: you can always use either <i>camelCased</i> or <i>dashed notation</i> data-attributes here). The example should demonstrate this;</li>
 <li>The methods <code>.set</code> and <code>.remove</code> return the JQx instance (so, you can chain from them).
 </ul>
@@ -1204,7 +1205,7 @@ In html and css a data-attribute like <code>helloWorld</code> will show up as <c
 
 <ul>
   <li><code>all</code>: Retrieves all data-attribute values (e.g. <code>[JQx instance].data.all.someattribute</code>);</li>
-  <li><code>get(key: string[, whenUndefined: any])</code> Retrieves the value of data-attribute with [key] (e.g. <code>[JQx instance].data.get("someattribute")</code>.
+  <li><code>get(key: string[, whenUndefined: any])</code> Retrieves the value of data-attribute with [key] (e.g. <code>[JQx instance].data.get("someattribute")</code>. 
    <code>whenUndefined</code> (optional) will be returned when the data-attribute does not exist);</li>
   <li><code>set({key1: value1, ..., keyn: valuen})</code> Sets one or more attribute values (e.g. <code>[JQx instance].data.set({someattribute: "1"})</code>);</li>
   <li><code>remove(key: string)</code> Removes the data-attribute with [key] (e.g. <code>[JQx instance].data.remove("someattribute")</code>).</li>
@@ -1224,18 +1225,18 @@ In html and css a data-attribute like <code>helloWorld</code> will show up as <c
 
 <div>The available methods:</div>
 <ul>
-<li><code>get([outer:boolean, escaped:boolean])</code> Retrieves the html. If [outer] is true, it will be the outerHTML, otherwise innerHTML.
+<li><code>get([outer:boolean, escaped:boolean])</code> Retrieves the html. If [outer] is true, it will be the outerHTML, otherwise innerHTML. 
   When [escaped] is true, the html will be escaped, meaning that you can display the html within another html element.</li>
-<li><code>set(content:string|JQx instance, [append:boolean], [escape:boolean])</code>
+<li><code>set(content:string|JQx instance, [append:boolean], [escape:boolean])</code> 
   Set the html of the first element of the JQx collection.
   <ul>
     <li>When [append] is true, [content] is appended to the existing html.</li>
     <li>When[escape] is true, [content] is escaped (so: <code>&lt;div></code> becomes <code>&amp;lt;div></code>)</li>
   </ul>
-  <b>Notes</b>:
+  <b>Notes</b>: 
   <ul>
     <li>[content] is always sanitized.</li>
-    <li>When not appended or inserted, <code>set</code> destroys everything within
+    <li>When not appended or inserted, <code>set</code> destroys everything within 
          the first element of the JQx collection</li></ul>
 </li>
 <li><code>replace(content:string|JQx Instance, [escape:boolean])</code> Replaces innerHTML with [content]. See <code>HTML.set</code>.</li>
@@ -1327,8 +1328,8 @@ In html and css a data-attribute like <code>helloWorld</code> will show up as <c
 <div><code>[JQx].IS( obj:any|undefined|null [, shouldBe: constructor|undefined|null[, ..., shouldBe])</code></div>
 
 <div>
-  With it you can determine if a given Object [<code>obj</code>] is of (one of) the
-  [<code>shouldBe</code>] types, <b><i>or</i></b> determine what
+  With it you can determine if a given Object [<code>obj</code>] is of (one of) the 
+  [<code>shouldBe</code>] types, <b><i>or</i></b> determine what 
   type [<code>obj</code>] is.
 </div>
 
@@ -1367,9 +1368,9 @@ Alias for <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_be
 
 <ul>
 <li>[...rules] may also be a single comma delimited string of several css selectors</li>
-<li>When a rule has several cssSelectors in one rule (e.g. <code>.test1, test2 {...}</code>, surround the rule to remove
+<li>When a rule has several cssSelectors in one rule (e.g. <code>.test1, test2 {...}</code>, surround the rule to remove 
   with exclamation marks: <code>$.removeCssRule(`!.test1, test2!`)</code></li>
-<li>The selector(s) to remove should be <i>exactly</i> the selector you used to create it.
+<li>The selector(s) to remove should be <i>exactly</i> the selector you used to create it. 
 So removal of <code>.test1, test2 {...}</code> will fail using <code>$.removeCssRule(`!.test1,test2!`)</code></li>
 <li>For clarity <div class="linkLike" data-action="jump2Nav" data-jumpkey="static_removeCssRule">removeCssRule</div> exists also. Both <code>removeCssRule</code> and <code>removeCssRule<b style="color:red">s</b></code> work exactly the same.</li>
 </ul>
@@ -1386,7 +1387,7 @@ So removal of <code>.test1, test2 {...}</code> will fail using <code>$.removeCss
 <template data-id="instance_replaceWith" class="instance_replaceWith" data-is-deprecated="false">
 <div data-params='[{"newChild":"HTMLElement | JQx instance"}]'></div>
 <div data-return-value='JQx Instance (from the replacement element)'></div>
-<div data-text='1'><div>Replace the JQx Instance with a new JQx Instance.</div>
+<div data-text='1'><div>Replace the JQx Instance with a new JQx Instance.</div> 
 
 <div><b>Note</b>: formerly known as <code>replaceMe</code>, which may still be used for now. <code>replaceMe</code> is candidate for future deprecation.</div>
 
@@ -1402,10 +1403,10 @@ So removal of <code>.test1, test2 {...}</code> will fail using <code>$.removeCss
 </div>
 
 <ul>
-  <li>use <code>$.lenient.on()</code> to allow the creation of not allowed HTML tags
+  <li>use <code>$.lenient.on()</code> to allow the creation of not allowed HTML tags 
     (e.g. <code>embed</code>)
     <div class="note"><b style="color:red">
-      Note</b>: <code>$.lenient.on()</code> may introduce security problems. <b
+      Note</b>: <code>$.lenient.on()</code> may introduce security problems. <b 
       class="warn">Handle with care</b>!</div>
   </li>
   <li>(Default) use <code>$.lenient.off()</code> to use only permitted HTML tags.</li>
@@ -1433,20 +1434,20 @@ So removal of <code>.test1, test2 {...}</code> will fail using <code>$.removeCss
 <div data-return-value='n/a'></div>
 <div data-text='1'><div>
   <code>at</code> is an <code>Object</code> containing eight properties to use for
-  mapping a created elements' position relative to its parent,
+  mapping a created elements' position relative to its parent, 
   in other words: the position parameter from the JQx constructor.
 </div>
 
 <div>For example:</div>
 
 <code>$(
- "&lt;div>Hi there&lt;/div>" <b class="comment">/*[input]*/</b>,
-  $("#someElem") <b class="comment">/*[root]*/</b>,
+ "&lt;div>Hi there&lt;/div>" <b class="comment">/*[input]*/</b>, 
+  $("#someElem") <b class="comment">/*[root]*/</b>, 
   <b>$.at.before</b>)</code>
 
 <div class="note"><b style="color:red">
-  Note</b>: one can provide keys <i>case insensitive</i>. So
-  <code>$.at.afterend</code> is equivalent to
+  Note</b>: one can provide keys <i>case insensitive</i>. So 
+  <code>$.at.afterend</code> is equivalent to 
   <code>$.at.AfterEND</code>.
 </div>
 
@@ -1454,10 +1455,10 @@ So removal of <code>.test1, test2 {...}</code> will fail using <code>$.removeCss
 
 <ul>
   <li>
-    <code>Before</code> or <code>BeforeBegin</code>:
+    <code>Before</code> or <code>BeforeBegin</code>: 
     before [root], so [root] will be the first sibling of [input]</li>
   <li>
-    <code>Start</code> or <code>AfterBegin</code>:
+    <code>Start</code> or <code>AfterBegin</code>: 
     after the begin of [root], so [input] as first element of [root]
      (de facto <i>prepend</i>)
   </li>
@@ -1467,7 +1468,7 @@ So removal of <code>.test1, test2 {...}</code> will fail using <code>$.removeCss
    (de facto <i>append</i>)
   </li>
   <li>
-    <code>After</code> or <code>AfterEnd</code>:
+    <code>After</code> or <code>AfterEnd</code>: 
     after [root], so [input] will be the first sibling of [root]</li>
 </ul>
 
@@ -1528,7 +1529,7 @@ So removal of <code>.test1, test2 {...}</code> will fail using <code>$.removeCss
 <div data-return-value='JQx instance | undefined'></div>
 <div data-text='1'><div>
   <code>[JQx instance].render</code> is a <i>property</i> of a JQx instance.
-  It writes the JQx instance to the document (appends the instance element(s)
+  It writes the JQx instance to the document (appends the instance element(s) 
   to the current <code>document.body</code>).
 </div>
 <div>
@@ -1581,8 +1582,8 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 <template data-id="static_handle" class="static_handle" data-is-deprecated="false">
 <div data-params='[{"spec":"{type, selector, handlers, capture, once, canRemove}"}]'></div>
 <div data-return-value='Nothing'></div>
-<div data-text='1'>Alias for <div class="linkLike"
-  data-action="jump2Nav"
+<div data-text='1'>Alias for <div class="linkLike" 
+  data-action="jump2Nav" 
   data-jumpkey="static_delegateCaptured">delegateCaptured</div>.
 </div></div>
 </template>
@@ -1599,7 +1600,7 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
   It enables adding one or more listeners to one or more events.
 </div>
 
-<div class="note"><b>Note</b>: every listener uses
+<div class="note"><b>Note</b>: every listener uses 
   <a target="_blank" href="https://javascript.info/event-delegation">event delegation</a>
 </div>
 
@@ -1608,7 +1609,7 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 <h3>Parameters (* = obligatory)</h3>
 <ul>
   <li>
-    <code>type: string | array&lt;string></code>*: (case insensitive) the event type. May be:
+    <code>type: string | array&lt;string></code>*: (case insensitive) the event type. May be: 
     <div>
       <ul>
         <li>a single event type (e.g. <code>"input"</code>)
@@ -1616,54 +1617,54 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
         <li>an Array of strings (e.g. <code>["click", "input"]</code>)</li>
       </ul>
       <div>
-         In case of multiple event types, <code>handlers</code> will be applied
+         In case of multiple event types, <code>handlers</code> will be applied 
          to all given event types.
       </div>
     </div>
   </li>
 
   <li>
-    <code>handlers: function | array&lt;function></code>*:
+    <code>handlers: function | array&lt;function></code>*: 
      a single handler/listener/callback function or an array of functions.
     <div>
-       The handler function signature is
+       The handler function signature is 
        <code>[handlerfunction](event, self[, remove])</code> where</div>
-    <div>
+    <div> 
       <ul>
       <li><code>event</code> is the triggering event</li>
       <li>
-        <code>self</code> is the event target <i>or</i> a JQx instance
-        (if <code>selector</code> was provided,
+        <code>self</code> is the event target <i>or</i> a JQx instance 
+        (if <code>selector</code> was provided, 
         check using <code>self.isJQx</code>).</li>
       <li>
         <code>remove(message:string)</code> is a function to remove
          the assigned handler. This will be active if the listener
-         has a <code>name</code> (minimal 4 characters) <i>and</i>
+         has a <code>name</code> (minimal 4 characters) <i>and</i> 
          <code>canRemove</code> is true.
-         See a usage example at <div
+         See a usage example at <div 
               class="linkLike"
-              data-action="jump2Nav"
+              data-action="jump2Nav" 
               data-jumpkey="static_getNamedListener">
            [JQx].getNamedListener</div>
     </ul>
-    </div>
+    </div> 
   </li>
 
   <li>
-    <code>selector: string</code>: a (complex) css selector
-    (e.g. <code>"#someElem:not([data-dont])"</code> or
+    <code>selector: string</code>: a (complex) css selector 
+    (e.g. <code>"#someElem:not([data-dont])"</code> or 
        <code>".clickthis"</code>).
     <div>
        If present, the handler(s) is/are bound to the elements
        found with this selector
     </div>
     <div class="note"><b>Note</b>: previously called <code>origin</code>. This
-      name may still be used instead.</div>
+      name may still be used instead.</div> 
   </li>
 
   <li>
     <code>capture: boolean</code> (default false): equivalent to
-    <a target="_blank"
+    <a target="_blank" 
       href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#usecapture"
       >useCapture</a> for <code>[Element].addEventListener</code>.
   </li>
@@ -1672,18 +1673,18 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 
   <li>
     <code>name: string</code>: because of the way <code>origin</code> binds to a handler
-    (it is wrapped into a new anonymous function), to be sure a handler can not be re-added
+    (it is wrapped into a new anonymous function), to be sure a handler can not be re-added 
     a <i>unique</i> name (string, at least 4 characters) can be provided.
-    <div>A name is obligatory if you want to be able to remove a listener
+    <div>A name is obligatory if you want to be able to remove a listener 
         (<code>canRemove: true</code>).
-    <div>Without <code>origin</code> and when <code>handler(s)</code> is/are
+    <div>Without <code>origin</code> and when <code>handler(s)</code> is/are 
     named function(s) a name is not necessary.</div>
     <div>See the example.</div>
   </li>
 
   <li>
-    <code>canRemove: boolean</code>: if <code>true</code> and <code>name</code> is not empty
-    you can use the <code>remove</code> parameter to remove the
+    <code>canRemove: boolean</code>: if <code>true</code> and <code>name</code> is not empty 
+    you can use the <code>remove</code> parameter to remove the 
     listener function.
   </li>
 
@@ -1718,19 +1719,19 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
     <li><code>pointerleave</code></li>
     <li><code>readystatechange</code></li>
   </ul>
-  </div>
+  </div> 
   </details>
 
 </div>
 
 <div>
-  The example creates a click listener/handler for the header of this chapter
-  (<b>[JQx].delegateCaptured</b>).
-  The handler changes the color of all headers (by changing the value of the
-  corresponding variable within <code>:root</code>). It is a specific click
-  handler for this header only (but all headers are affected: so click on the
-  header of <i>this</i> chapter changes the color of <i>all</i> headers,
-  clicking on another header handles the already defined click handler
+  The example creates a click listener/handler for the header of this chapter 
+  (<b>[JQx].delegateCaptured</b>). 
+  The handler changes the color of all headers (by changing the value of the 
+  corresponding variable within <code>:root</code>). It is a specific click 
+  handler for this header only (but all headers are affected: so click on the 
+  header of <i>this</i> chapter changes the color of <i>all</i> headers, 
+  clicking on another header handles the already defined click handler 
   for it (i.e. scroll to it)).
 </div>
 
@@ -1746,9 +1747,9 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 </div>
 
 <div>
-  When the listener was initialized using <code>canRemove: true</code>,
+  When the listener was initialized using <code>canRemove: true</code>, 
   the <code>remove</code> property of the return value is a function which can
-  be used to remove the listener. <code>getNamedListener</code> can also be
+  be used to remove the listener. <code>getNamedListener</code> can also be 
   used to check if a (named) listener is already present.
 </div>
 
@@ -1766,7 +1767,7 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 <div data-params='None'></div>
 <div data-return-value='{on, off, backLog, log, error}'></div>
 <div data-text='1'><div>
-  <code>[JQx].logger</code> controls logging to the console.
+  <code>[JQx].logger</code> controls logging to the console. 
   JQx actions and custom logged messages are logged to a <code>backLog</code> store.
 </div>
 
@@ -1779,7 +1780,7 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
     <code>logger.off</code>: (getter) disable logging.
   </li>
   <li>
-    <code>logger.log(...line)</code>:
+    <code>logger.log(...line)</code>: 
        (if enabled) log and store one or several [line]s to the console.
   </li>
   <li>
@@ -1791,29 +1792,29 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 </ul>
 
 <div class="note">
-  <b>Notes</b>:
+  <b>Notes</b>: 
   <ul>
     <li>
       Every log line is prefixed with the exact time of logging.
     </li>
     <li>JQx error messages are <i>always</i> logged in the console</li>
     <li>
-      The backLog is an array of everything logged, in a reversed order (latest first).
+      The backLog is an array of everything logged, in a reversed order (latest first). 
       <div>
         It may contain HTML strings. When you want to display
         entries within the document, the HTML of the entries should be (html-)escaped.
       </div>
       <div>
-        You can use
-         <div
-           class="linkLike"
-           data-action="jump2Nav"
+        You can use 
+         <div 
+           class="linkLike" 
+           data-action="jump2Nav" 
            data-jumpkey="static_escHtml">[JQx].escHtml
          </div> for that. See the example.
       </div>
     </li>
     <li>
-      All properties except <code>backLog</code> return the logger, so chaining
+      All properties except <code>backLog</code> return the logger, so chaining 
       is possible.
     </li>
     <li>
@@ -1825,10 +1826,10 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
         to log once.
         <div>
           This is actually what <code>[JQX].log</code> does.
-        </div>
+        </div> 
        </div>
     </li>
-  </ul>
+  </ul> 
 </div>
 
 <h3>Example: show the backlog</h3>
@@ -1841,7 +1842,7 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 <div data-text='1'>Escapes html in a string to display it as raw html in the document. For example:
 
 <div>
-  <code>$.escHtml("&lt;div>Hello&lt;/div>")</code> => "&amp;lt;div&amp;gt;Hello&amp;lt;/div&amp;gt;"
+  <code>$.escHtml("&lt;div>Hello&lt;/div>")</code> => "&amp;lt;div&amp;gt;Hello&amp;lt;/div&amp;gt;" 
 </div>
 
 </div>

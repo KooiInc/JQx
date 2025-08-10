@@ -5,7 +5,7 @@ import { listeners, default as HandleFactory } from "./HandlerFactory.js";
 import tagLib from "./HTMLTags.js";
 import {
   randomString, toDashedNotation, IS, tagFNFactory as $T, styleFactory, toCamelcase, systemLog, escHtml,
-  isNonEmptyString, resolveEventTypeParameter, selectedExtensionHelpers, insertPositions,
+  isNonEmptyString, resolveEventTypeParameter, selectedExtensionHelpers, insertPositions
 } from "./Utilities.js";
 
 let instanceGetters, instanceMethods;
