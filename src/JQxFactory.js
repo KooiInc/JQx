@@ -27,11 +27,7 @@ function proxify(instance) {
   return new Proxy( instance, { get: (obj, key) => proxyKeyFactory(obj, key, instance) } );
 }
 
-function wrapExtension(method, instance) {
-  return  (...args) => IS(method, Function) && method(proxify(instance), ...args);
-}
-
-function wrapGetter(method, instance) {
+function wrap(method, instance) {
   return (...args) => IS(method, Function) && method(proxify(instance), ...args);
 }
 
@@ -39,8 +35,8 @@ function proxyKeyFactory(self, key, instance) {
   switch(true) {
     case IS(key, Symbol): return self;
     case IS(+key, Number): return self.collection?.[key] || undefined;
-    case (key in instanceGetters): return wrapGetter(instanceGetters[key], instance)();
-    case (key in instanceMethods): return wrapExtension(instanceMethods[key], instance);
+    case (key in instanceGetters): return wrap(instanceGetters[key], instance)();
+    case (key in instanceMethods): return wrap(instanceMethods[key], instance);
     default: return self[key];
   }
 }
