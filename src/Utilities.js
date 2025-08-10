@@ -106,7 +106,13 @@ function hex2RGBA(hex, opacity = 100) {
 }
 
 function escHtml(html) {
-  return html.replace(/</g, `&lt;`).replace(/>/g, `&gt;`);
+  switch(true) {
+    case IS(html, String):
+      const tmpDiv = document.createElement("div");
+      tmpDiv.append(html);
+      return tmpDiv.innerHTML;
+    default: return html;
+  }
 }
 
 function isCommentOrTextNode(node) {
