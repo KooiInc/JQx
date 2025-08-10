@@ -244,7 +244,6 @@ function staticMethodsFactory(jqx) {
     text: (str, isComment = false) => isComment ? jqx.comment(str) : document.createTextNode(str),
     node: (selector, root = document) => root.querySelector(selector, root),
     nodes: (selector, root = document) =>  [...root.querySelectorAll(selector, root)],
-    //get logger() { return loggerFactory() },
     get getNamedListener() { return getNamedListener; },
     get virtual() { return virtualFactory(jqx); },
     get allowTag() { return allowProhibit.allow; },
