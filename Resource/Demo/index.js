@@ -203,7 +203,7 @@ async function injectCode(root = document.body) {
     .then(r =>
         DIV({ class: `upDownFader`, id: `code` },
           $.pre({ data: {jsViewBox: true}, class: `language-javascript` },
-            $.code(r.replace(/</g, `&lt;`))
+            $.code(r.replace(/&/g, "&amp;").replace(/</g, "&lt;"))
           ) ).renderTo(root, $.at.beforeend)
     ).then(_ => setTimeout(hljs.highlightAll));
 }
@@ -303,9 +303,9 @@ function allComments(root, result = []) {
           parent.id ? `#${parent.id}` : className ? className : ``}</b>`;
       }
 
-      const spacing = `&nbsp;`.repeat(7);
+      const spacing = "&nbsp;".repeat(7);
       result.push(`<div class="cmmt">${parentStr ?? `&#8226; in <b>??</b>`}<br>${
-        `&nbsp;`.repeat(2)}&lt;!--${
+        "&nbsp;".repeat(2)}&lt;!--${
           node.textContent
             .replace(/</, `&lt;`)
             .replace(/\n/g, `<br>${spacing}`)}--&gt;</div>`);
@@ -381,5 +381,5 @@ function getStyleRules4Display() {
     .replace(
       `#jqxPopup[open] #jqxPopupContent.cssDisplay`,
       `/* to display the popup for custom css */\n#jqxPopup[open] #jqxPopupContent.cssDisplay`);
-  return css_beautify(stringified, {indent_size: 2, indent_char: ` `, end_with_newline: true })
+  return css_beautify(stringified, {indent_size: 2, indent_char: " ", end_with_newline: true })
 }
