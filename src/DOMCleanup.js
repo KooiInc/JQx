@@ -1,4 +1,4 @@
-import { truncate2SingleStr, IS/*, debugLog*/ } from "./JQxExtensionHelpers.js";
+import { truncate2SingleStr, IS } from "./JQxExtensionHelpers.js";
 import cleanupTagInfo from "./HTMLTags.js";
 import {ATTRS} from "./EmbedResources.js";
 import {escHtml, systemLog} from "./Utilities.js";
