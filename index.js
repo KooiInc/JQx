@@ -4,7 +4,7 @@
  2025/05/31 overhaul ...
 */
 
-import { proxify, addJQxStaticMethods } from "./src/JQxExtensionHelpers.js";
+import { proxify, addJQxStaticMethods } from "./src/JQxFactory.js";
 import { inject2DOMTree, createElementFromHtmlString } from "./src/DOM.js";
 import {
   isHtmlString, truncateHtmlStr, isArrayOfHtmlStrings, isArrayOfHtmlElements,

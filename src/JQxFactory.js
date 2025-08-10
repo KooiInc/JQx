@@ -1,4 +1,4 @@
-import { createElementFromHtmlString, cleanupHtml } from "./DOM.js";
+import { cleanupHtml } from "./DOM.js";
 import allMethodsFactory from "./JQxMethods.js";
 import PopupFactory from "./Popup.js";
 import { listeners, default as HandleFactory } from "./HandlerFactory.js";
