@@ -7,18 +7,18 @@ const characters4RandomString = [...Array(26)]
   .concat([...Array(26)].map((x, i) => String.fromCharCode(i + 97)))
   .concat([...Array(10)].map((x, i) => `${i}`));
 const systemLog = systemLogFactory();
-const datasetKeyProxy = {
+const datasetKeyProxy = Object.freeze({
   get(obj, key) { return obj[toCamelcase(key)] || obj[key]; },
   enumerable: false,
   configurable: false
-};
-const insertPositions = new Proxy({
+});
+const insertPositions = Object.freeze(new Proxy({
   start: "afterbegin", afterbegin: "afterbegin",
   end: "beforeend", beforeend: "beforeend",
   before: "beforebegin", beforebegin: "beforebegin",
   after: "afterend", afterend: "afterend" }, {
   get(obj, key) { return obj[String(key).toLowerCase()] ?? obj[key]; }
-});
+}));
 
 function pad0(nr, n=2) {
   return `${nr}`.padStart(n, `0`);
@@ -192,45 +192,49 @@ function isModal(elem) {
 
 function ExamineElementFeatureFactory() {
   const notApplicable = `n/a`;
-  const noElements = {
+  const noElements = Object.freeze({
     notInDOM: true, writable: notApplicable, modal: notApplicable, empty: true,
-    open: notApplicable, visible: notApplicable, };
+    open: notApplicable, visible: notApplicable, });
 
   return self => {
     const firstElem = self.node;
 
-    return IS(firstElem, Node) ? {
-      get writable() {
-        return isWritable(firstElem);
-      },
-      get modal() {
-        return isModal(firstElem);
-      },
-      get inDOM() {
-        return firstElem.isConnected;
-      },
-      get open() {
-        return firstElem.open ?? false;
-      },
-      get visible() {
-        return isVisible(firstElem);
-      },
-      get disabled() {
-        return firstElem.hasAttribute("readonly") || firstElem.hasAttribute("disabled");
-      },
-      get empty() {
-        return self.collection.length < 1;
-      },
-      get virtual() {
-        return self.isVirtual;
-      }
-    } : noElements;
+    return IS(firstElem, Node)
+      ? Object.freeze({
+        get writable() {
+          return isWritable(firstElem);
+        },
+        get modal() {
+          return isModal(firstElem);
+        },
+        get inDOM() {
+          return firstElem.isConnected;
+        },
+        get open() {
+          return firstElem.open ?? false;
+        },
+        get visible() {
+          return isVisible(firstElem);
+        },
+        get disabled() {
+          return firstElem.hasAttribute("readonly") || firstElem.hasAttribute("disabled");
+        },
+        get empty() {
+          return self.collection.length < 1;
+        },
+        get virtual() {
+          return self.isVirtual;
+        }
+      })
+      : noElements;
   };
 }
 
 function decodeForConsole(something) {
   return IS(something, String) &&
-    Object.assign(document.createElement(`textarea`), {innerHTML: something}).textContent || something;
+    Object.assign(
+      document.createElement(`textarea`),
+      {innerHTML: something}).textContent || something;
 }
 
 function systemLogFactory() {

@@ -6,7 +6,7 @@ import {
   insertPositions, isCommentOrTextNode, datasetKeyProxy
 } from "./Utilities.js";
 
-const isIt = ExamineElementFeatureFactory();
+const instanceIs = ExamineElementFeatureFactory();
 
 /* region functions */
 function emptyElement(el) {
@@ -179,7 +179,7 @@ function factoryExtensionsFactory(jqx) {
         return instance.HTML.set(content + instance.HTML.get(), false, escape);
       },
     }),
-    is: instance => isIt(instance),
+    is: instance => instanceIs(instance),
     length: instance => instance.collection.length,
     outerHtml: instance => (instance.first() || {outerHTML: undefined}).outerHTML,
     parent: instance =>{

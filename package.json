@@ -1,9 +1,9 @@
 {
   "name": "jqx-es",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "private": false,
   "type": "module",
-  "description": "The good parts of JQuery",
+  "description": "JQuery alike with a few twists",
   "keywords": [
     "jquery-subset",
     "es20xx",
