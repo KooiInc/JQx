@@ -1,7 +1,6 @@
-import { truncate2SingleStr, IS } from "./JQxExtensionHelpers.js";
 import cleanupTagInfo from "./HTMLTags.js";
 import {ATTRS} from "./EmbedResources.js";
-import {escHtml, systemLog} from "./Utilities.js";
+import {IS, truncate2SingleStr, escHtml, systemLog} from "./Utilities.js";
 
 let logElementCreationErrors2Console = true;
 const attrRegExpStore = {

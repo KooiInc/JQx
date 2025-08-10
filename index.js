@@ -4,21 +4,12 @@
  2025/05/31 overhaul ...
 */
 
+import { proxify, addJQxStaticMethods } from "./src/JQxExtensionHelpers.js";
+import { inject2DOMTree, createElementFromHtmlString } from "./src/DOM.js";
 import {
-  isHtmlString,
-  isArrayOfHtmlStrings,
-  isArrayOfHtmlElements,
-  inject2DOMTree,
-  ElemArray2HtmlString,
-  input2Collection,
-  setCollectionFromCssSelector,
-  truncateHtmlStr,
-  proxify,
-  addJQxStaticMethods,
-  createElementFromHtmlString,
-  IS,
-} from "./src/JQxExtensionHelpers.js";
-import { systemLog, insertPositions, } from "./src/Utilities.js";
+  isHtmlString, truncateHtmlStr, isArrayOfHtmlStrings, isArrayOfHtmlElements,
+  ElemArray2HtmlString, input2Collection, setCollectionFromCssSelector,
+  IS, systemLog, insertPositions } from "./src/Utilities.js";
 
 export default addJQxStaticMethods(JQxFactory());
 

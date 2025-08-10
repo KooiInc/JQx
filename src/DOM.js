@@ -2,8 +2,12 @@ import {
   cleanupHtml,
   getRestricted,
   ATTRS, } from "./DOMCleanup.js";
-import {truncateHtmlStr, IS, isNode} from "./JQxExtensionHelpers.js";
-import {insertPositions} from "./Utilities.js";
+import {IS, insertPositions, isNode, truncateHtmlStr} from "./Utilities.js";
+
+export {
+  getRestricted, createElementFromHtmlString, element2DOM,
+  cleanupHtml, inject2DOMTree, ATTRS
+};
 
 function htmlToVirtualElement(htmlString) {
   const placeholderNode = document.createElement("div");
@@ -21,6 +25,7 @@ function characterDataElement2DOM(elem, root, position) {
 }
 
 function inject2DOMTree( collection = [], root = document.body, position = insertPositions.BeforeEnd ) {
+  position = position || insertPositions.BeforeEnd;
   collection.reduce( (acc, elem) => {
     const created = isNode(elem) && element2DOM(elem, root, position);
     return created ? [...acc, created] : acc;
@@ -28,10 +33,12 @@ function inject2DOMTree( collection = [], root = document.body, position = inser
 }
 
 function element2DOM(elem, root = document.body, position = insertPositions.BeforeEnd) {
+  position = position || insertPositions.BeforeEnd;
   root = root?.isJQx ? root?.[0] : root;
 
-  return IS(elem, Comment, Text) ?
-    characterDataElement2DOM(elem, root, position) : root.insertAdjacentElement(position, elem);
+  return IS(elem, Comment, Text)
+    ? characterDataElement2DOM(elem, root, position)
+    : IS(elem, HTMLElement) ? root.insertAdjacentElement(position, elem) : undefined;
 }
 
 function createElementFromHtmlString(htmlStr) {
@@ -62,12 +69,3 @@ function createElementFromHtmlString(htmlStr) {
 
   return nwElem.children[0];
 }
-
-export {
-  getRestricted,
-  createElementFromHtmlString,
-  element2DOM,
-  cleanupHtml,
-  inject2DOMTree,
-  ATTRS,
-};

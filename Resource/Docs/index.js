@@ -120,6 +120,7 @@ function createChaptersGroup(forContainer, header) {
         = createChapterElement( {chapterName, header, isDeprecated, params, returns, chapterTextElement});
 
       let i = 0;
+
       for (const codeElementPlaceholder of chapterElement.find(`[data-example]`)) {
         createCodeElement(codeElementPlaceholder, ++i);
       }

@@ -1,43 +1,26 @@
-import {createElementFromHtmlString} from "./DOM.js";
-import {
-  IS,
-  addHandlerId,
-  isNode,
-  inject2DOMTree,
-  isCommentOrTextNode,
-  truncateHtmlStr,
-} from "./JQxExtensionHelpers.js";
+import {createElementFromHtmlString, inject2DOMTree} from "./DOM.js";
 import {ATTRS} from "./EmbedResources.js";
 import {
-  ExamineElementFeatureFactory,
-  isNonEmptyString,
-  toDashedNotation,
-  toCamelcase,
-  randomString,
-  escHtml,
-  systemLog,
-  insertPositions,
+  IS, isNode, truncateHtmlStr, addHandlerId, ExamineElementFeatureFactory,
+  isNonEmptyString, toDashedNotation, randomString, escHtml, systemLog,
+  insertPositions, isCommentOrTextNode, datasetKeyProxy
 } from "./Utilities.js";
-const loop = (instance, callback) => {
-  const cleanCollection = instance.collection.filter(el => !isCommentOrTextNode(el));
-  for (let i = 0; i < cleanCollection.length; i += 1) {
-    callback(cleanCollection[i], i);
-  }
 
-  return instance;
-};
 const isIt = ExamineElementFeatureFactory();
-const datasetKeyProxy = { get(obj, key) {
-  return obj[toCamelcase(key)] || obj[key]; },
-  enumerable: false,
-  configurable: false
-};
 
 /* region functions */
 function emptyElement(el) {
   return el && (el.textContent = "");
 }
 
+function loop(instance, callback) {
+  const cleanCollection = instance.collection.filter(el => !isCommentOrTextNode(el));
+  for (let i = 0; i < cleanCollection.length; i += 1) {
+    callback(cleanCollection[i], i);
+  }
+
+  return instance;
+}
 
 function compareCI(key, compareTo) {
   return key.toLowerCase().trim() === compareTo.trim().toLowerCase();
@@ -511,7 +494,7 @@ function instanceExtensionsFactory(jqx) {
     removeClass: (instance, ...classNames) =>
       loop(instance, el => { if (el) { for (const cn of classNames) { el.classList.remove(cn); } } }),
     renderTo: (instance, root = document.body, at = jqx.at.end) => {
-      instance.toDOM(root, at);
+      instance.first$().toDOM(root, at);
       return instance;
     },
     replace: (instance, oldChild, newChild) => {

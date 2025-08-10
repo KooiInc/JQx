@@ -7,6 +7,18 @@ const characters4RandomString = [...Array(26)]
   .concat([...Array(26)].map((x, i) => String.fromCharCode(i + 97)))
   .concat([...Array(10)].map((x, i) => `${i}`));
 const systemLog = systemLogFactory();
+const datasetKeyProxy = {
+  get(obj, key) { return obj[toCamelcase(key)] || obj[key]; },
+  enumerable: false,
+  configurable: false
+};
+const insertPositions = new Proxy({
+  start: "afterbegin", afterbegin: "afterbegin",
+  end: "beforeend", beforeend: "beforeend",
+  before: "beforebegin", beforebegin: "beforebegin",
+  after: "afterend", afterend: "afterend" }, {
+  get(obj, key) { return obj[String(key).toLowerCase()] ?? obj[key]; }
+});
 
 function pad0(nr, n=2) {
   return `${nr}`.padStart(n, `0`);
@@ -97,70 +109,100 @@ function escHtml(html) {
   return html.replace(/</g, `&lt;`).replace(/>/g, `&gt;`);
 }
 
-function extensionHelpers() {
-  const isCommentOrTextNode = elem => IS(elem, Comment, Text);
-  const isNode = input => IS(input, Text, HTMLElement, Comment);
-  const isComment = input => IS(input, Comment);
-  const isText = input => IS(input, Text);
-  const isHtmlString = input => IS(input, String) && /^<|>$/.test(`${input}`.trim());
-  const isArrayOfHtmlStrings = input => IS(input, Array) && !input?.find(s => !isHtmlString(s));
-  const isArrayOfHtmlElements = input => IS(input, Array) && !input?.find(el => !isNode(el));
-  const ElemArray2HtmlString = elems => elems?.filter(el => el).reduce((acc, el) =>
+function isCommentOrTextNode(node) {
+  return IS(node, Comment, Text);
+}
+
+function isNode(input) {
+  return IS(input, Text, HTMLElement, Comment)
+}
+
+function isComment(input) {
+  IS(input, Comment);
+}
+
+function isText(input) {
+  return IS(input, Text);
+}
+
+function isHtmlString(input) {
+  return IS(input, String) && /^<|>$/.test(`${input}`.trim());
+}
+
+function isArrayOfHtmlElements(input) {
+  return IS(input, Array) && !input?.find(el => !isNode(el));
+}
+
+function isArrayOfHtmlStrings(input) {
+  return IS(input, Array) && !input?.find(s => !isHtmlString(s));
+}
+
+function ElemArray2HtmlString(elems) {
+  return elems?.filter(el => el).reduce((acc, el) =>
     acc.concat(isComment(el) ? `<!--${el.data}-->`
       : isCommentOrTextNode(el) ?  el.textContent
         : el.outerHTML), ``);
-  const input2Collection = input =>
-    !input ? []
-      : IS(input, Proxy) ? [input.EL]
-        : IS(input, NodeList) ? [...input]
-          : isNode(input) ? [input]
-            : isArrayOfHtmlElements(input) ? input
-              : input.isJQx ? input.collection : undefined;
-  const setCollectionFromCssSelector = (input, root, self) => {
-    const selectorRoot = root !== document.body && (IS(input, String) && input.toLowerCase() !== "body") ? root : document;
-    let errorStr = undefined;
+}
 
-    try { self.collection = [...selectorRoot.querySelectorAll(input)]; }
-    catch (err) { errorStr = `Invalid CSS querySelector. [${!IS(input, String) ? `Nothing valid given!` : input}]`; }
-    const collectionLen = self.collection.length;
-    return collectionLen < 1
-      ? `CSS querySelector "${input}", output: nothing`
-      : errorStr ?? `CSS querySelector "${input}", output ${collectionLen} element${collectionLen > 1 ? `s` : ``}`;
-  };
-  const addHandlerId = instance => {
-    const handleId = instance.data.get(`hid`) || `HID${randomString()}`;
-    instance.data.add({hid: handleId});
-    return `[data-hid="${handleId}"]`;
-  };
+function input2Collection(input) {
+  return !input ? []
+    : IS(input, Proxy) ? [input.EL]
+      : IS(input, NodeList) ? [...input]
+        : isNode(input) ? [input]
+          : isArrayOfHtmlElements(input) ? input
+            : input.isJQx ? input.collection : undefined;
+}
 
+function setCollectionFromCssSelector(input, root, self) {
+  const selectorRoot = root !== document.body && (IS(input, String) && input.toLowerCase() !== "body") ? root : document;
+  let errorStr = undefined;
+
+  try { self.collection = [...selectorRoot.querySelectorAll(input)]; }
+  catch (err) { errorStr = `Invalid CSS querySelector. [${!IS(input, String) ? `Nothing valid given!` : input}]`; }
+  const collectionLen = self.collection.length;
+  return collectionLen < 1
+    ? `CSS querySelector "${input}", output: nothing`
+    : errorStr ?? `CSS querySelector "${input}", output ${collectionLen} element${collectionLen > 1 ? `s` : ``}`;
+}
+
+function  addHandlerId(instance) {
+  const handleId = instance.data.get(`hid`) || `HID${randomString()}`;
+  instance.data.add({hid: handleId});
+  return `[data-hid="${handleId}"]`;
+}
+
+function selectedExtensionHelpers() {
   return {
     isCommentOrTextNode, isNode, isComment, isText, isHtmlString, isArrayOfHtmlElements,
     isArrayOfHtmlStrings, ElemArray2HtmlString, input2Collection, setCollectionFromCssSelector,
     addHandlerId };
 }
 
+function isVisible(el) {
+  if (!el) { return undefined; }
+  const elStyle = el.style;
+  const computedStyle = getComputedStyle(el);
+  const invisible = [elStyle.visibility, computedStyle.visibility].includes("hidden");
+  const noDisplay = [elStyle.display, computedStyle.display].includes("none");
+  const offscreen = el.offsetTop < 0 || (el.offsetLeft + el.offsetWidth) < 0
+    || el.offsetLeft > document.body.offsetWidth;
+  const noOpacity = +computedStyle.opacity === 0 || +(elStyle.opacity || 1) === 0;
+  return !(offscreen || noOpacity || noDisplay || invisible);
+}
+
+function isWritable(elem) {
+  return [...elem.parentNode.querySelectorAll(`:is(:read-write)`)]?.find(el => el === elem) ?? false;
+}
+
+function isModal(elem) {
+  return [...elem.parentNode.querySelectorAll(`:is(:modal)`)]?.find(el => el === elem) ?? false;
+}
+
 function ExamineElementFeatureFactory() {
-  const isVisible = function(el) {
-    if (!el) { return undefined; }
-    const elStyle = el.style;
-    const computedStyle = getComputedStyle(el);
-    const invisible = [elStyle.visibility, computedStyle.visibility].includes("hidden");
-    const noDisplay = [elStyle.display, computedStyle.display].includes("none");
-    const offscreen = el.offsetTop < 0 || (el.offsetLeft + el.offsetWidth) < 0
-      || el.offsetLeft > document.body.offsetWidth;
-    const noOpacity = +computedStyle.opacity === 0 || +(elStyle.opacity || 1) === 0;
-    return !(offscreen || noOpacity || noDisplay || invisible);
-  };
   const notApplicable = `n/a`;
-  const isWritable = function(elem) {
-    return [...elem.parentNode.querySelectorAll(`:is(:read-write)`)]?.find(el => el === elem) ?? false;
-  };
-
-  const isModal = function(elem) {
-    return [...elem.parentNode.querySelectorAll(`:is(:modal)`)]?.find(el => el === elem) ?? false;
-  };
-
-  const noElements = { notInDOM: true, writable: notApplicable, modal: notApplicable, empty: true, open: notApplicable, visible: notApplicable, };
+  const noElements = {
+    notInDOM: true, writable: notApplicable, modal: notApplicable, empty: true,
+    open: notApplicable, visible: notApplicable, };
 
   return self => {
     const firstElem = self.node;
@@ -229,17 +271,18 @@ function systemLogFactory() {
   return Object.freeze(systemLogger);
 }
 
-const insertPositions = new Proxy({
-  start: "afterbegin", afterbegin: "afterbegin",
-  end: "beforeend", beforeend: "beforeend",
-  before: "beforebegin", beforebegin: "beforebegin",
-  after: "afterend", afterend: "afterend" }, {
-  get(obj, key) { return obj[String(key).toLowerCase()] ?? obj[key]; }
-});
-
 export {
+  addHandlerId,
   IS,
   maybe,
+  isCommentOrTextNode,
+  isHtmlString,
+  isArrayOfHtmlStrings,
+  isArrayOfHtmlElements,
+  ElemArray2HtmlString,
+  input2Collection,
+  setCollectionFromCssSelector,
+  isNode,
   randomString,
   isNonEmptyString,
   insertPositions,
@@ -255,6 +298,7 @@ export {
   styleFactory,
   tagFNFactory,
   resolveEventTypeParameter,
-  extensionHelpers,
+  selectedExtensionHelpers,
   systemLog,
+  datasetKeyProxy,
 };

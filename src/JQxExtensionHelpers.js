@@ -1,33 +1,26 @@
-import { createElementFromHtmlString, inject2DOMTree, cleanupHtml } from "./DOM.js";
+import { createElementFromHtmlString, cleanupHtml } from "./DOM.js";
 import allMethodsFactory from "./JQxMethods.js";
 import PopupFactory from "./Popup.js";
 import { listeners, default as HandleFactory } from "./HandlerFactory.js";
 import tagLib from "./HTMLTags.js";
 import {
-  randomString, toDashedNotation, IS, truncateHtmlStr, tagFNFactory as $T,
-  truncate2SingleStr, styleFactory, toCamelcase, systemLog, escHtml,
-  isNonEmptyString, resolveEventTypeParameter, extensionHelpers, insertPositions,
+  randomString, toDashedNotation, IS, tagFNFactory as $T, styleFactory, toCamelcase, systemLog, escHtml,
+  isNonEmptyString, resolveEventTypeParameter, selectedExtensionHelpers, insertPositions,
 } from "./Utilities.js";
 
 let instanceGetters, instanceMethods;
 const {
-  isCommentOrTextNode, isNode, isComment, isText, isHtmlString, isArrayOfHtmlElements,
-  isArrayOfHtmlStrings, ElemArray2HtmlString, input2Collection, setCollectionFromCssSelector,
-  addHandlerId, cssRuleEdit, addFn
-} = localHelpersFactory();
+  isComment, isText, isHtmlString, isArrayOfHtmlElements, isArrayOfHtmlStrings,
+  ElemArray2HtmlString, addHandlerId, cssRuleEdit, addFn
+} = selectedUtilitiesFactory();
 
-// todo: clean this up
-export {
-  addHandlerId, isHtmlString, isNode, isArrayOfHtmlStrings, isArrayOfHtmlElements, isCommentOrTextNode,
-  inject2DOMTree, ElemArray2HtmlString, input2Collection, setCollectionFromCssSelector,
-  truncateHtmlStr, truncate2SingleStr, proxify, addJQxStaticMethods, createElementFromHtmlString,
-  insertPositions, IS, };
+export { proxify, addJQxStaticMethods };
 
 /* region functions */
-function localHelpersFactory() {
+function selectedUtilitiesFactory() {
   const cssRuleEdit = styleFactory({createWithId: `JQxStylesheet`});
   const addFn = (name, fn) => instanceMethods[name] = (self, ...params) => fn(self, ...params);
-  return {...extensionHelpers(), ...{cssRuleEdit, addFn, }};
+  return { ...selectedExtensionHelpers(), ...{ cssRuleEdit, addFn } };
 }
 
 function proxify(instance) {
@@ -101,7 +94,7 @@ function cssRemove(...rules) {
 function virtualFactory(jqx) {
   return function(html, root, position) {
     root = root?.isJQx ? root?.[0] : root;
-    position = position && Object.values(insertPositions).find(pos => position === pos) ? position : undefined;
+    position = position && Object.values(insertPositions).find(pos => position === pos);
     const virtualElem = jqx(html, document.createElement(`br`));
     if (root && !IS(root, HTMLBRElement)) {
       for (const elem of virtualElem.collection) {
@@ -127,8 +120,8 @@ function tagGetterFactory(tagName, cando, jqx, webComponentTagName) {
   tagName = toDashedNotation(webComponentTagName || tagName.toLowerCase());
   return {
     get() {
-      return  (...args) => {
-        return cando ? jqx.virtual(cleanupHtml($T[tagName](...args))) : undefined;
+      return (...args) => {
+        return cando && jqx.virtual(cleanupHtml($T[tagName](...args)));
       }
     },
     enumerable: false,
@@ -159,7 +152,6 @@ function staticTagsLambda(jqx) {
 
 function delegateFactory(listen) {
   return function(type, selector, ...listeners) {
-
     if (IS(selector, Function)) {
       listeners.push(selector);
       selector = undefined;
@@ -178,7 +170,7 @@ function delegateCaptureFactory(listen) {
     handlers = IS(handlers, Function) ? [handlers] : handlers;
     canRemove = IS(canRemove, Boolean) ? canRemove : false;
     const params = { eventType: typesResolved, selector: selector || origin, capture,
-      name: specifiedName, once, canRemove};
+      name: specifiedName, once, canRemove };
     switch(true) {
       case IS(typesResolved, Array) && typesResolved.length > 0:
         for (const type of typesResolved) {
@@ -197,11 +189,9 @@ function delegateCaptureFactory(listen) {
 }
 
 function getNamedListener(type, name) {
-  name = isNonEmptyString(name) ? name : undefined;
-  type = isNonEmptyString(type) ? type : undefined;
-  if (name && type) {
-    return [...listeners[type].values()].find(h => (h.name || ``) === name);
-  }
+  name = isNonEmptyString(name) && name;
+  type = isNonEmptyString(type) && type;
+  return name && type && [...listeners[type].values()].find(h => (h.name || ``) === name);
 }
 
 function popupGetter(jqx) {
