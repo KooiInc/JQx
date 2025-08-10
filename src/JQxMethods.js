@@ -325,9 +325,9 @@ function instanceExtensionsFactory(jqx) {
     computedStyle: (instance, property) => instance.first() && getComputedStyle(instance.first())[property],
     css: (instance, keyOrKvPairs, value) => loop(instance, el => css(el, keyOrKvPairs, value, jqx)),
     duplicate: (instance, toDOM = false, root = document.body) => {
-      const nodes = instance.toNodeList().map(el => el.removeAttribute && el.removeAttribute(`id`) || el);
-      const nwJQx = jqx.virtual(nodes);
-      return toDOM ? nwJQx.toDOM(root) : nwJQx;
+      const clone = instance.collection[0].cloneNode(true);
+      clone.childNodes.forEach((node) => {node.removeAttribute && node?.removeAttribute(`id`)});
+      return toDOM ? jqx(clone).toDOM(root) : jqx(clone);
     },
     each: (instance, cb) => loop(instance, cb),
     empty: instance => loop(instance, emptyElement),
