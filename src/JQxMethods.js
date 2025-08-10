@@ -325,9 +325,15 @@ function instanceExtensionsFactory(jqx) {
     computedStyle: (instance, property) => instance.first() && getComputedStyle(instance.first())[property],
     css: (instance, keyOrKvPairs, value) => loop(instance, el => css(el, keyOrKvPairs, value, jqx)),
     duplicate: (instance, toDOM = false, root = document.body) => {
-      const clone = instance.collection[0].cloneNode(true);
-      clone.childNodes.forEach((node) => {node.removeAttribute && node?.removeAttribute(`id`)});
-      return toDOM ? jqx(clone).toDOM(root) : jqx(clone);
+      if (instance.collection.length > 0) {
+        const clone = instance.collection[0].cloneNode(true);
+        clone.childNodes.forEach((node) => {
+          node.removeAttribute && node?.removeAttribute(`id`)
+        });
+        return toDOM ? jqx(clone).toDOM(root) : jqx.virtual(clone);
+      }
+      systemLog.error(`Duplicating an empty JQx instance is not possible`);
+      return instance;
     },
     each: (instance, cb) => loop(instance, cb),
     empty: instance => loop(instance, emptyElement),
@@ -578,8 +584,7 @@ function instanceExtensionsFactory(jqx) {
     },
     toDOM: (instance, root = document.body, position = insertPositions.BeforeEnd) => {
       if (instance.isVirtual) { instance.isVirtual = false; }
-      instance.collection = inject2DOMTree(instance.collection, root, position);
-
+      inject2DOMTree(instance.collection, root, position);
       return instance;
     },
     toggleClass: (instance, className) => loop(instance, el => el.classList.toggle(className)),
