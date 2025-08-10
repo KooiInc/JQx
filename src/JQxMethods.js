@@ -1,4 +1,4 @@
-import {createElementFromHtmlString, insertPositions} from "./DOM.js";
+import {createElementFromHtmlString} from "./DOM.js";
 import {
   IS,
   addHandlerId,
@@ -16,6 +16,7 @@ import {
   randomString,
   escHtml,
   systemLog,
+  insertPositions,
 } from "./Utilities.js";
 const loop = (instance, callback) => {
   const cleanCollection = instance.collection.filter(el => !isCommentOrTextNode(el));

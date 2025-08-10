@@ -16,10 +16,9 @@ import {
   proxify,
   addJQxStaticMethods,
   createElementFromHtmlString,
-  insertPositions,
   IS,
 } from "./src/JQxExtensionHelpers.js";
-import { systemLog, } from "./src/Utilities.js";
+import { systemLog, insertPositions, } from "./src/Utilities.js";
 
 export default addJQxStaticMethods(JQxFactory());
 

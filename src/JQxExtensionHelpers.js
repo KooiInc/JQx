@@ -1,4 +1,4 @@
-import { createElementFromHtmlString, insertPositions, inject2DOMTree, cleanupHtml } from "./DOM.js";
+import { createElementFromHtmlString, inject2DOMTree, cleanupHtml } from "./DOM.js";
 import allMethodsFactory from "./JQxMethods.js";
 import PopupFactory from "./Popup.js";
 import { listeners, default as HandleFactory } from "./HandlerFactory.js";
@@ -6,7 +6,7 @@ import tagLib from "./HTMLTags.js";
 import {
   randomString, toDashedNotation, IS, truncateHtmlStr, tagFNFactory as $T,
   truncate2SingleStr, styleFactory, toCamelcase, systemLog, escHtml,
-  isNonEmptyString, resolveEventTypeParameter, extensionHelpers,
+  isNonEmptyString, resolveEventTypeParameter, extensionHelpers, insertPositions,
 } from "./Utilities.js";
 
 let instanceGetters, instanceMethods;

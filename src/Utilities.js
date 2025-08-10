@@ -229,11 +229,20 @@ function systemLogFactory() {
   return Object.freeze(systemLogger);
 }
 
+const insertPositions = new Proxy({
+  start: "afterbegin", afterbegin: "afterbegin",
+  end: "beforeend", beforeend: "beforeend",
+  before: "beforebegin", beforebegin: "beforebegin",
+  after: "afterend", afterend: "afterend" }, {
+  get(obj, key) { return obj[String(key).toLowerCase()] ?? obj[key]; }
+});
+
 export {
   IS,
   maybe,
   randomString,
   isNonEmptyString,
+  insertPositions,
   toDashedNotation,
   toCamelcase,
   truncateHtmlStr,
