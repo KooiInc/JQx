@@ -10,22 +10,25 @@ const attrRegExpStore = {
   whiteSpace: /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205F\u3000]/g,
   notAllowedValues: /^javascript|injected|noreferrer|alert|DataURL/gi
 };
-const logContingentErrors = elCreationInfo => {
+
+function logContingentErrors(elCreationInfo) {
   if (logElementCreationErrors2Console && Object.keys(elCreationInfo.removed).length) {
     const msgs = Object.entries(elCreationInfo.removed)
       .reduce( (acc, [k, v]) => [...acc, `${escHtml(k)} => ${v}`], [])
       .join(`\\000A`);
     systemLog.error(`JQx: HTML creation error(s): ${msgs}`);
   }
-};
-const elementCheck = function(child) {
+}
+
+function elementCheck(child) {
   const name = child.nodeName.toLowerCase();
   const notAllowedCustomElementNames = [
     `annotation-xml`, `color-profile`, `font-face`, `font-face-src`,
     `font-face-uri`, `font-face-format`, `font-face-name`, `missing-glyph` ];
   return /-/.test(name) && !notAllowedCustomElementNames.find(v => v === name) || cleanupTagInfo.isAllowed(name);
-};
-const cleanupHtml = el2Clean => {
+}
+
+function cleanupHtml(el2Clean) {
   const elCreationInfo = {
     rawHTML: el2Clean?.parentElement?.getHTML() ?? `no html`,
     removed: { },
@@ -75,7 +78,7 @@ const cleanupHtml = el2Clean => {
   logContingentErrors(elCreationInfo);
 
   return el2Clean;
-};
+}
 const emphasize = str => `***${str}***`;
 const getRestricted = emphasizeTag =>
   Object.entries(cleanupTagInfo)
@@ -83,6 +86,5 @@ const getRestricted = emphasizeTag =>
       !value.allowed &&
       [...acc, (emphasizeTag && key === emphasizeTag ? emphasize(key) : key)] ||
       acc, []);
-const logElementCreationErrors = onOff => logElementCreationErrors2Console = onOff;
 
-export { cleanupHtml, getRestricted, logElementCreationErrors, ATTRS};
+export { cleanupHtml, getRestricted, ATTRS};
