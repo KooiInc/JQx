@@ -18,9 +18,12 @@ export { proxify, addJQxStaticMethods };
 
 /* region functions */
 function selectedUtilitiesFactory() {
-  const cssRuleEdit = styleFactory({createWithId: `JQxStylesheet`});
-  const addFn = (name, fn) => instanceMethods[name] = (self, ...params) => fn(self, ...params);
-  return { ...selectedExtensionHelpers(), ...{ cssRuleEdit, addFn } };
+   return {
+    ...selectedExtensionHelpers(),
+    addFn(name, fn) {
+      systemLog.log(`JQx: added extension function [${name}]`);
+      return instanceMethods[name] = (self, ...params) => fn(self, ...params);
+    } };
 }
 
 function proxify(instance) {

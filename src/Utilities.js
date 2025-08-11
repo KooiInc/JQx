@@ -186,7 +186,7 @@ function selectedExtensionHelpers() {
   return {
     isCommentOrTextNode, isNode, isComment, isText, isHtmlString, isArrayOfHtmlElements,
     isArrayOfHtmlStrings, ElemArray2HtmlString, input2Collection, setCollectionFromCssSelector,
-    addHandlerId };
+    addHandlerId, cssRuleEdit: styleFactory({createWithId: `JQxStylesheet`}) };
 }
 
 function isVisible(el) {
