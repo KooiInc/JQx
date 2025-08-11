@@ -12,7 +12,9 @@
 > 
 > The latest JQL Github branch before this operation is preserved in **./Resource/JQL-last**.
 >
-> The Github JQL repository is renamed to _**JQx**_ and will, until further notice, be synchronised with the CodeBerg repository.
+> The Github JQL repository is renamed to _**JQx**_.
+> 
+> The CodeBerg repository will, until further notice, be synchronised to the Github repository.
 
 # JQx
 
