@@ -64,9 +64,8 @@ function HandleFactory(jqx) {
           abortcontroller.abort();
           const toRemove = [...handlerStore[eventType].entries()].find(([k, v]) => v.name === name);
           handlerStore[eventType].delete(toRemove[0]);
-          setTimeout( () =>
-            jqx.logger.log(`JQx: Listener for event type [${eventType}] with name [${
-              name}] was removed${once ? ` (once active, so handled once).` : ``}`), 100 );
+          jqx.logger.log(`JQx: Listener for event type [${eventType}] with name [${
+              name}] was removed${once ? ` (once active, so handled once).` : ``}`);
           }
   }
 
