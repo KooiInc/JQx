@@ -61,7 +61,7 @@ export default function($) {
       initHidePopup();
     }
 
-    return document.activeElement.blur();
+    return true;
   }
 
   function createTimer(callback, seconds) {
