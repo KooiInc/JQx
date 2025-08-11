@@ -5,7 +5,7 @@ import { listeners, default as HandleFactory } from "./HandlerFactory.js";
 import tagLib from "./HTMLTags.js";
 import {
   randomString, toDashedNotation, IS, tagFNFactory as $T, styleFactory, toCamelcase, systemLog, escHtml,
-  isNonEmptyString, resolveEventTypeParameter, selectedExtensionHelpers, insertPositions
+  isNonEmptyString, resolveEventTypeParameter, selectedFactoryHelpers, insertPositions
 } from "./Utilities.js";
 
 let instanceGetters, instanceMethods;
@@ -19,7 +19,7 @@ export { proxify, addJQxStaticMethods };
 /* region functions */
 function selectedUtilitiesFactory() {
    return {
-    ...selectedExtensionHelpers(),
+    ...selectedFactoryHelpers(),
     addFn(name, extensionMethod) {
       systemLog.log(`JQx: added extension function [${name}]`);
       return instanceMethods[name] = (self, ...params) => extensionMethod(self, ...params);

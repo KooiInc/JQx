@@ -26,7 +26,7 @@ export {
   ElemArray2HtmlString, emptyElement, escHtml, ExamineElementFeatureFactory, findParentScrollDistance,
   input2Collection, insertPositions, IS, isArrayOfHtmlElements, isArrayOfHtmlStrings, isCommentOrTextNode,
   isHtmlString, isNode, isNonEmptyString, logTime, loop, maybe, randomNr, randomString, resolveEventTypeParameter,
-  selectedExtensionHelpers, setCollectionFromCssSelector, setData, styleFactory, systemLog, tagFNFactory,
+  selectedFactoryHelpers, setCollectionFromCssSelector, setData, styleFactory, systemLog, tagFNFactory,
   toCamelcase, toDashedNotation, truncate2SingleStr, truncateHtmlStr,
 };
 
@@ -182,7 +182,7 @@ function  addHandlerId(instance) {
   return `[data-hid="${handleId}"]`;
 }
 
-function selectedExtensionHelpers() {
+function selectedFactoryHelpers() {
   return {
     isCommentOrTextNode, isNode, isComment, isText, isHtmlString, isArrayOfHtmlElements,
     isArrayOfHtmlStrings, ElemArray2HtmlString, input2Collection, setCollectionFromCssSelector,
