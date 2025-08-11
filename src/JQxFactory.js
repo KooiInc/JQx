@@ -108,7 +108,7 @@ function combineObjectSources(...sources) {
   for (const source of sources) {
     const descriptors = Object.getOwnPropertyDescriptors(source);
     for (const [key, descriptor] of Object.entries(descriptors)) {
-      !(key in result) && Object.defineProperty(result, key, descriptor);
+      !(key in result) && Object.defineProperty(result, key, {...descriptor, enumerable: false});
     }
   }
   return result;
