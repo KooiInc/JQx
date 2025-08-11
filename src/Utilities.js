@@ -1,6 +1,7 @@
 import {default as tagFNFactory} from "./tinyDOM.js";
 import {default as IS, maybe} from "./TypeofAnything.js";
 import styleFactory from "./LifeCSS.js";
+import {ATTRS} from "./EmbedResources.js";
 
 const characters4RandomString = [...Array(26)]
   .map((x, i) => String.fromCharCode(i + 65))
@@ -19,6 +20,15 @@ const insertPositions = Object.freeze(new Proxy({
   after: "afterend", afterend: "afterend" }, {
   get(obj, key) { return obj[String(key).toLowerCase()] ?? obj[key]; }
 }));
+
+export {
+  addHandlerId, after, applyStyle, assignAttrValues, before, checkProp, cloneAndDestroy, css, datasetKeyProxy,
+  ElemArray2HtmlString, emptyElement, escHtml, ExamineElementFeatureFactory, findParentScrollDistance,
+  input2Collection, insertPositions, IS, isArrayOfHtmlElements, isArrayOfHtmlStrings, isCommentOrTextNode,
+  isHtmlString, isNode, isNonEmptyString, logTime, loop, maybe, randomNr, randomString, resolveEventTypeParameter,
+  selectedExtensionHelpers, setCollectionFromCssSelector, setData, styleFactory, systemLog, tagFNFactory,
+  toCamelcase, toDashedNotation, truncate2SingleStr, truncateHtmlStr,
+};
 
 function pad0(nr, n=2) {
   return `${nr}`.padStart(n, `0`);
@@ -39,6 +49,15 @@ function resolveEventTypeParameter (maybeTypes) {
   return IS(maybeTypes, Array)
     ? maybeTypes.filter(t => isNonEmptyString(t)).map(t => t.trim().toLowerCase())
     : IS(maybeTypes, String) && maybeTypes?.trim().toLowerCase() || ``;
+}
+
+function loop(instance, callback) {
+  const cleanCollection = instance.collection.filter(el => !isCommentOrTextNode(el));
+  for (let i = 0; i < cleanCollection.length; i += 1) {
+    callback(cleanCollection[i], i);
+  }
+
+  return instance;
 }
 
 function shuffle(array) {
@@ -254,9 +273,10 @@ function systemLogFactory() {
 
   function log(...args) {
     backLog.unshift(...args.map(arg => `${logTime()} ✔ ${decodeForConsole(arg)}`));
-    if (!on) { return systemLogger; }
-    console.log(backLog.slice(0, args.length).join(`\n`));
-    return systemLogger;
+    switch(on) {
+      case true: console.log(backLog.slice(0, args.length).join(`\n`));
+      default: return systemLogger;
+    }
   }
 
   Object.defineProperties(systemLogger, {
@@ -267,33 +287,87 @@ function systemLogFactory() {
   return Object.freeze(systemLogger);
 }
 
-export {
-  addHandlerId,
-  IS,
-  maybe,
-  isCommentOrTextNode,
-  isHtmlString,
-  isArrayOfHtmlStrings,
-  isArrayOfHtmlElements,
-  ElemArray2HtmlString,
-  input2Collection,
-  setCollectionFromCssSelector,
-  isNode,
-  randomString,
-  isNonEmptyString,
-  insertPositions,
-  toDashedNotation,
-  toCamelcase,
-  truncateHtmlStr,
-  truncate2SingleStr,
-  logTime,
-  randomNr,
-  escHtml,
-  ExamineElementFeatureFactory,
-  styleFactory,
-  tagFNFactory,
-  resolveEventTypeParameter,
-  selectedExtensionHelpers,
-  systemLog,
-  datasetKeyProxy,
-};
+function cloneAndDestroy(elem) {
+  const cloned = elem.cloneNode(true)
+  cloned.removeAttribute && cloned.removeAttribute(`id`);
+  elem.isConnected ? elem.remove() : elem = null;
+  return cloned;
+}
+
+function setData(el, keyValuePairs) {
+  if (el && IS(keyValuePairs, Object)) {
+    for (const [key, value] of Object.entries(keyValuePairs)) {
+      el.setAttribute(`data-${toDashedNotation(key)}`, value);
+    }
+  }
+}
+
+function before (instance, elem2AddBefore) {
+  return instance.andThen(elem2AddBefore, true);
+}
+
+function after(instance, elem2AddAfter) {
+  return instance.andThen(elem2AddAfter);
+}
+
+function findParentScrollDistance(node, distance = 0, top = true) {
+  node = node?.parentElement;
+  const what = top ? `scrollTop` : `scrollLeft`;
+  distance += node ? node[what] : 0;
+  return !node ? distance : findParentScrollDistance(node, distance, top);
+}
+
+function emptyElement(el) {
+  return el && (el.textContent = "");
+}
+
+function checkProp(prop) {
+  return prop.startsWith(`data`) || ATTRS.html.find(attr => prop.toLowerCase() === attr);
+}
+
+function css(el, keyOrKvPairs, value, jqx) {
+  if (value && IS(keyOrKvPairs, String)) {
+    keyOrKvPairs = {[keyOrKvPairs]: value === "-" ? "" : value};
+  }
+
+  let nwClass = undefined;
+
+  if (keyOrKvPairs.className) {
+    nwClass = keyOrKvPairs.className;
+    delete keyOrKvPairs.className;
+  }
+
+  const classExists = ([...el.classList].find(c => c.startsWith(`JQxClass-`) || nwClass && c === nwClass));
+  nwClass = classExists || nwClass || `JQxClass-${randomString().slice(1)}`;
+  jqx.editCssRule(`.${nwClass}`, keyOrKvPairs);
+  el.classList.add(nwClass);
+}
+
+function assignAttrValues(/*NODOC*/el, keyValuePairs) {
+  if (el) {
+    for (let [key, value] of Object.entries(keyValuePairs)) {
+      key = toDashedNotation(key);
+      if (key.startsWith(`data`)) {
+        return setData(el, value);
+      }
+
+      if (IS(value, String) && checkProp(key)) {
+        el.setAttribute(key, value.split(/[, ]/)?.join(` `));
+      }
+    }
+  }
+}
+
+function applyStyle(el, rules) {
+  if (IS(rules, Object)) {
+    for (let [key, value] of Object.entries(rules)) {
+      let priority;
+      if (/!important/i.test(value)) {
+        value = value.slice(0, value.indexOf(`!`)).trim();
+        priority = 'important';
+      }
+
+      el.style.setProperty(toDashedNotation(key), value, priority)
+    }
+  }
+}

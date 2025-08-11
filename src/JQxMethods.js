@@ -1,116 +1,13 @@
 import {createElementFromHtmlString, inject2DOMTree} from "./DOM.js";
-import {ATTRS} from "./EmbedResources.js";
 import {
   IS, isNode, truncateHtmlStr, addHandlerId, ExamineElementFeatureFactory,
   isNonEmptyString, toDashedNotation, randomString, escHtml, systemLog,
-  insertPositions, isCommentOrTextNode, datasetKeyProxy
+  insertPositions, datasetKeyProxy, loop, cloneAndDestroy, setData, before,
+  after, findParentScrollDistance, emptyElement, checkProp, css, assignAttrValues,
+  applyStyle,
 } from "./Utilities.js";
 
 const instanceIs = ExamineElementFeatureFactory();
-
-/* region functions */
-function emptyElement(el) {
-  return el && (el.textContent = "");
-}
-
-function loop(instance, callback) {
-  const cleanCollection = instance.collection.filter(el => !isCommentOrTextNode(el));
-  for (let i = 0; i < cleanCollection.length; i += 1) {
-    callback(cleanCollection[i], i);
-  }
-
-  return instance;
-}
-
-function compareCI(key, compareTo) {
-  return key.toLowerCase().trim() === compareTo.trim().toLowerCase();
-}
-
-function cloneAndDestroy(elem) {
-  const cloned = elem.cloneNode(true)
-  cloned.removeAttribute && cloned.removeAttribute(`id`);
-  elem.isConnected ? elem.remove() : elem = null;
-  return cloned;
-}
-
-function setData(el, keyValuePairs) {
-  if (el && IS(keyValuePairs, Object)) {
-    for (const [key, value] of Object.entries(keyValuePairs)) {
-      el.setAttribute(`data-${toDashedNotation(key)}`, value);
-    }
-  }
-}
-
-function before (instance, elem2AddBefore) {
-  return instance.andThen(elem2AddBefore, true);
-}
-
-function after(instance, elem2AddAfter) {
-  return instance.andThen(elem2AddAfter);
-}
-
-function checkProp(prop) {
-  return prop.startsWith(`data`) || ATTRS.html.find(attr => prop.toLowerCase() === attr);
-}
-
-function css(el, keyOrKvPairs, value, jqx) {
-  if (value && IS(keyOrKvPairs, String)) {
-    keyOrKvPairs = {[keyOrKvPairs]: value === "-" ? "" : value};
-  }
-
-  let nwClass = undefined;
-
-  if (keyOrKvPairs.className) {
-    nwClass = keyOrKvPairs.className;
-    delete keyOrKvPairs.className;
-  }
-
-  const classExists = ([...el.classList].find(c => c.startsWith(`JQxClass-`) || nwClass && c === nwClass));
-  nwClass = classExists || nwClass || `JQxClass-${randomString().slice(1)}`;
-  jqx.editCssRule(`.${nwClass}`, keyOrKvPairs);
-  el.classList.add(nwClass);
-}
-
-function assignAttrValues(/*NODOC*/el, keyValuePairs) {
-  if (el) {
-    for (let [key, value] of Object.entries(keyValuePairs)) {
-      key = toDashedNotation(key);
-      if (key.startsWith(`data`)) {
-        return setData(el, value);
-      }
-
-      if (IS(value, String) && checkProp(key)) {
-        el.setAttribute(key, value.split(/[, ]/)?.join(` `));
-      }
-    }
-  }
-}
-
-function applyStyle(el, rules) {
-  if (IS(rules, Object)) {
-    for (let [key, value] of Object.entries(rules)) {
-      let priority;
-      if (/!important/i.test(value)) {
-        value = value.slice(0, value.indexOf(`!`)).trim();
-        priority = 'important';
-      }
-
-      el.style.setProperty(toDashedNotation(key), value, priority)
-    }
-  }
-}
-
-function logDebug(...args) {
-  debugLog.log(`❗` + args.map(v => String(v)).join(`, `) ) ;
-}
-
-function findParentScrollDistance(node, distance = 0, top = true) {
-  node = node?.parentElement;
-  const what = top ? `scrollTop` : `scrollLeft`;
-  distance += node ? node[what] : 0;
-  return !node ? distance : findParentScrollDistance(node, distance, top);
-}
-/* endregion functions */
 
 /* region exportfunctions */
 function factoryExtensionsFactory(jqx) {
@@ -233,7 +130,7 @@ function instanceExtensionsFactory(jqx) {
     afterMe: after,
     andThen: (instance, elem2Add, before = false) => {
       if (!elem2Add || !IS(elem2Add, String, Node, Proxy)) {
-        logDebug(`[JQx instance].[beforeMe | afterMe | andThen]: insufficient input [${elem2Add}]`, );
+        systemLog.log(`[JQx instance].[beforeMe | afterMe | andThen]: insufficient input [${elem2Add}]`, );
         return instance;
       }
 
