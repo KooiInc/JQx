@@ -20,9 +20,9 @@ export { proxify, addJQxStaticMethods };
 function selectedUtilitiesFactory() {
    return {
     ...selectedExtensionHelpers(),
-    addFn(name, fn) {
+    addFn(name, extensionMethod) {
       systemLog.log(`JQx: added extension function [${name}]`);
-      return instanceMethods[name] = (self, ...params) => fn(self, ...params);
+      return instanceMethods[name] = (self, ...params) => extensionMethod(self, ...params);
     } };
 }
 
