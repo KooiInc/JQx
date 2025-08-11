@@ -24,7 +24,7 @@ function selectedUtilitiesFactory() {
 }
 
 function proxify(instance) {
-  return new Proxy( instance, { get: (obj, key) => proxyKeyFactory(obj, key, instance) } );
+  return new Proxy( instance, Object.freeze({ get: (obj, key) => proxyKeyFactory(obj, key, instance) }) );
 }
 
 function wrap(method, instance) {
@@ -164,22 +164,25 @@ function delegateCaptureFactory(listen) {
     const specifiedName = name;
     handlers = IS(handlers, Function) ? [handlers] : handlers;
     canRemove = IS(canRemove, Boolean) ? canRemove : false;
-    const params = { eventType: typesResolved, selector: selector || origin, capture,
+    const params = {
+      eventType: typesResolved, selector: selector || origin, capture,
       name: specifiedName, once, canRemove };
+
     switch(true) {
       case IS(typesResolved, Array) && typesResolved.length > 0:
         for (const type of typesResolved) {
           params.eventType = type;
-          for (const handler of handlers) { doHandle(handler); }
+          assignListeners(handlers, params, listen);
         }
-        return;
-      default: for (const handler of handlers) { doHandle(handler); }
+        break;
+      default: return assignListeners(handlers, params, listen);
     }
+  }
+}
 
-    function doHandle(handler) {
-      params.name = specifiedName;
-      IS(handler, Function) && listen({...params, callback: handler});
-    }
+function assignListeners(handlers, params, listen) {
+  for (const handler of handlers) {
+    listen({...params, callback: handler});
   }
 }
 
