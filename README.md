@@ -7,11 +7,12 @@
 > This repository was formerly known as **JQL**, residing on [Github](https://github.com/KooiInc/JQx).  
 > The *authorative* code base for this module is now: @[https://codeberg.org/KooiInc/JQx](https://codeberg.org/KooiInc/JQx).
 >
-> The NPM package is copied to a new package (see top link). The old NPM package will not be updated and
-> discontinued in due time.  
+> The NPM package is copied to a new package (see top link).
+> The old NPM package will not be updated and discontinued in due time.
+> 
 > The latest JQL Github branch before this operation is preserved in **./Resource/JQL-last**.
 >
-> The Github JQL repository is renamed to _**JQx**_ and will, until further notice, be synchronised with this CodeBerg repository.
+> The Github JQL repository is renamed to _**JQx**_ and will, until further notice, be synchronised with the CodeBerg repository.
 
 # JQx
 
