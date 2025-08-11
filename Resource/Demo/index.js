@@ -23,7 +23,8 @@ getDelegates4Document().forEach(([type, targetedHandlers]) =>
 );
 
 // initialize some statics from $
-const {virtual: $$, log,} = $;
+const log = $.logger.log;
+const {virtual: $$} = $;
 const {DIV, H2, SPAN, I, B, P, U, A, BUTTON, COMMENT, BR, LINK} = $;
 
 /* MAIN  */
