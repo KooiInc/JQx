@@ -32,7 +32,7 @@ function JQxFactory() {
 
     const isRawElemCollection = isArrayOfHtmlElements(instance.collection);
 
-    const logStr = `input =&gt; ${
+    const logStr = `JQx: input =&gt; ${
       isRawHtmlArray
         ? `"${truncateHtmlStr(input.join(`, `), logLineLength)}"`
         : !shouldCreateElements && isRawElemCollection ? `element collection [${
@@ -64,7 +64,7 @@ function JQxFactory() {
         instance.collection = instance.collection.filter(el => !el?.dataset?.jqxcreationerror);
 
         systemLog.log(`${logStr}`);
-        systemLog.log(`*Created ${instance.isVirtual ? `VIRTUAL ` : ``}[${
+        systemLog.log(`JQx: created ${instance.isVirtual ? `VIRTUAL ` : ``}[${
           truncateHtmlStr(ElemArray2HtmlString(instance.collection).trim() ||
             "sanitized: no elements remaining", logLineLength)}]`);
 
@@ -77,7 +77,7 @@ function JQxFactory() {
     }
 
     const forLog = setCollectionFromCssSelector(input, root, instance);
-    systemLog.log(`input => ${forLog}`);
+    systemLog.log(`JQx: input => ${forLog}`);
     return proxify(instance);
   }
 }

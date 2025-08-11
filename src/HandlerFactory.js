@@ -54,10 +54,10 @@ function HandleFactory(jqx) {
   function removeHandlerFactory(spec) {
     const {once, abortcontroller, name, eventType} = spec;
     return !name
-      ? function() { jqx.logger.error(`An anonymous listener can not be removed`); }
+      ? function() { jqx.logger.error(`JQx: an anonymous listener can not be removed`); }
       : !abortcontroller
         ? function(evt) {
-            jqx.logger.error(`Listener for event type [${eventType}] with name [${
+            jqx.logger.error(`JQx: listener for event type [${eventType}] with name [${
               name}] is not marked as removable`);
           }
         : function removeHandler() {
@@ -65,7 +65,7 @@ function HandleFactory(jqx) {
           const toRemove = [...handlerStore[eventType].entries()].find(([k, v]) => v.name === name);
           handlerStore[eventType].delete(toRemove[0]);
           setTimeout( () =>
-            jqx.logger.log(`Listener for event type [${eventType}] with name [${
+            jqx.logger.log(`JQx: Listener for event type [${eventType}] with name [${
               name}] was removed${once ? ` (once active, so handled once).` : ``}`), 100 );
           }
   }
