@@ -1,10 +1,9 @@
 import {createElementFromHtmlString, inject2DOMTree} from "./DOM.js";
 import {
   IS, isNode, truncateHtmlStr, addHandlerId, ExamineElementFeatureFactory,
-  isNonEmptyString, toDashedNotation, randomString, escHtml, systemLog,
-  insertPositions, datasetKeyProxy, loop, cloneAndDestroy, setData, before,
-  after, findParentScrollDistance, emptyElement, checkProp, css, assignAttrValues,
-  applyStyle,
+  isNonEmptyString, toDashedNotation, escHtml, systemLog, insertPositions,
+  datasetKeyProxy, loop, cloneAndDestroy, setData, before, after, findParentScrollDistance,
+  emptyElement, checkProp, css, assignAttrValues, applyStyle,
 } from "./Utilities.js";
 
 const instanceIs = ExamineElementFeatureFactory();
