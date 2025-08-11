@@ -162,7 +162,6 @@ function delegateCaptureFactory(listen) {
     let {type, origin, selector, handlers, name, capture, once, canRemove} = spec;
     const typesResolved = resolveEventTypeParameter(type);
     const specifiedName = name;
-    if (!IS(handlers, Function, Array)) { return; }
     handlers = IS(handlers, Function) ? [handlers] : handlers;
     canRemove = IS(canRemove, Boolean) ? canRemove : false;
     const params = { eventType: typesResolved, selector: selector || origin, capture,

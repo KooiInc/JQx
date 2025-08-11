@@ -8,7 +8,7 @@ const getCapture = eventType => !!(shouldCaptureEventTypes.find(t => t === event
 export { handlerStore as listeners, HandleFactory as default };
 
 function HandleFactory(jqx) {
-  return function(spec) { /*NODOC*/
+  return function(spec) {
     let {eventType, selector, callback, name, capture, once, canRemove} = spec;
 
     switch(true) {
