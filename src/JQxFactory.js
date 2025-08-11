@@ -16,7 +16,6 @@ const {
 
 export { proxify, addJQxStaticMethods };
 
-/* region functions */
 function selectedUtilitiesFactory() {
    return {
     ...selectedFactoryHelpers(),
@@ -252,4 +251,3 @@ function staticMethodsFactory(jqx) {
     get Popup() { return popupGetter(jqx); },
   };
 }
-/* endregion functions */
