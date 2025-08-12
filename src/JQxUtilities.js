@@ -1,9 +1,8 @@
 import {default as tagFNFactory} from "../Resource/Common/tinyDOM.js";
-import {default as IS, maybe} from "../Resource/Common/TypeofAnything.js";
 import styleFactory from "../Resource/Common/LifeCSS.js";
 import {ATTRS} from "../Resource/Common/EmbedResources.js";
-import {isNonEmptyString, truncate2SingleStr, truncateHtmlStr, escHtml, systemLog, logTime,
-  isNode,} from "../Resource/Common/Utilities.js"
+import {escHtml, IS, isNode, isNonEmptyString, logTime, maybe,
+  truncate2SingleStr, truncateHtmlStr, systemLog } from "../Resource/Common/Utilities.js"
 const characters4RandomString = [...Array(26)]
   .map((x, i) => String.fromCharCode(i + 65))
   .concat([...Array(26)].map((x, i) => String.fromCharCode(i + 97)))
