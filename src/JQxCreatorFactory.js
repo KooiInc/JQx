@@ -1,12 +1,12 @@
-import { cleanupHtml } from "./DOM.js";
-import allMethodsFactory from "./JQxMethods.js";
-import PopupFactory from "./Popup.js";
-import { listeners, default as HandleFactory } from "./HandlerFactory.js";
-import tagLib from "./HTMLTags.js";
+import { cleanupHtml } from "../Resource/Common/DOM.js";
+import allMethodsFactory from "./JQxInstanceMethods.js";
+import PopupFactory from "../Resource/Common/Popup.js";
+import { listeners, default as HandleFactory } from "../Resource/Common/HandlerFactory.js";
+import tagLib from "../Resource/Common/HTMLTags.js";
 import {
   randomString, toDashedNotation, IS, tagFNFactory as $T, styleFactory, toCamelcase, systemLog, escHtml,
   isNonEmptyString, resolveEventTypeParameter, selectedFactoryHelpers, insertPositions
-} from "./Utilities.js";
+} from "./JQxUtilities.js";
 
 let instanceGetters, instanceMethods;
 const {
@@ -19,7 +19,7 @@ export { proxify, addJQxStaticMethods };
 function selectedUtilitiesFactory() {
    return {
     ...selectedFactoryHelpers(),
-    addFn(name, extensionMethod) {
+    addFn: function(name, extensionMethod) {
       systemLog.log(`JQx: added extension function [${name}]`);
       return instanceMethods[name] = (self, ...params) => extensionMethod(self, ...params);
     } };

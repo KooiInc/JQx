@@ -1,9 +1,8 @@
 // JQx adapted from https://github.com/KooiInc/tinyDOM
 import { IS, maybe } from "./Utilities.js";
-const defaultTinyDOM = tinyDOM();
 const converts = { html: `innerHTML`, text: `textContent`,  class: `className` };
 
-export default defaultTinyDOM;
+export default tinyDOM();
 
 function tinyDOM() {
   const tinyDOMProxyGetter = { get(obj, key) {
