@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-08-11 08:40:17 UTC-->
+<!-- Generated file, last update 2025-08-12 07:49:08 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -313,15 +313,18 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
 <div data-return-value='Nothing'></div>
 <div data-text='1'><!--DEPRECATED-->
 
-<div class="note">
-  <b>Note</b>: <code>delegate</code> is marked as <i>deprecated</i> and may in due
-    time be replaced with
-  <div class="linkLike" 
-    data-action="jump2Nav" 
-    data-jumpkey="static_delegateCaptured">delegateCaptured</div>.
-</div>
+<div>Create targeted event listeners/handlers.</div>
 
-<div>Create targeted event listeners/handlers.</div></div>
+<div class="note">
+  <b>Note</b>: 
+  <code>delegate</code> is marked as <i>deprecated</i>. 
+  Preferably use <div class="linkLike" 
+    data-action="jump2Nav" 
+    data-jumpkey="static_handle">[JQx].handle</div>.
+
+    <code>[JQx].delegate</code> may in time disappear.
+</div>
+</div>
 </template>
 
 <template data-id="instance_dimensions" class="instance_dimensions" data-is-deprecated="false">
@@ -1176,6 +1179,13 @@ $.TEMPLATE({id: "myTemplate", innerHTML: "..."})?.toDOM();</div></div>
 <li>[<code>callback</code>]: (Function) a function that will be executed after closing the popup;</li>
 <li>[<code>warnMessage</code>]: (JQx instance | HTML string | string) a warning shown when the user tries to close a modal popup (e.g. by clicking outside it).</li></ul>
 
+<div class="note">
+   <b>Note</b>:      
+   when you handle mouse- or key events within a JQx popup box
+   (for example in a form), use <code>event.stopImmediatePropation()</code>
+   in that handler to prevent firing of the popup listener.
+</div>
+
 <div>The only obligatory parameter is <code>content</code>.</div>
 
 <div>The examples demonstrate a regular and modal popup.</div>
@@ -1301,7 +1311,7 @@ In html and css a data-attribute like <code>helloWorld</code> will show up as <c
 </template>
 
 <template data-id="static_fn" class="static_fn" data-is-deprecated="false">
-<div data-params='None'></div>
+<div data-params='[{"name":"string"},{"extensionMethod":"function"}]'></div>
 <div data-return-value='Nothing'></div>
 <div data-text='1'><div>Add custom method to JQx instances. </div>
 
@@ -1582,17 +1592,8 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 <template data-id="static_handle" class="static_handle" data-is-deprecated="false">
 <div data-params='[{"spec":"{type, selector, handlers, capture, once, canRemove}"}]'></div>
 <div data-return-value='Nothing'></div>
-<div data-text='1'>Alias for <div class="linkLike" 
-  data-action="jump2Nav" 
-  data-jumpkey="static_delegateCaptured">delegateCaptured</div>.
-</div></div>
-</template>
-
-<template data-id="static_delegateCaptured" class="static_delegateCaptured" data-is-deprecated="false">
-<div data-params='[{"spec":"{type, name, selector, handlers, capture, once, canRemove}"}]'></div>
-<div data-return-value='Nothing'></div>
 <div data-text='1'><div>
-  <code>delegateCaptured</code> replaces <code>[JQx].delegate</code>. With it you
+  <code>handle</code> replaces <code>[JQx].delegate/delegateCaptured</code>. With it you
   can add listeners (aka handlers/callbacks) to events (e.g. <code>submit</code>, <code>cancel</code>).
 </div>
 
@@ -1600,11 +1601,23 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
   It enables adding one or more listeners to one or more events.
 </div>
 
-<div class="note"><b>Note</b>: every listener uses 
-  <a target="_blank" href="https://javascript.info/event-delegation">event delegation</a>
+<div class="note"><b>Notes</b>
+ <ul>
+  <li>
+    Also callable as <code>[JQx].delegateCaptured</code>
+  </li>
+  <li>
+    Every listener uses 
+    <a target="_blank" href="https://javascript.info/event-delegation">event delegation</a>
+  </li>
+  <li>
+     If you handle mouse- or key events within a JQx popup box
+     (for example in a form), use<code>event.stopImmediatePropation()</code>
+     in that handler to prevent firing of the popup listener.
+  </li> 
+  </ul>
 </div>
 
-<div class="note"><b>Note</b>: also callable as <code>[JQx].handle</code></div>
 
 <h3>Parameters (* = obligatory)</h3>
 <ul>
@@ -1724,18 +1737,41 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 
 </div>
 
+
 <div>
   The example creates a click listener/handler for the header of this chapter 
-  (<b>[JQx].delegateCaptured</b>). 
-  The handler changes the color of all headers (by changing the value of the 
-  corresponding variable within <code>:root</code>). It is a specific click 
-  handler for this header only (but all headers are affected: so click on the 
+  (<b>[JQx].handle</b>). 
+  The handler changes the color of <i>all</i> headers using css (
+  by changing the value of the corresponding variable within <code>:root</code>). 
+  It is a specific click handler for this header only 
+  (but all headers are affected: so click on the 
   header of <i>this</i> chapter changes the color of <i>all</i> headers, 
   clicking on another header handles the already defined click handler 
   for it (i.e. scroll to it)).
 </div>
 
 <div data-example>##EXAMPLECODE@staticDelegateCapturedEx##</div></div>
+</template>
+
+<template data-id="static_delegateCaptured" class="static_delegateCaptured" data-is-deprecated="true">
+<div data-params='[{"spec":"{type, name, selector, handlers, capture, once, canRemove}"}]'></div>
+<div data-return-value='Nothing'></div>
+<div data-text='1'><!--DEPRECATED-->
+
+<div>Create targeted event listeners/handlers.</div>
+
+<div class="note">
+  <b>Note</b>: <code>delegateCaptured</code> is marked as <i>deprecated</i>.
+  <div>
+     It is replaced with and has the same signature as
+     <div class="linkLike" 
+       data-action="jump2Nav" 
+       data-jumpkey="static_handle">[JQx].handle</div>.
+  </div> 
+  The method may in time disappear.
+</div>
+
+</div>
 </template>
 
 <template data-id="static_getNamedListener" class="static_getNamedListener" data-is-deprecated="false">

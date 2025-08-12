@@ -1065,9 +1065,9 @@ function clickActionsFactory($) {
     },
     staticDelegateCapturedEx: evt => {
       const listenerInPlace = $.getNamedListener("click", "delegateExampleHandler");
-      $.delegateCaptured/* or $.handle */({
+      $.handle({
         type: "click",
-        selector: "[data-for-id='static_delegateCaptured']",
+        selector: "[data-for-id='static_handle']",
         handlers: delegateExampleHandler,
         name: "delegateExampleHandler"
         // ^ a name *must* be provided to avoid
@@ -1094,9 +1094,9 @@ function clickActionsFactory($) {
 
       // display listener state and invoke the handler (all [JQx].* headers are re-colored)
       $.Popup.show( {
-        content: `${listenerInPlace ? `Listener in place` : `Listener assigned`}. 
+        content: `${listenerInPlace ? `Listener in place` : `Listener assigned`}.
           Will be invoked after this popup is closed`,
-        callback: () => $(`[data-for-id='static_delegateCaptured']`).trigger("click"),
+        callback: () => $(`[data-for-id='static_handle']`).trigger("click"),
         closeAfter: 3
       } );
     },
