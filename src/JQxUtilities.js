@@ -1,24 +1,11 @@
-import {default as tagFNFactory} from "../Resource/Common/tinyDOM.js";
-import styleFactory from "../Resource/Common/LifeCSS.js";
-import {ATTRS} from "../Resource/Common/EmbedResources.js";
-import {escHtml, IS, isNode, isNonEmptyString, logTime, maybe,
-  truncate2SingleStr, truncateHtmlStr, systemLog } from "../Resource/Common/Utilities.js"
-const characters4RandomString = [...Array(26)]
-  .map((x, i) => String.fromCharCode(i + 65))
-  .concat([...Array(26)].map((x, i) => String.fromCharCode(i + 97)))
-  .concat([...Array(10)].map((x, i) => `${i}`));
-const datasetKeyProxy = Object.freeze({
-  get(obj, key) { return obj[toCamelcase(key)] || obj[key]; },
-  enumerable: false,
-  configurable: false
-});
-const insertPositions = Object.freeze(new Proxy({
-  start: "afterbegin", afterbegin: "afterbegin",
-  end: "beforeend", beforeend: "beforeend",
-  before: "beforebegin", beforebegin: "beforebegin",
-  after: "afterend", afterend: "afterend" }, {
-  get(obj, key) { return obj[String(key).toLowerCase()] ?? obj[key]; }
-}));
+import {
+  after, applyStyle, assignAttrValues, before, checkProp, cloneAndDestroy, datasetKeyProxy,
+  ElemArray2HtmlString, emptyElement, escHtml, findParentScrollDistance, input2Collection, insertPositions,
+  IS, isArrayOfHtmlElements, isArrayOfHtmlStrings, isComment, isCommentOrTextNode, isHtmlString, isModal,
+  isNode, isNonEmptyString, isText, isVisible, isWritable, logTime, maybe, randomNr, randomString,
+  resolveEventTypeParameter, setData, styleFactory, systemLog, tagFNFactory, toCamelcase, toDashedNotation,
+  truncate2SingleStr, truncateHtmlStr,
+} from "../Resource/Common/Utilities.js"
 
 export {
   addHandlerId, after, applyStyle, assignAttrValues, before, checkProp, cloneAndDestroy, css, datasetKeyProxy,
@@ -29,18 +16,6 @@ export {
   toCamelcase, toDashedNotation, truncate2SingleStr, truncateHtmlStr,
 };
 
-function randomNr(max, min = 0) {
-  [max, min] = [Math.floor(max), Math.ceil(min)];
-  return Math.floor( ([...crypto.getRandomValues(new Uint32Array(1))].shift() / 2 ** 32 ) * (max - min + 1) + min );
-}
-
-function resolveEventTypeParameter (maybeTypes) {
-  maybeTypes = IS(maybeTypes, String) && /,/.test(maybeTypes) ? maybeTypes.split(`,`) : maybeTypes;
-  return IS(maybeTypes, Array)
-    ? maybeTypes.filter(t => isNonEmptyString(t)).map(t => t.trim().toLowerCase())
-    : IS(maybeTypes, String) && maybeTypes?.trim().toLowerCase() || ``;
-}
-
 function loop(instance, callback) {
   const cleanCollection = instance.collection.filter(el => !isCommentOrTextNode(el));
   for (let i = 0; i < cleanCollection.length; i += 1) {
@@ -48,76 +23,6 @@ function loop(instance, callback) {
   }
 
   return instance;
-}
-
-function shuffle(array) {
-  let i = array.length;
-  while (i--) {
-    const ri = randomNr(i);
-    [array[i], array[ri]] = [array[ri], array[i]];
-  }
-  return array;
-}
-
-function toDashedNotation(str2Convert) {
-  return str2Convert.replace(/[A-Z]/g, a => `-${a.toLowerCase()}`).replace(/^-|-$/, ``);
-}
-
-function ucFirst([first, ...theRest]) {
-  return `${first.toUpperCase()}${theRest.join(``)}`;
-}
-
-function toCamelcase(str2Convert) {
-  return IS(str2Convert, String)
-    ? str2Convert.toLowerCase()
-      .split(`-`)
-      .map( (str, i) => i && `${ucFirst(str)}` || str)
-      .join(``)
-    : str2Convert;
-}
-
-function randomString() {
-  return `_${shuffle(characters4RandomString).slice(0, 8).join(``)}`;
-}
-
-function isCommentOrTextNode(node) {
-  return IS(node, Comment, Text);
-}
-
-function isComment(input) {
-  IS(input, Comment);
-}
-
-function isText(input) {
-  return IS(input, Text);
-}
-
-function isHtmlString(input) {
-  return IS(input, String) && /^<|>$/.test(`${input}`.trim());
-}
-
-function isArrayOfHtmlElements(input) {
-  return IS(input, Array) && !input?.find(el => !isNode(el));
-}
-
-function isArrayOfHtmlStrings(input) {
-  return IS(input, Array) && !input?.find(s => !isHtmlString(s));
-}
-
-function ElemArray2HtmlString(elems) {
-  return elems?.filter(el => el).reduce((acc, el) =>
-    acc.concat(isComment(el) ? `<!--${el.data}-->`
-      : isCommentOrTextNode(el) ?  el.textContent
-        : el.outerHTML), ``);
-}
-
-function input2Collection(input) {
-  return !input ? []
-    : IS(input, Proxy) ? [input.EL]
-      : IS(input, NodeList) ? [...input]
-        : isNode(input) ? [input]
-          : isArrayOfHtmlElements(input) ? input
-            : input.isJQx ? input.collection : undefined;
 }
 
 function setCollectionFromCssSelector(input, root, self) {
@@ -143,26 +48,6 @@ function selectedFactoryHelpers() {
     isCommentOrTextNode, isNode, isComment, isText, isHtmlString, isArrayOfHtmlElements,
     isArrayOfHtmlStrings, ElemArray2HtmlString, input2Collection, setCollectionFromCssSelector,
     addHandlerId, cssRuleEdit: styleFactory({createWithId: `JQxStylesheet`}) };
-}
-
-function isVisible(el) {
-  if (!el) { return undefined; }
-  const elStyle = el.style;
-  const computedStyle = getComputedStyle(el);
-  const invisible = [elStyle.visibility, computedStyle.visibility].includes("hidden");
-  const noDisplay = [elStyle.display, computedStyle.display].includes("none");
-  const offscreen = el.offsetTop < 0 || (el.offsetLeft + el.offsetWidth) < 0
-    || el.offsetLeft > document.body.offsetWidth;
-  const noOpacity = +computedStyle.opacity === 0 || +(elStyle.opacity || 1) === 0;
-  return !(offscreen || noOpacity || noDisplay || invisible);
-}
-
-function isWritable(elem) {
-  return [...elem.parentNode.querySelectorAll(`:is(:read-write)`)]?.find(el => el === elem) ?? false;
-}
-
-function isModal(elem) {
-  return [...elem.parentNode.querySelectorAll(`:is(:modal)`)]?.find(el => el === elem) ?? false;
 }
 
 function ExamineElementFeatureFactory() {
@@ -205,44 +90,6 @@ function ExamineElementFeatureFactory() {
   };
 }
 
-function cloneAndDestroy(elem) {
-  const cloned = elem.cloneNode(true)
-  cloned.removeAttribute && cloned.removeAttribute(`id`);
-  elem.isConnected ? elem.remove() : elem = null;
-  return cloned;
-}
-
-function setData(el, keyValuePairs) {
-  if (el && IS(keyValuePairs, Object)) {
-    for (const [key, value] of Object.entries(keyValuePairs)) {
-      el.setAttribute(`data-${toDashedNotation(key)}`, value);
-    }
-  }
-}
-
-function before (instance, elem2AddBefore) {
-  return instance.andThen(elem2AddBefore, true);
-}
-
-function after(instance, elem2AddAfter) {
-  return instance.andThen(elem2AddAfter);
-}
-
-function findParentScrollDistance(node, distance = 0, top = true) {
-  node = node?.parentElement;
-  const what = top ? `scrollTop` : `scrollLeft`;
-  distance += node ? node[what] : 0;
-  return !node ? distance : findParentScrollDistance(node, distance, top);
-}
-
-function emptyElement(el) {
-  return el && (el.textContent = "");
-}
-
-function checkProp(prop) {
-  return prop.startsWith(`data`) || ATTRS.html.find(attr => prop.toLowerCase() === attr);
-}
-
 function css(el, keyOrKvPairs, value, jqx) {
   if (value && IS(keyOrKvPairs, String)) {
     keyOrKvPairs = {[keyOrKvPairs]: value === "-" ? "" : value};
@@ -259,33 +106,4 @@ function css(el, keyOrKvPairs, value, jqx) {
   nwClass = classExists || nwClass || `JQxClass-${randomString().slice(1)}`;
   jqx.editCssRule(`.${nwClass}`, keyOrKvPairs);
   el.classList.add(nwClass);
-}
-
-function assignAttrValues(/*NODOC*/el, keyValuePairs) {
-  if (el) {
-    for (let [key, value] of Object.entries(keyValuePairs)) {
-      key = toDashedNotation(key);
-      if (key.startsWith(`data`)) {
-        return setData(el, value);
-      }
-
-      if (IS(value, String) && checkProp(key)) {
-        el.setAttribute(key, value.split(/[, ]/)?.join(` `));
-      }
-    }
-  }
-}
-
-function applyStyle(el, rules) {
-  if (IS(rules, Object)) {
-    for (let [key, value] of Object.entries(rules)) {
-      let priority;
-      if (/!important/i.test(value)) {
-        value = value.slice(0, value.indexOf(`!`)).trim();
-        priority = 'important';
-      }
-
-      el.style.setProperty(toDashedNotation(key), value, priority)
-    }
-  }
 }

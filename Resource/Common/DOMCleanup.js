@@ -1,6 +1,5 @@
 import cleanupTagInfo from "./HTMLTags.js";
-import {ATTRS} from "./EmbedResources.js";
-import {IS, truncate2SingleStr, escHtml, systemLog} from "./Utilities.js";
+import {ATTRS, IS, truncate2SingleStr, escHtml, systemLog} from "./Utilities.js";
 
 let logElementCreationErrors2Console = true;
 const attrRegExpStore = {

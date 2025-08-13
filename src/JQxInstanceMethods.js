@@ -9,7 +9,13 @@ import {
 
 const instanceIs = ExamineElementFeatureFactory();
 
-/* region exportfunctions */
+export default function(jqx) {
+  return {
+    factoryExtensions: factoryExtensionsFactory(jqx),
+    instanceExtensions: instanceExtensionsFactory(jqx),
+  }
+};
+
 function factoryExtensionsFactory(jqx) {
   return {
     data: instance => ({
@@ -510,11 +516,3 @@ function instanceExtensionsFactory(jqx) {
     },
   };
 }
-
-/* endregion exportfunctions */
-export default function(jqx) {
-  return {
-    factoryExtensions: factoryExtensionsFactory(jqx),
-    instanceExtensions: instanceExtensionsFactory(jqx),
-  }
-};

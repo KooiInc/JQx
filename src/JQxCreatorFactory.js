@@ -4,8 +4,8 @@ import PopupFactory from "../Resource/Common/Popup.js";
 import { listeners, default as HandleFactory } from "../Resource/Common/HandlerFactory.js";
 import tagLib from "../Resource/Common/HTMLTags.js";
 import {
-  randomString, toDashedNotation, IS, tagFNFactory as $T, styleFactory, toCamelcase, systemLog, escHtml,
-  isNonEmptyString, resolveEventTypeParameter, selectedFactoryHelpers, insertPositions
+  randomString, toDashedNotation, IS, tagFNFactory as $T, styleFactory, toCamelcase, systemLog,
+  escHtml, isNonEmptyString, resolveEventTypeParameter, selectedFactoryHelpers, insertPositions
 } from "./JQxUtilities.js";
 
 let instanceGetters, instanceMethods;
