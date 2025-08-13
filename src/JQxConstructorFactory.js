@@ -1,9 +1,9 @@
 import { proxify, addJQxStaticMethods } from "./JQxCreatorFactory.js";
-import { inject2DOMTree, createElementFromHtmlString } from "../Resource/Common/DOM.js";
 import {
   isHtmlString, truncateHtmlStr, isArrayOfHtmlStrings, isArrayOfHtmlElements,
   ElemArray2HtmlString, input2Collection, setCollectionFromCssSelector,
-  IS, systemLog, insertPositions } from "./JQxUtilities.js";
+  IS, systemLog, insertPositions, inject2DOMTree, createElementFromHtmlString
+} from "./JQxUtilities.js";
 
 export default addJQxStaticMethods(JQxMainFactory());
 
