@@ -319,6 +319,8 @@ function clickActionsFactory($) {
       $.button({text: `show log entries`, id: `backlogBttn`}).showInExample(evt, true);
 
       function showBacklog(evt) {
+        $.log(`***Showing the backlog (from example)`);
+        
         // adjust the popup width temporary
         $(`#jqxPopupContent`).style({maxWidth: `90vw`});
 
