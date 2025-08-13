@@ -4,7 +4,8 @@ import {
   IS, isArrayOfHtmlElements, isArrayOfHtmlStrings, isComment, isCommentOrTextNode, isHtmlString, isModal,
   isNode, isNonEmptyString, isText, isVisible, isWritable, logTime, maybe, randomNr, randomString,
   resolveEventTypeParameter, setData, styleFactory, systemLog, tagFNFactory, toCamelcase, toDashedNotation,
-  truncate2SingleStr, truncateHtmlStr,
+  truncate2SingleStr, truncateHtmlStr, createElementFromHtmlString, inject2DOMTree, cleanupHtml,
+  PopupFactory, tagLib, listeners, HandleFactory,
 } from "../Resource/Common/Utilities.js"
 
 export {
@@ -13,7 +14,8 @@ export {
   input2Collection, insertPositions, IS, isArrayOfHtmlElements, isArrayOfHtmlStrings, isCommentOrTextNode,
   isHtmlString, isNode, isNonEmptyString, logTime, loop, maybe, randomNr, randomString, resolveEventTypeParameter,
   selectedFactoryHelpers, setCollectionFromCssSelector, setData, styleFactory, systemLog, tagFNFactory,
-  toCamelcase, toDashedNotation, truncate2SingleStr, truncateHtmlStr,
+  toCamelcase, toDashedNotation, truncate2SingleStr, truncateHtmlStr, createElementFromHtmlString, inject2DOMTree,
+  cleanupHtml, PopupFactory, tagLib, HandleFactory, listeners
 };
 
 function loop(instance, callback) {

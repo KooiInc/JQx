@@ -2,6 +2,10 @@ import { default as IS, maybe } from "./TypeofAnything.js";
 import {ATTRS} from "./EmbedResources.js";
 import {default as tagFNFactory} from "./tinyDOM.js";
 import styleFactory from "./LifeCSS.js";
+import {createElementFromHtmlString, inject2DOMTree, cleanupHtml} from "./DOM.js";
+import PopupFactory from "./Popup.js";
+import { listeners, default as HandleFactory } from "./HandlerFactory.js";
+import tagLib from "./HTMLTags.js";
 
 const systemLog = systemLogFactory();
 const insertPositions = Object.freeze(new Proxy({
@@ -22,12 +26,13 @@ const datasetKeyProxy = Object.freeze({
 });
 
 export {
-  after, applyStyle, assignAttrValues, ATTRS, before, checkProp, cloneAndDestroy, datasetKeyProxy,
-  ElemArray2HtmlString, emptyElement, escHtml, findParentScrollDistance, input2Collection, insertPositions,
-  IS, isArrayOfHtmlElements, isArrayOfHtmlStrings, isComment, isCommentOrTextNode, isHtmlString, isModal,
-  isNode, isNonEmptyString, isText, isVisible, isWritable, logTime, maybe, pad0, randomNr, randomString,
-  resolveEventTypeParameter, setData, styleFactory, systemLog, tagFNFactory, toCamelcase, toDashedNotation,
-  truncate2SingleStr, truncateHtmlStr, ucFirst,
+  after, applyStyle, assignAttrValues, ATTRS, before, checkProp, cleanupHtml, cloneAndDestroy,
+  createElementFromHtmlString, datasetKeyProxy, inject2DOMTree, ElemArray2HtmlString, emptyElement,
+  escHtml, findParentScrollDistance, HandleFactory, input2Collection, insertPositions, IS, isArrayOfHtmlElements,
+  isArrayOfHtmlStrings, isComment, isCommentOrTextNode, isHtmlString, isModal, isNode, isNonEmptyString,
+  isText, isVisible, isWritable, listeners, logTime, maybe, pad0, PopupFactory, randomNr, randomString,
+  resolveEventTypeParameter, setData, styleFactory, systemLog, tagFNFactory, tagLib, toCamelcase,
+  toDashedNotation, truncate2SingleStr, truncateHtmlStr, ucFirst,
 };
 
 function checkProp(prop) {

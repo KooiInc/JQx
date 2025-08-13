@@ -1,10 +1,9 @@
-import {createElementFromHtmlString, inject2DOMTree} from "../Resource/Common/DOM.js";
 import {
   IS, isNode, truncateHtmlStr, addHandlerId, ExamineElementFeatureFactory,
   isNonEmptyString, toDashedNotation, escHtml, systemLog, insertPositions,
   datasetKeyProxy, loop, cloneAndDestroy, setData, before, after,
   findParentScrollDistance, emptyElement, checkProp, css, assignAttrValues,
-  applyStyle,
+  applyStyle, createElementFromHtmlString, inject2DOMTree,
 } from "./JQxUtilities.js";
 
 const instanceIs = ExamineElementFeatureFactory();

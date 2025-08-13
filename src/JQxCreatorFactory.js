@@ -1,12 +1,9 @@
-import { cleanupHtml } from "../Resource/Common/DOM.js";
-import allMethodsFactory from "./JQxInstanceMethods.js";
-import PopupFactory from "../Resource/Common/Popup.js";
-import { listeners, default as HandleFactory } from "../Resource/Common/HandlerFactory.js";
-import tagLib from "../Resource/Common/HTMLTags.js";
 import {
   randomString, toDashedNotation, IS, tagFNFactory as $T, styleFactory, toCamelcase, systemLog,
-  escHtml, isNonEmptyString, resolveEventTypeParameter, selectedFactoryHelpers, insertPositions
+  escHtml, isNonEmptyString, resolveEventTypeParameter, selectedFactoryHelpers, insertPositions,
+  cleanupHtml, PopupFactory, tagLib, listeners, HandleFactory,
 } from "./JQxUtilities.js";
+import allMethodsFactory from "./JQxInstanceMethods.js";
 
 let instanceGetters, instanceMethods;
 const {
