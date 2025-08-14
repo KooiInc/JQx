@@ -1,7 +1,7 @@
-import {default as CreateComponent, createOrRetrieveShadowRoot} from "./WebComponentFactory.min.js";
-// ^ see https://cdn.jsdelivr.net/gh/KooiInc/es-webcomponent-factor
+import {default as CreateComponent, createOrRetrieveShadowRoot} from "../Common/WebComponentFactory.min.js";
+// ^ see https://github.com/KooiInc/es-webcomponent-factory
 import handlerFactory  from "./HandlingFactory.js";
-const webComponentStyleSheetContent = await fetch(`./cright.css`).then(r => r.text());
+const webComponentStyleSheetContent = await fetch(`../Common/cright.css`).then(r => r.text());
 const isDev = location.host.startsWith(`dev`) || location.host.startsWith(`localhost`);
 const importLink =  isDev ?
   `../../index.js` :
