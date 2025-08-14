@@ -76,7 +76,8 @@ function finalizeDocumentCreation() {
   setupHandling();
   $(`.docBrowser`).append($.div({class: "spacer"}));
   $(`[data-group="jqx"]`).trigger(`click`);
-  Prism.highlightAll();
+  //Prism.highlightAll();
+  hljs.highlightAll();
   delete documentationTemplates.templates;
 
   $.log(`Document creation/implementation (without imports) took ${
@@ -225,10 +226,18 @@ function createParams(paramsString) {
   return $.virtual(`<div data-parameters><b>Parameters</b>${mappedParams}</div>`);
 }
 
-function getCodeElement(content) {
+function _getCodeElement(content) {
   return $.pre(
     {class: "line-numbers language-javascript"}, $.code({class: "language-javascript"}, content)
   );
+}
+
+function getCodeElement(content) {
+  return $.pre({class: "codeblock"},
+    $.code({class: /doctype/i.test(content) ? "language-xml" : "language-javascript"}, content));
+    //
+    // $.code({class: /doctype/i.test(content)
+    //   ? "language-xml" : ""}, content));
 }
 
 function getChapterName(name, prefix, isDeprecated = false) {

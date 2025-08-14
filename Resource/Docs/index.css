@@ -51,6 +51,13 @@ body {
   height: 0;
 }
 
+pre.codeblock code {
+  border-radius: 5px;
+  box-shadow: 2px 2px 6px #999;
+  max-height: 50vh;
+  overflow: auto;
+}
+
 code:not([class*='language-']) b.comment {
   color: #999;
 }
