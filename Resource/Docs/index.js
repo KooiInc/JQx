@@ -1,7 +1,6 @@
 import {default as CreateComponent, createOrRetrieveShadowRoot} from "../Common/WebComponentFactory.min.js";
 // ^ see https://github.com/KooiInc/es-webcomponent-factory
 import handlerFactory  from "./HandlingFactory.js";
-const webComponentStyleSheetContent = await fetch(`../Common/cright.css`).then(r => r.text());
 const isDev = location.host.startsWith(`dev`) || location.host.startsWith(`localhost`);
 const importLink =  isDev ?
   `../../index.js` :
@@ -348,7 +347,7 @@ function renderCopyrightComponent() {
 
 function copyrightComponentConnectHandler(elem) {
   const shadow = createOrRetrieveShadowRoot(elem);
-  const componentStyle = $.style({textContent: webComponentStyleSheetContent});
+  const componentStyle = $.style({textContent: `@import url(../Common/cright.css)`});
   const content = $.div({html: `&copy; <span><slot name="year"/></span> KooiInc <slot name="link"/>`});
   shadow.append(content.node, componentStyle.node);
 }
