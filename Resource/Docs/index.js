@@ -8,8 +8,9 @@ const importLink =  isDev ?
 const $ = (await import(importLink)).default;
 window.$ = $;
 const perform = performance.now();
-const {clientHandling, allExampleActions, documentationTemplates, docContainer, orderedGroups}
+const {componentStyle, clientHandling, allExampleActions, documentationTemplates, docContainer, orderedGroups}
   = await getVariablesInAllScopes();
+
 await createCopyrightComponent();
 
 createDocument();
@@ -300,13 +301,14 @@ async function getVariablesInAllScopes() {
   let documentationTemplates = await fetchAllChaptersFromTemplateDocument();
   const templates = documentationTemplates.templates;
   const docContainer = $(`.docs`);
+  const componentStyle = $.style({textContent: `@import url(../Common/cright.css)`});
   const orderedGroups = [
     { groupId: `jqx_About`, groupLabel: `JQx` },
     { groupId: `static_About`, groupLabel: `Static` },
     { groupId: `instance_About`, groupLabel: `Instance` },
     { groupId: `popup_About`, groupLabel: `Popup` },
   ];
-  return {clientHandling, allExampleActions, documentationTemplates, docContainer, orderedGroups};
+  return {clientHandling, allExampleActions, documentationTemplates, docContainer, orderedGroups, componentStyle};
 }
 
 async function fetchAllChaptersFromTemplateDocument() {
@@ -347,7 +349,6 @@ function renderCopyrightComponent() {
 
 function copyrightComponentConnectHandler(elem) {
   const shadow = createOrRetrieveShadowRoot(elem);
-  const componentStyle = $.style({textContent: `@import url(../Common/cright.css)`});
   const content = $.div({html: `&copy; <span><slot name="year"/></span> KooiInc <slot name="link"/>`});
   shadow.append(content.node, componentStyle.node);
 }
