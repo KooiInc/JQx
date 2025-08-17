@@ -8,10 +8,18 @@ export default function($) {
   const [popupContent, popupNode] = [$(`#jqxPopupContent`), $.node(`#jqxPopup`)];
   let currentProps = {};
   $.handle( { type: `click, keydown`, handlers: genericPopupCloseHandler, capture: true } );
-  return Object.freeze({show: initPopup, removeModal});
+  return Object.freeze({show: initPopup, remove: initHidePopup, removeModal});
 
   function initPopup(props) {
-    if (popupNode.open) { return; }
+    if (popupNode.open) {
+      switch(true) {
+        case isCurrent(props): return;
+        default:
+          initHidePopup();
+          return setTimeout(() => initPopup(props), 200);
+      }
+    }
+    
     currentProps = {...props};
     let {content} = currentProps;
     return !($.IS(content, String, HTMLElement) || content?.isJQx) ? true : showPopup();
@@ -19,10 +27,17 @@ export default function($) {
 
   function initHidePopup() {
     if (currentProps.modal) {
-      return failModalClose(currentProps.warnMessage)
+      return failModalClose(currentProps.warnMessage);
     }
 
     return hidePopup();
+  }
+  
+  function isCurrent(props) {
+    for (const [key, value] of Object.entries(currentProps)) {
+      if (value !== props[key]) { return false; }
+    }
+    return true;
   }
 
   function showPopup() {
@@ -37,7 +52,9 @@ export default function($) {
 
   function hidePopup() {
     popupNode.close(currentProps.returnValue);
-    if ($.IS(currentProps.callback, Function)) { return currentProps.callback(currentProps.returnValue); }
+    if ($.IS(currentProps.callback, Function)) {
+      return setTimeout(() => currentProps.callback(currentProps.returnValue), 200);
+    }
     currentProps = {};
   }
 
