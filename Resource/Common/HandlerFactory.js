@@ -78,9 +78,7 @@ function HandlerFactory(jqx) {
     store[eType] = store[eType] || {};
     let handlerName = getHandlerFunctionName(handler.name) || name;
     
-    if (!handlerName) {
-      handlerName = uniqueID();
-    }
+    if (!handlerName) { handlerName = uniqueID(); }
     
     if (node instanceof HTMLElement) {
       // Note: for multiple event types dataset.hid may be defined already
