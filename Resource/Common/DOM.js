@@ -23,6 +23,7 @@ function characterDataElement2DOM(elem, root, position) {
 
 function inject2DOMTree( collection = [], root = document.body, position = insertPositions.BeforeEnd ) {
   position = position || insertPositions.BeforeEnd;
+  root = root?.isJQx ? root.node : root || document.body;
   return collection.reduce( (acc, elem) => {
     const created = isNode(elem) && element2DOM(elem, root, position);
     return created ? [...acc, created] : acc;
