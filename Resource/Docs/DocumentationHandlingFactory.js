@@ -1082,6 +1082,9 @@ function clickActionsFactory($) {
         type: "click",
         selector: "[data-for-id='static_handle']",
         handlers: delegateExampleHandler,
+        // ^ you *must* provide a named function (or 'name' property)
+        // to be able to retrieve it and prevent re-adding the
+        // handler
       });
       
       function delegateExampleHandler({me}) {
