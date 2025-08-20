@@ -220,6 +220,7 @@ function clickActionsFactory($) {
             $.handle( {
               type: "click, contextmenu",
               selector: `button[data-exec]`,
+              about: "A click/right click listener for the getNamedListener example",
               canRemove: true,
               handlers: function handleExec({evt, me}) {
                 if (evt.type === "contextmenu") {
@@ -244,11 +245,15 @@ function clickActionsFactory($) {
               },
             });
           }
-
+          const getNamedListenerForDisplay = JSON.stringify($.getNamedListener(`click`, `handleExec`), null, 2);
           $.Popup.show( {
-            content: theListener
-              ? `Already listening` : `handler created, click [execute] button`,
-            closeAfter: 2
+            content: $.div(
+              theListener ? `Already listening` : `handler created, click [invoke] button`,
+              !theListener
+                ? $.p(`<code>\$.getNamedListener("click", "handleExec")</code> =>`,
+                  $.pre({style: "margin-top: 0"}, getNamedListenerForDisplay))
+                : ``),
+            closeAfter: (!theListener ? 60 : 2)
           } );
         }
       });
@@ -260,7 +265,7 @@ function clickActionsFactory($) {
           $.getNamedListener(`click`, `handleExec`)?.unListen();
           $.getNamedListener(`contextmenu`, `handleExec`)?.unListen();
           return $.Popup.show( {
-            content: `listeners (click, right click) removed, (right) click the [execute] button to verify`,
+            content: `listeners (click, right click) removed, (right) click the [invoke] button to verify`,
             closeAfter: 4
           } );
         }
@@ -268,7 +273,7 @@ function clickActionsFactory($) {
 
       const bttnCreate = $.button({class: `exRunBttn`,
         text: `create a listener for the [execute] button`, data: {create: 1}});
-      const bttnListen = $.button({class: `exRunBttn`, text: `execute`, data: {exec: 1, rightclicks: 0}});
+      const bttnListen = $.button({class: `exRunBttn`, text: `invoke`, data: {exec: 1, rightclicks: 0}});
       const bttnRemove = $.button({class: `exRunBttn`, text: `remove`, data: {remove: 1}});
       $.div(bttnCreate, bttnListen, bttnRemove).showInExample(evt, true);
     },

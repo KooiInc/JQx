@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-08-20 12:34:00 UTC-->
+<!-- Generated file, last update 2025-08-20 14:34:23 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -1594,8 +1594,8 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 </template>
 
 <template data-id="static_handle" class="static_handle" data-is-deprecated="false">
-<div data-params='[{"spec":"{type, node, selector, handlers, capture, once}"}]'></div>
-<div data-return-value='{name: string, type: string, unListen: function} | undefined'></div>
+<div data-params='[{"spec":"{type, handlers, node, selector, capture, once, about }"}]'></div>
+<div data-return-value='Nothing'></div>
 <div data-text='1'><div>
   <code>handle</code> replaces <code>[JQx].delegate/delegateCaptured</code>. With it you
   can add listeners (aka handlers/callbacks) to events (e.g. <code>submit</code>, <code>cancel</code>).
@@ -1611,6 +1611,9 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
     Also callable as <code>[JQx].delegateCaptured</code>
   </li>
   <li>
+    if the listener for a event type/name (<code>type/name|handler name</code>) 
+    combination already exists, nothing is done and an error is logged in the console.
+  <li>
     Every listener uses 
     <a target="_blank" href="https://javascript.info/event-delegation">event delegation</a>
   </li>
@@ -1618,7 +1621,7 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
      If you handle mouse- or key events within a JQx popup box
      (for example in a form), use<code>event.stopImmediatePropation()</code>
      in that handler to prevent firing of the popup listener.
-  </li> 
+  </li>
   </ul>
 </div>
 
@@ -1689,17 +1692,28 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
     <code>name: string</code>: because of the way <code>origin</code> binds to a handler
     (it is wrapped into a new anonymous function), to be sure a handler can not be re-added 
     a <i>unique</i> name (string, at least 4 characters) can be provided.
-    <div>A name is obligatory if you want to be able to remove a listener 
-        (<code>canRemove: true</code>).
-    <div>Without <code>origin</code> and when <code>handler(s)</code> is/are 
-    named function(s) a name is not necessary.</div>
+    <div>
+       A name is mandatory if you want to be able to remove a listener 
+       (<code>canRemove: true</code>).
+    <div>Without <code>origin/selector</code> and when <code>handler(s)</code> is/are 
+    named function(s) a name is not necessary (the name will be derived from
+    the handler function name(s) in that case).</div>
+    <div class="note"><b>Note</b>: 
+      the name should be unique. If no name was provided, a unique name 
+      will be created.
     <div>See the example.</div>
   </li>
 
   <li>
-    <code>canRemove: boolean</code>: if <code>true</code> and <code>name</code> is not empty 
-    you can use the <code>remove</code> parameter to remove the 
-    listener function.
+    <code>about: string</code>: optionally provide a short text describing
+    the handler. This will show up in 
+    <div class="linkLike"
+       data-action="jump2Nav" 
+       data-jumpkey="static_listenerStore">[JQx].listenerStore</div>,
+    or in the return value of
+    <div class="linkLike"
+       data-action="jump2Nav" 
+       data-jumpkey="static_getNamedListener">[JQx].getNamedListener</div>,
   </li>
 
 </ul>
@@ -1777,7 +1791,7 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 
 <template data-id="static_getNamedListener" class="static_getNamedListener" data-is-deprecated="false">
 <div data-params='[{"type":"string"},{"name":"string"}]'></div>
-<div data-return-value='{name, remove, capture} | undefined'></div>
+<div data-return-value='{ name, handler, capture, once, type, selector, about, unListen } '></div>
 <div data-text='1'><div>
   <code>getNamedListener</code> delivers (when a <i>named</i> listener was found)
   an Object, derived from <div class="linkLike" 
@@ -1901,6 +1915,37 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 
 <template data-id="static_listenerStore" class="static_listenerStore" data-is-deprecated="false">
 <div data-params='None'></div>
-<div data-return-value='[ {  [event type]: { name, handler, capture, once, type, selector, about, unListen ] } ]'></div>
-<div data-text='1'>A store of all actual event listeners.</div>
+<div data-return-value='[ {  [event type]: { name, handler, capture, once, type, selector, about, unListen } ]'></div>
+<div data-text='1'>The storage of all actual event listeners.</div>
+</template>
+
+<template data-id="static_listen" class="static_listen" data-is-deprecated="false">
+<div data-params='[{"spec":"{ type, handler[, name, capture, once, selector, node, about] }"}]'></div>
+<div data-return-value='{name: string, type: string, unListen: function} | undefined'></div>
+<div data-text='1'><div>
+  Add a <i>single</i> event listener directly.
+</div>
+
+<div>
+ The syntax equals for the most part
+  <div class="linkLike"
+       data-action="jump2Nav" 
+       data-jumpkey="static_handle">[JQx].handle</div>,
+   so check that documentation for syntax.
+</div> 
+
+<div>
+ The difference is that <code>type</code> and <code>handler</code>
+ should be single values. Furthermore, this method returns an
+ Object, containing the type/name/about values of the listener 
+ and a function (<code>unListen</code>) to (directly) undo 
+ the event listening.
+</div>
+
+<div class="note">
+ <b>Note</b>: if the listener for a event type/name 
+ (<code>type/name|handler name</code>) combination
+ already exists, an error is logged in the console
+ and the return value is nothing (undefined).
+</div></div>
 </template>
