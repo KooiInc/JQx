@@ -1,6 +1,6 @@
 import {default as CreateComponent, createOrRetrieveShadowRoot} from "../Common/WebComponentFactory.min.js";
 // ^ see https://github.com/KooiInc/es-webcomponent-factory
-import handlerFactory  from "./HandlingFactory.js";
+import handlerFactory  from "./DocumentationHandlingFactory.js";
 const isDev = location.host.startsWith(`dev`) || location.host.startsWith(`localhost`);
 const importLink =  isDev ?
   `../../index.js` :

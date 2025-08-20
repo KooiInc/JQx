@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-08-20 10:46:07 UTC-->
+<!-- Generated file, last update 2025-08-20 12:34:00 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -1178,7 +1178,7 @@ $.TEMPLATE({id: "myTemplate", innerHTML: "..."})?.toDOM();</div></div>
 <div data-text='1'><div>Create and display a popup 'window'. There is one parameter, which is an Object with the following properties.</div>
 
 <ul><li><code>content</code>: (JQx instance | HTML string | string) the message to show;</li>
-<li>[<code>modal</code>]: (Boolean) <code>true</code> makes the popup modal (a popup without a closer icon, which can only be closed using some handler withing its' content);</li>
+<li>[<code>modal</code>]: (Boolean) <code>true</code> makes the popup modal (a popup without a closer icon, which can only be closed using some handler within its content);</li>
 <li>[<code>closeAfter</code>]: (Number) the number of seconds after which the popup closes itself (ignored when <code>modal</code>);</li>
 <li>[<code>callback</code>]: (Function) a function that will be executed after closing the popup;</li>
 <li>[<code>warnMessage</code>]: (JQx instance | HTML string | string) a warning shown when the user tries to close a modal popup (e.g. by clicking outside it).</li></ul>
@@ -1891,7 +1891,11 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 <div data-params='None'></div>
 <div data-return-value='Nothing'></div>
 <div data-text='1'><div>
-  Remove the popup.
+  Remove the active popup.
+</div>
+
+<div class="note">
+  <b>Note</b>: if the popup was opened as modal or already closed, this will do nothing
 </div></div>
 </template>
 
