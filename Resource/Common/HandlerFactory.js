@@ -74,8 +74,8 @@ function HandlerFactory(jqx) {
   }
   
   function storeHandler(spec) {
-    let { eType, handler, name, capture, once, selector, node, about } = spec;
-    store[eType] = store[eType] || {};
+    let { type, handler, name, capture, once, selector, node, about } = spec;
+    store[type] = store[type] || {};
     let handlerName = getHandlerFunctionName(handler.name) || name;
     
     if (!handlerName) { handlerName = uniqueID(); }
@@ -88,35 +88,35 @@ function HandlerFactory(jqx) {
     }
     
     switch(true) {
-      case !store[eType][handlerName]:
+      case !store[type][handlerName]:
         idCache[handlerName] = 1;
-        store[eType][handlerName] = {
+        store[type][handlerName] = {
           name: handlerName,
           handler: wrapFn4Selector(handler, selector, once, handlerName),
-          capture: getCaptureValue(eType, capture),
+          capture: getCaptureValue(type, capture),
           once: !!once,
-          type: eType,
+          type: type,
           selector: !!selector && selector || false,
           about: !!about && about || false,
-          unListen() { remove(eType, handlerName); },
+          unListen() { remove(type, handlerName); },
         };
-        return store[eType][handlerName];
+        return store[type][handlerName];
       default: return console.error(`The name [${handlerName}] for [${
-        eType}] exists. Use unique (function) names.`);
+        type}] exists. Use unique (function) names.`);
     }
   }
   
   return {
     remove(...args) { return remove(...args); },
-    listen(spec) {
-      const { eType, handler } = spec;
-      if ( !isNonEmptyString(eType) || !jqx.IS(handler, Function) ) { return; }
+    listen: function(spec) {
+      const { type, handler } = spec;
+      if ( !isNonEmptyString(type) || !jqx.IS(handler, Function) ) { return; }
       const nwHandler = storeHandler(spec);
       if (nwHandler) {
         setListener(nwHandler);
         return {
           name: nwHandler.name,
-          type: eType,
+          type,
           unListen() { remove(eType, nwHandler.name); },
         };
       }

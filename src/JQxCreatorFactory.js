@@ -164,13 +164,13 @@ function delegateCaptureFactory(handlerWrapper) {
     const specifiedName = name;
     handlers = IS(handlers, Function) ? [handlers] : handlers;
     const params = {
-      eType: typesResolved, selector: selector || origin, capture,
+      type: typesResolved, selector: selector || origin, capture,
       name: specifiedName, once, node, about };
     
     switch(true) {
       case IS(typesResolved, Array) && typesResolved.length > 0:
         for (const type of typesResolved) {
-          params.eType = type;
+          params.type = type;
           assignListeners(handlers, params, handlerWrapper);
         }
         break;
