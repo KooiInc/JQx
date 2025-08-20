@@ -156,28 +156,6 @@ function delegateFactory(listen) {
   }
 }
 
-function _delegateCaptureFactory(listen) {
-  return function(spec) {
-    let {type, origin, selector, handlers, name, capture, once, canRemove} = spec;
-    const typesResolved = resolveEventTypeParameter(type);
-    const specifiedName = name;
-    handlers = IS(handlers, Function) ? [handlers] : handlers;
-    canRemove = IS(canRemove, Boolean) ? canRemove : false;
-    const params = {
-      eventType: typesResolved, selector: selector || origin, capture,
-      name: specifiedName, once, canRemove };
-
-    switch(true) {
-      case IS(typesResolved, Array) && typesResolved.length > 0:
-        for (const type of typesResolved) {
-          params.eventType = type;
-          assignListeners(handlers, params, listen);
-        }
-        break;
-      default: return assignListeners(handlers, params, listen);
-    }
-  }
-}
 /* region __WIP */
 function delegateCaptureFactory(handlerWrapper) {
   return function(spec) {
@@ -207,12 +185,6 @@ function assignListeners(handlers, params, handlerWrapper) {
   }
 }
 /* endregion __WIP */
-
-function _assignListeners(handlers, params, listen) {
-  for (const handler of handlers) {
-    listen({...params, callback: handler});
-  }
-}
 
 function getNamedListenerFactory(jqx) {
   return function(type, name) {
