@@ -70,7 +70,7 @@ function HandlerFactory(jqx) {
   }
   
   function getHandlerFunctionName(name) {
-    return !/handler/i.test(name) && name;
+    return !/^handler$|^handlers$/i.test(name) && name;
   }
   
   function storeHandler(spec) {
