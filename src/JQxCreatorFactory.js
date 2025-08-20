@@ -245,6 +245,7 @@ function staticMethodsFactory(jqx) {
     get delegate()  { return delegateFactory(capturedHandling); },
     get delegateCaptured() { return capturedHandling; } ,
     get handle() { return  capturedHandling; },
+    get listen() { return handlerWrapper.listen; },
     get at() { return insertPositions; },
     get setStyle() { /*deprecated*/return editCssRule; },
     get fn() { return addFn; },
