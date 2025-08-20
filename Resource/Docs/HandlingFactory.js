@@ -215,27 +215,30 @@ function clickActionsFactory($) {
         selector: `button[data-create]`,
         name: `createHandler`,
         handlers: function(evt, me) {
-          const isAlreadyListening = $.getNamedListener(`click`, `handleExec`);
-          if (!isAlreadyListening) {
+          const theListener = $.getNamedListener(`click`, `handleExec`);
+          if (!theListener) {
             $.handle( {
               type: "click, contextmenu",
               selector: `button[data-exec]`,
               canRemove: true,
-              handlers: function handleExec(evt, me, remove) {
+              handlers: function handleExec({evt, me}) {
                 if (evt.type === "contextmenu") {
                   evt.preventDefault();
                   const nRightClicks = +(me.data.get(`rightclicks`) || 0) + 1;
                   me.data.set({rightclicks: nRightClicks});
                   // remove the 'contextmenu' (right click) listener after 3 invocations
                   if (nRightClicks > 3) {
-                    remove();
+                    $.getNamedListener(`contextmenu`, `handleExec`).unListen();
                     me.data.set({rightclicks: "0"});
                     return $.Popup.show( {
                       content: `You removed the right click handler (by right clicking a 4th time;)`,
                       closeAfter: 3
                     } );
                   }
-                  return $.Popup.show({ content: `Right click #${nRightClicks}`, closeAfter: 1 })
+                  return $.Popup.show({
+                    content: `Right click #${nRightClicks}${
+                      nRightClicks === 3 ? " (next right click will remove the listener!)" : ""}`,
+                    closeAfter: nRightClicks === 3 ? 2 : 1 });
                 }
                 $.Popup.show({ content: `You clicked. Yep. I'm handled`, closeAfter: 3 });
               },
@@ -243,7 +246,7 @@ function clickActionsFactory($) {
           }
 
           $.Popup.show( {
-            content: isAlreadyListening
+            content: theListener
               ? `Already listening` : `handler created, click [execute] button`,
             closeAfter: 2
           } );
@@ -254,8 +257,8 @@ function clickActionsFactory($) {
         type: `click`,
         selector: `button[data-remove]`,
         handlers: function(evt, me) {
-          $.getNamedListener(`click`, `handleExec`)?.remove();
-          $.getNamedListener(`contextmenu`, `handleExec`)?.remove();
+          $.getNamedListener(`click`, `handleExec`)?.unListen();
+          $.getNamedListener(`contextmenu`, `handleExec`)?.unListen();
           return $.Popup.show( {
             content: `listeners (click, right click) removed, (right) click the [execute] button to verify`,
             closeAfter: 4
@@ -1058,15 +1061,23 @@ function clickActionsFactory($) {
       if (exampleResultExists(evt.target)) { return; }
 
       $.editCssRules(
-        ".hello { margin: 0.3rem 0; display: inline-block; font-style: italic; }",
-        "h2.hello {margin-right: 0.2rem; font-style: normal; color: red}");
-      const helloH3 = $.h3({class: "hello"}, "world");
-      $(`<div>`).append( helloH3 ).prepend(`<h2 class="hello">Hello</h2>`)
-        .showInExample(evt)
-        .removeAfter(6);
+        `.hello {
+           margin: 0 0.2rem 0 0;
+           color: red;
+         }`,
+        `h2.hello {
+           font-style: italic;
+           color: green;
+        }`);
+      const hello = $.h2({class: "hello"}, "world").prepend($.span({class: "hello"}, "Hello"));
+      hello.toDOM(evt.target.parentNode, $.at.before);
+      // first                           ^ rendering [hello] before the button
+      // next, move [hello] to example node after 2 seconds
+      setTimeout(() => hello.showInExample(evt).removeAfter(5), 2000);
+      
     },
     staticDelegateCapturedEx: evt => {
-      const listenerInPlace = $.getNamedListener("click", "delegateExampleHandler");
+      const listenerInPlace = $.listenerStore.click.delegateExampleHandler;
       $.handle({
         type: "click",
         selector: "[data-for-id='static_handle']",
@@ -1081,13 +1092,13 @@ function clickActionsFactory($) {
         //   every time (which may have
         //   adverse/unexpected effects).
       });
-
-      function delegateExampleHandler(_, self) {
-        if (!self.prop("title")) {
-          self.prop({title: "click to toggle the color of all headers"});
+      
+      function delegateExampleHandler({me}) {
+        if (!me.prop("title")) {
+          me.prop({title: "click to toggle the color of all headers"});
         }
 
-        if (self.Style.computed.color === "rgb(0, 0, 255)") {
+        if (me.Style.computed.color === "rgb(0, 0, 255)") {
           return $.editCssRule(":root { --method-head-color: rgb(224, 59, 59); }");
         }
 
@@ -1096,7 +1107,9 @@ function clickActionsFactory($) {
 
       // display listener state and invoke the handler (all [JQx].* headers are re-colored)
       $.Popup.show( {
-        content: `${listenerInPlace ? `Listener in place` : `Listener assigned`}.
+        content: `${listenerInPlace
+          ? `Listener already in place (see console)`
+          : `Listener assigned`}.
           Will be invoked after this popup is closed`,
         callback: () => $(`[data-for-id='static_handle']`).trigger("click"),
         closeAfter: 3

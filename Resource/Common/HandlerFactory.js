@@ -1,85 +1,128 @@
-import { isNonEmptyString } from "./Utilities.js";
-const handlerStore = {};
-const shouldCaptureEventTypes = [
-  `load`, `unload`, `scroll`, `focus`, `blur`, `DOMNodeRemovedFromDocument`,
-  `DOMNodeInsertedIntoDocument`, `loadstart`, `progress`, `error`, `abort`,
-  `load`, `loadend`, `pointerenter`, `pointerleave`, `readystatechange`];
-const getCapture = eventType => !!(shouldCaptureEventTypes.find(t => t === eventType));
-export { handlerStore as listeners, HandleFactory as default };
+import { isNonEmptyString, getCaptureValue } from "./Utilities.js";
 
-function HandleFactory(jqx) {
-  return function(spec) {
-    let {eventType, selector, callback, name, capture, once, canRemove} = spec;
+export { HandlerFactory  };
 
-    switch(true) {
-      case !isNonEmptyString(eventType) || !jqx.IS(callback, Function):
-      default:
-        name = name || (!/handlers$/.test(callback.name) && callback.name) || undefined;
-        capture = jqx.IS(capture, Boolean) ? capture : false;
-        once = jqx.IS(once, Boolean) ? once : false;
-        canRemove = isNonEmptyString(name, 4) && jqx.IS(canRemove, Boolean) ? canRemove : once;
-        const { handler, signal, remove } = wrapHandlerFunction({selector, callback, canRemove, once, name, eventType});
-        return addAndStoreListener({eventType, handler, capture, once, signal, remove, name});
+function HandlerFactory(jqx) {
+  const store = {};
+  const idCache = {};
+  const anon = `anonymous_`;
+  
+  function setListener(listener) {
+    if (listener) {
+      const {handler, capture, type} = listener;
+      document.addEventListener(type, handler, {capture});
     }
-  };
-
-  function wrapHandlerFunction(spec) {
-    const {selector, callback, canRemove, name, eventType, once} = spec;
-    const abortcontroller = (canRemove || once) && new AbortController();
-    const remove = removeHandlerFactory({once, abortcontroller, name, eventType});
-    const listener = !selector
-      ? { handler: evt => callback(evt, evt.target, remove), remove}
-      : { handler: evt => {
-            const target = evt.target?.closest?.(selector);
-            return target && callback(evt, jqx(target), remove);
-          },
-          remove
-        };
-
-    if (abortcontroller) {
-      listener.signal = abortcontroller.signal;
-      if (once) {
-          return {
-            handler: (evt, me) => {
-              listener.handler(evt, me);
-              remove();
-          }
+  }
+  
+  function removeListener(listener) {
+    if (listener) {
+      const {type, handler, capture} = listener;
+      document.removeEventListener(type, handler, {capture});
+    }
+  }
+  
+  function wrapFn4Selector(fn, selector, once, handlerName) {
+    return function(evt) {
+        if (!isNonEmptyString(selector)) {
+          return fn({evt});
         }
+        
+        const elemFound = evt.target.closest(selector);
+        if (elemFound) {
+          const me = jqx(elemFound);
+          fn({self: me, me, evt});
+          // to avoid listener removal on capturing/bubbling, once is
+          // handled manually
+          if (once) { remove(evt.type, handlerName); }
+        }
+        return true;
       }
-    }
-
-    return listener;
   }
-
-  function removeHandlerFactory(spec) {
-    const {once, abortcontroller, name, eventType} = spec;
-    return !name
-      ? function() { jqx.logger.error(`JQx: an anonymous listener can not be removed`); }
-      : !abortcontroller
-        ? function(evt) {
-            jqx.logger.error(`JQx: listener for event type [${eventType}] with name [${
-              name}] is not marked as removable`);
-          }
-        : function removeHandler() {
-          abortcontroller.abort();
-          const toRemove = [...handlerStore[eventType].entries()].find(([k, v]) => v.name === name);
-          handlerStore[eventType].delete(toRemove[0]);
-          jqx.logger.log(`JQx: Listener for event type [${eventType}] with name [${
-              name}] was removed${once ? ` (once active, so handled once).` : ``}`);
-          }
+  
+  function uniqueID() {
+    const anonID = `${anon}${Math.random().toString(36).slice(2)}`;
+    return idCache[anonID] ? uniqueID() : anonID;
   }
-
-  function addAndStoreListener(spec) {
-    const {eventType, handler, capture, once, signal, remove, name} = spec;
-    if (!handlerStore[eventType]) { handlerStore[eventType] = new Map(); }
-    const delegateExists = handlerStore[eventType].has(handler) ||
-      [...handlerStore[eventType].values()].find(h => (h.name || ``) === name);
-    if (!delegateExists) {
-      const opts = {capture: capture || getCapture(eventType), once: once || false};
-      if (signal) { opts.signal = signal; }
-      document.addEventListener(eventType, handler, opts);
-      const stored = { name, remove, capture: capture || getCapture(eventType), }
-      handlerStore[eventType].set(handler, stored);
+  
+  function storedEventType(eventType) {
+    store[eventType] = store[eventType] || {};
+    return store[eventType];
+  }
+  
+  function retrieve(eventType, name) {
+    return Object.entries(storedEventType(eventType))
+      .find( ([key, ]) => key  === name );
+  }
+  
+  function remove(eventType, name) {
+    const listener = retrieve(eventType, name)
+    if (listener) {
+      removeListener(listener[1]);
+      delete store[eventType][name];
+      delete idCache[name];
+      
+      if (Object.keys(store[eventType]).length < 1) {
+        delete store[eventType];
+      }
+      
+      console.warn(`Removed listener [${name}] for event type [${eventType}].`);
     }
   }
+  
+  function getHandlerFunctionName(name) {
+    return !/handler/i.test(name) && name;
+  }
+  
+  function storeHandler(spec) {
+    let { eType, handler, name, capture, once, selector, node, about } = spec;
+    store[eType] = store[eType] || {};
+    let handlerName = getHandlerFunctionName(handler.name) || name;
+    
+    if (!handlerName) {
+      handlerName = uniqueID();
+    }
+    
+    if (node instanceof HTMLElement) {
+      // Note: for multiple event types dataset.hid may be defined already
+      const handlerID = node.dataset.hid || handlerName;
+      node.dataset.hid = handlerID;
+      selector = `[data-hid=${handlerID}]`;
+    }
+    
+    switch(true) {
+      case !store[eType][handlerName]:
+        idCache[handlerName] = 1;
+        store[eType][handlerName] = {
+          name: handlerName,
+          handler: wrapFn4Selector(handler, selector, once, handlerName),
+          capture: getCaptureValue(eType, capture),
+          once: !!once,
+          type: eType,
+          selector: !!selector && selector || false,
+          about: !!about && about || false,
+          unListen() { remove(eType, handlerName); },
+        };
+        return store[eType][handlerName];
+      default: return console.error(`The name [${handlerName}] for [${
+        eType}] exists. Use unique (function) names.`);
+    }
+  }
+  
+  return {
+    remove(...args) { return remove(...args); },
+    listen(spec) {
+      const { eType, handler } = spec;
+      if ( !isNonEmptyString(eType) || !jqx.IS(handler, Function) ) { return; }
+      const nwHandler = storeHandler(spec);
+      if (nwHandler) {
+        setListener(nwHandler);
+        return {
+          name: nwHandler.name,
+          type: eType,
+          unListen() { remove(eType, nwHandler.name); },
+        };
+      }
+    },
+    get ListenerStore() { return Object.freeze({...store}); }
+  };
 }

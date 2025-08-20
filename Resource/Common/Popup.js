@@ -7,7 +7,12 @@ export default function($) {
   $.editCssRules(...styleRules);
   const [popupContent, popupNode] = [$(`#jqxPopupContent`), $.node(`#jqxPopup`)];
   let currentProps = {};
-  $.handle( { type: `click, keydown`, handlers: genericPopupCloseHandler, capture: true } );
+  $.handle( {
+    type: `click, keydown`,
+    handlers: genericPopupCloseHandler,
+    name: `genericPopupCloseHandler`,
+    capture: true,
+    about: "A generic handler for JQx popups"} );
   return Object.freeze({show: initPopup, remove: initHidePopup, removeModal});
 
   function initPopup(props) {
@@ -65,7 +70,7 @@ export default function($) {
     initHidePopup();
   }
 
-  function genericPopupCloseHandler(evt) {
+  function genericPopupCloseHandler({evt}) {
     if ( Object.keys(currentProps).length < 1 || !popupNode.open ) { return; }
 
     if (evt.key === `Escape`) {

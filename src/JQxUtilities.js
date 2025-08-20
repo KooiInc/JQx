@@ -5,7 +5,7 @@ import {
   isNode, isNonEmptyString, isText, isVisible, isWritable, logTime, maybe, randomNr, randomString,
   resolveEventTypeParameter, setData, styleFactory, systemLog, tagFNFactory, toCamelcase, toDashedNotation,
   truncate2SingleStr, truncateHtmlStr, createElementFromHtmlString, inject2DOMTree, cleanupHtml,
-  PopupFactory, tagLib, listeners, HandleFactory,
+  PopupFactory, tagLib, HandlerFactory,
 } from "../Resource/Common/Utilities.js"
 
 export {
@@ -15,7 +15,7 @@ export {
   isHtmlString, isNode, isNonEmptyString, logTime, loop, maybe, randomNr, randomString, resolveEventTypeParameter,
   selectedFactoryHelpers, setCollectionFromCssSelector, setData, styleFactory, systemLog, tagFNFactory,
   toCamelcase, toDashedNotation, truncate2SingleStr, truncateHtmlStr, createElementFromHtmlString, inject2DOMTree,
-  cleanupHtml, PopupFactory, tagLib, HandleFactory, listeners
+  cleanupHtml, PopupFactory, tagLib, HandlerFactory,
 };
 
 function loop(instance, callback) {
@@ -40,7 +40,7 @@ function setCollectionFromCssSelector(input, root, self) {
 }
 
 function  addHandlerId(instance) {
-  const handleId = instance.data.get(`hid`) || `HID${randomString()}`;
+  const handleId = `anonymous_${Math.random().toString(36).slice(2)}`;
   instance.data.add({hid: handleId});
   return `[data-hid="${handleId}"]`;
 }

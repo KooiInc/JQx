@@ -76,14 +76,14 @@ if (!debug) {
     `<div>Hi 2</div>`])
     .text(` [Hey! You can click AND hover me! (see log)]`, true)
     .style({color: `red`, marginTop: `0.7rem`, cursor: `pointer`})
+    .appendTo(JQxRoot)
     // add a click AND mouseover listener in one go
-    .on(`click, mouseover`, (evt, self) => {
-      const currentColor = self.first().style.color;
-
-      switch(true) {
-        case evt.type === `click`:
+    .on(`click, mouseover`, ({evt, me}) => {
+      const currentColor = me.node.style.color;
+      switch(evt.type) {
+        case `click`:
           // o look, a state machine ;)
-          self.style({
+          me.style({
             color: currentColor === `red`
               ? `green` : currentColor === `orange`
                 ? `red` : `orange`
@@ -92,8 +92,7 @@ if (!debug) {
         default:
           return log(`HI from div.exampleText (you moved your mouse pointer over me)`);
       }
-    })
-    .appendTo(JQxRoot);
+    });
 
   // create a few buttons. Some already contain an event handler (delegated)
   const cssBttns = {
@@ -215,7 +214,7 @@ function getDelegates4Document() {
     click: [{
       target: `#delegates`,
       handlers: [
-        (_, self) => {
+        ({self}) => {
           clearTimeout(+self.data.get('timer') || 0);
           self.find$(`span.funny`)?.remove();
           self.toggleClass(`green`);
@@ -228,7 +227,7 @@ function getDelegates4Document() {
       ]
     }, {
       target: `#showComments`,
-      handlers: [function(evt) {
+      handlers: [function({evt}) {
         const comments = $.div(allComments([...document.childNodes]).join(`\n`));
         const head = $.h3(`*All Comments in this document:`)
           .Style.inline({marginTop: 0, marginBottom: `0.5rem`});
@@ -238,7 +237,7 @@ function getDelegates4Document() {
     }, {
       target: `.codeVwr`,
       handlers: [
-        (_, self) => {
+        ({self}) => {
           const codeElem = $(`#${self.data.get(`forid`)}`);
 
           if (!+self.data.get(`hidden`)) {

@@ -1,7 +1,7 @@
 import {
   randomString, toDashedNotation, IS, tagFNFactory as $T, styleFactory, toCamelcase, systemLog,
   escHtml, isNonEmptyString, resolveEventTypeParameter, selectedFactoryHelpers, insertPositions,
-  cleanupHtml, PopupFactory, tagLib, listeners, HandleFactory,
+  cleanupHtml, PopupFactory, tagLib, HandlerFactory
 } from "./JQxUtilities.js";
 import allMethodsFactory from "./JQxInstanceMethods.js";
 
@@ -156,7 +156,7 @@ function delegateFactory(listen) {
   }
 }
 
-function delegateCaptureFactory(listen) {
+function _delegateCaptureFactory(listen) {
   return function(spec) {
     let {type, origin, selector, handlers, name, capture, once, canRemove} = spec;
     const typesResolved = resolveEventTypeParameter(type);
@@ -178,17 +178,48 @@ function delegateCaptureFactory(listen) {
     }
   }
 }
+/* region __WIP */
+function delegateCaptureFactory(handlerWrapper) {
+  return function(spec) {
+    let {type, origin, selector, handlers, node, name, capture, once, about} = spec;
+    const typesResolved = resolveEventTypeParameter(type);
+    const specifiedName = name;
+    handlers = IS(handlers, Function) ? [handlers] : handlers;
+    const params = {
+      eType: typesResolved, selector: selector || origin, capture,
+      name: specifiedName, once, node, about };
+    
+    switch(true) {
+      case IS(typesResolved, Array) && typesResolved.length > 0:
+        for (const type of typesResolved) {
+          params.eType = type;
+          assignListeners(handlers, params, handlerWrapper);
+        }
+        break;
+      default: return assignListeners(handlers, params, handlerWrapper);
+    }
+  }
+}
 
-function assignListeners(handlers, params, listen) {
+function assignListeners(handlers, params, handlerWrapper) {
+  for (const handler of handlers) {
+    handlerWrapper.listen({...params, handler});
+  }
+}
+/* endregion __WIP */
+
+function _assignListeners(handlers, params, listen) {
   for (const handler of handlers) {
     listen({...params, callback: handler});
   }
 }
 
-function getNamedListener(type, name) {
-  name = isNonEmptyString(name) && name;
-  type = isNonEmptyString(type) && type;
-  return name && type && [...listeners[type].values()].find(h => (h.name || ``) === name);
+function getNamedListenerFactory(jqx) {
+  return function(type, name) {
+    name = isNonEmptyString(name) && name;
+    type = isNonEmptyString(type) && type;
+    return name && type && jqx.listenerStore[type][name];
+  };
 }
 
 function popupGetter(jqx) {
@@ -207,19 +238,21 @@ function getSelectedStaticMethods(jqx) {
   const createStyle = id => styleFactory({createWithId: id || `jqx${randomString()}`});
   const editCssRules = (...rules) => { for (const rule of rules) { cssRuleEdit(rule); } };
   const allowProhibit = allowances(jqx);
-  const handle = HandleFactory(jqx);
-  const capturedHandling = delegateCaptureFactory(handle);
+  const handlerWrapper = HandlerFactory(jqx);
+  const capturedHandling = delegateCaptureFactory(handlerWrapper);
   const log = (...line) => systemLog.on.log(...line).off;
-  return {editCssRule, createStyle, editCssRules, allowProhibit, handle, capturedHandling,log};
+  return {
+    editCssRule, createStyle, editCssRules, allowProhibit, handle: capturedHandling, capturedHandling,
+    log, handlerWrapper};
 }
 
 function staticMethodsFactory(jqx) {
   const { factoryExtensions, instanceExtensions } = allMethodsFactory(jqx);
   instanceGetters = factoryExtensions;
   instanceMethods = instanceExtensions;
-  const { editCssRule, createStyle, editCssRules, allowProhibit, handle, capturedHandling, log } =
+  const { editCssRule, createStyle, editCssRules, allowProhibit, handle, capturedHandling, log, handlerWrapper } =
     getSelectedStaticMethods(jqx);
-
+  const getNamedListener = getNamedListenerFactory(jqx);
   return {
     log,
     editCssRules,
@@ -246,5 +279,6 @@ function staticMethodsFactory(jqx) {
     get lenient() { return tagLib.allowUnknownHtmlTags; },
     get IS() { return IS; },
     get Popup() { return popupGetter(jqx); },
+    get listenerStore() { return handlerWrapper.ListenerStore; },
   };
 }

@@ -4,10 +4,14 @@ import {default as tagFNFactory} from "./tinyDOM.js";
 import styleFactory from "./LifeCSS.js";
 import {createElementFromHtmlString, inject2DOMTree, cleanupHtml} from "./DOM.js";
 import PopupFactory from "./Popup.js";
-import { listeners, default as HandleFactory } from "./HandlerFactory.js";
+import { HandlerFactory } from "./HandlerFactory.js";
 import tagLib from "./HTMLTags.js";
 
 const systemLog = systemLogFactory();
+const allwaysCaptureEventTypes = [
+  `load`, `unload`, `scroll`, `focus`, `blur`, `DOMNodeRemovedFromDocument`,
+  `DOMNodeInsertedIntoDocument`, `loadstart`, `progress`, `error`, `abort`,
+  `load`, `loadend`, `pointerenter`, `pointerleave`, `readystatechange`];
 const insertPositions = Object.freeze(new Proxy({
   start: "afterbegin", afterbegin: "afterbegin",
   end: "beforeend", beforeend: "beforeend",
@@ -28,12 +32,16 @@ const datasetKeyProxy = Object.freeze({
 export {
   after, applyStyle, assignAttrValues, ATTRS, before, checkProp, cleanupHtml, cloneAndDestroy,
   createElementFromHtmlString, datasetKeyProxy, inject2DOMTree, ElemArray2HtmlString, emptyElement,
-  escHtml, findParentScrollDistance, HandleFactory, input2Collection, insertPositions, IS, isArrayOfHtmlElements,
+  escHtml, findParentScrollDistance, input2Collection, insertPositions, IS, isArrayOfHtmlElements,
   isArrayOfHtmlStrings, isComment, isCommentOrTextNode, isHtmlString, isModal, isNode, isNonEmptyString,
-  isText, isVisible, isWritable, listeners, logTime, maybe, pad0, PopupFactory, randomNr, randomString,
+  isText, isVisible, isWritable, logTime, maybe, pad0, PopupFactory, randomNr, randomString,
   resolveEventTypeParameter, setData, styleFactory, systemLog, tagFNFactory, tagLib, toCamelcase,
-  toDashedNotation, truncate2SingleStr, truncateHtmlStr, ucFirst,
+  toDashedNotation, truncate2SingleStr, truncateHtmlStr, ucFirst, HandlerFactory, getCaptureValue,
 };
+
+function getCaptureValue(eventType, captureValue) {
+  return !!(allwaysCaptureEventTypes.find(t => t === eventType)) || !!captureValue;
+}
 
 function checkProp(prop) {
   return prop.startsWith(`data`) || ATTRS.html.find(attr => prop.toLowerCase() === attr);

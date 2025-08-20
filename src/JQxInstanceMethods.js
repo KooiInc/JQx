@@ -305,9 +305,8 @@ function instanceExtensionsFactory(jqx) {
     nth$: (instance, indexOrSelector) => instance.single(indexOrSelector),
     on: (instance, type, ...callback) => {
       if (instance.collection.length && IS(type, String, Array)) {
-        if (type?.length < 1 || callback.length < 1) { return instance; }
-        const cssSelector4Handler = addHandlerId(instance);
-        jqx.handle({type, selector: cssSelector4Handler, handlers: callback});
+        if (!isNonEmptyString(type) || callback.length < 1) { return instance; }
+        jqx.handle({type, node: instance.node, handlers: callback});
       }
 
       return instance;

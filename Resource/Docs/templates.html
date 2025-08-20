@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-08-17 14:58:02 UTC-->
+<!-- Generated file, last update 2025-08-20 10:46:07 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -448,7 +448,7 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
 </template>
 
 <template data-id="instance_on" class="instance_on" data-is-deprecated="false">
-<div data-params='[{"type":"string|array<string>. The event type (e.g. \"click\", \"keyup\")"},{"...callback":"Function[]. One or more handler functions (lambdas)"}]'></div>
+<div data-params='[{"type":"string|array<string>. The event type (e.g. \"click\", \"keyup\")"},{"...callback":"function[]. One or more handler functions (lambdas)"}]'></div>
 <div data-return-value='JQx Instance'></div>
 <div data-text='1'><div>Add listener and handler lambda('s) for the JQx Instance root element.</div>
 
@@ -1594,8 +1594,8 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 </template>
 
 <template data-id="static_handle" class="static_handle" data-is-deprecated="false">
-<div data-params='[{"spec":"{type, selector, handlers, capture, once, canRemove}"}]'></div>
-<div data-return-value='Nothing'></div>
+<div data-params='[{"spec":"{type, node, selector, handlers, capture, once}"}]'></div>
+<div data-return-value='{name: string, type: string, unListen: function} | undefined'></div>
 <div data-text='1'><div>
   <code>handle</code> replaces <code>[JQx].delegate/delegateCaptured</code>. With it you
   can add listeners (aka handlers/callbacks) to events (e.g. <code>submit</code>, <code>cancel</code>).
@@ -1644,27 +1644,24 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
     <code>handlers: function | array&lt;function></code>*: 
      a single handler/listener/callback function or an array of functions.
     <div>
-       The handler function signature is 
-       <code>[handlerfunction](event, self[, remove])</code> where</div>
+       A handler function signature is
+       <code>[handlerfunction]({evt[, me]})</code> where</div>
     <div> 
       <ul>
-      <li><code>event</code> is the triggering event</li>
+      <li><code>evt</code> is the triggering event</li>
       <li>
-        <code>self</code> is the event target <i>or</i> a JQx instance 
-        (if <code>selector</code> was provided, 
-        check using <code>self.isJQx</code>).</li>
-      <li>
-        <code>remove(message:string)</code> is a function to remove
-         the assigned handler. This will be active if the listener
-         has a <code>name</code> (minimal 4 characters) <i>and</i> 
-         <code>canRemove</code> is true.
-         See a usage example at <div 
-              class="linkLike"
-              data-action="jump2Nav" 
-              data-jumpkey="static_getNamedListener">
-           [JQx].getNamedListener</div>
+        <code>me</code>: the JQx instance derived from the event target.
+        <div class="note"><b>Note</b>: if neither the <code>node</code> 
+         or <code>selector</code> parameter are provided, 
+         you have to determine the event target yourself and 
+         <code>me</code> is not provided.
+     </li>
     </ul>
     </div> 
+  </li>
+
+  <li><code>node</code>
+     The node to apply the event listener to. 
   </li>
 
   <li>
@@ -1783,14 +1780,15 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 <div data-return-value='{name, remove, capture} | undefined'></div>
 <div data-text='1'><div>
   <code>getNamedListener</code> delivers (when a <i>named</i> listener was found)
-  an Object.
+  an Object, derived from <div class="linkLike" 
+    data-action="jump2Nav" 
+    data-jumpkey="static_listenerStore">[JQx].listenerStore</div>.
 </div>
 
 <div>
-  When the listener was initialized using <code>canRemove: true</code>, 
-  the <code>remove</code> property of the return value is a function which can
-  be used to remove the listener. <code>getNamedListener</code> can also be 
-  used to check if a (named) listener is already present.
+  When found, the result is an object with all the stored data for the found 
+  listener. With it you can, if necessary, disable the listerer, using 
+  <code>[result].unListen()</code>
 </div>
 
 <div>
@@ -1895,4 +1893,10 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 <div data-text='1'><div>
   Remove the popup.
 </div></div>
+</template>
+
+<template data-id="static_listenerStore" class="static_listenerStore" data-is-deprecated="false">
+<div data-params='None'></div>
+<div data-return-value='[ {  [event type]: { name, handler, capture, once, type, selector, about, unListen ] } ]'></div>
+<div data-text='1'>A store of all actual event listeners.</div>
 </template>
