@@ -1071,7 +1071,7 @@ function clickActionsFactory($) {
         }`);
       const hello = $.h2({class: "hello"}, "world").prepend($.span({class: "hello"}, "Hello"));
       hello.toDOM(evt.target.parentNode, $.at.before);
-      // first                           ^ rendering [hello] before the button
+      // first                           ^ render [hello] before the button
       // next, move [hello] to example node after 2 seconds
       setTimeout(() => hello.showInExample(evt).removeAfter(5), 2000);
       
@@ -1082,15 +1082,6 @@ function clickActionsFactory($) {
         type: "click",
         selector: "[data-for-id='static_handle']",
         handlers: delegateExampleHandler,
-        name: "delegateExampleHandler"
-        // ^ a name *must* be provided to avoid
-        //   adding the handler more than once.
-        //   In the case of this example
-        //   the [name] value prevents that
-        //   clicking the 'try it' button
-        //   multiple times re-adds the handler
-        //   every time (which may have
-        //   adverse/unexpected effects).
       });
       
       function delegateExampleHandler({me}) {
