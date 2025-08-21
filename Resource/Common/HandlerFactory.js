@@ -1,10 +1,9 @@
-import { isNonEmptyString, getCaptureValue } from "./Utilities.js";
+import { IS, isNonEmptyString, getCaptureValue, getHandlerName } from "./Utilities.js";
 
 export { HandlerFactory  };
 
 function HandlerFactory(jqx) {
   const store = {};
-  const idCache = {};
   const anon = `anonymous_`;
   
   function setListener(listener) {
@@ -31,17 +30,12 @@ function HandlerFactory(jqx) {
         if (elemFound) {
           const me = jqx(elemFound);
           fn({self: me, me, evt});
-          // to avoid listener removal on capturing/bubbling, once is
-          // handled manually
+          // to avoid listener removal on capturing/bubbling,
+          // once is handled manually
           if (once) { remove(evt.type, handlerName); }
         }
         return true;
       }
-  }
-  
-  function uniqueID() {
-    const anonID = `${anon}${Math.random().toString(36).slice(2)}`;
-    return idCache[anonID] ? uniqueID() : anonID;
   }
   
   function storedEventType(eventType) {
@@ -69,16 +63,10 @@ function HandlerFactory(jqx) {
     }
   }
   
-  function getHandlerFunctionName(name) {
-    return !/^handler$|^handlers$/i.test(name) && name;
-  }
-  
   function storeHandler(spec) {
     let { type, handler, name, capture, once, selector, node, about } = spec;
     store[type] = store[type] || {};
-    let handlerName = getHandlerFunctionName(handler.name) || name;
-    
-    if (!handlerName) { handlerName = uniqueID(); }
+    let handlerName = getHandlerName(name || handler.name);
     
     if (node instanceof HTMLElement) {
       // Note: for multiple event types dataset.hid may be defined already
@@ -89,7 +77,6 @@ function HandlerFactory(jqx) {
     
     switch(true) {
       case !store[type][handlerName]:
-        idCache[handlerName] = 1;
         store[type][handlerName] = {
           name: handlerName,
           handler: wrapFn4Selector(handler, selector, once, handlerName),
@@ -110,14 +97,15 @@ function HandlerFactory(jqx) {
     remove(...args) { return remove(...args); },
     listen: function(spec) {
       const { type, handler } = spec;
-      if ( !isNonEmptyString(type) || !jqx.IS(handler, Function) ) { return; }
+      if ( !isNonEmptyString(type) || !IS(handler, Function) ) { return; }
       const nwHandler = storeHandler(spec);
+      
       if (nwHandler) {
         setListener(nwHandler);
         return {
-          name: nwHandler.name,
           type,
-          unListen() { remove(eType, nwHandler.name); },
+          name: nwHandler.name,
+          unListen() { remove(type, nwHandler.name); },
         };
       }
     },

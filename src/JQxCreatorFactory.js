@@ -1,7 +1,7 @@
 import {
   randomString, toDashedNotation, IS, tagFNFactory as $T, styleFactory, toCamelcase, systemLog,
   escHtml, isNonEmptyString, resolveEventTypeParameter, selectedFactoryHelpers, insertPositions,
-  cleanupHtml, PopupFactory, tagLib, HandlerFactory
+  cleanupHtml, PopupFactory, tagLib, HandlerFactory, getHandlerName,
 } from "./JQxUtilities.js";
 import allMethodsFactory from "./JQxInstanceMethods.js";
 
@@ -159,10 +159,15 @@ function delegateFactory(listen) {
 /* region __WIP */
 function delegateCaptureFactory(handlerWrapper) {
   return function(spec) {
-    let {type, origin, selector, handlers, node, name, capture, once, about} = spec;
+    let {type, types, origin, selector, handler, handlers, node, name, capture, once, about} = spec;
+    // <legacy>
+    handler = handlers || handler;
+    type = types || type;
+    selector = origin || selector;
+    // </legacy>
     const typesResolved = resolveEventTypeParameter(type);
     const specifiedName = name;
-    handlers = IS(handlers, Function) ? [handlers] : handlers;
+    handler = IS(handler, Function) ? [handler] : handler;
     const params = {
       type: typesResolved, selector: selector || origin, capture,
       name: specifiedName, once, node, about };
@@ -171,16 +176,17 @@ function delegateCaptureFactory(handlerWrapper) {
       case IS(typesResolved, Array) && typesResolved.length > 0:
         for (const type of typesResolved) {
           params.type = type;
-          assignListeners(handlers, params, handlerWrapper);
+          assignListeners(handler, params, handlerWrapper);
         }
         break;
-      default: return assignListeners(handlers, params, handlerWrapper);
+      default: return assignListeners(handler, params, handlerWrapper);
     }
   }
 }
 
-function assignListeners(handlers, params, handlerWrapper) {
-  for (const handler of handlers) {
+function assignListeners(handlerFns, params, handlerWrapper) {
+  for (const handler of handlerFns) {
+    params.name = getHandlerName(params.name || handler.name);
     handlerWrapper.listen({...params, handler});
   }
 }

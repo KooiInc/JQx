@@ -5,7 +5,7 @@ import {
   isNode, isNonEmptyString, isText, isVisible, isWritable, logTime, maybe, randomNr, randomString,
   resolveEventTypeParameter, setData, styleFactory, systemLog, tagFNFactory, toCamelcase, toDashedNotation,
   truncate2SingleStr, truncateHtmlStr, createElementFromHtmlString, inject2DOMTree, cleanupHtml,
-  PopupFactory, tagLib, HandlerFactory,
+  PopupFactory, tagLib, HandlerFactory, getHandlerName,
 } from "../Resource/Common/Utilities.js"
 
 export {
@@ -15,7 +15,7 @@ export {
   isHtmlString, isNode, isNonEmptyString, logTime, loop, maybe, randomNr, randomString, resolveEventTypeParameter,
   selectedFactoryHelpers, setCollectionFromCssSelector, setData, styleFactory, systemLog, tagFNFactory,
   toCamelcase, toDashedNotation, truncate2SingleStr, truncateHtmlStr, createElementFromHtmlString, inject2DOMTree,
-  cleanupHtml, PopupFactory, tagLib, HandlerFactory,
+  cleanupHtml, PopupFactory, tagLib, HandlerFactory, getHandlerName,
 };
 
 function loop(instance, callback) {

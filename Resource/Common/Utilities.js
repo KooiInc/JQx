@@ -28,6 +28,7 @@ const datasetKeyProxy = Object.freeze({
   enumerable: false,
   configurable: false
 });
+const handlerIdCache = {};
 
 export {
   after, applyStyle, assignAttrValues, ATTRS, before, checkProp, cleanupHtml, cloneAndDestroy,
@@ -37,7 +38,24 @@ export {
   isText, isVisible, isWritable, logTime, maybe, pad0, PopupFactory, randomNr, randomString,
   resolveEventTypeParameter, setData, styleFactory, systemLog, tagFNFactory, tagLib, toCamelcase,
   toDashedNotation, truncate2SingleStr, truncateHtmlStr, ucFirst, HandlerFactory, getCaptureValue,
+  getHandlerName,
 };
+
+function getHandlerName(name) {
+  const validName = isNonEmptyString(name) && !!name && !/^handler|handlers$/gi.test(name.trim())
+  return validName ? name.trim() : uniqueHandlerID();
+}
+
+function uniqueHandlerID(idCache) {
+  const anonID = `anonymous_${Math.random().toString(36).slice(2)}`;
+  
+  if (!handlerIdCache[anonID]) {
+    handlerIdCache[anonID] = anonID;
+    return anonID;
+  }
+  
+  return uniqueHandlerID();
+}
 
 function getCaptureValue(eventType, captureValue) {
   return !!(allwaysCaptureEventTypes.find(t => t === eventType)) || !!captureValue;

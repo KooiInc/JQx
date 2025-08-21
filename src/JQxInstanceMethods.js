@@ -311,6 +311,14 @@ function instanceExtensionsFactory(jqx) {
 
       return instance;
     },
+    once: (instance, type, ...callback) => {
+      if (instance.collection.length && IS(type, String, Array)) {
+        if (!isNonEmptyString(type) || callback.length < 1) { return instance; }
+        jqx.handle({type, once: true, node: instance.node, handlers: callback});
+      }
+      
+      return instance;
+    },
     prepend: (instance, ...elems2Prepend) => {
       if (!instance.is.empty && elems2Prepend) {
         const shouldMove = instance.length === 1;
