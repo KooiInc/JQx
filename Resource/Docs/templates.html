@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-08-21 12:32:02 UTC-->
+<!-- Generated file, last update 2025-08-21 12:39:34 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -1669,7 +1669,12 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
             (e.g. <code>{.., node: $.node("button").node</code>), 
             the <code>{me}</code> handler function parameter is not 
             available. In other words: make sure the passed 
-            <code>node</code> is injected into the document.
+            <code>node</code> is connected to the document.
+            <div class="note">
+              <b>Note</b>: "connectedness" can be checked with
+               <code>[Node].isConnected</code>. For example: 
+               <code>$.button('clickme').node.isConnected</code> (false).
+            </div>
           </li>
           <li>
            if neither the <code>node</code> 
