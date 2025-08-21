@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-08-21 11:04:25 UTC-->
+<!-- Generated file, last update 2025-08-21 12:32:02 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -1664,12 +1664,22 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
       <div class="note"><b>Notes</b>:
         <uL>
           <li>
+            if the listener is created for a node before that node
+            is active within the DOM 
+            (e.g. <code>{.., node: $.node("button").node</code>), 
+            the <code>{me}</code> handler function parameter is not 
+            available. In other words: make sure the passed 
+            <code>node</code> is injected into the document.
+          </li>
+          <li>
            if neither the <code>node</code> 
            or <code>selector</code> parameter are provided in
            a handler function, the wrapped handler function 
            delivers only <code>{evt}</code> and the user has to determine 
            the  event target themselves (from that <code>evt</code>).</li>
-          <li>(legacy) may also be called <code>handler<b>s</b></code></li>
+          <li>
+            (legacy) may also be called <code>handler<b>s</b></code>
+          </li>
          </ul>
       </div>
     </div> 

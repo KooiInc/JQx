@@ -29,7 +29,7 @@ function HandlerFactory(jqx) {
         const elemFound = evt.target.closest(selector);
         if (elemFound) {
           const me = jqx(elemFound);
-          fn({self: me, me, evt});
+          fn({self: me, me, evt}); // self is legacy
           // to avoid listener removal on capturing/bubbling,
           // once is handled manually
           if (once) { remove(evt.type, handlerName); }
