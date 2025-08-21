@@ -249,9 +249,10 @@ function clickActionsFactory($) {
       
       // create (initial disabled) removal button and add a 'once' listener
       const bttnRemove = $.button({class: `exRunBttn`, text: `remove`, disabled: true, data: {remove: 1}})
-      .once(`click`, function() {
+      .once(`click`, function({me}) {
         $.getNamedListener(`click`, `handleExec`)?.unListen();
         $.getNamedListener(`contextmenu`, `handleExec`)?.unListen();
+        me.node.disabled = true;
         return $.Popup.show( {
           content: `listeners (click, right click) removed, (right)
             click the [invoke] button to verify and/or check the console`,
