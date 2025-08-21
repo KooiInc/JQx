@@ -38,7 +38,7 @@ export {
   isText, isVisible, isWritable, logTime, maybe, pad0, PopupFactory, randomNr, randomString,
   resolveEventTypeParameter, setData, styleFactory, systemLog, tagFNFactory, tagLib, toCamelcase,
   toDashedNotation, truncate2SingleStr, truncateHtmlStr, ucFirst, HandlerFactory, getCaptureValue,
-  getHandlerName,
+  getHandlerName, handlerIdCache,
 };
 
 function getHandlerName(name) {

@@ -1,4 +1,4 @@
-import { IS, isNonEmptyString, getCaptureValue, getHandlerName } from "./Utilities.js";
+import { IS, isNonEmptyString, getCaptureValue, getHandlerName, handlerIdCache } from "./Utilities.js";
 
 export { HandlerFactory  };
 
@@ -53,7 +53,7 @@ function HandlerFactory(jqx) {
     if (listener) {
       removeListener(listener[1]);
       delete store[eventType][name];
-      delete idCache[name];
+      delete handlerIdCache[name];
       
       if (Object.keys(store[eventType]).length < 1) {
         delete store[eventType];
