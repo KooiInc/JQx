@@ -86,19 +86,23 @@ function finalizeDocumentCreation() {
 
 // ---
 function setupHandling() {
-  const handler = clientHandling;
+  //const handler = clientHandling;
   let clicked = false;
   // wrap handling to avoid propagated/bubbling scroll handling on click
-  $.handle({type: `click`, handlers: ({evt}) => {
+  $.handle({type: `click`,
+    handler: function docsExamplesHandler({evt}) {
       clicked = true;
       setTimeout(_ => clicked = false, 1000);
-      return handler(evt);
+      return clientHandling(evt);
     }
   });
-  $.handle({type: `scroll`, handlers: ({evt}) => {
+  $.handle({
+    type: `scroll`,
+    handler: function({evt}) {
       if (clicked) { return; }
-      return handler(evt);
-    }
+      return clientHandling(evt);
+    },
+    name: `docsScrollHandler`,
   });
 
   $.log(`Event handling set ...`);

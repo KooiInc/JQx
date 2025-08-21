@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-08-20 14:34:23 UTC-->
+<!-- Generated file, last update 2025-08-21 11:04:25 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -1594,11 +1594,12 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 </template>
 
 <template data-id="static_handle" class="static_handle" data-is-deprecated="false">
-<div data-params='[{"spec":"{type, handlers, node, selector, capture, once, about }"}]'></div>
+<div data-params='[{"spec":"{type, handler, node, selector, capture, once, about }"}]'></div>
 <div data-return-value='Nothing'></div>
 <div data-text='1'><div>
   <code>handle</code> replaces <code>[JQx].delegate/delegateCaptured</code>. With it you
-  can add listeners (aka handlers/callbacks) to events (e.g. <code>submit</code>, <code>cancel</code>).
+  can add listeners (aka handlers/callbacks) to events 
+  (e.g. <code>submit</code>, <code>cancel</code>).
 </div>
 
 <div>
@@ -1626,7 +1627,7 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 </div>
 
 
-<h3>Parameters (* = obligatory)</h3>
+<h3>Parameters (* = mandatory)</h3>
 <ul>
   <li>
     <code>type: string | array&lt;string></code>*: (case insensitive) the event type. May be: 
@@ -1641,25 +1642,36 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
          to all given event types.
       </div>
     </div>
+    <div class="note"><b>Note</b>: 
+      (legacy) may also be <code>eType</code>.</div> 
   </li>
 
   <li>
-    <code>handlers: function | array&lt;function></code>*: 
+    <code>handler: function | array&lt;function></code>*: 
      a single handler/listener/callback function or an array of functions.
     <div>
        A handler function signature is
-       <code>[handlerfunction]({evt[, me]})</code> where</div>
+       <code>[handlerfunction]({evt[, me]})</code> where
+    </div>
     <div> 
       <ul>
-      <li><code>evt</code> is the triggering event</li>
-      <li>
-        <code>me</code>: the JQx instance derived from the event target.
-        <div class="note"><b>Note</b>: if neither the <code>node</code> 
-         or <code>selector</code> parameter are provided, 
-         you have to determine the event target yourself and 
-         <code>me</code> is not provided.
-     </li>
-    </ul>
+        <li><code>evt</code> is the triggering event</li>
+        <li>
+          <code>me</code>: the JQx instance derived from the event target.
+        </li>
+      </ul>
+
+      <div class="note"><b>Notes</b>:
+        <uL>
+          <li>
+           if neither the <code>node</code> 
+           or <code>selector</code> parameter are provided in
+           a handler function, the wrapped handler function 
+           delivers only <code>{evt}</code> and the user has to determine 
+           the  event target themselves (from that <code>evt</code>).</li>
+          <li>(legacy) may also be called <code>handler<b>s</b></code></li>
+         </ul>
+      </div>
     </div> 
   </li>
 
@@ -1675,8 +1687,10 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
        If present, the handler(s) is/are bound to the elements
        found with this selector
     </div>
-    <div class="note"><b>Note</b>: previously called <code>origin</code>. This
-      name may still be used instead.</div> 
+
+    <div class="note"><b>Note</b>: 
+      (legacy) may also be  called <code>origin</code>.
+     </div>
   </li>
 
   <li>
@@ -1765,7 +1779,7 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
   for it (i.e. scroll to it)).
 </div>
 
-<div data-example>##EXAMPLECODE@staticDelegateCapturedEx##</div></div>
+<div data-example>##EXAMPLECODE@staticHandleEx##</div></div>
 </template>
 
 <template data-id="static_delegateCaptured" class="static_delegateCaptured" data-is-deprecated="true">
@@ -1778,12 +1792,12 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 <div class="note">
   <b>Note</b>: <code>delegateCaptured</code> is marked as <i>deprecated</i>.
   <div>
-     It is replaced with and has the same signature as
+     Preferably use
      <div class="linkLike" 
        data-action="jump2Nav" 
        data-jumpkey="static_handle">[JQx].handle</div>.
   </div> 
-  The method may in time disappear.
+  <code>[JQx].delegateCaptured</code> may in time disappear.
 </div>
 
 </div>
@@ -1916,7 +1930,15 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 <template data-id="static_listenerStore" class="static_listenerStore" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value='[ {  [event type]: { name, handler, capture, once, type, selector, about, unListen } ]'></div>
-<div data-text='1'>The storage of all actual event listeners.</div>
+<div data-text='1'>The storage of all actual event listeners.
+
+<div>
+  The example of
+  <div class="linkLike"
+    data-action="jump2Nav" 
+    data-jumpkey="instance_once">[JQx instance].once</div>
+  demonstrates a use case.
+</div></div>
 </template>
 
 <template data-id="static_listen" class="static_listen" data-is-deprecated="false">
@@ -1943,9 +1965,40 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 </div>
 
 <div class="note">
- <b>Note</b>: if the listener for a event type/name 
- (<code>type/name|handler name</code>) combination
- already exists, an error is logged in the console
- and the return value is nothing (undefined).
+ <b>Notes</b>: 
+ <ul> 
+   <li> 
+     if the listener for a event type/name 
+     (<code>type/name|handler name</code>) combination
+     already exists, an error is logged in the console
+     and the return value is nothing (undefined).
+   </li>
+   <li> 
+     the legacy <code>[JQx].handle</code>
+     [spec] keys <code>type<b>s</b></code>, <code>eType</code>,
+     <code>origin</code> and <code>handler<b>s</b></code>
+     can <i><b>not</b></i> be used in <code>[JQx].listen</code>
+   </li>
+  </ul>
 </div></div>
+</template>
+
+<template data-id="instance_once" class="instance_once" data-is-deprecated="false">
+<div data-params='[{"type":"string|array<string>. The event type (e.g. \"click\", \"keyup\")"},{"...callback":"function[]. One or more handler functions (lambdas)"}]'></div>
+<div data-return-value='JQx instance'></div>
+<div data-text='1'><div>
+  Same as  
+  <div data-action="jump2Nav" data-jumpkey="instance_on" class="linkLike">
+    [JQx].on
+  </div>, but the listener(s) will be removed after one invocation. 
+</div>
+
+
+<div class="note">
+  <b>Note</b>:
+  If the <code>once</code> is assigned to multiple types, invoked event types
+  will remove the listener for that type. See the example.
+</div>
+
+<div data-example>##EXAMPLECODE@onceEx##</div></div>
 </template>

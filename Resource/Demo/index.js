@@ -18,7 +18,9 @@ window.jqx = $;
 // add event handling defined in function [getDelegates4Document]
 getDelegates4Document().forEach(([type, targetedHandlers]) =>
   targetedHandlers.forEach( handler => {
-    $.handle({type, origin: handler.target, handlers: handler.handlers});
+    const specs = {type, origin: handler.target, handlers: handler.handlers};
+    if ($.IS(handler.name, String) && handler.name.length) {specs.name = handler.name;}
+    $.handle(specs);
   })
 );
 
@@ -78,7 +80,7 @@ if (!debug) {
     .style({color: `red`, marginTop: `0.7rem`, cursor: `pointer`})
     .appendTo(JQxRoot)
     // add a click AND mouseover listener in one go
-    .on(`click, mouseover`, ({evt, me}) => {
+    .on(`click, mouseover`, function heyHandler({evt, me}) {
       const currentColor = me.node.style.color;
       switch(evt.type) {
         case `click`:
@@ -108,16 +110,21 @@ if (!debug) {
       BUTTON({
         id: "showComments",
         text: "Show document comments",
-        title: "Show content of comment elements in a popup" }),
+        title: "Show content of comment elements in a popup" }
+      ),
       BUTTON({
         id: "showCSS",
         title: "Show the dynamically created styling in a popup" },
-        "Show custom CSS").on("click", () =>
-          showStyling("JQxStylesheet", cssBttns.defaultCSS)),
+        "Show custom CSS").on("click", function cssViewHandler() {
+          showStyling("JQxStylesheet", cssBttns.defaultCSS);
+      }),
       BUTTON("Modal popup demo").on(`click`, modalDemo),
       BUTTON(/github/i.test(location.href) ? "@Github" : "@Codeberg")
-        .on("click", () =>  $.Popup.show( { content: backLinks } ) )
-    ] ).appendTo(JQxRoot);
+        .on("click", function backLinksHandler() {
+          $.Popup.show( { content: backLinks } );
+        } )
+    ]
+  ).appendTo(JQxRoot);
 
   $("button")
     .style({marginRight: "4px"})
@@ -213,20 +220,22 @@ function getDelegates4Document() {
   return Object.entries({
     click: [{
       target: `#delegates`,
+      name: "delegatesHandler",
       handlers: [
-        ({self}) => {
-          clearTimeout(+self.data.get('timer') || 0);
-          self.find$(`span.funny`)?.remove();
-          self.toggleClass(`green`);
+        ({me}) => {
+          clearTimeout(+me.data.get('timer') || 0);
+          me.find$(`span.funny`)?.remove();
+          me.toggleClass(`green`);
           $(`[data-funny]`).remove();
-          const colr = self.hasClass(`green`) ? `green` : `black`;
-          self.append($.span({class: `funny`}, `Funny! Now I'm  ${colr}`));
-          self.data.add({timer: setTimeout(() => self.find$(`span.funny`)?.remove(), 2500)});
-          log(`That's funny ... ${self.find$(`.black,.green`).html()}`);
+          const colr = me.hasClass(`green`) ? `green` : `black`;
+          me.append($.span({class: `funny`}, `Funny! Now I'm  ${colr}`));
+          me.data.add({timer: setTimeout(() => me.find$(`span.funny`)?.remove(), 2500)});
+          log(`That's funny ... ${me.find$(`.black,.green`).html()}`);
         },
       ]
     }, {
       target: `#showComments`,
+      name: "showCommentsHandler",
       handlers: [function({evt}) {
         const comments = $.div(allComments([...document.childNodes]).join(`\n`));
         const head = $.h3(`*All Comments in this document:`)
@@ -236,6 +245,7 @@ function getDelegates4Document() {
       },]
     }, {
       target: `.codeVwr`,
+      name: "codeViewerHandler",
       handlers: [
         ({self}) => {
           const codeElem = $(`#${self.data.get(`forid`)}`);

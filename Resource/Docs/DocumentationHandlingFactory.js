@@ -168,7 +168,7 @@ function clickActionsFactory($) {
         //              ^ value will be returned by $.Popup.removeModal(...)
         $.Popup.show({ content: `Modal closed, its return value is ${value}.`, closeAfter: 10});
       const closeBttn = $.button({data: {id: "modalClose"}}, "Close me")
-        .on(`click`, value => $.Popup.removeModal({value: 42, callback: okMessage,}));
+        .on(`click`, function removeModalWithValueClick() { $.Popup.removeModal({value: 42, callback: okMessage,}); });
 
       $.Popup.show({
         content: $.div(
@@ -207,74 +207,120 @@ function clickActionsFactory($) {
         )
       );
     },
+    onceEx(evt) {
+      if (exampleResultExists(evt.target)) { return; }
+      // create button and add one time listeners for click/right click (contextmenu)
+      const bttn = $.button(`invoke`)
+        .once( `click, contextmenu`, bttnHandler, bttnSecondHandler );
+      
+      function bttnHandler({evt}) {
+        if (evt.type === `contextmenu`) {
+          evt.preventDefault();
+          return $.Popup.show( { content: `Right click invoked and removed!` } );
+        }
+        return $.Popup.show( { content: `Click invoked and removed!` });
+      }
+      
+      function bttnSecondHandler({evt, me}) {
+        // check the listener store for existence of the listeners
+        const allRemoved = !$.listenerStore.click.bttnHandler &&
+          !$.listenerStore.click.bttnSecondHandler;
+        
+        if (allRemoved) {
+          me.node.disabled = true;
+        }
+        
+        setTimeout(() => $.Popup.show({
+          content: `second handler for [${evt.type}] invoked and removed.${
+            allRemoved ? `<br><b>Note</b>: the [invoke] button is dead now` : ``}`,
+          closeAfter: 3} ), 2000);
+      }
+      
+      bttn.showInExample(evt, true);
+    },
     getNamedListenerEx(evt) {
       if (exampleResultExists(evt.target)) { return; }
-
+      // create the first button
+      const bttnCreate = $.button( { data: {create: 1}, class: `exRunBttn`,
+        text: `create a listener for the [invoke] button` } );
+      
+      // create the 'invoke' button
+      const bttnListen = $.button({class: `exRunBttn`, text: `invoke`, data: {exec: 1, rightclicks: 0}});
+      
+      // create (initial disabled) removal button and add a 'once' listener
+      const bttnRemove = $.button({class: `exRunBttn`, text: `remove`, disabled: true, data: {remove: 1}})
+      .once(`click`, function() {
+        $.getNamedListener(`click`, `handleExec`)?.unListen();
+        $.getNamedListener(`contextmenu`, `handleExec`)?.unListen();
+        return $.Popup.show( {
+          content: `listeners (click, right click) removed, (right)
+            click the [invoke] button to verify and/or check the console`,
+          closeAfter: 5
+        } );
+      });
+      
+      // add listeners for the first two buttons
       $.handle({
         type: `click`,
-        selector: `button[data-create]`,
-        name: `createHandler`,
+        node: bttnCreate.node, // use the existing node
+        name: `createHandler`, // the button will have the [data-hid='createHandler'] attribute
         handlers: function(evt, me) {
-          const theListener = $.getNamedListener(`click`, `handleExec`);
-          if (!theListener) {
+          // add listener for the second button if not already in place
+          const listenerDone = $.getNamedListener(`click`, `handleExec`);
+          // add listener if not already done (listenerDone)
+          if (!listenerDone) {
             $.handle( {
               type: "click, contextmenu",
               selector: `button[data-exec]`,
               about: "A click/right click listener for the getNamedListener example",
               canRemove: true,
-              handlers: function handleExec({evt, me}) {
-                if (evt.type === "contextmenu") {
-                  evt.preventDefault();
-                  const nRightClicks = +(me.data.get(`rightclicks`) || 0) + 1;
-                  me.data.set({rightclicks: nRightClicks});
-                  // remove the 'contextmenu' (right click) listener after 3 invocations
-                  if (nRightClicks > 3) {
-                    $.getNamedListener(`contextmenu`, `handleExec`).unListen();
-                    me.data.set({rightclicks: "0"});
-                    return $.Popup.show( {
-                      content: `You removed the right click handler (by right clicking a 4th time;)`,
-                      closeAfter: 3
-                    } );
-                  }
-                  return $.Popup.show({
-                    content: `Right click #${nRightClicks}${
-                      nRightClicks === 3 ? " (next right click will remove the listener!)" : ""}`,
-                    closeAfter: nRightClicks === 3 ? 2 : 1 });
-                }
-                $.Popup.show({ content: `You clicked. Yep. I'm handled`, closeAfter: 3 });
-              },
+              handlers: handleExec,
             });
           }
-          const getNamedListenerForDisplay = JSON.stringify($.getNamedListener(`click`, `handleExec`), null, 2);
-          $.Popup.show( {
-            content: $.div(
-              theListener ? `Already listening` : `handler created, click [invoke] button`,
-              !theListener
-                ? $.p(`<code>\$.getNamedListener("click", "handleExec")</code> =>`,
-                  $.pre({style: "margin-top: 0"}, getNamedListenerForDisplay))
-                : ``),
-            closeAfter: (!theListener ? 60 : 2)
-          } );
+          // enable removal button
+          $(`[data-remove]`).rmAttr(`disabled`);
+          // popup result
+          return showHandlingResult(listenerDone);
         }
       });
-
-      $.handle({
-        type: `click`,
-        selector: `button[data-remove]`,
-        handlers: function(evt, me) {
-          $.getNamedListener(`click`, `handleExec`)?.unListen();
-          $.getNamedListener(`contextmenu`, `handleExec`)?.unListen();
-          return $.Popup.show( {
-            content: `listeners (click, right click) removed, (right) click the [invoke] button to verify`,
-            closeAfter: 4
-          } );
+      
+      function showHandlingResult(listenerDone) {
+        const getNamedListenerForDisplay = JSON.stringify($.getNamedListener(`click`, `handleExec`), null, 2);
+        $.Popup.show({
+          content: $.div(
+            listenerDone ? `Already listening` : `handler created, click [invoke] button`,
+            !listenerDone
+              ? $.p(`<code>\$.getNamedListener("click", "handleExec")</code> =>`,
+                $.pre({style: "margin-top: 0"}, getNamedListenerForDisplay))
+              : ``),
+          closeAfter: (!listenerDone ? 60 : 2)
+        });
+      }
+      
+      // handler for the [invoke] button
+      function handleExec({evt, me}) {
+        if (evt.type === "contextmenu") { /* right click */
+          evt.preventDefault();
+          const nRightClicks = +(me.data.get(`rightclicks`) || 0) + 1;
+          me.data.set({rightclicks: nRightClicks});
+          // remove the 'contextmenu' (right click) listener after 3 invocations
+          if (nRightClicks > 3) {
+            $.getNamedListener(`contextmenu`, `handleExec`).unListen();
+            me.data.set({rightclicks: "0"});
+            return $.Popup.show( {
+              content: `You removed the right click handler (by right clicking a 4th time;)`,
+              closeAfter: 3
+            } );
+          }
+          
+          return $.Popup.show({
+            content: `Right click #${nRightClicks}${
+              nRightClicks === 3 ? " (next right click will remove the listener!)" : ""}`,
+            closeAfter: nRightClicks === 3 ? 2 : 1 });
         }
-      });
+        /* click */ $.Popup.show({ content: `You clicked. Yep. I'm handled`, closeAfter: 3 });
+      }
 
-      const bttnCreate = $.button({class: `exRunBttn`,
-        text: `create a listener for the [execute] button`, data: {create: 1}});
-      const bttnListen = $.button({class: `exRunBttn`, text: `invoke`, data: {exec: 1, rightclicks: 0}});
-      const bttnRemove = $.button({class: `exRunBttn`, text: `remove`, data: {remove: 1}});
       $.div(bttnCreate, bttnListen, bttnRemove).showInExample(evt, true);
     },
     renderToEx(evt) {
@@ -355,7 +401,7 @@ function clickActionsFactory($) {
       $.editCssRule(".appended { color: red; cursor: pointer; }");
       const toAppendJQxInstance = $.virtual(
         '<div class="appended">I am an appended JQx instance ...</div>'
-      ).on("click", () => alert("HELLO!"));
+      ).on("click", function appendExClickHandler() { alert("HELLO!"); });
 
       const elem2Append = $.div({id: "tmpExAppend"}, "Hi there! Wait a sec ... ")
         .append(
@@ -709,19 +755,12 @@ function clickActionsFactory($) {
       $.editCssRule(".redEx { color: red; }");
       $.editCssRule("button#toggleColor, button#cleanup { margin: 0 5px; }");
       const elem = $('<div class="divExClass redEx">Hello World!</div>');
-
-      elem.append(
-        $.button({id: "toggleColor", data: {action: "toggleClassBttnClick"}}, `toggle`)
-      );
-
+      elem.append( $.button({id: "toggleColor"}, `toggle`).on( `click`, toggleClass ) );
       elem.showInExample(evt, true);
-
-      /*
-        toggleClassbttnClick lambda:
-        ----------------------------
-        evt => $(evt.target.closest(".divExClass")).toggleClass("redEx");
-       */
-
+      
+      function toggleClass({me}) {
+        me.closest(".divExClass").toggleClass("redEx");
+      }
     },
     toggleClassBttnClick: evt => {
         $(evt.target.closest(".divExClass")).toggleClass("redEx");
@@ -1081,15 +1120,17 @@ function clickActionsFactory($) {
       setTimeout(() => hello.showInExample(evt).removeAfter(5), 2000);
       
     },
-    staticDelegateCapturedEx: evt => {
+    staticHandleEx: evt => {
       const listenerInPlace = $.listenerStore.click.delegateExampleHandler;
+      
       $.handle({
         type: "click",
         selector: "[data-for-id='static_handle']",
         handlers: delegateExampleHandler,
-        // ^ you *must* provide a named function (or 'name' property)
-        // to be able to retrieve it and prevent re-adding the
-        // handler
+        //        ^ a named function (or a 'name' property)
+        // prevents re-adding the handler.
+        // So re-clicking the 'Try it' button will do nothing
+        // but trigger an error message in the console
       });
       
       function delegateExampleHandler({me}) {
