@@ -185,7 +185,7 @@ function clickActionsFactory($) {
         <br>In other words: one can only close this using the button below.\
         <br>Try clicking anywhere outside the box ...";
       const closeBttn = $.button({data: {id: "modalClose2"}}, "Close me");
-      $.handle({type: "click", selector: "[data-id='modalClose2']", handlers: $.Popup.removeModal});
+      $.handle({type: "click", selector: "[data-id='modalClose2']", handler: $.Popup.removeModal});
       const okMessage = () => $.Popup.show({ content: `Modal closed, we're ok, bye.`, closeAfter: 2});
       const message = $.div(
         modalBoxText,
@@ -266,7 +266,7 @@ function clickActionsFactory($) {
         type: `click`,
         node: bttnCreate.node, // use the existing node
         name: `createHandler`, // the button will have the [data-hid='createHandler'] attribute
-        handlers: function(evt, me) {
+        handler: function(evt, me) {
           // add listener for the second button if not already in place
           const listenerDone = $.getNamedListener(`click`, `handleExec`);
           // add listener if not already done (listenerDone)
@@ -276,7 +276,7 @@ function clickActionsFactory($) {
               selector: `button[data-exec]`,
               about: "A click/right click listener for the getNamedListener example",
               canRemove: true,
-              handlers: handleExec,
+              handler: handleExec,
             });
           }
           // enable removal button
@@ -371,7 +371,7 @@ function clickActionsFactory($) {
     showLogEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
 
-      $.handle({type: `click`, selector: "#backlogBttn", handlers: showBacklog, once: true});
+      $.handle({type: `click`, selector: "#backlogBttn", handler: showBacklog, once: true});
       $.button({text: `show log entries`, id: `backlogBttn`}).showInExample(evt, true);
 
       function showBacklog(evt) {
@@ -1128,7 +1128,7 @@ function clickActionsFactory($) {
       $.handle({
         type: "click",
         selector: "[data-for-id='static_handle']",
-        handlers: delegateExampleHandler,
+        handler: delegateExampleHandler,
         //        ^ a named function (or a 'name' property)
         // prevents re-adding the handler.
         // So re-clicking the 'Try it' button will do nothing
