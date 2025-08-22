@@ -62,8 +62,8 @@ function HandlerFactory(jqx) {
   function storeHandler(spec) {
     let { type, handler, name, capture, once, selector, node, about } = spec;
     store[type] = store[type] || {};
-    let handlerName = getHandlerName(name || handler.name);
-    
+    const handlerName = getHandlerName(name || handler.name);
+    const initialHandler = handler;
     if (node instanceof HTMLElement) {
       // Note: for multiple event types dataset.hid may be defined already
       const handlerID = node.dataset.hid || handlerName;
@@ -79,6 +79,7 @@ function HandlerFactory(jqx) {
           capture: getCaptureValue(type, capture),
           once: !!once,
           type: type,
+          initialHandler,
           selector: !!selector && selector || false,
           about: !!about && about || false,
           unListen() { remove(type, handlerName); },
@@ -88,7 +89,7 @@ function HandlerFactory(jqx) {
         type}] exists. Use unique (function) names.`);
     }
   }
-  
+  // todo: maybe enable a custom unListen handler
   return {
     remove(...args) { return remove(...args); },
     listen: function(spec) {
