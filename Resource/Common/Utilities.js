@@ -42,7 +42,7 @@ export {
 };
 
 function getHandlerName(name) {
-  const validName = isNonEmptyString(name) && !!name && !/^handler|handlers$/gi.test(name.trim())
+  const validName = isNonEmptyString(name) && !/^handler|handlers$/gi.test(name.trim())
   return validName ? name.trim() : uniqueHandlerID();
 }
 
