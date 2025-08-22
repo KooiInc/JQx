@@ -216,24 +216,25 @@ function clickActionsFactory($) {
       function bttnHandler({evt}) {
         if (evt.type === `contextmenu`) {
           evt.preventDefault();
-          return $.Popup.show( { content: `Right click invoked and removed!` } );
+          return $.Popup.show( { content: `Right click invoked and removed!`, modal: true },  );
         }
-        return $.Popup.show( { content: `Click invoked and removed!` });
+        return $.Popup.show( { content: `Click invoked and removed!`, modal: true });
       }
       
       function bttnSecondHandler({evt, me}) {
-        // check the listener store for existence of the listeners
-        const allRemoved = !$.listenerStore.click.bttnHandler &&
-          !$.listenerStore.click.bttnSecondHandler;
-        
-        if (allRemoved) {
-          me.node.disabled = true;
-        }
-        
-        setTimeout(() => $.Popup.show({
-          content: `second handler for [${evt.type}] invoked and removed.${
-            allRemoved ? `<br><b>Note</b>: the [invoke] button is dead now` : ``}`,
-          closeAfter: 3} ), 2000);
+        setTimeout(() => {
+          const allRemoved = !$.listenerStore.click.bttnHandler &&
+            !$.listenerStore.click.bttnSecondHandler &&
+            !$.listenerStore.contextmenu?.bttnHandler &&
+            !$.listenerStore.contextmenu?.bttnSecondHandler;
+          me.node.disabled = allRemoved;
+          $.Popup.removeModal();
+          $.Popup.show({
+            content: `second handler for [${evt.type}] invoked and removed.
+              ${allRemoved ? `<br><b>Note</b>: the [invoke] button is dead now` : ``}`,
+            closeAfter: 3,
+          })
+        }, 2000);
       }
       
       bttn.showInExample(evt, true);
