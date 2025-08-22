@@ -55,10 +55,6 @@ function HandlerFactory(jqx) {
       delete store[eventType][name];
       delete handlerIdCache[name];
       
-      if (Object.keys(store[eventType]).length < 1) {
-        delete store[eventType];
-      }
-      
       console.warn(`Removed listener [${name}] for event type [${eventType}].`);
     }
   }

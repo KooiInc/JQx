@@ -186,7 +186,6 @@ function delegateCaptureFactory(handlerWrapper) {
 
 function assignListeners(handlerFns, params, handlerWrapper) {
   for (const handler of handlerFns) {
-    params.name = getHandlerName(params.name || handler.name);
     handlerWrapper.listen({...params, handler});
   }
 }

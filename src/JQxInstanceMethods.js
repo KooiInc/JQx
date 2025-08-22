@@ -306,7 +306,7 @@ function instanceExtensionsFactory(jqx) {
     on: (instance, type, ...callback) => {
       if (instance.collection.length && IS(type, String, Array)) {
         if (!isNonEmptyString(type) || callback.length < 1) { return instance; }
-        jqx.handle({type, node: instance.node, handlers: callback});
+        jqx.handle({type, node: instance.node, handler: callback});
       }
 
       return instance;
@@ -314,7 +314,7 @@ function instanceExtensionsFactory(jqx) {
     once: (instance, type, ...callback) => {
       if (instance.collection.length && IS(type, String, Array)) {
         if (!isNonEmptyString(type) || callback.length < 1) { return instance; }
-        jqx.handle({type, once: true, node: instance.node, handlers: callback});
+        jqx.handle({type, once: true, node: instance.node, handler: callback});
       }
       
       return instance;
