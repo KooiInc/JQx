@@ -287,13 +287,16 @@ function clickActionsFactory($) {
       });
       
       function showHandlingResult(listenerDone) {
-        const getNamedListenerForDisplay = JSON.stringify($.getNamedListener(`click`, `handleExec`), null, 2);
+        const listener = $.getNamedListener(`click`, `handleExec`)
+        const getNamedListenerObjectForDisplay = JSON.stringify(
+          listener, (k, v) => $.IS(v, Function) ? `function() {...}` : v, 2);
+        const handlerCode = $.escHtml(String(listener.initialHandler));
         $.Popup.show({
           content: $.div(
             listenerDone ? `Already listening` : `handler created, click [invoke] button`,
             !listenerDone
               ? $.p(`<code>\$.getNamedListener("click", "handleExec")</code> =>`,
-                $.pre({style: "margin-top: 0"}, getNamedListenerForDisplay))
+                $.pre({style: "margin-top: 0"}, getNamedListenerObjectForDisplay))
               : ``),
           closeAfter: (!listenerDone ? 60 : 2)
         });
