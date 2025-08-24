@@ -85,8 +85,8 @@ function HandlerFactory(jqx) {
           unListen() { remove(type, handlerName); },
         };
         return store[type][handlerName];
-      default: return console.error(`The name [${handlerName}] for [${
-        type}] exists. Use unique (function) names.`);
+      default: return console.warn(`The listener [${handlerName}] for [${
+        type}] exists, it is not re-assigned.`);
     }
   }
   // todo: maybe enable a custom unListen handler
