@@ -44,6 +44,11 @@ export default function($) {
     }
     return true;
   }
+  
+  function clearAllTimers() {
+    let id = setTimeout(() => {});
+    while (id >= 0) { clearTimeout(id--); }
+  }
 
   function showPopup() {
     popupContent.clear();
@@ -57,6 +62,7 @@ export default function($) {
 
   function hidePopup() {
     popupNode.close(currentProps.returnValue);
+    clearAllTimers();
     if ($.IS(currentProps.callback, Function)) {
       return setTimeout(() => currentProps.callback(currentProps.returnValue), 200);
     }
