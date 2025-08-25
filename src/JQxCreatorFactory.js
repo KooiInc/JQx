@@ -1,14 +1,14 @@
 import {
   randomString, toDashedNotation, IS, tagFNFactory as $T, styleFactory, toCamelcase, systemLog,
   escHtml, isNonEmptyString, resolveEventTypeParameter, selectedFactoryHelpers, insertPositions,
-  cleanupHtml, PopupFactory, tagLib, HandlerFactory, getHandlerName,
+  cleanupHtml, PopupFactory, tagLib, HandlerFactory, clearAllTimers,
 } from "./JQxUtilities.js";
 import allMethodsFactory from "./JQxInstanceMethods.js";
 
 let instanceGetters, instanceMethods;
 const {
   isComment, isText, isHtmlString, isArrayOfHtmlElements, isArrayOfHtmlStrings,
-  ElemArray2HtmlString, addHandlerId, cssRuleEdit, addFn
+  ElemArray2HtmlString, addHandlerId, cssRuleEdit, addFn,
 } = selectedUtilitiesFactory();
 
 export { proxify, addJQxStaticMethods };
@@ -241,6 +241,7 @@ function staticMethodsFactory(jqx) {
     text: (str, isComment = false) => isComment ? jqx.comment(str) : document.createTextNode(str),
     node: (selector, root = document) => root.querySelector(selector, root),
     nodes: (selector, root = document) =>  [...root.querySelectorAll(selector, root)],
+    clearAllTimers,
     get getNamedListener() { return getNamedListener; },
     get virtual() { return virtualFactory(jqx); },
     get allowTag() { return allowProhibit.allow; },
