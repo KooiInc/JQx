@@ -5,6 +5,7 @@ export default function($) {
   $.logger.log(`JQx: [JQx].Popup first call. Dialog element created.`);
   $.dialog({id: `jqxPopup`}, $.div({ id: "jqxPopupContent" })).render;
   $.editCssRules(...styleRules);
+  let timers = [];
   const [popupContent, popupNode] = [$(`#jqxPopupContent`), $.node(`#jqxPopup`)];
   let currentProps = {};
   $.handle( {
@@ -57,11 +58,16 @@ export default function($) {
 
   function hidePopup() {
     popupNode.close(currentProps.returnValue);
-    
+    clearTimers();
     if ($.IS(currentProps.callback, Function)) {
-      return setTimeout(() => currentProps.callback(currentProps.returnValue), 200);
+      return timers.push(setTimeout(() => currentProps.callback(currentProps.returnValue), 200));
     }
     currentProps = {};
+  }
+  
+  function clearTimers() {
+    timers.forEach(timer => clearTimeout(timer));
+    timers = [];
   }
 
   function removeModal({callback, value} = {}) {
@@ -89,7 +95,8 @@ export default function($) {
 
   function createTimer(callback, seconds) {
     if ($.IS(callback, Function) && $.IS(seconds, Number) && seconds > 0) {
-      currentProps.activeTimer = setTimeout(callback, seconds * 1000);
+      clearTimers();
+      timers.push(setTimeout(callback, seconds * 1000));
     }
   }
 
