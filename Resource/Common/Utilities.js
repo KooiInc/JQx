@@ -31,15 +31,19 @@ const datasetKeyProxy = Object.freeze({
 const handlerIdCache = {};
 
 export {
-  after, applyStyle, assignAttrValues, ATTRS, before, checkProp, cleanupHtml, cloneAndDestroy,
+  after, applyStyle, assignAttrValues, ATTRS, before, checkProp, cleanupHtml, clearAllTimers, cloneAndDestroy,
   createElementFromHtmlString, datasetKeyProxy, inject2DOMTree, ElemArray2HtmlString, emptyElement,
-  escHtml, findParentScrollDistance, input2Collection, insertPositions, IS, isArrayOfHtmlElements,
-  isArrayOfHtmlStrings, isComment, isCommentOrTextNode, isHtmlString, isModal, isNode, isNonEmptyString,
-  isText, isVisible, isWritable, logTime, maybe, pad0, PopupFactory, randomNr, randomString,
-  resolveEventTypeParameter, setData, styleFactory, systemLog, tagFNFactory, tagLib, toCamelcase,
-  toDashedNotation, truncate2SingleStr, truncateHtmlStr, ucFirst, HandlerFactory, getCaptureValue,
-  getHandlerName, handlerIdCache,
+  escHtml, findParentScrollDistance, getCaptureValue, getHandlerName, HandlerFactory, handlerIdCache,
+  input2Collection, insertPositions, IS, isArrayOfHtmlElements, isArrayOfHtmlStrings, isComment, isCommentOrTextNode,
+  isHtmlString, isModal, isNode, isNonEmptyString, isText, isVisible, isWritable, logTime, maybe, pad0,
+  PopupFactory, randomNr, randomString, resolveEventTypeParameter, setData, styleFactory, systemLog,
+  tagFNFactory, tagLib, toCamelcase, toDashedNotation, truncate2SingleStr, truncateHtmlStr, ucFirst,
 };
+
+function clearAllTimers() {
+  let id = setTimeout(() => {});
+  while (id >= 0) { clearTimeout(id--); }
+}
 
 function getHandlerName(name) {
   const validName = isNonEmptyString(name) && !/^handler|handlers$/gi.test(name.trim())
