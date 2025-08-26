@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-08-26 10:04:43 UTC-->
+<!-- Generated file, last update 2025-08-26 10:55:45 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -932,23 +932,31 @@ When <code>indexOrSelector</code> has a value, retrieves the first matching elem
 </div>
 
 <div class="note">
-  <b>Note</b>: the earlier deprecated methods (<code>create</code>, <code>createTimed</code>)
-  are now removed.
-</div>
-
-<div>
-  You can of course create your own popup methods, for example:
-</div>
+  <b>Notes</b>: 
+  <ul>
+    <li> the earlier deprecated methods (<code>create</code>, <code>createTimed</code>)
+      are now removed.</li>
+      <div>
+        You can of course create your own popup methods, for example:
+      </div>
 
 <div data-example>
-function createPopup(content, callback) {
-  return $.Popup.show({content, callback })
+  function createPopup(content, callback) {
+    return $.Popup.show({content, callback })
 }
 
 function createTimedPopup(content, timeout, callback) {
   return $.Popup.show({content, callback, closeAfter: timeout})
 }
-</div></div>
+</div>
+    <li>
+      A tryout of this Popup functionallity can be found @ 
+      <a target="_blank" href="https://stackblitz.com/edit/js-gmevhhev?file=index.js" 
+        rel="nofollow">Stackblitz</a>.</li>
+  <ul>
+</div>
+
+</div>
 </template>
 
 <template data-id="popup_removeModal" class="popup_removeModal" data-is-deprecated="false">
