@@ -390,6 +390,6 @@ function getStyleRules4Display() {
     .join('')
     .replace(
       `#jqxPopup[open] #jqxPopupContent.cssDisplay`,
-      `/* to display the popup for custom css */\n#jqxPopup[open] #jqxPopupContent.cssDisplay`);
+      `/* inserted to display custom CSS */\n#jqxPopup[open] #jqxPopupContent.cssDisplay`);
   return css_beautify(stringified, {indent_size: 2, indent_char: " ", end_with_newline: true })
 }
