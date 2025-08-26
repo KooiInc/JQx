@@ -1,4 +1,4 @@
-import { default as IS, maybe } from "./TypeofAnything.js";
+import {default as IS, maybe} from "./TypeofAnything.js";
 import {ATTRS} from "./EmbedResources.js";
 import {default as tagFNFactory} from "./tinyDOM.js";
 import styleFactory from "./LifeCSS.js";
@@ -226,14 +226,20 @@ function isVisible(el) {
   const computedStyle = getComputedStyle(el);
   const invisible = [elStyle.visibility, computedStyle.visibility].includes("hidden");
   const noDisplay = [elStyle.display, computedStyle.display].includes("none");
+  const hidden = el.hidden;
   const offscreen = el.offsetTop < 0 || (el.offsetLeft + el.offsetWidth) < 0
     || el.offsetLeft > document.body.offsetWidth;
   const noOpacity = +computedStyle.opacity === 0 || +(elStyle.opacity || 1) === 0;
-  return !(offscreen || noOpacity || noDisplay || invisible);
+  return !(hidden || offscreen || noOpacity || noDisplay || invisible);
 }
 
 function isWritable(elem) {
-  return [...elem.parentNode.querySelectorAll(`:is(:read-write)`)]?.find(el => el === elem) ?? false;
+  if (elem?.isConnected) {
+    return !![...document.querySelectorAll(`:is(:read-write)`)]
+      .find(el => el === elem);
+  }
+  
+  return false;
 }
 
 function ElemArray2HtmlString(elems) {
@@ -265,7 +271,12 @@ function resolveEventTypeParameter (maybeTypes) {
 }
 
 function isModal(elem) {
-  return [...elem.parentNode.querySelectorAll(`:is(:modal)`)]?.find(el => el === elem) ?? false;
+  if (elem?.isConnected) {
+    return !![...document.querySelectorAll(`:is(:modal)`)]
+      .find(el => el === elem) ? true : false;
+  }
+  
+  return false;
 }
 
 /* private */
