@@ -1,5 +1,5 @@
 import {
-  IS, isNode, truncateHtmlStr, addHandlerId, ExamineElementFeatureFactory,
+  IS, isNode, truncateHtmlStr, ExamineElementFeatureFactory,
   isNonEmptyString, toDashedNotation, escHtml, systemLog, insertPositions,
   datasetKeyProxy, loop, cloneAndDestroy, setData, before, after,
   findParentScrollDistance, emptyElement, checkProp, css, assignAttrValues,
