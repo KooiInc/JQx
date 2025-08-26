@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-08-26 07:45:53 UTC-->
+<!-- Generated file, last update 2025-08-26 10:04:43 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -1618,12 +1618,7 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
     Every listener uses 
     <a target="_blank" href="https://javascript.info/event-delegation">event delegation</a>
   </li>
-  <li>
-     If you handle mouse- or key events within a JQx popup box
-     (for example in a form), use<code>event.stopImmediatePropation()</code>
-     in that handler to prevent firing of the popup listener.
-  </li>
-  </ul>
+ </ul>
 </div>
 
 
@@ -1722,16 +1717,16 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
     <code>name: string</code>: because of the way <code>origin</code> binds to a handler
     (it is wrapped into a new anonymous function), to be sure a handler can not be re-added 
     a <i>unique</i> name (string, at least 4 characters) can be provided.
+
     <div>
-       A name is mandatory if you want to be able to remove a listener 
-       (<code>canRemove: true</code>).
-    <div>Without <code>origin/selector</code> and when <code>handler(s)</code> is/are 
-    named function(s) a name is not necessary (the name will be derived from
-    the handler function name(s) in that case).</div>
-    <div class="note"><b>Note</b>: 
-      the name should be unique. If no name was provided, a unique name 
-      will be created.
-    <div>See the example.</div>
+      Without <code>origin/selector</code> and when <code>handler(s)</code> is/are 
+      named function(s) a name is not necessary (the name will be derived from
+      the handler function name(s) in that case).</div>
+      <div class="note"><b>Note</b>: 
+        the name should be unique. If no name was provided, a unique name 
+        will be created.
+      <div>See the example.
+     </div>
   </li>
 
   <li>
@@ -1976,8 +1971,8 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
  The difference is that <code>type</code> and <code>handler</code>
  should be single values. Furthermore, this method returns an
  Object, containing the type/name/about values of the listener 
- and a function (<code>unListen</code>) to (directly) undo 
- the event listening.
+ and a function (<code>unListen</code>) to (programmatically) revoke 
+ the event listener.
 </div>
 
 <div class="note">

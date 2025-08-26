@@ -81,7 +81,6 @@ function finalizeDocumentCreation() {
 
   $.log(`Document creation/implementation (without imports) took ${
     ((performance.now() - perform)/1000).toFixed(3)} seconds`);
-
 }
 
 // ---

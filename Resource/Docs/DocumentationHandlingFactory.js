@@ -212,32 +212,41 @@ function clickActionsFactory($) {
       // create button and add one time listeners for click/right click (contextmenu)
       const bttn = $.button(`invoke`)
         .once( `click, contextmenu`, bttnHandler, bttnSecondHandler );
+      const initialDiv = $.div(bttn, $.span({data: {onceTxt: 1}}, ` Click or right click the button`));
+      
+      function allDone() {
+        return !$.listenerStore.click.bttnHandler
+        && !$.listenerStore.click.bttnSecondHandler
+        && !$.listenerStore.contextmenu.bttnHandler
+        && !$.listenerStore.contextmenu.bttnSecondHandler;
+      }
       
       function bttnHandler({evt}) {
+        const txtElem = $(`[data-once-txt]`);
         if (evt.type === `contextmenu`) {
           evt.preventDefault();
-          return $.Popup.show( { content: `Right click invoked and removed!`, modal: true },  );
+          $.Popup.show( { content: `Right click invoked and removed!`, modal: true } );
+          return setTimeout(() => txtElem.text(allDone() ? `` :  ` Now click the button ...`));
         }
-        return $.Popup.show( { content: `Click invoked and removed!`, modal: true });
+        
+        $.Popup.show( { content: `Click invoked and removed!`, modal: true });
+        return setTimeout(() => txtElem.html(allDone() ? `` :  ` Now <i>right</i> click the button ...`));
       }
       
       function bttnSecondHandler({evt, me}) {
-        setTimeout(() => {
-          const allRemoved = !$.listenerStore.click.bttnHandler &&
-            !$.listenerStore.click.bttnSecondHandler &&
-            !$.listenerStore.contextmenu?.bttnHandler &&
-            !$.listenerStore.contextmenu?.bttnSecondHandler;
+        return setTimeout(() => {
+          const allRemoved = allDone();
           me.node.disabled = allRemoved;
           $.Popup.removeModal();
           $.Popup.show({
-            content: `second handler for [${evt.type}] invoked and removed.
+            content: `Second handler for [${evt.type}] invoked and removed.
               ${allRemoved ? `<br><b>Note</b>: the [invoke] button is dead now` : ``}`,
             closeAfter: 3,
-          })
-        }, 2000);
+          });
+        }, 1000);
       }
       
-      bttn.showInExample(evt, true);
+      initialDiv.showInExample(evt, true);
     },
     getNamedListenerEx(evt) {
       if (exampleResultExists(evt.target)) { return; }
@@ -473,7 +482,7 @@ function clickActionsFactory($) {
         $.div({class: "description"},
           `<h3><code>inpDisabled</code> ${is.inDOM ? "in" : "<i>NOT</i> in"} the DOM</h3>
            <div>${retrieveFeatures()}</div>`);
-      console.log(getActualPopupText().HTML.get(1));
+      
       const reCheckAfterAdded2DOM = () => {
         inpDisabled.toDOM();
         inpDisabled.attr({placeholder: "I am now in the DOM"}).rmAttr("disabled");
@@ -484,6 +493,7 @@ function clickActionsFactory($) {
 
       $.Popup.show({
         content: getActualPopupText(),
+        closeAfter: 5,
         callback: reCheckAfterAdded2DOM,
       });
     },
