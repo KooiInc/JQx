@@ -1,4 +1,4 @@
-<div>
+<div align="center">
   <a target="_blank" href="https://www.npmjs.com/package/jqx-es"
     ><img src="https://img.shields.io/npm/v/jqx-es.svg?labelColor=cb3837&logo=npm&color=dcfdd9"></a>
 </div>
