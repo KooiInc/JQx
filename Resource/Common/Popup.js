@@ -11,7 +11,6 @@ export default function($) {
   $.handle( {
     type: `click, keydown`,
     handlers: genericPopupCloseHandler,
-    name: `genericPopupCloseHandler`,
     capture: true,
     about: "A generic handler for JQx popups"} );
   return Object.freeze({show: initPopup, remove: initHidePopup, removeModal});
