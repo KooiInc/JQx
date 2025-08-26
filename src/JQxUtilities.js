@@ -55,7 +55,7 @@ function selectedFactoryHelpers() {
 function ExamineElementFeatureFactory() {
   const notApplicable = `n/a`;
   const noElements = Object.freeze({
-    notInDOM: true, writable: notApplicable, modal: notApplicable, empty: true,
+    notInDOM: notApplicable, writable: notApplicable, modal: notApplicable, empty: true,
     open: notApplicable, visible: notApplicable, });
 
   return self => {
