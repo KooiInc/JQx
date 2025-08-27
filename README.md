@@ -3,19 +3,6 @@
     ><img src="https://img.shields.io/npm/v/jqx-es.svg?labelColor=cb3837&logo=npm&color=dcfdd9"></a>
 </div>
 
-> [!IMPORTANT]
-> This repository was formerly known as **JQL**, residing on [Github](https://github.com/KooiInc/JQx).  
-> The *authorative* code base for this module is now: @[https://codeberg.org/KooiInc/JQx](https://codeberg.org/KooiInc/JQx).
->
-> The NPM package is copied to a new package (see top link).
-> The old NPM package will not be updated and discontinued in due time.
-> 
-> The latest JQL Github branch before this operation is preserved in **./Resource/JQL-last**.
->
-> The Github JQL repository is renamed to _**JQx**_.
-> 
-> The CodeBerg repository will, until further notice, be synchronised to the Github repository.
-
 # JQx
 
 This module was inspired by the idea that some parts of [JQuery](https://jquery.com) are too good [to ditch](https://youmightnotneedjquery.com/).  
@@ -63,3 +50,16 @@ $.div(`Hello JQx!`).appendTo(document.body);
   // ...
 </script>
 ```
+
+> [!NOTE]
+> This repository was formerly known as **JQL**, residing on [Github](https://github.com/KooiInc/JQx).  
+> The *authorative* code base for this module is now: @[https://codeberg.org/KooiInc/JQx](https://codeberg.org/KooiInc/JQx).
+>
+> The NPM package is copied to a new package (see top link).
+> The old NPM package will not be updated and discontinued in due time.
+>
+> The latest JQL Github branch before this operation is preserved in **./Resource/JQL-last**.
+>
+> The Github JQL repository is renamed to _**JQx**_.
+>
+> The CodeBerg repository will, until further notice, be synchronised to the Github repository.
