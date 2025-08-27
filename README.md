@@ -3,6 +3,14 @@
     ><img src="https://img.shields.io/npm/v/jqx-es.svg?labelColor=cb3837&logo=npm&color=dcfdd9"></a>
 </div>
 
+> [!NOTE]
+> The listening and handling of events has been overhauled. This means that
+> callbacks for event listeners now are always expected to have the 
+> signature`[handler]({evt, [me|self]})`. If you use `[JQx].delegate` or
+> `[JQx instance].on` in your code, please review.
+> 
+> See also [documentation](https://kooiinc.codeberg.page/JQx/Resource/Docs/)
+
 # JQx
 
 This module was inspired by the idea that some parts of [JQuery](https://jquery.com) are too good [to ditch](https://youmightnotneedjquery.com/).  
