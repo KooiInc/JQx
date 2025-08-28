@@ -264,9 +264,14 @@ function randomString() {
 }
 
 function resolveEventTypeParameter (maybeTypes) {
-  maybeTypes = IS(maybeTypes, String) && /,/.test(maybeTypes) ? maybeTypes.split(`,`) : maybeTypes;
+  maybeTypes = IS(maybeTypes, String) && /,/.test(maybeTypes)
+    ? maybeTypes
+      .split(`,`)
+      .map(t => t.trim().toLowerCase())
+      .filter( t => t.length > 0)
+    : maybeTypes;
   return IS(maybeTypes, Array)
-    ? maybeTypes.filter(t => isNonEmptyString(t)).map(t => t.trim().toLowerCase())
+    ? maybeTypes
     : IS(maybeTypes, String) && maybeTypes?.trim().toLowerCase() || ``;
 }
 

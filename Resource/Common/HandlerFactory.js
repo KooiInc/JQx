@@ -49,7 +49,7 @@ function HandlerFactory(jqx) {
   }
   
   function remove(eventType, name) {
-    const listener = retrieve(eventType, name)
+    const listener = retrieve(eventType, name);
     if (listener) {
       removeListener(listener[1]);
       delete store[eventType][name];
