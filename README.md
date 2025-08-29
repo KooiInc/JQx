@@ -4,7 +4,7 @@
 </div>
 
 > [!NOTE]
-> The listening and handling of events has been overhauled. This means that
+> The listening to - and handling of events has been overhauled. This means that
 > callbacks for event listeners now are always expected to have the 
 > signature`[handler]({evt, [me|self]})`. If you use `[JQx].delegate` or
 > `[JQx instance].on` in your code, please review.
