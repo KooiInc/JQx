@@ -284,6 +284,19 @@ function isModal(elem) {
   return false;
 }
 
+function convert2Bool(value, defaultValue) {
+  // Valid input values: 0|false|f|1|true|t (case insensitive)
+  value = String(value).trim();
+  switch (true) {
+    case /^(0|false|f)$/i.test(value):
+      return false;
+    case /^(1|true|t)$/i.test(value):
+      return true;
+    default:
+      return defaultValue;
+  }
+}
+
 /* private */
 function shuffle(array) {
   let i = array.length;
