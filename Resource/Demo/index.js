@@ -167,63 +167,102 @@ if (!debug) {
       ? $.div : me;
     
     me.data.set({checkboxContainer: 1});
-    const {opts, selectallBttn, optLines, style, boxId} = spec;
+    let {opts, selectallBttn, optLines, style, boxId} = spec;
+    boxId = boxId ?? `cbBox_${Math.random().toString(36).slice(2, 12)}`;
     me.attr({id: boxId ?? `cbBox_${Math.random().toString(36).slice(2, 12)}`});
-    $.editCssRules(
-      `[data-checkbox-container] {
-        margin: 1em 0;
-        [data-button] {
-          margin-top: 0.6rem;
-        }
-        ${style || ``}
-      }`,
-      `[data-cb-block] {
-        cursor: pointer;
-        ${!!optLines ? `display:block; width: inherit` : ``};
-        margin-right: ${!!optLines ? `0` : `0.6em`};
-        &:hover {
-          text-decoration: underline;
-        }
-        
-        input {
-          display: inline-block;
-          margin: 3px 0.6em 0 0;
-        }
-      }`
-    );
-    const cbOpts = {type: "checkbox"};
-    for (let [id, opt] of Object.entries(opts)) {
-      const {value, html} = opt;
-      me.append(
-        $.label({data: {cbBlock: true}},
-        $.input({...cbOpts, value, name: id, data: {id}}), html)
-      );
+    createCssRules(boxId, optLines);
+    me.append(...getCheckboxItems(opts));
+    
+    switch(!!selectallBttn) {
+      case true: return withButton(me);
+      default: return me;
     }
     
-    if (selectallBttn) {
-      me.append(
-        $.div({data: {button: true}}, $.button( { data: {all: true}, text: `Select all`} )
+    function withButton(me) {
+      return me.append(
+        $.div({data: {button: true}}, $.button( { data: {all: true}} )
           .on("click", selectAllOrNone) ) );
     }
     
-    return me;
+    function getCheckboxItems(opts) {
+      const cbOpts = {type: "checkbox"};
+      const checkBoxes = [];
+      for (let [id, opt] of Object.entries(opts)) {
+        const {value, html} = opt;
+        checkBoxes.push(
+          $.label(
+            {data: {cbBlock: true}},
+            $.input({...cbOpts, value, name: id, data: {id}}), html
+          )
+        );
+      }
+      return checkBoxes;
+    }
+    
+    function createOptionalStyleRules(boxId, optLines) {
+      $.editCssRules(
+        `#${boxId} {
+        ${style || ``}
+        ${!optLines ? `width: 100%;` : ``}
+        
+        [data-cb-block] {
+          margin-right: ${!!optLines ? `0` : `1em`};
+          display: ${!!optLines ? `block` : `inline-block`};
+        }
+      }`
+      );
+    }
+    
+    function createCssRules(boxId, optLines) {
+      if ( ![...$(`#JQxStylesheet`).node.sheet.cssRules]
+        .find(rule => rule.selectorText === `[data-checkbox-container]`) ) {
+        $.editCssRules(
+          `[data-checkbox-container] {
+          margin: 1em 0;
+          [data-button] {
+            margin-top: 0.6rem;
+            
+            [data-all]:after {
+              content: 'Select all'
+            }
+            
+            [data-all='false']:after {
+              content: 'Select none'
+            }
+          }
+        }`,
+          `[data-cb-block] {
+          cursor: pointer;
+          &:hover {
+            text-decoration: underline;
+          }
+          
+          input {
+            display: inline-block;
+            margin: 3px 0.6em 0 0;
+          }
+        }`);
+      }
+      createOptionalStyleRules(boxId, optLines);
+    }
     
     function selectAllOrNone({self}) {
-      const isAll = $.toBool(self.data.get(`all`));
-      self.text(`Select ${isAll ? `none` : `all`}`);
-      self.data.set({all: !isAll});
+      const checkValue = $.toBool(self.data.get(`all`));
+      self.data.set({all: !checkValue});
       return self.closest(`[data-checkbox-container]`)
-        .find$(`input[type="checkbox"]`).each(cb => cb.checked = isAll);
+        .find$(`input[type="checkbox"]`).each(cb => cb.checked = checkValue);
     }
   }
   
   // usage example of custom function 'cbBox'
   $.div(
     $.h3({style: `margin-bottom: 0.2em`},
-      `This box is created from a <i>custom</i> function called <code>cbBox</code>`),
-    $.div(`It creates a block of checkboxes from specified parameters. In this case,
-      a button is provided to check all or no checkboxes in the box, and the
-      checkboxes are displayed as separate lines.`),
+      `This box is created from a <i>custom</i> function created with <code>$.fn</code>, called <code>cbBox</code>`),
+    $.div(`It creates a block of checkboxes from specified parameters`,
+      $.div(`(<code>$.div(...)<b class="red">.cbBox</b>({opts[, selectAllBttn, optLines, boxId, style] })</code>).`),
+      $.div(`In this case a button is provided to check all or no checkboxes in
+        the box (<code>selectAllBttn: true</code>)`),
+      $.div(`and the checkboxes are displayed as separate lines (<code>optLines: true</code>).`)),
     $.div().cbBox({
     opts: {
       red: {value: 1, html: `<span style="color: red">Red</span>`},
@@ -233,7 +272,7 @@ if (!debug) {
       orange: {value: 5, html: `<span style="color: orange">Orange</span>`},
     },
     boxId: `myselectbox`,
-    style: `padding: 3px 6px; border: 1px dotted #c0c0c0; width: 100px`,
+    style: `padding: 4px 8px; border: 1px dotted #c0c0c0; width: 100px; border-radius: 8px;`,
     selectallBttn: true,
     optLines: true,
   })).appendTo(JQxRoot);

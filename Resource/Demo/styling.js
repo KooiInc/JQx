@@ -68,6 +68,7 @@ export default [
     width: 100%;
     opacity: 1;
   }`,
+  `.red {color: red;}`,
   `#bttnblock {
      margin: 1em auto;
      text-align: center;
