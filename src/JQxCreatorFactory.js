@@ -1,7 +1,7 @@
 import {
   randomString, toDashedNotation, IS, tagFNFactory as $T, styleFactory, toCamelcase, systemLog,
   escHtml, isNonEmptyString, resolveEventTypeParameter, selectedFactoryHelpers, insertPositions,
-  cleanupHtml, PopupFactory, tagLib, HandlerFactory, clearAllTimers,
+  cleanupHtml, PopupFactory, tagLib, HandlerFactory, clearAllTimers, convert2Bool,
 } from "./JQxUtilities.js";
 import allMethodsFactory from "./JQxInstanceMethods.js";
 
@@ -242,6 +242,7 @@ function staticMethodsFactory(jqx) {
     node: (selector, root = document) => root.querySelector(selector, root),
     nodes: (selector, root = document) =>  [...root.querySelectorAll(selector, root)],
     clearAllTimers,
+    get toBool() { return convert2Bool; },
     get getNamedListener() { return getNamedListener; },
     get virtual() { return virtualFactory(jqx); },
     get allowTag() { return allowProhibit.allow; },

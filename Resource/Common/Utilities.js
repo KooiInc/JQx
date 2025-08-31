@@ -38,6 +38,7 @@ export {
   isHtmlString, isModal, isNode, isNonEmptyString, isText, isVisible, isWritable, logTime, maybe, pad0,
   PopupFactory, randomNr, randomString, resolveEventTypeParameter, setData, styleFactory, systemLog,
   tagFNFactory, tagLib, toCamelcase, toDashedNotation, truncate2SingleStr, truncateHtmlStr, ucFirst,
+  convert2Bool,
 };
 
 function clearAllTimers() {
