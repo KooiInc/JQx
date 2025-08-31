@@ -409,6 +409,17 @@ function clickActionsFactory($) {
         });
       }
     },
+    toBoolEx: evt => {
+      const exampleDiv = $.div({data: {isExample: true, isHeader: false, isNothing: `Nope`}}, `An example div`);
+      exampleDiv.append(
+        $.div(`Am I an example? ${ $.toBool(exampleDiv.data.get("isExample")) }`),
+        $.div(`Am I a header? ${ $.toBool(exampleDiv.data.get("isHeader")) }`),
+        $.div(`Am I nothing? ${ $.toBool(exampleDiv.data.get("isNothing")) }`),
+        $.div(`Do I have a data-isdefined attribute? ${ $.toBool(exampleDiv.node.dataset.isdefined, false) }`),
+      );
+      
+      exampleDiv.showInExample(evt).removeAfter(10);
+    },
     appendEx: evt => {
       if (exampleResultExists(evt.target)) { return; }
 
