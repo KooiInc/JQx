@@ -116,10 +116,11 @@ function clickActionsFactory($) {
   const getCurrentParagraph = evt => $(evt.target.closest(`.exContainer`)).find$(`h3`);
   const removeBttn = () => $.button({data: {action: `removeExmple`}, }, `OK (remove)`);
   const countDownExampleCloser = (counter, exampleTmp) => {
-    $.clearAllTimers();
+    let to;
     const stopBttn = exampleTmp.find$(`span [data-stop]`)?.node;
 
     if (!stopBttn || stopBttn?.dataset?.stop === "true") {
+      clearTimeout(to);
       exampleTmp.find$(`.inlineExampleHeader span`).remove();
       return exampleTmp.find$(`div.inlineExampleHeader`).append(removeBttn());
     }
@@ -131,7 +132,7 @@ function clickActionsFactory($) {
       return exampleTmp.remove();
     }
 
-    return setTimeout(_ => {
+    to = setTimeout(_ => {
       counter.dataset.n = `${current - 1}`;
       countDownExampleCloser(counter, exampleTmp);
     }, 1000);
@@ -1148,10 +1149,16 @@ function clickActionsFactory($) {
       } );
     },
     clearEx: evt => {
-            $.editCssRule('[data-id="tmpExClr"] { color: green; }');
+      $.editCssRule('[data-id="tmpExClr"] { color: green; }');
+      
+      setTimeout( () => {
+        $('[data-id="tmpExClr"]').clear(); // <= clearing
+        setTimeout( () => $(`.metoo`).text("They did it didn't they?"), 1000)
+      }, 3500);
+      
       $.editCssRule(".metoo {color: red;}");
       const me2Clear = $($.div(
-        {data:{id: "tmpExClr"}},
+        {data: {id: "tmpExClr"} },
          $.div("Here I am."),
          $.div("Call me Pete."),
          $.div("I hope they don't clear me!"))
@@ -1159,10 +1166,7 @@ function clickActionsFactory($) {
       .showInExample(evt)
       .removeAfter(10);
 
-      setTimeout( () => {
-        $('[data-id="tmpExClr"]').clear(); // <= clearing
-        setTimeout( () => $(`.metoo`).text("They did it didn't they?"), 1000)
-      }, 3500);
+      
     },
     showHideBttnClick: evt => {
       const {target} = evt;
