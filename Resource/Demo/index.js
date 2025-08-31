@@ -263,7 +263,7 @@ if (!debug) {
       $.div(`In this case a button is provided to check all or no checkboxes in
         the box (<code>selectAllBttn: true</code>)`),
       $.div(`and the checkboxes are displayed as separate lines (<code>optLines: true</code>).`)),
-    $.div().cbBox({
+    $.div(`<b>Which colors do you like?</b>`).cbBox({
     opts: {
       red: {value: 1, html: `<span style="color: red">Red</span>`},
       yellow: {value: 2, html: `<span style="color: gold">Yellow</span>`},
@@ -272,7 +272,7 @@ if (!debug) {
       orange: {value: 5, html: `<span style="color: orange">Orange</span>`},
     },
     boxId: `myselectbox`,
-    style: `padding: 4px 8px; border: 1px dotted #c0c0c0; width: 100px; border-radius: 8px;`,
+    style: `padding: 4px 8px; border: 1px dotted #c0c0c0; border-radius: 8px;`,
     selectallBttn: true,
     optLines: true,
   })).appendTo(JQxRoot);
