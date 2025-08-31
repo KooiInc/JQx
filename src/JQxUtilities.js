@@ -1,21 +1,21 @@
 import {
-  after, applyStyle, assignAttrValues, before, checkProp, cloneAndDestroy, datasetKeyProxy,
-  ElemArray2HtmlString, emptyElement, escHtml, findParentScrollDistance, input2Collection, insertPositions,
-  IS, isArrayOfHtmlElements, isArrayOfHtmlStrings, isComment, isCommentOrTextNode, isHtmlString, isModal,
-  isNode, isNonEmptyString, isText, isVisible, isWritable, logTime, maybe, randomNr, randomString,
-  resolveEventTypeParameter, setData, styleFactory, systemLog, tagFNFactory, toCamelcase, toDashedNotation,
-  truncate2SingleStr, truncateHtmlStr, createElementFromHtmlString, inject2DOMTree, cleanupHtml,
-  PopupFactory, tagLib, HandlerFactory, getHandlerName, clearAllTimers, convert2Bool
+  after, applyStyle, assignAttrValues, before, checkProp, cleanupHtml, clearAllTimers, cloneAndDestroy, convert2Bool,
+  createElementFromHtmlString, datasetKeyProxy, ElemArray2HtmlString, emptyElement, escHtml, findParentScrollDistance,
+  getHandlerName, HandlerFactory, inject2DOMTree, input2Collection, insertPositions, IS, isArrayOfHtmlElements,
+  isArrayOfHtmlStrings, isComment, isCommentOrTextNode, isHtmlString, isModal, isNode, isNonEmptyString, isText,
+  isVisible, isWritable, logTime, maybe, PopupFactory, randomNr, randomString, resolveEventTypeParameter,
+  setData, styleFactory, systemLog, tagFNFactory, tagLib, toCamelcase, toDashedNotation, truncate2SingleStr,
+  truncateHtmlStr,
 } from "../Resource/Common/Utilities.js"
 
 export {
-  addHandlerId, after, applyStyle, assignAttrValues, before, checkProp, cloneAndDestroy, css, datasetKeyProxy,
-  ElemArray2HtmlString, emptyElement, escHtml, ExamineElementFeatureFactory, findParentScrollDistance,
+  addHandlerId, after, applyStyle, assignAttrValues, before, checkProp, cleanupHtml, clearAllTimers, cloneAndDestroy,
+  convert2Bool, createElementFromHtmlString, css, datasetKeyProxy, ElemArray2HtmlString, emptyElement, escHtml,
+  ExamineElementFeatureFactory, findParentScrollDistance, getHandlerName, HandlerFactory, inject2DOMTree,
   input2Collection, insertPositions, IS, isArrayOfHtmlElements, isArrayOfHtmlStrings, isCommentOrTextNode,
-  isHtmlString, isNode, isNonEmptyString, logTime, loop, maybe, randomNr, randomString, resolveEventTypeParameter,
-  selectedFactoryHelpers, setCollectionFromCssSelector, setData, styleFactory, systemLog, tagFNFactory,
-  toCamelcase, toDashedNotation, truncate2SingleStr, truncateHtmlStr, createElementFromHtmlString, inject2DOMTree,
-  cleanupHtml, PopupFactory, tagLib, HandlerFactory, getHandlerName, clearAllTimers, convert2Bool
+  isHtmlString, isNode, isNonEmptyString, logTime, loop, maybe, PopupFactory, randomNr, randomString,
+  resolveEventTypeParameter, selectedFactoryHelpers, setCollectionFromCssSelector, setData, styleFactory,
+  systemLog, tagFNFactory, tagLib, toCamelcase, toDashedNotation, truncate2SingleStr, truncateHtmlStr,
 };
 
 function loop(instance, callback) {

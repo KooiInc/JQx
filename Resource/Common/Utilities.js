@@ -32,13 +32,12 @@ const handlerIdCache = {};
 
 export {
   after, applyStyle, assignAttrValues, ATTRS, before, checkProp, cleanupHtml, clearAllTimers, cloneAndDestroy,
-  createElementFromHtmlString, datasetKeyProxy, inject2DOMTree, ElemArray2HtmlString, emptyElement,
-  escHtml, findParentScrollDistance, getCaptureValue, getHandlerName, HandlerFactory, handlerIdCache,
+  convert2Bool, createElementFromHtmlString, datasetKeyProxy, ElemArray2HtmlString, emptyElement, escHtml,
+  findParentScrollDistance, getCaptureValue, getHandlerName, HandlerFactory, handlerIdCache, inject2DOMTree,
   input2Collection, insertPositions, IS, isArrayOfHtmlElements, isArrayOfHtmlStrings, isComment, isCommentOrTextNode,
   isHtmlString, isModal, isNode, isNonEmptyString, isText, isVisible, isWritable, logTime, maybe, pad0,
   PopupFactory, randomNr, randomString, resolveEventTypeParameter, setData, styleFactory, systemLog,
   tagFNFactory, tagLib, toCamelcase, toDashedNotation, truncate2SingleStr, truncateHtmlStr, ucFirst,
-  convert2Bool,
 };
 
 function clearAllTimers() {
