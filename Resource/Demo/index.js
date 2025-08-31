@@ -161,7 +161,7 @@ if (!debug) {
   
   // create a custom function named 'cbBox'
   $.fn(`cbBox`, checkboxBox);
-  
+  // the actual custom function
   function checkboxBox(me, spec) {
     let container = !$.IS(me, HTMLDivElement) && !$.IS(me, HTMLParagraphElement)
       ? $.div : me;
@@ -169,30 +169,30 @@ if (!debug) {
     me.data.set({checkboxContainer: 1});
     let {opts, selectallBttn, optLines, style, boxId} = spec;
     boxId = boxId ?? `cbBox_${Math.random().toString(36).slice(2, 12)}`;
-    me.attr({id: boxId ?? `cbBox_${Math.random().toString(36).slice(2, 12)}`});
+    me.data.set({id: boxId});
     createCssRules(boxId, optLines);
-    me.append(...getCheckboxItems(opts));
+    me.append(...getCheckboxItems(opts, boxId));
     
     switch(!!selectallBttn) {
-      case true: return withButton(me);
+      case true: return addAllOrNoneButton(me);
       default: return me;
     }
     
-    function withButton(me) {
+    function addAllOrNoneButton(me) {
       return me.append(
         $.div({data: {button: true}}, $.button( { data: {all: true}} )
           .on("click", selectAllOrNone) ) );
     }
     
-    function getCheckboxItems(opts) {
+    function getCheckboxItems(opts, id) {
       const cbOpts = {type: "checkbox"};
       const checkBoxes = [];
-      for (let [id, opt] of Object.entries(opts)) {
+      for (const opt of opts) {
         const {value, html} = opt;
         checkBoxes.push(
           $.label(
             {data: {cbBlock: true}},
-            $.input({...cbOpts, value, name: id, data: {id}}), html
+            $.input({...cbOpts, value, name: id}), html
           )
         );
       }
@@ -201,16 +201,15 @@ if (!debug) {
     
     function createOptionalStyleRules(boxId, optLines) {
       $.editCssRules(
-        `#${boxId} {
-        ${style || ``}
-        ${!optLines ? `width: 100%;` : ``}
+        `[data-id=${boxId}] {
+          ${style || ``}
+          ${!optLines ? `width: 100%;` : ``}
         
-        [data-cb-block] {
-          margin-right: ${!!optLines ? `0` : `1em`};
-          display: ${!!optLines ? `block` : `inline-block`};
-        }
-      }`
-      );
+          [data-cb-block] {
+            margin-right: ${!!optLines ? `0` : `1em`};
+            display: ${!!optLines ? `block` : `inline-block`};
+          }
+        }` );
     }
     
     function createCssRules(boxId, optLines) {
@@ -264,14 +263,13 @@ if (!debug) {
         the box (<code>selectAllBttn: true</code>)`),
       $.div(`and the checkboxes are displayed as separate lines (<code>optLines: true</code>).`)),
     $.div(`<b>Which colors do you like?</b>`).cbBox({
-    opts: {
-      red: {value: 1, html: `<span style="color: red">Red</span>`},
-      yellow: {value: 2, html: `<span style="color: gold">Yellow</span>`},
-      blue: {value: 3, html: `<span style="color: blue">Blue</span>`},
-      green: {value: 4, html: `<span style="color: green">Green</span>`},
-      orange: {value: 5, html: `<span style="color: orange">Orange</span>`},
-    },
-    boxId: `myselectbox`,
+    opts: [
+      {value: 1, html: `<span style="color: red">Red</span>`},
+      {value: 2, html: `<span style="color: gold">Yellow</span>`},
+      {value: 3, html: `<span style="color: blue">Blue</span>`},
+      {value: 4, html: `<span style="color: green">Green</span>`},
+      {value: 5, html: `<span style="color: orange">Orange</span>`} ],
+    boxId: `colorSelectBox`,
     style: `padding: 4px 8px; border: 1px dotted #c0c0c0; border-radius: 8px;`,
     selectallBttn: true,
     optLines: true,
