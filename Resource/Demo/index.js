@@ -96,7 +96,7 @@ if (!debug) {
       }
     });
 
-  // create a few buttons. Some already contain an event handler (delegated)
+  // create and position a few buttons. Some already contain an event handler (delegated)
   const cssBttns = {
     defaultCSS: BUTTON({
       data: {sheetId: `JQxPopupCSS`, switchBttn: `popupCSS`},
@@ -105,7 +105,8 @@ if (!debug) {
       data: {sheetId: `JQxStylesheet`, switchBttn: `defaultCSS`},
       text: `show default css` }),
   };
-  DIV({id: "bttnblock"}).append(...[
+  $(`#StyledPara`).afterMe(
+    DIV({id: "bttnblock"}).append(...[
       BUTTON({id: "showLogEntries", text: "show log"}).on(`click`, showBacklog),
       BUTTON({
         id: "showComments",
@@ -124,14 +125,14 @@ if (!debug) {
           $.Popup.show( { content: backLinks } );
         } )
     ]
-  ).appendTo(JQxRoot);
+  ));
 
   $("button")
     .style({marginRight: "4px"})
     .each((btn, i) => btn.dataset.index = `bttn-${i}`); // each demo
 
   // styled via named class .exampleText
-  $$(`<div>styling`)
+  $$(`<div>`)
   .css({
     className: "exampleText",
     borderTop: "2px dotted #999",
@@ -140,23 +141,102 @@ if (!debug) {
     display: "block",
     'margin-top': "1rem",
     'padding-top': "0.2rem", })
-  .prepend($$("<span>Some </span>"))
+  .prepend($$("<span>Styling</span>"))
   .html(" examples", true)
   .appendTo(JQxRoot);
-
+  
   // styled with intermediate class
   $$(`<div id="helloworld"/>`)
-  .text("Example: hello ... world")
-  .append($("<span> OK</span>"))
-  .css({
-    marginTop: "0.5rem",
-    border: "3px solid green",
-    padding: "5px",
-    fontSize: "1.2em",
-    display: "inline-block", })
-  .appendTo(JQxRoot)
-  .find$("span")
-  .css({className: "okRed", color: "red"});
+    .text("Example: hello ... world")
+    .append($("<span> OK</span>"))
+    .css({
+      marginTop: "0.5rem",
+      border: "3px solid green",
+      padding: "5px",
+      fontSize: "1.2em",
+      display: "inline-block", })
+    .appendTo(JQxRoot)
+    .find$("span")
+    .css({className: "okRed", color: "red"});
+  
+  // create a custom function named 'cbBox'
+  $.fn(`cbBox`, checkboxBox);
+  
+  function checkboxBox(me, spec) {
+    let container = !$.IS(me, HTMLDivElement) && !$.IS(me, HTMLParagraphElement)
+      ? $.div : me;
+    
+    me.data.set({checkboxContainer: 1});
+    const {opts, selectallBttn, optLines, style, boxId} = spec;
+    me.attr({id: boxId ?? `cbBox_${Math.random().toString(36).slice(2, 12)}`});
+    $.editCssRules(
+      `[data-checkbox-container] {
+        margin: 1em 0;
+        [data-button] {
+          margin-top: 0.6rem;
+        }
+        ${style || ``}
+      }`,
+      `[data-cb-block] {
+        cursor: pointer;
+        ${!!optLines ? `display:block; width: inherit` : ``};
+        margin-right: ${!!optLines ? `0` : `0.6em`};
+        &:hover {
+          text-decoration: underline;
+        }
+        
+        input {
+          display: inline-block;
+          margin: 3px 0.6em 0 0;
+        }
+      }`
+    );
+    const cbOpts = {type: "checkbox"};
+    for (let [id, opt] of Object.entries(opts)) {
+      const {value, html} = opt;
+      me.append(
+        $.label({data: {cbBlock: true}},
+        $.input({...cbOpts, value, name: id, data: {id}}), html)
+      );
+    }
+    
+    if (selectallBttn) {
+      me.append(
+        $.div({data: {button: true}}, $.button( { data: {all: true}, text: `Select all`} )
+          .on("click", selectAllOrNone) ) );
+    }
+    
+    return me;
+    
+    function selectAllOrNone({self}) {
+      const isAll = $.toBool(self.data.get(`all`));
+      self.text(`Select ${isAll ? `none` : `all`}`);
+      self.data.set({all: !isAll});
+      return self.closest(`[data-checkbox-container]`)
+        .find$(`input[type="checkbox"]`).each(cb => cb.checked = isAll);
+    }
+  }
+  
+  // usage example of custom function 'cbBox'
+  $.div(
+    $.h3({style: `margin-bottom: 0.2em`},
+      `This box is created from a <i>custom</i> function called <code>cbBox</code>`),
+    $.div(`It creates a block of checkboxes from specified parameters. In this case,
+      a button is provided to check all or no checkboxes in the box, and the
+      checkboxes are displayed as separate lines.`),
+    $.div().cbBox({
+    opts: {
+      red: {value: 1, html: `<span style="color: red">Red</span>`},
+      yellow: {value: 2, html: `<span style="color: gold">Yellow</span>`},
+      blue: {value: 3, html: `<span style="color: blue">Blue</span>`},
+      green: {value: 4, html: `<span style="color: green">Green</span>`},
+      orange: {value: 5, html: `<span style="color: orange">Orange</span>`},
+    },
+    boxId: `myselectbox`,
+    style: `padding: 3px 6px; border: 1px dotted #c0c0c0; width: 100px`,
+    selectallBttn: true,
+    optLines: true,
+  })).appendTo(JQxRoot);
 
   // append multiline comment to p#JQxRoot
   COMMENT(`Hi, I am a multiline HTML-comment.

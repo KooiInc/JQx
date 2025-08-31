@@ -16,11 +16,11 @@ export default [
   `.green {
     color: green;
   }`,
-  `details { 
+  `details {
      cursor: pointer;
      & summmary:hover {
         text-decoration: underline;
-     } 
+     }
    }`,
   `#StyledPara { padding: 6px; }`,
   `#StyledPara h2 { marginTop: 6px; }`,
@@ -68,9 +68,12 @@ export default [
     width: 100%;
     opacity: 1;
   }`,
-  `#bttnblock { 
-     margin-top: 1em;
-     text-align: center; 
+  `#bttnblock {
+     margin: 1em auto;
+     text-align: center;
+     border-bottom: 1px solid #AAA;
+     border-top: 1px solid #AAA;
+     padding: 5px 0
   }`,
   `#logBttn[data-on='0']:before { content: 'Show logs'; }`,
   `#logBttn[data-on='1']:before { content: 'Hide logs'; }`,
