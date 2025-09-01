@@ -15,10 +15,11 @@ function htmlToVirtualElement(htmlString) {
 }
 
 function characterDataElement2DOM(elem, root, position) {
-  if (IS(elem, Comment)) {
-    return root.insertAdjacentHTML(position, `<!--${elem.data}-->`);
+  switch(true) {
+    case IS(elem, Comment): return root.insertAdjacentHTML(position, `<!--${elem.data}-->`);
+    case IS(elem, Text): return root.insertAdjacentText(position, elem.data || elem.textContent);
+    default: return;
   }
-  return root.insertAdjacentText(position, elem.data);
 }
 
 function inject2DOMTree( collection = [], root = document.body, position = insertPositions.BeforeEnd ) {
@@ -39,12 +40,12 @@ function element2DOM(elem, root = document.body, position = insertPositions.Befo
     : IS(elem, HTMLElement) ? root.insertAdjacentElement(position, elem) : undefined;
 }
 
-function createElementFromHtmlString(htmlStr) {
-  if (IS(htmlStr, Text, Comment)) {
-    return htmlStr;
+function createElementFromHtmlString(htmlStrOrText) {
+  if (IS(htmlStrOrText, Text, Comment)) {
+    return htmlStrOrText;
   }
-
-  const testStr = htmlStr?.trim();
+  
+  const testStr = htmlStrOrText?.trim();
   let text = testStr?.split(/<text>|<\/text>/i) ?? [];
 
   if (text?.length) {
@@ -52,17 +53,17 @@ function createElementFromHtmlString(htmlStr) {
   }
 
   if (testStr.startsWith(`<!--`) && testStr.endsWith(`-->`)) {
-    return document.createComment(htmlStr.replace(/<!--|-->$/g, ''));
+    return document.createComment(htmlStrOrText.replace(/<!--|-->$/g, ''));
+  }
+  
+  if (!!text || (IS(testStr, String) && !/^<(.+)[^>]+>/m.test(testStr))) {
+    return document.createTextNode(text ?? testStr);
   }
 
-  if (text || !/^<(.+)[^>]+>/m.test(testStr)) {
-    return document.createTextNode(text);
-  }
-
-  const nwElem = htmlToVirtualElement(htmlStr);
+  const nwElem = htmlToVirtualElement(htmlStrOrText);
 
   if (nwElem.childNodes.length < 1) {
-    return createElementFromHtmlString(`<span data-jqxcreationerror="1">${truncateHtmlStr(htmlStr, 60)}</span>`);
+    return createElementFromHtmlString(`<span data-jqxcreationerror="1">${truncateHtmlStr(htmlStrOrText, 60)}</span>`);
   }
 
   return nwElem.children[0];
