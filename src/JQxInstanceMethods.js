@@ -17,33 +17,39 @@ export default function(jqx) {
 
 function factoryExtensionsFactory(jqx) {
   return {
-    data: instance => ({
-      get all() { return new Proxy(instance[0]?.dataset ?? {}, datasetKeyProxy); },
-      set: (valuesObj = {}) => {
-        if (!instance.is.empty && IS(valuesObj, Object)) {
-          for (const [key, value] of Object.entries(valuesObj)) {
-            instance.setData( { [key]: value} );
+    data(instance) {
+      return {
+        get all() {
+          return new Proxy(instance[0]?.dataset ?? {}, datasetKeyProxy);
+        },
+        set(valuesObj = {}) {
+          if (!instance.is.empty && IS(valuesObj, Object)) {
+            for (const [key, value] of Object.entries(valuesObj)) {
+              instance.setData({[key]: value});
+            }
           }
-        }
-        return instance;
-      },
-      get: (key, whenUndefined) => instance.data.all[key] ?? whenUndefined,
-      add: (valuesObj = {}) => {
-        if (!instance.is.empty && IS(valuesObj, Object)) {
-          for (const [key, value] of Object.entries(valuesObj)) {
-            instance.setData( { [key]: value} );
+          return instance;
+        },
+        get(key, whenUndefined) {
+          return instance.data.all[key] ?? whenUndefined;
+        },
+        add(valuesObj = {}) {
+          if (!instance.is.empty && IS(valuesObj, Object)) {
+            for (const [key, value] of Object.entries(valuesObj)) {
+              instance.setData({[key]: value});
+            }
           }
-        }
-        return instance;
-      },
-      remove: key => {
-        instance[0]?.removeAttribute(`data-${toDashedNotation(key)}`);
-        return instance;
-      },
-    }),
-    dimensions: instance => {
+          return instance;
+        },
+        remove(key) {
+          instance[0]?.removeAttribute(`data-${toDashedNotation(key)}`);
+          return instance;
+        },
+      };
+    },
+    dimensions(instance) {
       if (instance.is.empty) {
-        return { error: `[instance].dimensions: NO ELEMENTS` };
+        return { error: `[JQx instance].dimensions: NO ELEMENTS` };
       }
       let node = instance[0];
       const boundingRect = instance.first()?.getBoundingClientRect().toJSON();
@@ -51,153 +57,163 @@ function factoryExtensionsFactory(jqx) {
       boundingRect.scrollLeftDistance = findParentScrollDistance(node, 0, false);
       return boundingRect;
     },
-    node: instance => { return instance[0]; },
-    HTML: instance => ({
-      get: (outer, escaped) => {
-        if (instance.is.empty) {
-          return `NO ELEMENTS IN COLLECTION`;
-        }
-        const html = outer ? instance.outerHtml : instance.html();
-        return escaped ? escHtml(html) : html;
-      },
-      set: (content, append = false, escape = false) => {
-        content = content.isJQx ? content.HTML.get(1) : content;
-        const isString = IS(content, String);
-        content = isString && escape ? escHtml(content) : content;
-        if (isString && (content || ``).trim().length) { instance.html(content, append); }
-        return instance;
-      },
-      replace: (content, escape = false) => {
-        return instance.HTML.set(content, false, escape);
-      },
-      append: (content, escape = false) => {
-        content = IS(content, HTMLElement)
-          ? jqx(content).HTML.get(1) : content.isJQx ? content.HTML.get(1) : content;
-        return instance.HTML.set(content, true, escape);
-      },
-      insert: (content, escape = false) => {
-        content = IS(content, HTMLElement)
-          ? jqx(content).HTML.get(1) : content.isJQx ? content.HTML.get(1) : content;
-        return instance.HTML.set(content + instance.HTML.get(), false, escape);
-      },
-    }),
-    is: instance => instanceIs(instance),
-    length: instance => instance.collection.length,
-    outerHtml: instance => (instance.first() || {outerHTML: undefined}).outerHTML,
-    parent: instance =>{
-      const tryParent = jqx(instance[0]?.parentNode);
-      return !tryParent.is.empty ? tryParent : instance;
-    },
-    render: instance => {
-      !instance.is.empty && instance.toDOM() || (jqx.log(`[JQx.render]: empty collection`), undefined);
-      return instance;
-    },
-    Style: instance => ({
-      get computed() { return !instance.is.empty ? getComputedStyle(instance[0]) : {}; },
-      inline: styleObj => instance.style(styleObj),
-      inSheet: styleObj => instance.css(styleObj),
-      valueOf: key => {
-        return !instance.is.empty ? getComputedStyle(instance[0])[toDashedNotation(key)] : undefined;
-      },
-      nwRule: rule => instance.Style.byRule({rules: rule}),
-      byRule: ({classes2Apply = [], rules = []} = {}) => {
-        const isSingleRule = IS(rules, String);
-        const addClassNameOrID = isSingleRule && !classes2Apply.length ? rules.split(`{`)[0].trim() : ``;
-        rules = rules && IS(rules, String) ? [rules] : rules;
-        classes2Apply = classes2Apply && IS(classes2Apply, String) ? [classes2Apply] : classes2Apply;
-
-        if (rules?.length || classes2Apply?.length) {
-          rules?.length && jqx.editCssRules(...rules);
-
-          if (classes2Apply) {
-            for(const selector of classes2Apply) { instance.addClass(selector); }
+    node(instance) { return instance[0]; },
+    HTML(instance) {
+      return {
+        get(outer, escaped) {
+          if (instance.is.empty) {
+            return `NO ELEMENTS IN COLLECTION`;
           }
-        }
-
-        if (addClassNameOrID?.startsWith(`.`)) {
-          instance.addClass(addClassNameOrID.slice(1));
-        }
-
-        if (addClassNameOrID?.startsWith(`#`) && !instance.attr(`id`)) {
-          instance.prop({id: addClassNameOrID.slice(1)});
-        }
-
-        return instance;
-      },
-    }),
-  };
+          const html = outer ? instance.outerHtml : instance.html();
+          return escaped ? escHtml(html) : html;
+        },
+        set(content, append = false, escape = false) {
+          content = content.isJQx ? content.HTML.get(1) : content;
+          const isString = IS(content, String);
+          content = isString && escape ? escHtml(content) : content;
+          if (isString && (content || ``).trim().length) { instance.html(content, append); }
+          return instance;
+        },
+        replace(content, escape = false) {
+          return instance.HTML.set(content, false, escape);
+        },
+        append(content, escape = false) {
+          content = IS(content, HTMLElement)
+            ? jqx(content).HTML.get(1) : content.isJQx ? content.HTML.get(1) : content;
+          return instance.HTML.set(content, true, escape);
+        },
+        insert(content, escape = false) {
+          content = IS(content, HTMLElement)
+            ? jqx(content).HTML.get(1) : content.isJQx ? content.HTML.get(1) : content;
+          return instance.HTML.set(content + instance.HTML.get(), false, escape);
+        },
+      };
+    },
+    is(instance) { return instanceIs(instance); },
+    length(instance) { return instance.collection.length; },
+    outerHtml(instance) { return (instance.first() || {outerHTML: undefined}).outerHTML; },
+    parent(instance) {
+      const maybeParent = jqx(instance[0]?.parentNode);
+      return !maybeParent.is.empty ? maybeParent : instance;
+    },
+    render(instance) {
+      switch(true) {
+        case !instance.is.empty: return instance.toDOM();
+        default:
+          jqx.logger.warn(`[JQx.render]: empty collection`);
+          return instance;
+      }
+    },
+    Style(instance) {
+      return {
+        get computed() { return !instance.is.empty ? getComputedStyle(instance[0]) : {}; },
+        inline: styleObj => instance.style(styleObj),
+        inSheet: styleObj => instance.css(styleObj),
+        valueOf(key) {
+          return !instance.is.empty ? getComputedStyle(instance[0])[toDashedNotation(key)] : undefined;
+        },
+        nwRule: rule => instance.Style.byRule({rules: rule}),
+        byRule({classes2Apply = [], rules = []} = {}) {
+          const isSingleRule = IS(rules, String);
+          const addClassNameOrID = isSingleRule && !classes2Apply.length ? rules.split(`{`)[0].trim() : ``;
+          rules = rules && IS(rules, String) ? [rules] : rules;
+          classes2Apply = classes2Apply && IS(classes2Apply, String) ? [classes2Apply] : classes2Apply;
+  
+          if (rules?.length || classes2Apply?.length) {
+            rules?.length && jqx.editCssRules(...rules);
+  
+            if (classes2Apply) {
+              for(const selector of classes2Apply) { instance.addClass(selector); }
+            }
+          }
+  
+          if (addClassNameOrID?.startsWith(`.`)) {
+            instance.addClass(addClassNameOrID.slice(1));
+          }
+  
+          if (addClassNameOrID?.startsWith(`#`) && !instance.attr(`id`)) {
+            instance.prop({id: addClassNameOrID.slice(1)});
+          }
+  
+          return instance;
+        },
+      };
+    }
+  }
 }
 
 function instanceExtensionsFactory(jqx) {
   return {
-    addClass: (instance, ...classNames) => loop(instance, el => el && classNames.forEach(cn => el.classList.add(cn))),
+    addClass(instance, ...classNames) {
+      return loop(instance, el => el && classNames.forEach(cn => el.classList.add(cn)));
+    },
     after,
     afterMe: after,
-    andThen: (instance, elem2Add, before = false) => {
+    andThen(instance, elem2Add, before = false) {
       if (!elem2Add || !IS(elem2Add, String, Node, Proxy)) {
-        systemLog.log(`[JQx instance].[beforeMe | afterMe | andThen]: insufficient input [${elem2Add}]`, );
+        systemLog.log(`[JQx instance].[before(Me) | after(Me) | andThen]: invalid/-sufficient input.`, );
         return instance;
       }
-
+      
       elem2Add = elem2Add?.isJQx
-        ? elem2Add.collection
-        : IS(elem2Add, Node) ? jqx.virtual(elem2Add).collection
-          : jqx.virtual(createElementFromHtmlString(elem2Add)).collection;
-
+        ? elem2Add
+        : IS(elem2Add, Node)
+          ? jqx.virtual(elem2Add)
+          : jqx.virtual(createElementFromHtmlString(elem2Add));
+      
       const [index, method, reCollected] = before
-        ? [0, `before`, elem2Add.concat(instance.collection)]
-        : [instance.collection.length - 1, `after`, instance.collection.concat(elem2Add)];
-
-      instance[index][method](...elem2Add);
+        ? [0, `before`, elem2Add.collection.concat(instance.collection)]
+        : [instance.collection.length - 1, `after`, instance.collection.concat(elem2Add.collection)];
+      
+      instance[index][method](...elem2Add.collection);
       instance.collection = reCollected;
       return instance;
     },
-    append: (instance, ...elems2Append) => {
-      if (!instance.is.empty && elems2Append.length) {
-        const shouldMove = instance.length === 1;
+    append(instance, ...elems2Append) {
+      if (instance.is.empty || elems2Append.length < 1) { return instance;}
+      const shouldMove = instance.length === 1;
+      for (let elem2Append of elems2Append) {
+        if (!elem2Append.isJQx && isNonEmptyString(elem2Append)) {
+          const elem2Append4Test = elem2Append.trim();
+          const isPlainString = !/^<(.+)[^>]+>$/m.test(elem2Append4Test);
+          let toAppend = isPlainString ? jqx.text(elem2Append) : createElementFromHtmlString(elem2Append);
+          loop(instance, el => el.append(shouldMove ? toAppend : cloneAndDestroy(toAppend)));
+        }
 
-        for (let elem2Append of elems2Append) {
-          if (!elem2Append.isJQx && isNonEmptyString(elem2Append)) {
-            const elem2Append4Test = elem2Append.trim();
-            const isPlainString = !/^<(.+)[^>]+>$/m.test(elem2Append4Test);
-            let toAppend = isPlainString ? jqx.text(elem2Append) : createElementFromHtmlString(elem2Append);
-            loop(instance, el => el.append(shouldMove ? toAppend : cloneAndDestroy(toAppend)));
-          }
+        if (isNode(elem2Append)) {
+          loop(instance, el => el.append(shouldMove ? elem2Append : cloneAndDestroy(elem2Append)));
+        }
 
-          if (isNode(elem2Append)) {
-            loop(instance, el => el.append(shouldMove ? elem2Append : cloneAndDestroy(elem2Append)));
-          }
-
-          if (elem2Append.isJQx && !elem2Append.is.empty) {
-            loop(instance, el =>
-              elem2Append.collection.forEach(elem =>
-                el.append(shouldMove ? elem : cloneAndDestroy(elem)))
-            );
-          }
+        if (elem2Append.isJQx && !elem2Append.is.empty) {
+          loop(instance, el =>
+            elem2Append.collection.forEach(elem =>
+              el.append(shouldMove ? elem : cloneAndDestroy(elem)))
+          );
         }
       }
       return instance;
     },
-    appendTo: (instance, appendTo) => {
-      if (!appendTo.isJQx) {
-        appendTo = jqx(appendTo);
+    appendTo(instance, appendTo) {
+      switch(true) {
+        case !appendTo.isJQx && !IS(appendTo, HTMLElement):
+          $.warn(`[JQx instance].appendTo: invalid input`);
+          return instance;
+        default:
+          (!appendTo.isJQx ? jqx(appendTo) : appendTo).append(instance);
+          return instance;
       }
-      appendTo.append(instance);
-      return instance;
     },
-    attr: (instance, keyOrObj, value) => {
-      const firstElem = instance[0];
-
-      if (!firstElem) { return instance }
+    attr(instance, keyOrObj, value) {
+      if (!instance.node) { return instance }
 
       if (!value && isNonEmptyString(keyOrObj)) {
         keyOrObj = toDashedNotation(keyOrObj);
 
         if (keyOrObj === `class`) {
-          return [...firstElem?.classList]?.join(` `);
+          return [...instance.node.classList]?.join(` `);
         }
 
-        return firstElem?.getAttribute(keyOrObj);
+        return instance.node.getAttribute(keyOrObj);
       }
 
       if (isNonEmptyString(keyOrObj) && value) {
@@ -212,7 +228,7 @@ function instanceExtensionsFactory(jqx) {
       }
 
       if (IS(keyOrObj, Object) && !instance.is.empty) {
-        assignAttrValues(firstElem, keyOrObj);
+        assignAttrValues(instance.node, keyOrObj);
       }
 
       return instance;
@@ -220,133 +236,119 @@ function instanceExtensionsFactory(jqx) {
     before,
     beforeMe: before,
     clear: instance => loop(instance, emptyElement),
-    closest: (instance, selector) => {
-      const theClosest = isNonEmptyString(selector) ? instance[0].closest(selector) : null;
-      return theClosest ? jqx(theClosest) : instance
+    closest(instance, selector) {
+      const theClosest = isNonEmptyString(selector) ? instance.node?.closest(selector) : undefined;
+      return theClosest ? jqx(theClosest) : instance;
     },
     computedStyle: (instance, property) => instance.first() && getComputedStyle(instance.first())[property],
     css: (instance, keyOrKvPairs, value) => loop(instance, el => css(el, keyOrKvPairs, value, jqx)),
-    duplicate: (instance, toDOM = false, root = document.body) => {
-      if (instance.collection.length > 0) {
-        const clone = instance.collection[0].cloneNode(true);
-        clone.childNodes.forEach((node) => {
-          node.removeAttribute && node?.removeAttribute(`id`)
-        });
-        return toDOM ? jqx(clone).toDOM(root) : jqx.virtual(clone);
+    duplicate(instance, toDOM = false, root = document.body) {
+      switch(true) {
+        case instance.is.empty:
+          systemLog.error(`Duplicating an empty JQx instance is not possible`)
+          return instance;
+        default:
+          const clone = instance.collection[0].cloneNode(true);
+          clone.childNodes.forEach((node) => { node.removeAttribute && node?.removeAttribute(`id`) });
+          return toDOM ? jqx(clone).toDOM(root) : jqx.virtual(clone);
       }
-      systemLog.error(`Duplicating an empty JQx instance is not possible`);
-      return instance;
     },
     each: (instance, cb) => loop(instance, cb),
     empty: instance => loop(instance, emptyElement),
     find: (instance, selector) =>
       instance.collection.length > 0 ? [...instance.first()?.querySelectorAll(selector)] : [],
-    find$: (instance, selector) => { return instance.collection.length > 0 ? jqx(selector, instance) : instance; },
-    first: (instance, asJQxInstance = false) => {
-      if (instance.collection.length > 0) {
-        return asJQxInstance
-          ? instance.single()
-          : instance.collection[0];
-      }
-      return undefined;
+    find$(instance, selector) {
+      return instance.collection.length > 0 ? jqx(selector, instance) : instance;
     },
-    first$: (instance, indexOrSelector) => instance.single(indexOrSelector),
-    getData: (instance, dataAttribute, valueWhenFalsy) =>
-      instance.first() && instance.first().dataset?.[dataAttribute] || valueWhenFalsy,
-    hasClass: (instance, ...classNames) => {
-      const firstElem = instance[0];
-      return !firstElem || !firstElem.classList.length
-        ? false : classNames.find(cn => firstElem.classList.contains(cn)) && true || false;
+    first(instance, asJQxInstance = false) {
+      return instance.collection.length > 0
+        ? asJQxInstance ? instance.single() : instance.collection[0]
+        : undefined;
+    },
+    first$(instance, indexOrSelector) {
+      return instance.single(indexOrSelector);
+    },
+    getData(instance, dataAttribute, valueWhenFalsy) {
+      return instance.node?.dataset?.[dataAttribute] || valueWhenFalsy;
+    },
+    hasClass(instance, ...classNames) {
+      return instance.is.empty || !instance.node.classList.length
+        ? false
+        : classNames.find(cn => instance.node.classList.contains(cn)) && true || false;
     },
     hide: instance => loop(instance, el => applyStyle(el, {display: `none !important`})),
-    html: (instance, htmlValue, append) => {
-      if (htmlValue === undefined) {
-        const node = instance.node;
-        return node?.getHTML && node.getHTML() || ``;
-      }
-
-      if (!instance.isEmpty()) {
-        const nwElement = createElementFromHtmlString(
-          `<div>${htmlValue.isJQx ? htmlValue.HTML.get(true) : htmlValue}</div>`
-        );
-
-        if (!IS(nwElement, Comment)) {
+    html(instance, htmlValue, append) {
+      switch(true) {
+        case instance.is.empty && !isNonEmptyString(htmlValue): return "";
+        case !isNonEmptyString(htmlValue): return instance.node?.getHTML ?? ``;
+        default:
+          const nwElement = createElementFromHtmlString(
+            `<div>${htmlValue.isJQx ? htmlValue.HTML.get(true) : htmlValue}</div>` );
           const cb = el => {
-            if (!append) { el.textContent = ``; }
-
+            el.textContent = !append ? `` : el.textContent;
             return el.insertAdjacentHTML(jqx.at.end, nwElement.getHTML());
           }
           return loop(instance, cb);
-        }
       }
-
-      return instance;
     },
-    htmlFor: (instance, forQuery, htmlString = "", append = false) => {
-      if (forQuery && instance.collection.length) {
-        if (!forQuery || !isNonEmptyString(htmlString)) { return instance; }
-
-        const el2Change = instance.find$(forQuery);
-
-        if (el2Change.length < 1) { return instance; }
-
-        const nwElement = createElementFromHtmlString(`<span>${htmlString}</span>`);
-
-        el2Change.each(el => {
-          if (!append) { el.textContent = ``; }
-          el.insertAdjacentHTML(jqx.at.end, nwElement?.getHTML());
-        });
-
-      }
+    htmlFor(instance, forSelector, htmlString = "", append = false) {
+      if (instance.is.empty || !isNonEmptyString(forSelector) || !isNonEmptyString(htmlString)) { return instance; }
+      const el2Change = instance.find$(forSelector);
+      if (el2Change.length < 1) { return instance; }
+      const nwElement = createElementFromHtmlString(`<span>${htmlString}</span>`);
+      el2Change.each(el => {
+        if (!append) { el.textContent = ``; }
+        el.insertAdjacentHTML(jqx.at.end, nwElement?.getHTML());
+      });
 
       return instance;
     },
     isEmpty: instance => instance.collection.length < 1,
     nth$: (instance, indexOrSelector) => instance.single(indexOrSelector),
-    on: (instance, type, ...callback) => {
-      if (instance.collection.length && IS(type, String, Array)) {
-        if (!isNonEmptyString(type) || callback.length < 1) { return instance; }
-        jqx.handle({type, node: instance.node, handler: callback});
+    on(instance, type, ...callback) {
+      switch(true) {
+        case instance.is.empty || !IS(type, String, Array) || !isNonEmptyString(type) || callback.length < 1:
+          return instance;
+        default: jqx.handle({type, node: instance.node, handler: callback});
+          return instance;
       }
-
-      return instance;
     },
-    once: (instance, type, ...callback) => {
-      if (instance.collection.length && IS(type, String, Array)) {
-        if (!isNonEmptyString(type) || callback.length < 1) { return instance; }
-        jqx.handle({type, once: true, node: instance.node, handler: callback});
+    once(instance, type, ...callback) {
+      switch(true) {
+        case instance.is.empty || !IS(type, String, Array) || !isNonEmptyString(type) || callback.length < 1:
+          return instance;
+        default:
+          jqx.handle({type, once: true, node: instance.node, handler: callback});
+          return instance
+      }
+    },
+    prepend(instance, ...elems2Prepend) {
+      if (instance.is.empty || !elems2Prepend) { return; }
+      const shouldMove = instance.length === 1;
+
+      for (let elem2Prepend of elems2Prepend) {
+        if (isNonEmptyString(elem2Prepend)) {
+          elem2Prepend = elem2Prepend.trim();
+          const isPlainString = !/^<(.+)[^>]+>$/m.test(elem2Prepend);
+          let toPrepend = isPlainString ? jqx.text(elem2Prepend) : createElementFromHtmlString(elem2Prepend);
+          toPrepend = shouldMove ? toPrepend : cloneAndDestroy(toPrepend);
+          loop(instance, el => el.prepend(toPrepend.cloneNode(true)));
+        }
+
+        if (isNode(elem2Prepend)) {
+          loop(instance, el => el.prepend(shouldMove ? elem2Prepend : cloneAndDestroy(elem2Prepend)));
+        }
+
+        if (elem2Prepend.isJQx && !elem2Prepend.is.empty) {
+          elem2Prepend.collection.length > 1 && elem2Prepend.collection.reverse();
+          loop(instance, el => loop( elem2Prepend, elem => el.prepend(shouldMove ? elem : cloneAndDestroy(elem)) ) );
+          elem2Prepend.collection.reverse();
+        }
       }
       
       return instance;
     },
-    prepend: (instance, ...elems2Prepend) => {
-      if (!instance.is.empty && elems2Prepend) {
-        const shouldMove = instance.length === 1;
-
-        for (let elem2Prepend of elems2Prepend) {
-          if (isNonEmptyString(elem2Prepend)) {
-            elem2Prepend = elem2Prepend.trim();
-            const isPlainString = !/^<(.+)[^>]+>$/m.test(elem2Prepend);
-            let toPrepend = isPlainString ? jqx.text(elem2Prepend) : createElementFromHtmlString(elem2Prepend);
-            toPrepend = shouldMove ? toPrepend : cloneAndDestroy(toPrepend);
-            loop(instance, el => el.prepend(toPrepend.cloneNode(true)));
-          }
-
-          if (isNode(elem2Prepend)) {
-            loop(instance, el => el.prepend(shouldMove ? elem2Prepend : cloneAndDestroy(elem2Prepend)));
-          }
-
-          if (elem2Prepend.isJQx && !elem2Prepend.is.empty) {
-            elem2Prepend.collection.length > 1 && elem2Prepend.collection.reverse();
-            loop(instance, el => loop( elem2Prepend, elem => el.prepend(shouldMove ? elem : cloneAndDestroy(elem)) ) );
-            elem2Prepend.collection.reverse();
-          }
-        }
-      }
-
-      return instance;
-    },
-    prependTo: (instance, prependTo) => {
+    prependTo(instance, prependTo) {
       if (!prependTo.isJQx) {
         prependTo = jqx.virtual(prependTo);
       }
@@ -354,7 +356,7 @@ function instanceExtensionsFactory(jqx) {
       prependTo.prepend(instance);
       return instance;
     },
-    prop: (instance, nameOrProperties, value) => {
+    prop(instance, nameOrProperties, value) {
       if (IS(nameOrProperties, String) && !value) {
         return nameOrProperties.startsWith(`data`)
           ? instance[0]?.dataset[nameOrProperties.slice(nameOrProperties.indexOf(`-`)+1)]
@@ -384,7 +386,7 @@ function instanceExtensionsFactory(jqx) {
 
       return instance;
     },
-    remove: (instance, selector) => {
+    remove(instance, selector) {
       systemLog.log(`remove ${truncateHtmlStr(instance.HTML.get(1), 40)}${selector ? ` /w selector ${selector}` : ``}`);
       const remover = el => el.remove();
       const removeFromCollection = () =>
@@ -402,17 +404,19 @@ function instanceExtensionsFactory(jqx) {
       removeFromCollection();
       return instance;
     },
-    rmAttr: (instance, ...attrNames) => {
+    rmAttr(instance, ...attrNames) {
       for (const attr of attrNames) { instance.node.removeAttribute(attr); }
       return instance;
     },
     removeClass: (instance, ...classNames) =>
       loop(instance, el => { if (el) { for (const cn of classNames) { el.classList.remove(cn); } } }),
-    renderTo: (instance, root = document.body, at = jqx.at.end) => {
-      instance.first$().toDOM(root, at);
+    renderTo(instance, root, position) {
+      root = IS(root, HTMLElement) || root.isJQx ? root : document.body;
+      position = IS(position, String) && jqx.at[position] ? position : jqx.at.end;
+      instance.first$().toDOM(root, position);
       return instance;
     },
-    replace: (instance, oldChild, newChild) => {
+    replace(instance, oldChild, newChild) {
       const firstElem = instance[0];
 
       if (!oldChild || (!newChild || !IS(newChild, HTMLElement) && !newChild.isJQx)) {
@@ -460,65 +464,63 @@ function instanceExtensionsFactory(jqx) {
     },
     setData: (instance, keyValuePairs) => loop(instance, el => setData(el, keyValuePairs)),
     show: instance => loop(instance, el => applyStyle(el, {display: `revert-layer !important`})),
-    single: (instance, indexOrSelector) => {
-      if (instance.collection.length > 0) {
-        if (IS(indexOrSelector, String)) {
+    single(instance, indexOrSelector) {
+      const hasNodes = instance.collection.length > 0;
+      indexOrSelector = indexOrSelector ?? 0;
+      
+      switch(true) {
+        case hasNodes && IS(indexOrSelector, String):
           return instance.find$(indexOrSelector);
-        }
-
-        if (IS(indexOrSelector, Number)) {
+        case hasNodes && IS(indexOrSelector, Number):
           return jqx(instance.collection[indexOrSelector]);
-        }
-
-        return jqx(instance.collection[0]);
+        case hasNodes: return instance.collection[0];
+        default: return instance;
       }
-
-      return instance;
     },
-    style: (instance, keyOrKvPairs, value) => {
+    style(instance, keyOrKvPairs, value) {
       const loopCollectionLambda = el => {
         if (value && IS(keyOrKvPairs, String)) {
           keyOrKvPairs = { [keyOrKvPairs]: value || `none` };
         }
-
         applyStyle(el, keyOrKvPairs);
       };
       return loop(instance, loopCollectionLambda);
     },
-    text: (instance, textValue, append = false) => {
-      if (instance.isEmpty()) { return instance; }
-      if (!IS(textValue, String)) { return instance.first().textContent; }
-      const loopCollectionLambda = el => el.textContent = append ? el.textContent + textValue : textValue;
-      return loop(instance, loopCollectionLambda);
+    text(instance, textValue, append = false) {
+      switch(true) {
+        case instance.isEmpty(): return instance;
+        case !IS(textValue, String): return instance.node.textContent;
+        default: return loop(instance, el => el.textContent = append ? el.textContent + textValue : textValue);
+      }
     },
-    toDOM: (instance, root = document.body, position = insertPositions.BeforeEnd) => {
-      if (instance.isVirtual) { instance.isVirtual = false; }
+    toDOM(instance, root = document.body, position = insertPositions.BeforeEnd) {
+      instance.isVirtual = false;
       inject2DOMTree(instance.collection, root, position);
       return instance;
     },
     toggleClass: (instance, className) => loop(instance, el => el.classList.toggle(className)),
     toNodeList: instance => [...instance.collection].map(el => document.importNode(el, true)),
-    trigger: (instance, evtType, SpecifiedEvent = Event, options = {}) => {
-      if (instance.collection.length) {
-        const evObj = new SpecifiedEvent( evtType, { ...options, bubbles: options.bubbles??true} );
-        for( let elem of instance.collection ) { elem.dispatchEvent(evObj); }
+    trigger(instance, evtType, SpecifiedEvent, options) {
+      SpecifiedEvent = /Event\]$/.test(IS(SpecifiedEvent)) ? SpecifiedEvent : Event;
+      options = IS(options, Object) ? { ...options, bubbles: options.bubbles??true} : {bubbles: true};
+      
+      if (!instance.is.empty) {
+        const evObj = new SpecifiedEvent( evtType, options );
+        instance.each(el => el.dispatchEvent(evObj));
       }
+      
       return instance;
     },
-    val: (instance, newValue) => {
-      const firstElem = instance[0];
-
-      if (!firstElem || !IS(firstElem, HTMLInputElement, HTMLSelectElement, HTMLTextAreaElement)) {
-        return instance;
+    val(instance, newValue) {
+      switch(true) {
+        case instance.is.empty || !IS(instance.node, HTMLInputElement, HTMLSelectElement, HTMLTextAreaElement):
+          return instance;
+        case !!newValue && isNonEmptyString(instance.node.value):
+          return instance.node.value;
+        default:
+          instance.node.value = !IS(newValue, String) ? "" : newValue;
+          return instance;
       }
-
-      if (newValue === undefined) {
-        return firstElem.value;
-      }
-
-      firstElem.value = !IS(newValue, String) ? "" : newValue;
-
-      return instance;
     },
   };
 }
