@@ -132,6 +132,12 @@ function systemLogFactory() {
     return systemLogger;
   }
   
+  function warn(...args) {
+    backLog.unshift(...args.map(arg => `${logTime()} ⚠ ${decodeForConsole(arg)}`));
+    console.warn(backLog.slice(0, args.length).join(`\n`));
+    return systemLogger;
+  }
+  
   function log(...args) {
     backLog.unshift(...args.map(arg => `${logTime()} ✔ ${decodeForConsole(arg)}`));
     switch(on) {
@@ -143,6 +149,7 @@ function systemLogFactory() {
   Object.defineProperties(systemLogger, {
     log: {value: log, enumerable: false},
     error: {value: error, enumerable: false},
+    warn: {value: warn, enumerable: false},
   });
   
   return Object.freeze(systemLogger);
