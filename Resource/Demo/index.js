@@ -79,8 +79,8 @@ if (!debug) {
     .text(` [Hey! You can click AND hover me! (see log)]`, true)
     .style({color: `red`, marginTop: `0.7rem`, cursor: `pointer`})
     .appendTo(JQxRoot)
-    // add a click AND mouseover listener in one go
-    .on(`click, mouseover`, function heyHandler({evt, me}) {
+    // add a click, mouseover and mouseout listener in one go
+    .on(`click, mouseover, mouseout`, function heyHandler({evt, me}) {
       const currentColor = me.node.style.color;
       switch(evt.type) {
         case `click`:
@@ -91,7 +91,10 @@ if (!debug) {
                 ? `red` : `orange`
           });
           return log(`HI from div.exampleText (you  clicked me)`);
+        case `mouseout`:
+          return me.removeClass(`IAmHovered`);
         default:
+          me.addClass(`IAmHovered`);
           return log(`HI from div.exampleText (you moved your mouse pointer over me)`);
       }
     });
@@ -163,8 +166,7 @@ if (!debug) {
   $.fn(`cbBox`, checkboxBox);
   // the actual custom function
   function checkboxBox(me, spec) {
-    let container = !$.IS(me, HTMLDivElement) && !$.IS(me, HTMLParagraphElement)
-      ? $.div : me;
+    let container = !$.IS(me, HTMLDivElement) && !$.IS(me, HTMLParagraphElement) ? $.div : me;
     
     me.data.set({checkboxContainer: 1});
     let {opts, selectallBttn, optLines, style, boxId} = spec;
@@ -181,7 +183,8 @@ if (!debug) {
     function addAllOrNoneButton(me) {
       return me.append(
         $.div({data: {button: true}}, $.button( { data: {all: true}} )
-          .on("click", selectAllOrNone) ) );
+          .on("click", selectAllOrNone) )
+      );
     }
     
     function getCheckboxItems(opts, id) {

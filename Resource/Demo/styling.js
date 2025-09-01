@@ -68,6 +68,13 @@ export default [
     width: 100%;
     opacity: 1;
   }`,
+  `.IAmHovered:after {
+    content: ' \u{1F607}';
+    font-size: 1.2rem;
+    display: inline-block;
+    position: absolute;
+    vertical-align: middle;
+  }`,
   `.red {color: red;}`,
   `#bttnblock {
      margin: 1em auto;
