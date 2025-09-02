@@ -293,7 +293,7 @@ function instanceExtensionsFactory(jqx) {
     html(instance, htmlValue, append) {
       switch(true) {
         case instance.is.empty && !isNonEmptyString(htmlValue): return "";
-        case !isNonEmptyString(htmlValue): return instance.node?.getHTML ?? ``;
+        case !isNonEmptyString(htmlValue): return instance.node?.getHTML() ?? ``;
         default:
           const nwElement = createElementFromHtmlString(
             `<div>${htmlValue.isJQx ? htmlValue.HTML.get(true) : htmlValue}</div>` );
