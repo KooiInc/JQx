@@ -601,7 +601,6 @@ function clickActionsFactory($) {
         .showInExample(evt, true);
 
       const input = $("[name=inputEx]");
-      console.log(input.node);
       const valueResults = $.ul(
         $.li(`Initial value <code>input.val()</code> => ${ input.val() }`),
         $.li(`Empty input: <code>input.val("")</code> => ${ input.val("").val() }`),
