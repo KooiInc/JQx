@@ -230,7 +230,6 @@ function clickActionsFactory($) {
       );
     },
     onceEx(evt) {
-      // if (exampleResultExists(evt.target)) { return; }
       // create button and add one time listeners for click/right click (contextmenu)
       const bttn = $.button(`invoke`)
         .once( `click, contextmenu`, bttnHandler, bttnSecondHandler );
@@ -271,7 +270,6 @@ function clickActionsFactory($) {
       initialDiv.showInExample(evt, true);
     },
     getNamedListenerEx(evt) {
-      // if (exampleResultExists(evt.target)) { return; }
       // create the first button
       const bttnCreate = $.button( { data: {create: 1}, class: `exRunBttn`,
         text: `create a listener for the [invoke] button` } );
@@ -399,10 +397,10 @@ function clickActionsFactory($) {
       }, 1500);
     },
     showLogEx: evt => {
-            $.handle({type: `click`, selector: "#backlogBttn", handler: showBacklog, once: true});
+      $.handle({type: `click`, selector: "#backlogBttn", handler: showBacklog, once: true});
       $.button({text: `show log entries`, id: `backlogBttn`}).showInExample(evt, true);
 
-      function showBacklog(evt) {
+      function showBacklog({me}) {
         $.log(`***Showing the backlog (from example)`);
         
         // adjust the popup width temporary
@@ -420,7 +418,7 @@ function clickActionsFactory($) {
 
             // close the example after closing the popup
             // because the handler for button#backlogBttn was removed (once: true)
-            $(evt.target.closest(`[data-ex-tmp]`).querySelector(`button`)).trigger(`click`);
+            me.closest(`.exContainer`).find$(`[data-action='removeExmple']`).trigger(`click`);
           }
         });
       }
