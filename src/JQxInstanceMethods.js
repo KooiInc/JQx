@@ -108,12 +108,18 @@ function factoryExtensionsFactory(jqx) {
     Style(instance) {
       return {
         get computed() { return !instance.is.empty ? getComputedStyle(instance[0]) : {}; },
-        inline: styleObj => instance.style(styleObj),
-        inSheet: styleObj => instance.css(styleObj),
+        inline(styleObj) {
+          return instance.style(styleObj);
+        },
+        inSheet(styleObj) {
+          return instance.css(styleObj)
+        },
         valueOf(key) {
           return !instance.is.empty ? getComputedStyle(instance[0])[toDashedNotation(key)] : undefined;
         },
-        nwRule: rule => instance.Style.byRule({rules: rule}),
+        nwRule(rule) {
+          return instance.Style.byRule({rules: rule})
+        },
         byRule({classes2Apply = [], rules = []} = {}) {
           const isSingleRule = IS(rules, String);
           const addClassNameOrID = isSingleRule && !classes2Apply.length ? rules.split(`{`)[0].trim() : ``;
