@@ -537,7 +537,7 @@ function instanceExtensionsFactory(jqx) {
       switch(true) {
         case instance.is.empty || !IS(instance.node, HTMLInputElement, HTMLSelectElement, HTMLTextAreaElement):
           return instance;
-        case !!newValue && isNonEmptyString(instance.node.value):
+        case !IS(newValue, String):
           return instance.node.value;
         default:
           instance.node.value = !IS(newValue, String) ? "" : newValue;

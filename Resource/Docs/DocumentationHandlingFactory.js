@@ -597,13 +597,14 @@ function clickActionsFactory($) {
         .removeAfter(3);
     },
     valEx: evt => {
-      $.input({data: {inputId: "inputEx", type: "text"}, value: "hello world"})
+      $.input({name: "inputEx", data: {inputId: "inputEx", type: "text"}, value: "hello world"})
         .showInExample(evt, true);
 
-      const input = $("[data-input-id]");
+      const input = $("[name=inputEx]");
+      console.log(input.node);
       const valueResults = $.ul(
-        $.li(`Initial value <code>input.val()</code> => ${ input.val()}`),
-        $.li(`Empty input: <code>input.val("")</code> => ${ input.val("").val()}`),
+        $.li(`Initial value <code>input.val()</code> => ${ input.val() }`),
+        $.li(`Empty input: <code>input.val("")</code> => ${ input.val("").val() }`),
         $.li(`New value: <code>input.val("hi there")</code> => ${ input.val("hi there").val()}`)
       );
 
