@@ -49,10 +49,11 @@ function factoryExtensionsFactory(jqx) {
     },
     dimensions(instance) {
       if (instance.is.empty) {
+        systemLog.error(`[JQx instance].dimensions called on empty instance`);
         return { error: `[JQx instance].dimensions: NO ELEMENTS` };
       }
-      let node = instance[0];
-      const boundingRect = instance.first()?.getBoundingClientRect().toJSON();
+      let {node} = instance;
+      const boundingRect = node.getBoundingClientRect().toJSON();
       boundingRect.scrollTopDistance = findParentScrollDistance(node, 0);
       boundingRect.scrollLeftDistance = findParentScrollDistance(node, 0, false);
       return boundingRect;
@@ -424,18 +425,14 @@ function instanceExtensionsFactory(jqx) {
       return instance;
     },
     replace(instance, oldChild, newChild) {
-      const firstElem = instance[0];
+      const firstElem = instance.node;
 
-      if (!oldChild || (!newChild || !IS(newChild, HTMLElement) && !newChild.isJQx)) {
-        console.error(`JQx replace: invalid replacement value`);
+      if (!oldChild || (!IS(newChild, HTMLElement) && !newChild?.isJQx)) {
+        jqx.logger.error(`JQx replace: invalid replacement value`);
         return instance;
       }
 
-      if (newChild.isJQx) {
-        newChild = newChild[0];
-      }
-
-      if (IS(newChild, NodeList)) {
+      if (newChild.isJQx || IS(newChild, NodeList)) {
         newChild = newChild[0];
       }
 
