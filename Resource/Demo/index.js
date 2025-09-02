@@ -473,8 +473,8 @@ function getBacklinks() {
 function injectFavIcon() {
   const icons = {
     github: {href: "https://github.githubassets.com/favicons/favicon.png"},
-    codeberg: {href: "../Common/codebergicon.ico"},
-    local: {href: "../Common/devIco.png"},
+    codeberg: {href: "../Common/DocDemo/codebergicon.ico"},
+    local: {href: "../Common/DocDemo/devIco.png"},
   };
   const currentLink = $(`head link[rel="icon"]`);
   const link = $.link({rel: "icon"});
