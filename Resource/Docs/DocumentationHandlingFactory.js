@@ -601,13 +601,23 @@ function clickActionsFactory($) {
         .showInExample(evt, true);
 
       const input = $("[name=inputEx]");
+      input.afterMe($.span({id: `wasec`, style: `color: red`}, ` wait a sec...`));
+      
       const valueResults = $.ul(
         $.li(`Initial value <code>input.val()</code> => ${ input.val() }`),
-        $.li(`Empty input: <code>input.val("")</code> => ${ input.val("").val() }`),
-        $.li(`New value: <code>input.val("hi there")</code> => ${ input.val("hi there").val()}`)
       );
-
-      input.after(valueResults);
+      
+      input.afterMe(valueResults);
+      
+      setTimeout(() => {
+        $.li(`Empty input: <code>input.val("")</code> => ${ input.val("").val() }`).renderTo(valueResults);
+        $(`#wasec`).text(` bare with me ...`);
+        setTimeout(() => {
+          $.li(`New value: <code>input.val("hi there")</code> => ${ input.val("hi there").val()}`)
+            .renderTo(valueResults);
+          $(`#wasec`).text(` all done`);
+        }, 2000)
+      }, 2000);
     },
     renderEx: evt => {
       $.editCssRule(`.HVCentered {
