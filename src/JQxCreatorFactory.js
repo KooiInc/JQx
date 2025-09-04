@@ -8,7 +8,7 @@ import allMethodsFactory from "./JQxInstanceMethods.js";
 let instanceGetters, instanceMethods;
 const {
   isComment, isText, isHtmlString, isArrayOfHtmlElements, isArrayOfHtmlStrings,
-  ElemArray2HtmlString, addHandlerId, cssRuleEdit, addFn,
+  ElemArray2HtmlString, addHandlerId, cssRuleEdit, addFn
 } = selectedUtilitiesFactory();
 
 export { proxify, addJQxStaticMethods };
@@ -16,10 +16,37 @@ export { proxify, addJQxStaticMethods };
 function selectedUtilitiesFactory() {
    return {
     ...selectedFactoryHelpers(),
-    addFn: function(name, extensionMethod) {
-      systemLog.log(`JQx: added extension function [${name}]`);
-      return instanceMethods[name] = (self, ...params) => extensionMethod(self, ...params);
-    } };
+    addFn: addFnMethod };
+}
+
+function addFnMethod(name, extensionMethod) {
+  name = name?.trim();
+  
+  if (!isNonEmptyString(name) || !IS(extensionMethod, Function) ) {
+    return systemLog.error("JQx.fn: method invalid parameter(s)");
+  }
+  
+  return instanceMethods[name] = (self, ...params) => extensionMethod(self, ...params);
+  return systemLog.log(`JQx: added extension function [${name}]`);
+}
+
+function staticFNMethodFactory(jqx) {
+  return function(name, extensionMethod, isGetter){
+    name = name?.trim();
+    if (!isNonEmptyString(name) || !IS(extensionMethod, Function) ) {
+      return jqx.error("JQx.staticFn: invalid parameter(s)");
+    }
+    const ext = isGetter
+      ? { get() { return extensionMethod(); } }
+      : { value(...args) { return extensionMethod(...args); } };
+    
+    try { Object.defineProperty(jqx, name, ext); }
+    catch(err) {
+      return jqx.warn(`JQx.staticFn: extension [${name}] already exists`);
+    }
+    
+    return systemLog.log(`JQx: added static extension function [${name}]`);
+  }
 }
 
 function proxify(instance) {
@@ -218,20 +245,25 @@ function getSelectedStaticMethods(jqx) {
   const handlerWrapper = HandlerFactory(jqx);
   const capturedHandling = delegateCaptureFactory(handlerWrapper);
   const log = (...line) => systemLog.on.log(...line).off;
+  const warn = (...line) => systemLog.on.warn(...line).off;
+  const error = (...line) => systemLog.on.error(...line).off;
   return {
     editCssRule, createStyle, editCssRules, allowProhibit, handle: capturedHandling, capturedHandling,
-    log, handlerWrapper};
+    log, warn, error, handlerWrapper};
 }
 
 function staticMethodsFactory(jqx) {
   const { factoryExtensions, instanceExtensions } = allMethodsFactory(jqx);
   instanceGetters = factoryExtensions;
   instanceMethods = instanceExtensions;
-  const { editCssRule, createStyle, editCssRules, allowProhibit, handle, capturedHandling, log, handlerWrapper } =
-    getSelectedStaticMethods(jqx);
+  const { editCssRule, createStyle, editCssRules, allowProhibit, handle,
+    capturedHandling, log, warn, error, handlerWrapper } = getSelectedStaticMethods(jqx);
   const getNamedListener = getNamedListenerFactory(jqx);
+  const staticFN = staticFNMethodFactory(jqx);
   return {
     log,
+    warn,
+    error,
     editCssRules,
     createStyle,
     editStylesheet: createStyle,
@@ -242,6 +274,7 @@ function staticMethodsFactory(jqx) {
     node: (selector, root = document) => root.querySelector(selector, root),
     nodes: (selector, root = document) =>  [...root.querySelectorAll(selector, root)],
     clearAllTimers,
+    get staticFn() { return function(name, method, isGetter) { return staticFN(name, method, isGetter); } },
     get toBool() { return convert2Bool; },
     get getNamedListener() { return getNamedListener; },
     get virtual() { return virtualFactory(jqx); },
