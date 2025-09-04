@@ -384,6 +384,29 @@ function clickActionsFactory($) {
         closeAfter: 5
       } );
     },
+    addStaticFnEx: evt => {
+      $.staticFn(`xample1`, staticEx1, true); // a getter
+      $.staticFn(`xample2`, staticEx2);       // a method
+      $.staticFn(`42`);                       // logs an error
+      
+      $.xample1;
+      
+      function staticEx1() {
+        $.logger.log(`***staticEx1 said HI`);
+        $.Popup.show({
+          content: `logged "***staticEx1 said HI"`,
+          closeAfter: 2,
+          callback: () => $.xample2(`world`, `and`, `universe!`),
+        })
+      }
+      
+      function staticEx2(...args) {
+        $.Popup.show({
+          content: $.div(`HELLO! ${args.join(" ")}`),
+          closeAfter: 3
+        });
+      }
+    },
     addClassEx: evt => {
             $.editCssRules(
         "#tmpEx.warnUser {color: red; font-weight: bold;}",
@@ -397,31 +420,21 @@ function clickActionsFactory($) {
       }, 1500);
     },
     showLogEx: evt => {
-      $.handle({type: `click`, selector: "#backlogBttn", handler: showBacklog, once: true});
-      $.button({text: `show log entries`, id: `backlogBttn`}).showInExample(evt, true);
+      $.log(`***Showing the backlog (from example)`);
+      
+      // adjust the popup width temporary
+      $(`#jqxPopupContent`).style({maxWidth: `90vw`});
 
-      function showBacklog({me}) {
-        $.log(`***Showing the backlog (from example)`);
-        
-        // adjust the popup width temporary
-        $(`#jqxPopupContent`).style({maxWidth: `90vw`});
+      // retrieve the log entries backlog (from $.logger)
+      const backLog = $.logger.backLog.map(v => $.escHtml(v));
 
-        // retrieve the log entries backlog (from $.logger)
-        const backLog = $.logger.backLog.map(v => $.escHtml(v));
-
-        $.Popup.show({
-          content: $.div(
-            $.h3(`The current JQx log entries (reversed, latest first)`),
-            $.pre(backLog.join(`\n`))),
-          callback: () => {
-            $(`#jqxPopupContent`).style({maxWidth: ``});
-
-            // close the example after closing the popup
-            // because the handler for button#backlogBttn was removed (once: true)
-            me.closest(`.exContainer`).find$(`[data-action='removeExmple']`).trigger(`click`);
-          }
-        });
-      }
+      $.Popup.show({
+        content: $.div(
+          $.h3(`The current JQx log entries (reversed, latest first)`),
+          $.pre(backLog.join(`\n`))),
+          // reset the popup width after popup close
+          callback() { $(`#jqxPopupContent`).style({maxWidth: ""}); }
+      });
     },
     toBoolEx: evt => {
       const exampleDiv = $.div({data: {isExample: true, isHeader: false, isNothing: `Nope`}}, `An example div`);

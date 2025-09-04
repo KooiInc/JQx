@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-09-02 09:36:37 UTC-->
+<!-- Generated file, last update 2025-09-04 10:19:36 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -980,7 +980,7 @@ function createTimedPopup(content, timeout, callback) {
 
 <template data-id="static_log" class="static_log" data-is-deprecated="false">
 <div data-params='[{"...line":"string[]"}]'></div>
-<div data-return-value='{on, off, backLog, log, error}'></div>
+<div data-return-value='Nothing'></div>
 <div data-text='1'><div>
   log one or more strings to the console (browser web developer tools).
 </div>
@@ -2048,4 +2048,45 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 
 
 <div data-example>##EXAMPLECODE@toBoolEx##</div></div>
+</template>
+
+<template data-id="static_staticFn" class="static_staticFn" data-is-deprecated="false">
+<div data-params='[{"name":"string"},{"method":"function"},{"isGetter":"bool | undefined"}]'></div>
+<div data-return-value='Nothing'></div>
+<div data-text='1'><div>
+  Adds a <i>static</i> function <code>[method]</code> to JQx. 
+  It may be a getter (<code>isGetter:true</code>) or a regular function.
+</div>
+
+<div data-example>##EXAMPLECODE@addStaticFnEx##</div></div>
+</template>
+
+<template data-id="static_error" class="static_error" data-is-deprecated="false">
+<div data-params='[{"...line":"string[]"}]'></div>
+<div data-return-value='Nothing'></div>
+<div data-text='1'><div>
+  log one or more strings <i>as error</i> to the console (browser web developer tools).
+</div>
+
+<div> 
+  See <div class="linkLike"
+    data-action="jump2Nav" 
+    data-jumpkey="static_logger">[JQx].logger</div> 
+  for more information.
+</div></div>
+</template>
+
+<template data-id="static_warn" class="static_warn" data-is-deprecated="false">
+<div data-params='[{"...line":"string[]"}]'></div>
+<div data-return-value='Nothing'></div>
+<div data-text='1'><div>
+  log one or more strings <i>as warning</i> to the console (browser web developer tools).
+</div>
+
+<div> 
+  See <div class="linkLike"
+    data-action="jump2Nav" 
+    data-jumpkey="static_logger">[JQx].logger</div> 
+  for more information.
+</div></div>
 </template>
