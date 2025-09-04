@@ -258,8 +258,8 @@ if (!debug) {
   
   // usage example of custom function 'cbBox'
   $.div(
-    $.h3({style: `margin-bottom: 0.2em`},
-      `This box is created from a <i>custom</i> function created with <code>$.fn</code>, called <code>cbBox</code>`),
+    $.h3({style: `margin-bottom: 0.2em`, id: `cbBoxEx`},
+      `The following box is created from a <i>custom</i> function created with <code>$.fn</code>, called <code>cbBox</code>`),
     $.div(`It creates a block of checkboxes from specified parameters`,
       $.div(`(<code>$.div(...)<b class="red">.cbBox</b>({opts[, selectAllBttn, optLines, boxId, style] })</code>).`),
       $.div(`In this case a button is provided to check all or no checkboxes in
@@ -277,7 +277,39 @@ if (!debug) {
     selectallBttn: true,
     optLines: true,
   })).appendTo(JQxRoot);
-
+  
+  const cbBoxCode = DIV({
+      class: `exampleText codeVwr`,
+      data: {updown: `\u25BC Display `, forid: `cbBoxCode`, hidden: 1} },
+    `The code for the <code>[JQx instance].cbBox</code> extension ☝`,
+    ).afterMe(
+      $.div({id: `cbBoxCode`, class: `upDownFader`}, $.pre(
+          $.code(
+            `$.fn("cbBox", checkboxBox); // &lt;= create the extension\n`,
+            $.escHtml(`\n// invocation (create the above color checkbox container)\n` +
+            `$.div("<b>Which colors do you like?</b>")\n` +
+            `  .cbBox( {\n`+
+            `     opts: [\n` +
+            `        {value: 1, html: '<span style="color: red">Red</span>'},\n` +
+            `        {value: 2, html: '<span style="color: gold">Yellow</span>'},\n` +
+            `        {value: 3, html: '<span style="color: blue">Blue</span>'},\n` +
+            `        {value: 4, html: '<span style="color: green">Green</span>'},\n` +
+            `        {value: 5, html: '<span style="color: orange">Orange</span>'} ],\n` +
+            `      boxId: "colorSelectBox",\n` +
+            `      style: "padding: 4px 8px; border: 1px dotted #c0c0c0; border-radius: 8px;",\n` +
+            `      selectallBttn: true,\n` +
+            `      optLines: true,\n    }` +
+            `  \n  );`),
+            `\n\n// the actual checkbox creator function\n`,
+            checkboxBox.toString()
+            .trim()
+            .replace(/\n {4}/g, `  `)
+            .replace(/  }$/, `}`)
+          )
+        )
+      )
+    ).appendTo(JQxRoot);
+  
   // append multiline comment to p#JQxRoot
   COMMENT(`Hi, I am a multiline HTML-comment.
      So, you can add plain comments using JQx
