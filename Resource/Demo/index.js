@@ -278,7 +278,8 @@ if (!debug) {
     optLines: true,
   })).appendTo(JQxRoot);
   
-  const cbBoxCode = DIV({
+  // code viewer for the [JQx instance].cbBox extension
+  DIV({
       class: `exampleText codeVwr`,
       data: {updown: `\u25BC Display `, forid: `cbBoxCode`, hidden: 1} },
     `The code for the <code>[JQx instance].cbBox</code> extension ☝`,
@@ -492,11 +493,11 @@ function getBacklinks() {
       DIV(`The documentation resides @ `,
         A( {
           href: isGithub
-            ? "//kooiinc.github.io/JQL/Resource/Docs/"
+            ? "//kooiinc.github.io/JQx/Resource/Docs/"
             : "//kooiinc.codeberg.page/JQx/Resource/Docs/",
           target: "_blank",
           text: isGithub
-            ? "https://kooiinc.github.io/JQL/Resource/Docs/"
+            ? "https://kooiinc.github.io/JQx/Resource/Docs/"
             : "https://kooiinc.codeberg.page/JQx/Resource/Docs/" } ))
     );
 }
