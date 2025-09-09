@@ -166,8 +166,7 @@ if (!debug) {
   $.fn(`cbBox`, checkboxBox);
   // the actual custom function
   function checkboxBox(me, spec) {
-    let container = !$.IS(me, HTMLDivElement) &&
-      !$.IS(me, HTMLParagraphElement) ? $.div : me;
+    me = !$.IS(me, HTMLDivElement, HTMLParagraphElement) ? $.div(me.html()) : me;
     me.data.set({checkboxContainer: 1});
     let {opts, selectallBttn, optLines, style, boxId} = spec;
     boxId = boxId ?? `cbBox_${Math.random().toString(36).slice(2, 12)}`;
@@ -185,7 +184,8 @@ if (!debug) {
     }
     
     function addAllOrNoneButton() {
-      buttonRow.prepend($.button( { data: { all: true} } ).on("click", handleAllOrNoneBttn));
+      buttonRow.prepend($.button( { data: { all: true } } )
+          .on("click", handleAllOrNoneBttn));
       $.handle({
         type: `input`,
         handler: handleInput,
@@ -312,7 +312,7 @@ if (!debug) {
     }
   }
   
-  // usage example of custom function 'cbBox'
+  // example of custom function 'cbBox'
   $.div({class: "cbBoxEx"},
       $.div(`The following box ('<b>Which colors ...</b>') is created from a <i>custom</i> function
         created with <code>$.fn</code>,<br>called <code>cbBox</code>
@@ -320,20 +320,22 @@ if (!debug) {
       $.div(`It creates a block of checkboxes from specified parameters.`),
       $.div(`In this case an optional button is provided to check all or no checkboxes in
         the box.`),
-    $.div(`<h3>Which colors do you like?</h3>`).cbBox({
-    opts: [
-      {value: 1, html: `<span style="color: red">Red</span>`},
-      {value: 2, html: `<span style="color: gold">Yellow</span>`},
-      {value: 3, html: `<span style="color: blue">Blue</span>`},
-      {value: 4, html: `<span style="color: green">Green</span>`},
-      {value: 5, html: `<span style="color: orange">Orange</span>`} ],
-    boxId: `colorSelectBox`,
-    style: `padding: 4px 8px; border: 1px dotted #c0c0c0; border-radius: 8px; h3 {
-      margin: 0.2em 0 0.4em 0; text-align:center;
-      padding-bottom: 0.4em; border-bottom: 1px solid #c0c0c0;}`,
-    selectallBttn: true,
-    optLines: false,
-  })).appendTo(JQxRoot);
+    $.span(`<h3>Which colors do you like?</h3>`)
+    // ^ note: if the enclosing element  is not a paragraph or div element,
+    // (so not a block element) it will be converted to a div
+    .cbBox({
+      opts: [
+        {value: 1, html: `<span style="color: red">Red</span>`},
+        {value: 2, html: `<span style="color: gold">Yellow</span>`},
+        {value: 3, html: `<span style="color: blue">Blue</span>`},
+        {value: 4, html: `<span style="color: green">Green</span>`},
+        {value: 5, html: `<span style="color: orange">Orange</span>`} ],
+      boxId: `colorSelectBox`,
+      style: `padding: 4px 8px; border: 1px dotted #c0c0c0; border-radius: 8px; h3 {
+        margin: 0.2em 0 0.4em 0; text-align:center;
+        padding-bottom: 0.4em; border-bottom: 1px solid #c0c0c0;}`,
+      selectallBttn: true,
+    })).appendTo(JQxRoot);
   
   // code viewer for the [JQx instance].cbBox extension
   DIV({
@@ -355,8 +357,7 @@ if (!debug) {
             `        {value: 5, html: '<span style="color: orange">Orange</span>'} ],\n` +
             `      boxId: "colorSelectBox",\n` +
             `      style: "[...]" /* see all code */,\n` +
-            `      selectallBttn: true,\n` +
-            `      optLines: false,\n    }` +
+            `      selectallBttn: true }` +
             `  \n  );`),
             `\n\n// the actual checkbox creator function\n`,
             checkboxBox.toString()
