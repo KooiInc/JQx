@@ -167,6 +167,7 @@ if (!debug) {
   // the actual custom function
   function checkboxBox(me, spec) {
     let container = !$.IS(me, HTMLDivElement) && !$.IS(me, HTMLParagraphElement) ? $.div : me;
+    $.handle({type: `input`, handler: handleInput, selector: `input[type=checkbox]`});
     me.data.set({checkboxContainer: 1});
     let {opts, selectallBttn, optLines, style, boxId} = spec;
     optLines = !!optLines;
@@ -202,6 +203,14 @@ if (!debug) {
       );
       me.append(buttonRow);
       return buttonRow;
+    }
+    
+    function handleInput({me}) {
+      const box = me.closest(`[data-id=${boxId}]`);
+      const theBttn = $(`[data-all]`);
+      const checked = box.find(`input[type=checkbox]:checked`);
+      const all = box.find(`input[type=checkbox]`);
+      theBttn.data.set({all: checked.length !== all.length});
     }
     
     function handleAllOrNoneBttn({self}) {
