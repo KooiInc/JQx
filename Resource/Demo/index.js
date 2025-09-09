@@ -305,7 +305,7 @@ if (!debug) {
             checkboxBox.toString()
             .trim()
             .replace(/\n {4}/g, `  `)
-            .replace(/  }$/, `}`)
+            .replace(/( {2})}$/, `}`)
           )
         )
       )
