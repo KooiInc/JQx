@@ -169,6 +169,8 @@ if (!debug) {
     let container = !$.IS(me, HTMLDivElement) && !$.IS(me, HTMLParagraphElement) ? $.div : me;
     me.data.set({checkboxContainer: 1});
     let {opts, selectallBttn, optLines, style, boxId} = spec;
+    optLines = !!optLines;
+    selectallBttn = !!selectallBttn;
     boxId = boxId ?? `cbBox_${Math.random().toString(36).slice(2, 12)}`;
     me.data.set({id: boxId});
     createCssRules(boxId, optLines);
@@ -331,7 +333,7 @@ if (!debug) {
           $.code(
             `$.fn("cbBox", checkboxBox); // &lt;= create the extension\n`,
             $.escHtml(`\n// invocation (create the above color checkbox container)\n` +
-            `$.div("<b>Which colors do you like?</b>")\n` +
+            `$.div("<h3>Which colors do you like?</h3>")\n` +
             `  .cbBox( {\n`+
             `     opts: [\n` +
             `        {value: 1, html: '<span style="color: red">Red</span>'},\n` +
@@ -342,7 +344,7 @@ if (!debug) {
             `      boxId: "colorSelectBox",\n` +
             `      style: "[...]" /* see all code */,\n` +
             `      selectallBttn: true,\n` +
-            `      optLines: true,\n    }` +
+            `      optLines: false,\n    }` +
             `  \n  );`),
             `\n\n// the actual checkbox creator function\n`,
             checkboxBox.toString()
