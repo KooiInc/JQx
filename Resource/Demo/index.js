@@ -167,24 +167,54 @@ if (!debug) {
   // the actual custom function
   function checkboxBox(me, spec) {
     let container = !$.IS(me, HTMLDivElement) && !$.IS(me, HTMLParagraphElement) ? $.div : me;
-    
     me.data.set({checkboxContainer: 1});
     let {opts, selectallBttn, optLines, style, boxId} = spec;
     boxId = boxId ?? `cbBox_${Math.random().toString(36).slice(2, 12)}`;
     me.data.set({id: boxId});
     createCssRules(boxId, optLines);
-    me.append(...getCheckboxItems(opts, boxId));
+    const checkBoxesBlock = getCheckboxItems(opts, boxId);
+    const buttonRow = addSeparateBttn();
+    me.append(checkBoxesBlock);
     
-    switch(!!selectallBttn) {
-      case true: return addAllOrNoneButton(me);
+    switch(true) {
+      case !!selectallBttn: return addAllOrNoneButton();
       default: return me;
     }
     
-    function addAllOrNoneButton(me) {
-      return me.append(
-        $.div({data: {button: true}}, $.button( { data: {all: true}} )
-          .on("click", selectAllOrNone) )
+    function addAllOrNoneButton() {
+      buttonRow.prepend($.button( { data: { all: true} } ).on("click", handleAllOrNoneBttn));
+      return me;
+    }
+    
+    function addSeparateBttn() {
+      const buttonRow = $.div(
+        {class: "cbButtons"},
+        $.span(
+          $.button({
+            class: "separatorBttn",
+            text: "Display",
+            data: {isLines: optLines}})
+          .on("click", handleCBPerLineToggleBttn),
+          $.span(optLines ? "checkboxes on single line" : "checkboxes on separate lines")
+        )
       );
+      me.append(buttonRow);
+      return buttonRow;
+    }
+    
+    function handleAllOrNoneBttn({self}) {
+      const checkValue = $.toBool(self.data.get(`all`));
+      self.data.set({all: !checkValue});
+      return self.closest(`[data-checkbox-container]`)
+        .find$(`input[type="checkbox"]`).each(cb => cb.checked = checkValue);
+    }
+    
+    function handleCBPerLineToggleBttn({evt, me}) {
+      const cboxes = $(me.closest(`[data-checkbox-container]`)).find$(`[data-lines]`);
+      const currentLines = $.toBool(cboxes[0].dataset.lines);
+      cboxes.each(cb => cb.dataset.lines = `${!currentLines}`);
+      me.closest(`span`).find$(`span`).text(currentLines
+        ? "checkboxes on separate lines" : "checkboxes on single line");
     }
     
     function getCheckboxItems(opts, id) {
@@ -194,24 +224,18 @@ if (!debug) {
         const {value, html} = opt;
         checkBoxes.push(
           $.label(
-            {data: {cbBlock: true}},
+            {data: {cbBlock: true, lines: !!optLines}},
             $.input({...cbOpts, value, name: id}), html
           )
         );
       }
-      return checkBoxes;
+      return $.div({class: "checkboxBlock"}, ...checkBoxes);
     }
     
     function createOptionalStyleRules(boxId, optLines) {
       $.editCssRules(
         `[data-id=${boxId}] {
           ${style || ``}
-          ${!optLines ? `width: 100%;` : ``}
-        
-          [data-cb-block] {
-            margin-right: ${!!optLines ? `0` : `1em`};
-            display: ${!!optLines ? `block` : `inline-block`};
-          }
         }` );
     }
     
@@ -220,39 +244,56 @@ if (!debug) {
         .find(rule => rule.selectorText === `[data-checkbox-container]`) ) {
         $.editCssRules(
           `[data-checkbox-container] {
-          margin: 1em 0;
-          [data-button] {
-            margin-top: 0.6rem;
-            
-            [data-all]:after {
-              content: 'Select all'
+            margin: 1em 0;
+        
+            .cbButtons {
+              margin: 0.6rem 0;
+              
+              button {
+                margin-right: 0.4em;
+                min-width: 50px;
+              }
+              
+              [data-all]:after {
+                content: 'All';
+              }
+              
+              [data-all='false']:after {
+                clear: both;
+                content: 'None'
+              }
             }
             
-            [data-all='false']:after {
-              content: 'Select none'
+            .checkboxBlock {
+              margin: 0.4rem 0;
+              
+              [data-cb-block][data-lines='false'] {
+                margin: 0 1em 0 0.4em;
+                display: inline-block;
+              }
+            
+              [data-cb-block][data-lines='true'] {
+                margin-left: 0.4em;
+                display: block;
+              }
+            
+              [data-cb-block] {
+                cursor: pointer;
+                display: block;
+                
+                &:hover {
+                text-decoration: underline;
+              }
+            
+              input {
+                display: inline-block;
+                margin: 3px 0.6em 0 0;
+              }
             }
-          }
-        }`,
-          `[data-cb-block] {
-          cursor: pointer;
-          &:hover {
-            text-decoration: underline;
-          }
-          
-          input {
-            display: inline-block;
-            margin: 3px 0.6em 0 0;
           }
         }`);
       }
       createOptionalStyleRules(boxId, optLines);
-    }
-    
-    function selectAllOrNone({self}) {
-      const checkValue = $.toBool(self.data.get(`all`));
-      self.data.set({all: !checkValue});
-      return self.closest(`[data-checkbox-container]`)
-        .find$(`input[type="checkbox"]`).each(cb => cb.checked = checkValue);
     }
   }
   
@@ -265,7 +306,7 @@ if (!debug) {
       $.div(`In this case a button is provided to check all or no checkboxes in
         the box (<code>selectAllBttn: true</code>)`),
       $.div(`and the checkboxes are displayed as separate lines (<code>optLines: true</code>).`)),
-    $.div(`<b>Which colors do you like?</b>`).cbBox({
+    $.div(`<h3>Which colors do you like?</h3>`).cbBox({
     opts: [
       {value: 1, html: `<span style="color: red">Red</span>`},
       {value: 2, html: `<span style="color: gold">Yellow</span>`},
@@ -273,9 +314,11 @@ if (!debug) {
       {value: 4, html: `<span style="color: green">Green</span>`},
       {value: 5, html: `<span style="color: orange">Orange</span>`} ],
     boxId: `colorSelectBox`,
-    style: `padding: 4px 8px; border: 1px dotted #c0c0c0; border-radius: 8px;`,
+    style: `padding: 4px 8px; border: 1px dotted #c0c0c0; border-radius: 8px; h3 {
+      margin: 0.2em 0 0.4em 0; text-align:center;
+      padding-bottom: 0.4em; border-bottom: 1px solid #c0c0c0;}`,
     selectallBttn: true,
-    optLines: true,
+    optLines: false,
   })).appendTo(JQxRoot);
   
   // code viewer for the [JQx instance].cbBox extension
@@ -297,7 +340,7 @@ if (!debug) {
             `        {value: 4, html: '<span style="color: green">Green</span>'},\n` +
             `        {value: 5, html: '<span style="color: orange">Orange</span>'} ],\n` +
             `      boxId: "colorSelectBox",\n` +
-            `      style: "padding: 4px 8px; border: 1px dotted #c0c0c0; border-radius: 8px;",\n` +
+            `      style: "[...]" /* see all code */,\n` +
             `      selectallBttn: true,\n` +
             `      optLines: true,\n    }` +
             `  \n  );`),
