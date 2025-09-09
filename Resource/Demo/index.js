@@ -166,16 +166,16 @@ if (!debug) {
   $.fn(`cbBox`, checkboxBox);
   // the actual custom function
   function checkboxBox(me, spec) {
-    let container = !$.IS(me, HTMLDivElement) && !$.IS(me, HTMLParagraphElement) ? $.div : me;
-    $.handle({type: `input`, handler: handleInput, selector: `input[type=checkbox]`});
+    let container = !$.IS(me, HTMLDivElement) &&
+      !$.IS(me, HTMLParagraphElement) ? $.div : me;
     me.data.set({checkboxContainer: 1});
     let {opts, selectallBttn, optLines, style, boxId} = spec;
-    optLines = !!optLines;
-    selectallBttn = !!selectallBttn;
     boxId = boxId ?? `cbBox_${Math.random().toString(36).slice(2, 12)}`;
     me.data.set({id: boxId});
+    optLines = !!optLines;
+    selectallBttn = !!selectallBttn;
     createCssRules(boxId, optLines);
-    const checkBoxesBlock = getCheckboxItems(opts, boxId);
+    const checkBoxesBlock = createCheckboxItems(opts, boxId);
     const buttonRow = addSeparateBttn();
     me.append(checkBoxesBlock);
     
@@ -186,6 +186,11 @@ if (!debug) {
     
     function addAllOrNoneButton() {
       buttonRow.prepend($.button( { data: { all: true} } ).on("click", handleAllOrNoneBttn));
+      $.handle({
+        type: `input`,
+        handler: handleInput,
+        selector: `[data-id='${boxId}'] input[type=checkbox]`}
+      );
       return me;
     }
     
@@ -207,10 +212,9 @@ if (!debug) {
     
     function handleInput({me}) {
       const box = me.closest(`[data-id=${boxId}]`);
-      const theBttn = $(`[data-all]`);
       const checked = box.find(`input[type=checkbox]:checked`);
       const all = box.find(`input[type=checkbox]`);
-      theBttn.data.set({all: checked.length !== all.length});
+      $(`[data-all]`).data.set({all: checked.length !== all.length});
     }
     
     function handleAllOrNoneBttn({self}) {
@@ -228,7 +232,7 @@ if (!debug) {
         ? "checkboxes on separate lines" : "checkboxes on single line");
     }
     
-    function getCheckboxItems(opts, id) {
+    function createCheckboxItems(opts, id) {
       const cbOpts = {type: "checkbox"};
       const checkBoxes = [];
       for (const opt of opts) {
@@ -309,14 +313,13 @@ if (!debug) {
   }
   
   // usage example of custom function 'cbBox'
-  $.div(
-    $.h3({style: `margin-bottom: 0.2em`, id: `cbBoxEx`},
-      `The following box is created from a <i>custom</i> function created with <code>$.fn</code>, called <code>cbBox</code>`),
-    $.div(`It creates a block of checkboxes from specified parameters`,
-      $.div(`(<code>$.div(...)<b class="red">.cbBox</b>({opts[, selectAllBttn, optLines, boxId, style] })</code>).`),
-      $.div(`In this case a button is provided to check all or no checkboxes in
-        the box (<code>selectAllBttn: true</code>)`),
-      $.div(`and the checkboxes are displayed as separate lines (<code>optLines: true</code>).`)),
+  $.div({class: "cbBoxEx"},
+      $.div(`The following box ('<b>Which colors ...</b>') is created from a <i>custom</i> function
+        created with <code>$.fn</code>,<br>called <code>cbBox</code>
+        (say, a "mini library" for checkboxes).`),
+      $.div(`It creates a block of checkboxes from specified parameters.`),
+      $.div(`In this case an optional button is provided to check all or no checkboxes in
+        the box.`),
     $.div(`<h3>Which colors do you like?</h3>`).cbBox({
     opts: [
       {value: 1, html: `<span style="color: red">Red</span>`},

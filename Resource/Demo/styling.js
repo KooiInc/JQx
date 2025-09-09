@@ -68,6 +68,12 @@ export default [
     width: 100%;
     opacity: 1;
   }`,
+  `.cbBoxEx {
+    margin-top: 1rem;
+    div:not(first-child) {
+      margin: 0.3em 0;
+    }
+  }`,
   `.IAmHovered:after {
     content: ' \u{1F607}';
     font-size: 1.2rem;
