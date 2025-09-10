@@ -27,7 +27,7 @@ getDelegates4Document().forEach(([type, targetedHandlers]) =>
 // initialize some statics from $
 const log = $.logger.log;
 const {virtual: $$} = $;
-const {DIV, H2, SPAN, I, B, P, U, A, BUTTON, COMMENT, BR, LINK} = $;
+const { DIV, H2, SPAN, I, B, P, U, A, BUTTON, COMMENT, BR } = $;
 
 /* MAIN  */
 if (!debug) {
@@ -563,9 +563,9 @@ function getBacklinks() {
 // location dependent favicon
 function injectFavIcon() {
   const icons = {
-    github: {href: "https://github.githubassets.com/favicons/favicon.png"},
-    codeberg: {href: "../Common/Sites/codebergicon.ico"},
-    local: {href: "../Common/Sites/devIco.png"},
+    github: { href: "https://github.githubassets.com/favicons/favicon.png" },
+    codeberg: { href: "../Common/Sites/codebergicon.ico" },
+    local: { href: "../Common/Sites/devIco.png" },
   };
   const currentLink = $(`head link[rel="icon"]`);
   const link = $.link({rel: "icon"});
