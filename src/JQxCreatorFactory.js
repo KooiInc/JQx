@@ -143,6 +143,9 @@ function tagGetterFactory(tagName, cando, jqx, webComponentTagName) {
   return {
     get() {
       return (...args) => {
+        systemLog.log(cando
+          ? `JQx: created (virtual) instance from [JQx].${tagName}`
+          : `Could not create instance from [JQx].${tagName}`);
         return cando && jqx.virtual(cleanupHtml($T[tagName](...args)));
       }
     },

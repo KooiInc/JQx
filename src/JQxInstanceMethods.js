@@ -477,7 +477,7 @@ function instanceExtensionsFactory(jqx) {
       return instance;
     },
     setData(instance, spec) {
-      return loop(instance, el => setData(el, keyValuePairs));
+      return loop(instance, el => setData(el, spec));
     },
     show(instance) {
       return loop(instance, el => applyStyle(el, {display: `revert-layer !important`}));

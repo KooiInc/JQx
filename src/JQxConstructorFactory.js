@@ -1,8 +1,8 @@
 import { proxify, addJQxStaticMethods } from "./JQxCreatorFactory.js";
 import {
-  isHtmlString, truncateHtmlStr, isArrayOfHtmlStrings, isArrayOfHtmlElements,
-  ElemArray2HtmlString, input2Collection, setCollectionFromCssSelector,
-  IS, systemLog, insertPositions, inject2DOMTree, createElementFromHtmlString
+  isHtmlString, isArrayOfHtmlStrings, isArrayOfHtmlElements,
+  input2Collection, setCollectionFromCssSelector, IS, systemLog,
+  insertPositions, inject2DOMTree, createElementFromHtmlString
 } from "./JQxUtilities.js";
 
 export default addJQxStaticMethods(JQxMainFactory());
@@ -27,18 +27,7 @@ function JQxMainFactory() {
     
     const isRawElemCollection = isArrayOfHtmlElements(instance.collection);
     
-    const logStr = `JQx: input =&gt; ${
-      isRawHtmlArray
-        ? `"${truncateHtmlStr(input.join(`, `), logLineLength)}"`
-        : !shouldCreateElements && isRawElemCollection ? `element collection [${
-            truncateHtmlStr( instance.collection.map(el => `${
-              IS(el, Comment, Text) ? `Comment|Text @` : ``} ${
-              el?.outerHTML || el?.textContent}`).join(`, `), logLineLength)}]`
-          : `"${truncateHtmlStr(input, logLineLength)}"`}`;
-    
     if (instance.collection.length && isRawElemCollection) {
-      systemLog.log(logStr);
-      
       if (!isVirtual) {
         instance.collection.forEach(el => {
           if (!root.contains(el)) {
@@ -57,11 +46,11 @@ function JQxMainFactory() {
       if (instance.collection.length > 0) {
         const errors = instance.collection.filter( el => el?.dataset?.jqxcreationerror );
         instance.collection = instance.collection.filter(el => !el?.dataset?.jqxcreationerror);
+        const collectionLog = instance.collection.length
+          ? instance.collection.map(el => `${String(el.constructor).split(/function|\(/)[1].trim()}`).join(` | `)
+          : "sanitized: no elements remaining";
         
-        systemLog.log(`${logStr}`);
-        systemLog.log(`JQx: created ${instance.isVirtual ? `VIRTUAL ` : ``}[${
-          truncateHtmlStr(ElemArray2HtmlString(instance.collection).trim() ||
-            "sanitized: no elements remaining", logLineLength)}]`);
+        systemLog.log(`JQx: created ${instance.isVirtual ? `(virtual)` : ``} instance from HTML string ([${collectionLog}])`);
         
         if (!instance.isVirtual) {
           inject2DOMTree(instance.collection, root, position);
