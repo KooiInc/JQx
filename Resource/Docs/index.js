@@ -265,15 +265,14 @@ function createNavigationItems({groupLabel}) {
   ul.append($(`<li class="grouped">${groupLabel}<ul class="navGroupItems"></ul></li>`));
 
   const data = getNavigationElementProps(documentationTemplates.templates);
+  const navGroupUl = $(`.navGroupItems`, ul);
 
   for (const item of data.filter(v => v.label.startsWith(groupLabel.toLowerCase()))) {
-    $(`.navGroupItems`, ul)
-    .append($(`
-      <li data-key="${item.label}">
-        <div data-navitem="${item.label}"${
-          item.isDeprecated ? ` class="deprecated"` : ``}>${item.shortName}
-        </div>
-      </li>`));
+    navGroupUl.append($.li({data: {key: item.label}},
+      $.div({data: {navitem: item.label}, class: (item.isDeprecated ? `deprecated` : ``)},
+        item.shortName)
+      )
+    );
   }
 }
 
@@ -291,7 +290,7 @@ function getNavigationElementProps(chapters) {
   for (const chapter of chapters) {
     mappedChapterData.push({
       label: chapter.dataset.id,
-      isDeprecated: chapter.dataset.isDeprecated === "true" === "true",
+      isDeprecated: chapter.dataset.isDeprecated === "true",
       shortName: removeGroupname(chapter.dataset.id)
     });
   }
