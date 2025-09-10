@@ -476,7 +476,7 @@ function instanceExtensionsFactory(jqx) {
 
       return instance;
     },
-    setData(instance, keyValuePairs) {
+    setData(instance, spec) {
       return loop(instance, el => setData(el, keyValuePairs));
     },
     show(instance) {

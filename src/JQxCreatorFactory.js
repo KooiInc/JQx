@@ -79,7 +79,7 @@ function addJQxStaticMethods(jqx) {
 
 function allowances(jqx) {
   return {
-    allow: tagName => {
+    allow(tagName) {
       const isWebComponent = /-/.test(tagName);
       const webComponentTagName = isWebComponent && tagName;
       tagName =  isWebComponent ? toCamelcase(tagName) : tagName.toLowerCase();
@@ -89,7 +89,7 @@ function allowances(jqx) {
         Object.defineProperties( jqx, addGetters(tagName, true, jqx, webComponentTagName) );
       }
     },
-    prohibit: tagName => {
+    prohibit(tagName) {
       tagName = tagName.toLowerCase();
       tagLib.prohibitTag(tagName);
 
@@ -239,8 +239,8 @@ function popupGetter(jqx) {
 
 function getSelectedStaticMethods(jqx) {
   const editCssRule = (ruleOrSelector, ruleObject) => cssRuleEdit(ruleOrSelector, ruleObject);
-  const createStyle = id => styleFactory({createWithId: id || `jqx${randomString()}`});
-  const editCssRules = (...rules) => { for (const rule of rules) { cssRuleEdit(rule); } };
+  const createStyle = function(id) {return styleFactory({createWithId: id || `jqx${randomString()}`}); };
+  const editCssRules = function(...rules) { for (const rule of rules) { cssRuleEdit(rule); } };
   const allowProhibit = allowances(jqx);
   const handlerWrapper = HandlerFactory(jqx);
   const capturedHandling = delegateCaptureFactory(handlerWrapper);
@@ -270,9 +270,9 @@ function staticMethodsFactory(jqx) {
     editCssRule,
     escHtml,
     logger: systemLog,
-    text: (str, isComment = false) => isComment ? jqx.comment(str) : document.createTextNode(str),
-    node: (selector, root = document) => root.querySelector(selector, root),
-    nodes: (selector, root = document) =>  [...root.querySelectorAll(selector, root)],
+    text(str, isComment = false) { return isComment ? jqx.comment(str) : document.createTextNode(str); },
+    node(selector, root = document) { return root.querySelector(selector, root); },
+    nodes(selector, root = document) { return [...root.querySelectorAll(selector, root)]; },
     clearAllTimers,
     get staticFn() { return function(name, method, isGetter) { return staticFN(name, method, isGetter); } },
     get toBool() { return convert2Bool; },

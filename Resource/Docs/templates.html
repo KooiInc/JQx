@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-09-04 10:19:36 UTC-->
+<!-- Generated file, last update 2025-09-10 11:44:11 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -259,12 +259,16 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
 </template>
 
 <template data-id="instance_toDOM" class="instance_toDOM" data-is-deprecated="false">
-<div data-params='[{"instance":""},{"root":"HTMLElement. Default <code>document.body</code>"},{"position":"String. One of \"beforeend\", \"afterbegin\", \"beforebegin\", \"afterend\". Default: \"beforeend\""}]'></div>
+<div data-params='[{"root":"HTMLElement. Default <code>document.body</code>"},{"position":"String. One of \"beforeend\", \"afterbegin\", \"beforebegin\", \"afterend\". Default: \"beforeend\""}]'></div>
 <div data-return-value='JQx Instance'></div>
 <div data-text='1'><div>
   Add a 'virtual' element (an element created in memory, using the <code> 
   [instance].virtual</code> or the <code>[JQx constructor][tagName]</code> method) 
   to the DOM. 
+  For [position] see also
+  <div class="linkLike" data-action="jump2Nav" data-jumpkey="static_at">
+    [JQx].at
+  </div>
 </div>
 
 <div>
@@ -800,7 +804,7 @@ import $ from "//kooiinc.github.io/JQx/Bundle/jqx.min.js";
 </template>
 
 <template data-id="instance_setData" class="instance_setData" data-is-deprecated="false">
-<div data-params='[{"keyValuePairs":"Object<string, string>"}]'></div>
+<div data-params='[{"spec":"object<string, string>"}]'></div>
 <div data-return-value='JQx Instance'></div>
 <div data-text='1'><div>Set data-attribute(s) for each element of the the JQx Instance element collection. The attributes must be key-value pairs.</div>
 
@@ -1013,7 +1017,7 @@ function createTimedPopup(content, timeout, callback) {
 
 <template data-id="static_createStyle" class="static_createStyle" data-is-deprecated="true">
 <div data-params='[{"id":"string"}]'></div>
-<div data-return-value='Function.'></div>
+<div data-return-value='function'></div>
 <div data-text='1'><!--DEPRECATED-->
 
 <div>
@@ -1295,7 +1299,7 @@ In html and css a data-attribute like <code>helloWorld</code> will show up as <c
 
 <template data-id="instance_Style" class="instance_Style" data-is-deprecated="false">
 <div data-params='None'></div>
-<div data-return-value='Nothing'></div>
+<div data-return-value='Object'></div>
 <div data-text='1'><div>Delivers a utility object to manipulate styling of a JQx instance (element collection) or retrieve computed style value(s) from the first element of the element collection.</div>
 
 <div>The available methods:</div>
@@ -1416,7 +1420,7 @@ So removal of <code>.test1, test2 {...}</code> will fail using <code>$.removeCss
 
 <template data-id="static_lenient" class="static_lenient" data-is-deprecated="false">
 <div data-params='None'></div>
-<div data-return-value='{on, off}'></div>
+<div data-return-value='{on: function, off: function}'></div>
 <div data-text='1'><div>
   A few HTML tags are prohibited (e.g. <code>script</code>). One can override it using
   <code>$.lenient</code>. It is an <code>Object</code> with two methods:
@@ -1451,7 +1455,7 @@ So removal of <code>.test1, test2 {...}</code> will fail using <code>$.removeCss
 
 <template data-id="static_at" class="static_at" data-is-deprecated="false">
 <div data-params='None'></div>
-<div data-return-value='n/a'></div>
+<div data-return-value='Object'></div>
 <div data-text='1'><div>
   <code>at</code> is an <code>Object</code> containing eight properties to use for
   mapping a created elements' position relative to its parent, 
@@ -1562,10 +1566,11 @@ So removal of <code>.test1, test2 {...}</code> will fail using <code>$.removeCss
 </template>
 
 <template data-id="instance_renderTo" class="instance_renderTo" data-is-deprecated="false">
-<div data-params='[{"root":"HTMLElement | JQx instance (default: document.body)"},{"at":"string"}]'></div>
+<div data-params='[{"root":"HTMLElement | JQx instance (default: document.body)"},{"position":"string"}]'></div>
 <div data-return-value='JQx instance'></div>
 <div data-text='1'><div>
-  <code>renderTo</code> writes the JQx instance to [root] at position [at]
+  <code>renderTo</code> writes the JQx instance to [root] at [position].
+  For [position], see <div class="linkLike" data-action="jump2Nav" data-jumpkey="static_at">[JQx].at</div>
 </div>
 <div>
   It is the equivalent of calling the
@@ -1573,7 +1578,9 @@ So removal of <code>.test1, test2 {...}</code> will fail using <code>$.removeCss
     >[instance].toDOM</div> function with parameters.
 </div>
 
-<div data-example>##EXAMPLECODE@renderToEx##</div></div>
+<div data-example>##EXAMPLECODE@renderToEx##</div>
+
+</div>
 </template>
 
 <template data-id="instance_node" class="instance_node" data-is-deprecated="false">
