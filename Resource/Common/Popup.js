@@ -77,19 +77,15 @@ export default function($) {
   }
 
   function genericPopupCloseHandler({evt}) {
-    if ( Object.keys(currentProps).length < 1 || !popupNode.open ) { return; }
-
-    if (evt.key === `Escape`) {
-      evt.preventDefault();
-    }
-
-    currentProps.activeTimer && clearTimeout(currentProps.activeTimer);
-
-    if (evt.target.closest(`#closeHandleIcon`) || !evt.target.closest(`#jqxPopupContent`)) {
-      initHidePopup();
-    }
+    if ( Object.keys(currentProps).length < 1 || !popupNode.open ||
+      (evt.type === `keydown` && evt.key !== `Escape`) ) { return; }
     
-    return true;
+    if (evt.key === `Escape` && currentProps.modal) { evt.preventDefault(); }
+    
+    if (evt.target.closest(`#closeHandleIcon`) || !evt.target.closest(`#jqxPopupContent`)) {
+      currentProps.activeTimer && clearTimeout(currentProps.activeTimer);
+      return initHidePopup();
+    }
   }
 
   function createTimer(callback, seconds) {
