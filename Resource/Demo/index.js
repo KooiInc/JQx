@@ -74,7 +74,7 @@ if (!debug) {
 
   // <notallowed> is ... well ... not allowed, so will be removed
   // styles inline
-  $([`<notallowed id="removal_imminent"></notallowed>`,
+  $([`<notallowed id="will_not_be_created"></notallowed>`,
     `<div>Hi 2</div>`])
     .text(` [Hey! You can click AND hover me! (see log)]`, true)
     .style({color: `red`, marginTop: `0.7rem`, cursor: `pointer`})
@@ -166,6 +166,8 @@ if (!debug) {
   $.fn(`cbBox`, checkboxBox);
   // the actual custom function
   function checkboxBox(me, spec) {
+    // note: the originating element will be converted to
+    // a div if it is not a div or p element
     me = !$.IS(me, HTMLDivElement, HTMLParagraphElement) ? $.div(me.html()) : me;
     me.data.set({checkboxContainer: 1});
     let {opts, selectallBttn, optLines, style, boxId} = spec;
@@ -313,7 +315,7 @@ if (!debug) {
   }
   
   // example of custom function 'cbBox'
-  $.div({class: "cbBoxEx"},
+  $.span({class: "cbBoxEx"},
       $.div(`The following box ('<b>Which colors ...</b>') is created from a <i>custom</i> function
         created with <code>$.fn</code>,<br>called <code>cbBox</code>
         (say, a "mini library" for checkboxes).`),
