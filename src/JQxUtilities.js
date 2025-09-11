@@ -9,7 +9,7 @@ import {
 } from "../Resource/Common/Utilities.js"
 
 export {
-  addHandlerId, after, applyStyle, assignAttrValues, before, checkProp, cleanupHtml, clearAllTimers, cloneAndDestroy,
+  after, applyStyle, assignAttrValues, before, checkProp, cleanupHtml, clearAllTimers, cloneAndDestroy,
   convert2Bool, createElementFromHtmlString, css, datasetKeyProxy, ElemArray2HtmlString, emptyElement, escHtml,
   ExamineElementFeatureFactory, findParentScrollDistance, getHandlerName, HandlerFactory, inject2DOMTree,
   input2Collection, insertPositions, IS, isArrayOfHtmlElements, isArrayOfHtmlStrings, isCommentOrTextNode,
@@ -39,17 +39,11 @@ function setCollectionFromCssSelector(input, root, self) {
     : errorStr ?? `CSS querySelector "${input}", output ${collectionLen} element${collectionLen > 1 ? `s` : ``}`;
 }
 
-function  addHandlerId(instance) {
-  const handleId = `anonymous_${Math.random().toString(36).slice(2)}`;
-  instance.data.add({hid: handleId});
-  return `[data-hid="${handleId}"]`;
-}
-
 function selectedFactoryHelpers() {
   return {
     isCommentOrTextNode, isNode, isComment, isText, isHtmlString, isArrayOfHtmlElements,
     isArrayOfHtmlStrings, ElemArray2HtmlString, input2Collection, setCollectionFromCssSelector,
-    addHandlerId, cssRuleEdit: styleFactory({createWithId: `JQxStylesheet`}) };
+    cssRuleEdit: styleFactory({createWithId: `JQxStylesheet`}) };
 }
 
 function ExamineElementFeatureFactory() {

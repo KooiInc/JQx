@@ -8,7 +8,7 @@ import allMethodsFactory from "./JQxInstanceMethods.js";
 let instanceGetters, instanceMethods;
 const {
   isComment, isText, isHtmlString, isArrayOfHtmlElements, isArrayOfHtmlStrings,
-  ElemArray2HtmlString, addHandlerId, cssRuleEdit, addFn
+  ElemArray2HtmlString, cssRuleEdit, addFn
 } = selectedUtilitiesFactory();
 
 export { proxify, addJQxStaticMethods };
