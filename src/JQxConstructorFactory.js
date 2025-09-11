@@ -46,11 +46,14 @@ function JQxMainFactory() {
       if (instance.collection.length > 0) {
         const errors = instance.collection.filter( el => el?.dataset?.jqxcreationerror );
         instance.collection = instance.collection.filter(el => !el?.dataset?.jqxcreationerror);
+        const elemsCreated = instance.collection.map(el => `${String(el.constructor).split(/function|\(/)[1].trim()}`);
+        const multiple = elemsCreated.length > 1;
         const collectionLog = instance.collection.length
-          ? instance.collection.map(el => `${String(el.constructor).split(/function|\(/)[1].trim()}`).join(` | `)
+          ? elemsCreated.join(`, `)
           : "sanitized: no elements remaining";
         
-        systemLog.log(`JQx: created ${instance.isVirtual ? `(virtual)` : ``} instance from HTML string ([${collectionLog}])`);
+        systemLog.log(`JQx: created ${instance.isVirtual ? `(virtual)` : ``} instance from ` +
+          `${multiple ? `array of ` : ``}HTML string${multiple ? `s` : ``} (${collectionLog})`);
         
         if (!instance.isVirtual) {
           inject2DOMTree(instance.collection, root, position);

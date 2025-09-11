@@ -1,4 +1,4 @@
-import { IS, isNonEmptyString, getCaptureValue, getHandlerName, handlerIdCache } from "./Utilities.js";
+import {IS, isNonEmptyString, getCaptureValue, getHandlerName, handlerIdCache, systemLog} from "./Utilities.js";
 
 export { HandlerFactory  };
 
@@ -55,7 +55,7 @@ function HandlerFactory(jqx) {
       delete store[eventType][name];
       delete handlerIdCache[name];
       
-      console.warn(`Removed listener [${name}] for event type [${eventType}].`);
+      systemLog.warn(`Removed listener [${name}] for event type [${eventType}].`);
     }
   }
   
@@ -73,6 +73,7 @@ function HandlerFactory(jqx) {
     
     switch(true) {
       case !store[type][handlerName]:
+        systemLog.log(`JQx: created listener for event type ${type}, with handler name ${handlerName}`);
         store[type][handlerName] = {
           name: handlerName,
           handler: wrapFn4Selector(handler, selector, once, handlerName),
