@@ -400,7 +400,6 @@ function instanceExtensionsFactory(jqx) {
       return instance;
     },
     remove(instance, selector) {
-      systemLog.log(`remove ${truncateHtmlStr(instance.HTML.get(1), 40)}${selector ? ` /w selector ${selector}` : ``}`);
       const remover = el => el.remove();
       const removeFromCollection = () =>
         instance.collection = instance.collection.filter(el => document.documentElement.contains(el));

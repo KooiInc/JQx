@@ -32,7 +32,7 @@ function setCollectionFromCssSelector(input, root, self) {
   let errorStr = undefined;
 
   try { self.collection = [...selectorRoot.querySelectorAll(input)]; }
-  catch (err) { errorStr = `Invalid CSS querySelector. [${!IS(input, String) ? `Nothing valid given!` : input}]`; }
+  catch (err) { errorStr = `JQx: Invalid CSS querySelector. [${!IS(input, String) ? `Not a string!` : input}]`; }
   const collectionLen = self.collection.length;
   return collectionLen < 1
     ? `CSS querySelector "${input}", output: nothing`
