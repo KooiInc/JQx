@@ -418,12 +418,14 @@ if (!debug) {
 // class: `language-javascript`
 async function injectCode(root = document.body) {
   return await fetch("./index.js").then(r => r.text())
-    .then(r =>
-        DIV({ class: `upDownFader`, id: `code` },
-          $.pre({ data: {jsViewBox: true}, class: `language-javascript` },
-            $.code(r.replace(/&/g, "&amp;").replace(/</g, "&lt;"))
-          ) ).renderTo(root, $.at.beforeend)
-    ).then(_ => setTimeout(hljs.highlightAll));
+    .then(r => {
+      const lns = r.split(`\n`).filter(v => v.trim().length > 0).length;
+      DIV({class: `upDownFader`, id: `code`},
+        $.pre({data: {jsViewBox: true}, class: `language-javascript`},
+          $.code(r.replace(/&/g, "&amp;").replace(/</g, "&lt;") +
+            `\n// ${lns} lines`)
+        ) ).renderTo(root, $.at.beforeend)
+    }).then(_ => setTimeout(hljs.highlightAll));
 }
 
 // create a few delegated handler methods
