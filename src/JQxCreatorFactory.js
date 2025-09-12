@@ -84,18 +84,12 @@ function allowances(jqx) {
       const webComponentTagName = isWebComponent && tagName;
       tagName =  isWebComponent ? toCamelcase(tagName) : tagName.toLowerCase();
       tagLib.allowTag(tagName);
-
-      if (!IS(jqx[tagName], Function)) {
-        Object.defineProperties( jqx, addGetters(tagName, true, jqx, webComponentTagName) );
-      }
+      Object.defineProperties( jqx, addGetters(tagName, true, jqx, webComponentTagName) );
     },
     prohibit(tagName) {
       tagName = tagName.toLowerCase();
       tagLib.prohibitTag(tagName);
-
-      if (IS(jqx[tagName], Function)) {
-        Object.defineProperties( jqx, addGetters(tagName, false, jqx) );
-      }
+      Object.defineProperties( jqx, addGetters(tagName, false, jqx) );
     }
   }
 }
@@ -143,10 +137,10 @@ function tagGetterFactory(tagName, cando, jqx, webComponentTagName) {
   return {
     get() {
       return (...args) => {
-        systemLog.log(cando
+        systemLog.log( cando
           ? `JQx: created (virtual) instance from [JQx].${tagName}`
-          : `Could not create instance from [JQx].${tagName}`);
-        return cando && jqx.virtual(cleanupHtml($T[tagName](...args)));
+          : `JQx: ${tagName.toUpperCase()} is prohibited. Use [JQx].allowTag if necessary.`);
+        return cando && jqx.virtual(cleanupHtml($T[tagName](...args))) || undefined;
       }
     },
     enumerable: false,
@@ -170,7 +164,7 @@ function defaultStaticMethodsFactory(jqx) {
 
 function staticTagsLambda(jqx) {
   return function(acc, [tag, cando]) {
-    cando && Object.defineProperties( acc, addGetters(tag, cando, jqx) );
+    Object.defineProperties( acc, addGetters(tag, cando, jqx) );
     return acc;
   }
 }
@@ -186,7 +180,6 @@ function delegateFactory(listen) {
   }
 }
 
-/* region __WIP */
 function delegateCaptureFactory(handlerWrapper) {
   return function(spec) {
     let {type, types, origin, selector, handler, handlers, node, name, capture, once, about} = spec;
@@ -219,7 +212,6 @@ function assignListeners(handlerFns, params, handlerWrapper) {
     handlerWrapper.listen({...params, handler});
   }
 }
-/* endregion __WIP */
 
 function getNamedListenerFactory(jqx) {
   return function(type, name) {
