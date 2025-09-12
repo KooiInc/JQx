@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-09-10 11:44:11 UTC-->
+<!-- Generated file, last update 2025-09-12 07:57:13 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -1908,16 +1908,17 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
       is possible.
     </li>
     <li>
-      All JQx actions are logged and saved to the backLog. 
+      All JQx actions are logged and saved to the backLog.
       When logging is enabled (<code>logger.on</code>), <b><i>every</i></b>
-      JQx action <i>is printed to the console</i>.
+      JQx action <i>is printed to the console</i>. Otherwise, the log is stored
+      in memory and retrievable using <code>[JQx].logger.backLog</code>.
       <div>
         The <code>on</code> and <code>off</code> getters return the logger,
         so you can use <code>[JQx].logger.on.log("...").off</code>
         to log once.
         <div>
           This is actually what <code>[JQX].log</code> does.
-        </div> 
+        </div>
        </div>
     </li>
   </ul> 
