@@ -87,7 +87,7 @@ function wrapAllClientMethods(clickActions) {
   
   function actionsWrapperFactory(fn) {
     function isInPlace(evt) {
-      return !$(evt.target.closest(`.exContainer`)).find$(`.inlineExampleHeader`).is.empty
+      return !$(evt.target?.closest(`.exContainer`))?.find$(`.inlineExampleHeader`).is.empty
         && evt.target.dataset?.action !== `removeExmple`
         && evt.target.dataset?.action !== `stopExampleCounter`
     }
