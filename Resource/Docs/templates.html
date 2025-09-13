@@ -1,11 +1,16 @@
-<!-- Generated file, last update 2025-09-13 07:33:11 UTC-->
+<!-- Generated file, last update 2025-09-13 08:41:03 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
 <div data-text='1'><div>
-<h3>Why JQx?</div>
-This module was inspired by the idea that some JQuery was too good
-<a target="_blank" href="https://youmightnotneedjquery.com/" rel="nofollow">to ditch</a>.
+  <h3>Why JQx?</h3>
+</div>
+
+<div>
+  This module was inspired by the idea that some JQuery was too good
+  <a target="_blank" href="https://youmightnotneedjquery.com/" rel="nofollow"
+   >to ditch</a>.
+</div>
 
 <div>It is <i><b>not</b></i> a replacement for
 <a target="_blank" href="https://github.com/jquery/jquery">JQuery</a>. Consider JQx a subset of
@@ -36,20 +41,19 @@ chapters:
 
 <ul>
 <li>
-  <div data-action="jump2Nav" data-jumpgroup="static" class="linkLike">STATIC</div
-  >: static methods/properties of the JQx module;
+  <div data-action="jump2Nav" data-jumpgroup="static" class="linkLike">
+   STATIC</div>: static methods/properties of the JQx module;
 </li>
 <li>
-  <div data-action="jump2Nav" data-jumpgroup="instance" class="linkLike">INSTANCE</div
-  >: all methods/properties applicable to a JQx <i>instance</i>;
+  <div data-action="jump2Nav" data-jumpgroup="instance" class="linkLike">INSTANCE</div>: 
+    all methods/properties applicable to a JQx <i>instance</i>;
 </li>
 <li>
-  <div data-action="jump2Nav" data-jumpgroup="popup" class="linkLike">POPUP</div
-  >: JQx includes a module to create (modal) popup messages;
+  <div data-action="jump2Nav" data-jumpgroup="popup" class="linkLike">POPUP</div>: 
+    JQx includes a module to create (modal) popup messages;
 </li>
 </ul>
 
-<div>
 <h3>JQx instance creation/retrieval</h3>
 
 <div class="note"><b>Note</b>: For this document JQx is imported as <code><b>$</b></code> (so
@@ -920,47 +924,52 @@ When <code>indexOrSelector</code> has a value, retrieves the first matching elem
 <template data-id="popup_About" class="popup_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
-<div data-text='1'><div>Popup is a small module for creating (modal) popups. By default it is not initialized.</div> 
+<div data-text='1'><div data-text="1">
+    <div>
+      Popup is a small module for creating (modal) popups. By default it is not initialized.
+    </div>
 
-<div>
-  You can initialize it using the <code>Popup</code> getter: <code>const popup = [JQx].Popup</code>,   
-  or use it directly (<code>[JQx].Popup.show(...)</code>).
-</div>
+    <div>
+      You can initialize it using the <code>Popup</code> getter: <code>const popup =
+      [JQx].Popup</code>, or use it directly (<code>[JQx].Popup.show(...)</code>).
+    </div>
 
-<div>
-  The (renewed) <code>Popup</code> module uses a 
-  <a target="_blank" 
-     href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog"
-  >dialog</a> element. A (non modal) popup box can be closed by pressing &lt;ESC>, or clicking
-  the checkmark icon (top right) or anywhere outside the box.
-</div>
+    <div>
+      The (renewed) <code>Popup</code> module uses a 
+      <a target="_blank" 
+          href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog"
+      >dialog</a> element. A (non modal) popup box can be closed by pressing &lt;ESC>, 
+      or clicking the checkmark icon (top right) or anywhere outside the box.
+    </div>
 
-<div class="note">
-  <b>Notes</b>: 
-  <ul>
-    <li> the earlier deprecated methods (<code>create</code>, <code>createTimed</code>)
-      are now removed.</li>
-      <div>
-        You can of course create your own popup methods, for example:
-      </div>
+    <div class="note">
+      <b>Notes</b>:
+      <ul>
+        <li> 
+          the earlier deprecated methods (<code>create</code>, <code>createTimed</code>) are 
+          now removed.
+        
+        <div>
+          You can of course create your own popup methods, for example:
+        </div>
 
-<div data-example>
-  function createPopup(content, callback) {
-    return $.Popup.show({content, callback })
-}
+        <div data-example>
+          function createPopup(content, callback) { return $.Popup.show({content, callback }) }
 
-function createTimedPopup(content, timeout, callback) {
-  return $.Popup.show({content, callback, closeAfter: timeout})
-}
-</div>
-    <li>
-      A tryout of this Popup functionallity can be found @ 
-      <a target="_blank" href="https://stackblitz.com/edit/js-gmevhhev?file=index.js" 
-        rel="nofollow">Stackblitz</a>.</li>
-  <ul>
-</div>
+          function createTimedPopup(content, timeout, callback) { return $.Popup.show({content,
+          callback, closeAfter: timeout}) }
+        </div>
+        </li>
+        
+        <li>
+          A tryout of this Popup functionallity can be found @
+          <a target="_blank" href="https://stackblitz.com/edit/js-gmevhhev?file=index.js"
+             rel="nofollow">Stackblitz</a>.
+        </li>
+      </ul>
+    </div>
 
-</div>
+  </div></div>
 </template>
 
 <template data-id="popup_removeModal" class="popup_removeModal" data-is-deprecated="false">
@@ -1738,7 +1747,7 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
       <div class="note"><b>Note</b>: 
         the name should be unique. If no name was provided, a unique name 
         will be created.
-      <div>See the example.
+      <div>See the example.</div>
      </div>
   </li>
 
@@ -1760,32 +1769,30 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
   <details>
   <summary>
     A note about <i>non bubbling</i> event types
-    </span>
   </summary>
   <div>
       <a target="_blank" href="https://en.wikipedia.org/wiki/DOM_events"
       >non bubbling events</a> are always delegated using <code>{capture: true}</code>.
-  <div>
+  </div>
   <div>The event types concerned are:</div>
-  <ul>
-    <li><code>load</code></li>
-    <li><code>unload</code></li>
-    <li><code>scroll</code></li>
-    <li><code>focus</code></li>
-    <li><code>blur</code></li>
-    <li><code>DOMNodeRemovedFromDocument</code></li>
-    <li><code>DOMNodeInsertedIntoDocument</code></li>
-    <li><code>loadstart</code></li>
-    <li><code>progress</code></li>
-    <li><code>error</code></li>
-    <li><code>abort</code></li>
-    <li><code>load</code></li>
-    <li><code>loadend</code></li>
-    <li><code>pointerenter</code></li>
-    <li><code>pointerleave</code></li>
-    <li><code>readystatechange</code></li>
-  </ul>
-  </div> 
+    <ul>
+      <li><code>load</code></li>
+      <li><code>unload</code></li>
+      <li><code>scroll</code></li>
+      <li><code>focus</code></li>
+      <li><code>blur</code></li>
+      <li><code>DOMNodeRemovedFromDocument</code></li>
+      <li><code>DOMNodeInsertedIntoDocument</code></li>
+      <li><code>loadstart</code></li>
+      <li><code>progress</code></li>
+      <li><code>error</code></li>
+      <li><code>abort</code></li>
+      <li><code>load</code></li>
+      <li><code>loadend</code></li>
+      <li><code>pointerenter</code></li>
+      <li><code>pointerleave</code></li>
+      <li><code>readystatechange</code></li>
+    </ul>
   </details>
 
 </div>
@@ -1846,6 +1853,7 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 <div>
   The example demonstrates two ways to remove listeners, and a way
   to determine the existence of a certain (named) listener.
+</div>
 
 <div data-example>##EXAMPLECODE@getNamedListenerEx##</div>
 
