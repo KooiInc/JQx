@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-09-12 07:57:13 UTC-->
+<!-- Generated file, last update 2025-09-13 07:33:11 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -1885,32 +1885,21 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
   <b>Notes</b>: 
   <ul>
     <li>
-      Every log line is prefixed with the exact time of logging.
+      Every JQx log line is prefixed with the exact time of logging.
     </li>
-    <li>JQx error messages are <i>always</i> logged in the console</li>
+    <li>JQx error - and warn messages and are <i>always</i> logged to the console</li>
     <li>
-      The backLog is an array of everything logged, in a reversed order (latest first). 
-      <div>
-        It may contain HTML strings. When you want to display
-        entries within the document, the HTML of the entries should be (html-)escaped.
-      </div>
-      <div>
-        You can use 
-         <div 
-           class="linkLike" 
-           data-action="jump2Nav" 
-           data-jumpkey="static_escHtml">[JQx].escHtml
-         </div> for that. See the example.
-      </div>
+      The backLog is an array of everything logged by JQx in a reversed order (latest first).
     </li>
     <li>
       All properties except <code>backLog</code> return the logger, so chaining 
       is possible.
     </li>
     <li>
-      All JQx actions are logged and saved to the backLog.
+      JQx instance - and listener creation actions are by default logged and 
+      saved to the backLog.
       When logging is enabled (<code>logger.on</code>), <b><i>every</i></b>
-      JQx action <i>is printed to the console</i>. Otherwise, the log is stored
+      logged line <i>is printed to the console</i>. Otherwise, the log is stored
       in memory and retrievable using <code>[JQx].logger.backLog</code>.
       <div>
         The <code>on</code> and <code>off</code> getters return the logger,
