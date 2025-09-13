@@ -1,5 +1,5 @@
 import {
-  IS, isNode, truncateHtmlStr, ExamineElementFeatureFactory,
+  IS, isNode, ExamineElementFeatureFactory,
   isNonEmptyString, toDashedNotation, escHtml, systemLog, insertPositions,
   datasetKeyProxy, loop, cloneAndDestroy, setData, before, after,
   findParentScrollDistance, emptyElement, checkProp, css, assignAttrValues,
@@ -522,7 +522,7 @@ function instanceExtensionsFactory(jqx) {
       return [...instance.collection].map(el => document.importNode(el, true));
     },
     trigger(instance, evtType, SpecifiedEvent, options) {
-      SpecifiedEvent = /Event\]$/.test(IS(SpecifiedEvent)) ? SpecifiedEvent : Event;
+      SpecifiedEvent = /Event]$/.test(IS(SpecifiedEvent)) ? SpecifiedEvent : Event;
       options = IS(options, Object) ? { ...options, bubbles: options.bubbles??true} : {bubbles: true};
       
       if (!instance.is.empty) {
