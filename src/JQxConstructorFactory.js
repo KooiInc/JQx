@@ -63,8 +63,7 @@ function JQxMainFactory() {
       return proxify(instance);
     }
     
-    const forLog = setCollectionFromCssSelector(input, root, instance);
-    input !== null && systemLog.log(`JQx: input => ${forLog}`);
+    setCollectionFromCssSelector(input, root, instance);
     return proxify(instance);
   }
 }

@@ -29,14 +29,8 @@ function loop(instance, callback) {
 
 function setCollectionFromCssSelector(input, root, self) {
   const selectorRoot = root !== document.body && (IS(input, String) && input.toLowerCase() !== "body") ? root : document;
-  let errorStr = undefined;
-
   try { self.collection = [...selectorRoot.querySelectorAll(input)]; }
-  catch (err) { errorStr = `JQx: Invalid CSS querySelector. [${!IS(input, String) ? `Not a string!` : input}]`; }
-  const collectionLen = self.collection.length;
-  return collectionLen < 1
-    ? `CSS querySelector "${input}", output: nothing`
-    : errorStr ?? `CSS querySelector "${input}", output ${collectionLen} element${collectionLen > 1 ? `s` : ``}`;
+  catch (err) { systemLog.warn(`JQx: Invalid CSS querySelector. [${!IS(input, String) ? `Not a string!` : input}]`); }
 }
 
 function selectedFactoryHelpers() {
