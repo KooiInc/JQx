@@ -167,10 +167,10 @@ function systemLogFactory() {
   }
   
   function log(...args) {
-    if (disabled) { return; }
-    backLog.unshift(...args.map(arg => `${logTime()} ✔ ${decodeForConsole(arg)}`));
+    const entryTxt = args.map(arg => `${logTime()} ✔ ${decodeForConsole(arg)}`);
+    !disabled && backLog.unshift(...entryTxt);
     switch(on) {
-      case true: console.log(backLog.slice(0, args.length).join(`\n`));
+      case true: console.log(entryTxt.join(`\n`));
       default: return systemLogger;
     }
   }
