@@ -6,7 +6,6 @@ const $ = (await import(libLink)).default;
 const started = performance.now();
 const debug = false;
 const isGithub = /github/i.test(location.href);
-
 injectFavIcon();
 
 // initialize styling for this page
@@ -51,7 +50,7 @@ if (!debug) {
   // create the header content
   DIV( { id: `StyledPara`, class: `thickBorder` },
     H2( `Demo & test JQueryLike (JQx) library`),
-    SPAN( I( B( {class: `attention`}, U(`Everything`) ) ),
+    SPAN(I( B( {class: `attention`}, U(`Everything`) ) ),
       ` on this page was dynamically created using JQx.`),
     P( B({class: `arrRight`, html: `&#8594;`}, ),
       ` Check the HTML source &mdash; right click anywhere, and select 'View page source'.`)
