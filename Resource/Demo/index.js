@@ -3,6 +3,7 @@ const isDev = /dev|local/i.test(location.href);
 const testBndl = false;
 const libLink = !testBndl && isDev ? "../../index.js" : "../../Bundle/jqx.min.js";
 const $ = (await import(libLink)).default;
+$.logger.disable;
 const started = performance.now();
 const debug = false;
 const isGithub = /github/i.test(location.href);

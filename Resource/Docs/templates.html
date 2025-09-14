@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-09-14 10:38:57 UTC-->
+<!-- Generated file, last update 2025-09-14 13:47:41 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -1863,7 +1863,7 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 
 <template data-id="static_logger" class="static_logger" data-is-deprecated="false">
 <div data-params='None'></div>
-<div data-return-value='{on, off, backLog, log, error, warn}'></div>
+<div data-return-value='{on, off, backLog, log, error, warn, enable, disable}'></div>
 <div data-text='1'><div>
   <code>[JQx].logger</code> controls logging to the console. 
   JQx actions and custom logged messages are logged to a <code>backLog</code> store.
@@ -1876,6 +1876,17 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
   </li>
   <li>
     <code>logger.off</code>: (getter) disable logging.
+  </li>
+  <li>
+    <code>logger.disable</code>: (getter) disable logging to the backlog.
+     By default all JQx actions are logged. <code>logger.disable</code>
+     will switch this off (user induced logging will still be possible,
+     but it will not be added to the backlog).
+     <div class="note"><b>Note</b>: warnings and errors are always 
+       added to the backlog.
+  </li>
+  <li>
+    <code>logger.enable</code>: (getter) enable all logging to the backlog.
   </li>
   <li>
     <code>logger.log(...line)</code>: 
