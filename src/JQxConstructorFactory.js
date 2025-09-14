@@ -2,7 +2,8 @@ import { proxify, addJQxStaticMethods } from "./JQxCreatorFactory.js";
 import {
   isHtmlString, isArrayOfHtmlStrings, isArrayOfHtmlElements,
   input2Collection, setCollectionFromCssSelector, IS, systemLog,
-  insertPositions, inject2DOMTree, createElementFromHtmlString
+  insertPositions, inject2DOMTree, createElementFromHtmlString,
+  getNodeContentForLog,
 } from "./JQxUtilities.js";
 
 export default addJQxStaticMethods(JQxMainFactory());
@@ -48,22 +49,31 @@ function JQxMainFactory() {
         instance.collection = instance.collection.filter(el => !el?.dataset?.jqxcreationerror);
         const elemsCreated = instance.collection.map(el => `${String(el.constructor).split(/function|\(/)[1].trim()}`);
         const multiple = elemsCreated.length > 1;
+        instance = proxify(instance);
         const collectionLog = instance.collection.length
-          ? elemsCreated.join(`, `)
+          ? getNodeContentForLog(instance)
           : "sanitized: no elements remaining";
         
         systemLog.log(`JQx: created ${instance.isVirtual ? `(virtual)` : ``} instance from ` +
-          `${multiple ? `array of ` : ``}HTML string${multiple ? `s` : ``} (${collectionLog})`);
+          `${multiple ? `array of ` : ``}HTML string${multiple ? `s` : ``} ${collectionLog}`);
         
         if (!instance.isVirtual) {
           inject2DOMTree(instance.collection, root, position);
         }
       }
       
-      return proxify(instance);
+      return instance;
     }
     
     setCollectionFromCssSelector(input, root, instance);
     return proxify(instance);
+  }
+}
+
+function _getNodeContentForLog(instance) {
+  if (instance.node) {
+    return IS(instance.node, Comment)
+      ? `<!--${instance.node.textContent}-->`
+      :  instance.HTML.get(1).split(`>`)[0] + `>...`
   }
 }

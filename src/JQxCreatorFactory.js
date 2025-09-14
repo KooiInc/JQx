@@ -2,6 +2,7 @@ import {
   randomString, toDashedNotation, IS, tagFNFactory as $T, styleFactory, toCamelcase, systemLog,
   escHtml, isNonEmptyString, resolveEventTypeParameter, selectedFactoryHelpers, insertPositions,
   cleanupHtml, PopupFactory, tagLib, HandlerFactory, clearAllTimers, convert2Bool,
+  getAttributesForLogging,
 } from "./JQxUtilities.js";
 import allMethodsFactory from "./JQxInstanceMethods.js";
 
@@ -137,10 +138,14 @@ function tagGetterFactory(tagName, cando, jqx, webComponentTagName) {
   return {
     get() {
       return (...args) => {
+        const instance = cando && jqx.virtual(cleanupHtml($T[tagName](...args))) || undefined;
+        const isElem = !IS(instance?.node, Comment, Text, undefined);
+        let reportIdOrClass = isElem ? getAttributesForLogging(instance) : ``;
+        
         systemLog.log( cando
-          ? `JQx: created (virtual) instance from [JQx].${tagName}`
+          ? `JQx: created (virtual) instance from [JQx].${tagName} ${reportIdOrClass}`
           : `JQx: ${tagName.toUpperCase()} is prohibited. Use [JQx].allowTag if necessary.`);
-        return cando && jqx.virtual(cleanupHtml($T[tagName](...args))) || undefined;
+        return instance;
       }
     },
     enumerable: false,

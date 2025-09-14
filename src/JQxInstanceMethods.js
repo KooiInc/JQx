@@ -211,7 +211,7 @@ function instanceExtensionsFactory(jqx) {
       }
     },
     attr(instance, keyOrObj, value) {
-      if (!instance.node) { return instance }
+      if (!instance.node || IS(instance.node, Text, Comment)) { return instance }
 
       if (!value && isNonEmptyString(keyOrObj)) {
         keyOrObj = toDashedNotation(keyOrObj);
@@ -219,7 +219,7 @@ function instanceExtensionsFactory(jqx) {
         if (keyOrObj === `class`) {
           return [...instance.node.classList]?.join(` `);
         }
-
+        
         return instance.node.getAttribute(keyOrObj);
       }
 

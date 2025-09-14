@@ -33,10 +33,10 @@ const handlerIdCache = {};
 export {
   after, applyStyle, assignAttrValues, ATTRS, before, checkProp, cleanupHtml, clearAllTimers, cloneAndDestroy,
   convert2Bool, createElementFromHtmlString, datasetKeyProxy, ElemArray2HtmlString, emptyElement, escHtml,
-  findParentScrollDistance, getCaptureValue, getHandlerName, HandlerFactory, handlerIdCache, inject2DOMTree,
-  input2Collection, insertPositions, IS, isArrayOfHtmlElements, isArrayOfHtmlStrings, isComment, isCommentOrTextNode,
-  isHtmlString, isModal, isNode, isNonEmptyString, isText, isVisible, isWritable, logTime, maybe, pad0,
-  PopupFactory, randomNr, randomString, resolveEventTypeParameter, setData, styleFactory, systemLog,
+  findParentScrollDistance, getAttributesForLogging, getCaptureValue, getHandlerName, HandlerFactory, handlerIdCache,
+  inject2DOMTree, input2Collection, insertPositions, IS, isArrayOfHtmlElements, isArrayOfHtmlStrings, isComment,
+  isCommentOrTextNode, isHtmlString, isModal, isNode, isNonEmptyString, isText, isVisible, isWritable, logTime, maybe,
+  pad0,PopupFactory, randomNr, randomString, resolveEventTypeParameter, setData, styleFactory, systemLog,
   tagFNFactory, tagLib, toCamelcase, toDashedNotation, truncate2SingleStr, truncateHtmlStr, ucFirst,
 };
 
@@ -48,6 +48,23 @@ function clearAllTimers() {
 function getHandlerName(name) {
   const validName = isNonEmptyString(name) && !/^handler|handlers$/gi.test(name.trim())
   return validName ? name.trim() : uniqueHandlerID();
+}
+
+function getAttributesForLogging(instance) {
+  const isElem = !!instance.node && !IS(instance, Text, Comment);
+  switch(true) {
+    case isElem:
+      const dataset = instance.node.dataset ? Object.keys(instance.node.dataset)
+        .map(v => `[data-${v}]`) : [];
+      const relevantAttrs = [
+        instance.attr(`id`) && `#${instance?.attr(`id`)}` || undefined,
+        instance.attr(`class`) && instance?.attr(`class`).split(` `).map(v => `.${v}`).join(', ') || undefined,
+        dataset.length > 0 && dataset.join(`, `) || undefined,
+      ];
+      const attrs = relevantAttrs.filter(v => !!v).join(`, `) || [];
+      return attrs.length ? `(${attrs})` : ``;
+    default: return ``;
+  }
 }
 
 function uniqueHandlerID(idCache) {
@@ -118,13 +135,24 @@ function decodeForConsole(something) {
 }
 
 function systemLogFactory() {
-  let on = false;
+  let [on, disabled] = [false, false];
+  
   const backLog = [];
   const systemLogger = {
     get on() { on = true; return systemLogger; },
     get off() { on = false; return systemLogger; },
+    get disable() { disabled = true; return systemLogger; },
+    get enable() { disabled = false; return systemLogger; },
     get backLog() { return backLog; },
   };
+  
+  function disable() {
+    disabled = true;
+  }
+  
+  function enable() {
+    disabled = false;
+  }
   
   function error(...args) {
     backLog.unshift(...args.map(arg => `${logTime()} ⨻ ${decodeForConsole(arg)}`));
@@ -139,6 +167,7 @@ function systemLogFactory() {
   }
   
   function log(...args) {
+    if (disabled) { return; }
     backLog.unshift(...args.map(arg => `${logTime()} ✔ ${decodeForConsole(arg)}`));
     switch(on) {
       case true: console.log(backLog.slice(0, args.length).join(`\n`));
