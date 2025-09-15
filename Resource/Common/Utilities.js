@@ -135,7 +135,7 @@ function decodeForConsole(something) {
 }
 
 function systemLogFactory() {
-  let [on, disabled] = [false, false];
+  let [on, disabled] = [false, true];
   
   const backLog = [];
   const systemLogger = {
