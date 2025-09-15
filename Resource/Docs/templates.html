@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-09-15 08:38:11 UTC-->
+<!-- Generated file, last update 2025-09-15 09:23:00 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -1871,8 +1871,8 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 
 <ul>
   <li>
-    <code>logger.on</code>: (getter) enable logging. When enabled, log entries are
-    written to the console.
+    <code>logger.on</code>: (getter) enable logging. When enabled, <i>all</i>
+    log entries are written to the console.
   </li>
   <li>
     <code>logger.off</code>: (getter) disable logging.
@@ -1888,22 +1888,28 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
 
     <div class="note"><b>Note</b>: by default, saving the logging to the 
      backlog is disabled, but warnings and errors are <i>always</i> 
-     added to the backlog. Furthermore, user logging (see 
+     added to the backlog. Furthermore, user logging to the console (see 
      <div class="linkLike" data-action="jump2Nav" 
-       data-jumpkey="static_log">[JQx].log</div>).
+       data-jumpkey="static_log">[JQx].log</div>) is always possible, but 
+       saving user logging to the backlog is dependent on the enabled state.
     </div>
   </li>
 
   <li>
     <code>logger.log(...line)</code>: 
-       (if enabled) log and store one or several [line]s to the console.
+      log to the console and (if enabled) store one or several [line]s to the backlog.
   </li>
   <li>
-    <code>logger.error(...line)</code>: log one or more [line]s as error(s) to the console.
+    <code>logger.error(...line)</code>: log one or more [line]s as error(s) 
+     to the console.
+  </li>
+  <li>
+    <code>logger.warn(...line)</code>: log one or more [line]s as warning(s) 
+     to the console.
   </li>
   <li>
     <code>logger.backLog</code>: returns array&lt;strings>. Retrieves all saved 
-    log entries (if logging is enabled).
+    log entries.
   </li>
 </ul>
 
