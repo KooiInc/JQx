@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-09-14 13:47:41 UTC-->
+<!-- Generated file, last update 2025-09-15 08:38:11 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -1878,16 +1878,22 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
     <code>logger.off</code>: (getter) disable logging.
   </li>
   <li>
-    <code>logger.disable</code>: (getter) disable logging to the backlog.
-     By default all JQx actions are logged. <code>logger.disable</code>
-     will switch this off (user induced logging will still be possible,
-     but it will not be added to the backlog).
-     <div class="note"><b>Note</b>: warnings and errors are always 
-       added to the backlog.
+    <code>logger.enable</code>: (getter) enable saving logging to an
+    in-memory <i>backlog</i>.
+    <div>When enabled, all JQx actions are saved to this backlog.</div>
   </li>
   <li>
-    <code>logger.enable</code>: (getter) enable all logging to the backlog.
+    <code>logger.disable</code>: (getter) disable saving 
+    logging to the backlog. This is the default.
+
+    <div class="note"><b>Note</b>: by default, saving the logging to the 
+     backlog is disabled, but warnings and errors are <i>always</i> 
+     added to the backlog. Furthermore, user logging (see 
+     <div class="linkLike" data-action="jump2Nav" 
+       data-jumpkey="static_log">[JQx].log</div>).
+    </div>
   </li>
+
   <li>
     <code>logger.log(...line)</code>: 
        (if enabled) log and store one or several [line]s to the console.
@@ -1896,7 +1902,8 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
     <code>logger.error(...line)</code>: log one or more [line]s as error(s) to the console.
   </li>
   <li>
-    <code>logger.backLog</code>: retrieves all log entries (array&lt;strings>).
+    <code>logger.backLog</code>: returns array&lt;strings>. Retrieves all saved 
+    log entries (if logging is enabled).
   </li>
 </ul>
 

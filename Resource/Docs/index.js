@@ -7,6 +7,7 @@ const importLink =  isDev ?
   `../../Bundle/jqx.min.js`;
 const $ = (await import(importLink)).default;
 window.$ = $;
+$.logger.enable;
 const perform = performance.now();
 const {componentStyle, clientHandling, allExampleActions, documentationTemplates, docContainer, orderedGroups}
   = await getVariablesInAllScopes();
