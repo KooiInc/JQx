@@ -50,7 +50,7 @@ function JQxMainFactory() {
         const elemsCreated = instance.collection.map(el => `${String(el.constructor).split(/function|\(/)[1].trim()}`);
         const multiple = elemsCreated.length > 1;
         instance = proxify(instance);
-        const collectionLog = instance.collection.length
+        const collectionLog = instance.collection.length > 0
           ? getNodeContentForLog(instance)
           : "sanitized: no elements remaining";
         

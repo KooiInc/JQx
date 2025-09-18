@@ -33,6 +33,7 @@ function getNodeContentForLog(instance) {
       ? `<!--${instance.node.textContent}-->`
       :  instance.HTML.get(1).split(`>`)[0] + `>...`
   }
+  return ``;
 }
 
 function setCollectionFromCssSelector(input, root, self) {
