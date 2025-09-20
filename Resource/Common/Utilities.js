@@ -257,16 +257,17 @@ function cloneAndDestroy(elem) {
 
 
 function isVisible(el) {
-  if (!el) { return undefined; }
+  if (!IS(el, HTMLElement)) { return undefined; }
   const elStyle = el.style;
   const computedStyle = getComputedStyle(el);
-  const invisible = [elStyle.visibility, computedStyle.visibility].includes("hidden");
-  const noDisplay = [elStyle.display, computedStyle.display].includes("none");
-  const hidden = el.hidden;
+  const invisible = !![elStyle.visibility, computedStyle.visibility].includes("hidden");
+  const noDisplay = !![elStyle.display, computedStyle.display].includes("none");
+  const hidden = !!el.hidden;
+  const zeroHeightOrWidth = parseInt(computedStyle.height) < 1 || parseInt(computedStyle.width) < 1;
   const offscreen = el.offsetTop < 0 || (el.offsetLeft + el.offsetWidth) < 0
     || el.offsetLeft > document.body.offsetWidth;
   const noOpacity = +computedStyle.opacity === 0 || +(elStyle.opacity || 1) === 0;
-  return !(hidden || offscreen || noOpacity || noDisplay || invisible);
+  return !(hidden || offscreen || noOpacity || noDisplay || invisible || zeroHeightOrWidth);
 }
 
 function isWritable(elem) {
