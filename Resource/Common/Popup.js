@@ -9,7 +9,7 @@ export default function($) {
   const [popupContent, popupNode] = [$(`#jqxPopupContent`), $.node(`#jqxPopup`)];
   let currentProps = {};
   $.handle( {
-    type: `click, keydown`,
+    type: `click, cancel`,
     handlers: genericPopupCloseHandler,
     name: "genericPopupCloseHandler",
     capture: true,
@@ -78,10 +78,9 @@ export default function($) {
   }
 
   function genericPopupCloseHandler({evt}) {
-    if ( Object.keys(currentProps).length < 1 || !popupNode.open ||
-      (evt.type === `keydown` && evt.key !== `Escape`) ) { return; }
+    if ( Object.keys(currentProps).length < 1 || !popupNode.open ) { return; }
     
-    if (evt.key === `Escape` && currentProps.modal) { evt.preventDefault(); }
+    if (evt.type === `cancel` && currentProps.modal) { evt.preventDefault(); }
     
     if (evt.target.closest(`#closeHandleIcon`) || !evt.target.closest(`#jqxPopupContent`)) {
       currentProps.activeTimer && clearTimeout(currentProps.activeTimer);
