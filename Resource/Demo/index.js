@@ -163,9 +163,9 @@ if (!debug) {
     .css({className: "okRed", color: "red"});
   
   // create a custom function named 'cbBox'
-  $.fn(`cbBox`, checkboxBox);
+  $.fn(`cbBox`, checkboxJQxFactory);
   // the actual custom function
-  function checkboxBox(me, spec) {
+  function checkboxJQxFactory(me, spec) {
     // note: the originating element will be converted to
     // a div if it is not a div or p element
     me = !$.IS(me, HTMLDivElement, HTMLParagraphElement) ? $.div(me.html()) : me;
@@ -343,11 +343,11 @@ if (!debug) {
   DIV({
       class: `exampleText codeVwr`,
       data: {updown: `\u25BC Display `, forid: `cbBoxCode`, hidden: 1} },
-    `The code for the <code>[JQx instance].cbBox</code> extension ☝`,
+    `the code for the <code>[JQx instance].cbBox</code> extension ☝`,
     ).afterMe(
       $.div({id: `cbBoxCode`, class: `upDownFader`}, $.pre(
           $.code(
-            `$.fn("cbBox", checkboxBox); // &lt;= create the extension\n`,
+            `$.fn("cbBox", checkboxJQxFactory); // &lt;= create the extension\n`,
             $.escHtml(`\n// invocation (create the above color checkbox container)\n` +
             `$.div("<h3>Which colors do you like?</h3>")\n` +
             `  .cbBox( {\n`+
@@ -362,7 +362,7 @@ if (!debug) {
             `      selectallBttn: true }` +
             `  \n  );`),
             `\n\n// the actual checkbox creator function\n`,
-            checkboxBox.toString()
+            checkboxJQxFactory.toString()
             .trim()
             .replace(/\n {4}/g, `  `)
             .replace(/( {2})}$/, `}`)
@@ -402,7 +402,7 @@ if (!debug) {
   DIV({
     class: `exampleText codeVwr`,
     data: {updown: `\u25BC Display `, forid: `code`, hidden: 1} },
-    `code used in this example (index.js)`)
+    `all code used in this demo (index.js)`)
   .appendTo(JQxRoot);
 
   // append actual code to document
