@@ -177,7 +177,7 @@ if (!debug) {
     selectallBttn = !!selectallBttn;
     createCssRules(boxId, optLines);
     const checkBoxesBlock = createCheckboxItems(opts, boxId);
-    const buttonRow = addSeparateBttn();
+    const buttonRow = multipleOrSingleLinesControl(); //addSeparateBttn();
     me.append(checkBoxesBlock);
     
     switch(true) {
@@ -186,8 +186,8 @@ if (!debug) {
     }
     
     function addAllOrNoneButton() {
-      buttonRow.prepend($.button( { data: { all: true } } )
-          .on("click", handleAllOrNoneBttn));
+      buttonRow.append($.span(` `, $.button( { data: { all: true } } )
+          .on("click", handleAllOrNoneBttn)));
       $.handle({
         type: `input`,
         handler: handleInput,
@@ -196,20 +196,28 @@ if (!debug) {
       return me;
     }
     
-    function addSeparateBttn() {
-      const buttonRow = $.div(
-        {class: "cbButtons"},
+    function multipleOrSingleLinesControl() {
+      const radio = $.div({class: "cbButtons"},
         $.span(
-          $.button({
-            class: "separatorBttn",
-            text: "Display",
-            data: {isLines: optLines}})
-          .on("click", handleCBPerLineToggleBttn),
-          $.span(optLines ? "checkboxes on single line" : "checkboxes on separate lines")
-        )
+          `Display checkboxes: `,
+          $.label(
+            $.input({type: `radio`, name: `linesDisplay`, value: `true`, checked: true}),
+            `single line`),
+          $.label(
+            $.input({type: `radio`, name: `linesDisplay`, value: `false`}),
+            `multiple lines`)
+          )
       );
-      me.append(buttonRow);
-      return buttonRow;
+      $.handle({type: `input`, selector: `[name='linesDisplay']`, handler: handleCBPerLineRadio});
+      me.append(radio);
+      
+      return radio;
+    }
+    
+    function handleCBPerLineRadio({evt, me}) {
+      const cboxes = $(me.closest(`[data-checkbox-container]`)).find$(`[data-lines]`);
+      const currentLines = $.toBool(me.val());
+      cboxes.each(cb => cb.dataset.lines = `${!currentLines}`);
     }
     
     function handleInput({me}) {
@@ -224,14 +232,6 @@ if (!debug) {
       self.data.set({all: !checkValue});
       return self.closest(`[data-checkbox-container]`)
         .find$(`input[type="checkbox"]`).each(cb => cb.checked = checkValue);
-    }
-    
-    function handleCBPerLineToggleBttn({evt, me}) {
-      const cboxes = $(me.closest(`[data-checkbox-container]`)).find$(`[data-lines]`);
-      const currentLines = $.toBool(cboxes[0].dataset.lines);
-      cboxes.each(cb => cb.dataset.lines = `${!currentLines}`);
-      me.closest(`span`).find$(`span`).text(currentLines
-        ? "checkboxes on separate lines" : "checkboxes on single line");
     }
     
     function createCheckboxItems(opts, id) {
@@ -266,18 +266,26 @@ if (!debug) {
             .cbButtons {
               margin: 0.6rem 0;
               
-              button {
+              button[data-all] {
+                float: right;
                 margin-right: 0.4em;
                 min-width: 50px;
               }
               
+              label {
+                cursor: pointer;
+                &:hover {
+                  text-decoration: underline;
+                }
+              }
+              
               [data-all]:after {
-                content: 'All';
+                content: 'Select all';
               }
               
               [data-all='false']:after {
                 clear: both;
-                content: 'None'
+                content: 'Select none'
               }
             }
             
