@@ -1,7 +1,7 @@
 import {
   randomString, toDashedNotation, IS, tagFNFactory as $T, styleFactory, toCamelcase, systemLog,
   escHtml, isNonEmptyString, resolveEventTypeParameter, selectedFactoryHelpers, insertPositions,
-  cleanupHtml, PopupFactory, tagLib, HandlerFactory, clearAllTimers, convert2Bool,
+  cleanupHtml, PopupFactory, tagLib, HandlerFactory, clearAllTimers, convert2Bool, maybe,
   getAttributesForLogging,
 } from "./JQxUtilities.js";
 import allMethodsFactory from "./JQxInstanceMethods.js";
@@ -60,7 +60,7 @@ function wrap(method, instance) {
 
 function proxyKeyFactory(self, key, instance) {
   switch(true) {
-    case IS(key, Symbol): return self;
+    case IS(key, Symbol): return maybe({trial: () => self[key], whenError: () => self });
     case IS(+key, Number): return self.collection?.[key] || undefined;
     case (key in instanceGetters): return wrap(instanceGetters[key], instance)();
     case (key in instanceMethods): return wrap(instanceMethods[key], instance);
