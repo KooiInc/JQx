@@ -68,7 +68,7 @@ function TOAFactory() {
     const shouldBeFirstElementIsNothing = !noShouldbe && isNothing(shouldBe[0]);
     const noInput = input === undefined || input === null;
     const inputCTOR = !noInput && Object.getPrototypeOf(input)?.constructor;
-    const isNaN = maybe({trial: _ => String(input)}) === `NaN`;
+    const isNaN = Number.isNaN(input) || maybe({trial: _ => String(input) === `NaN`});
     const isInfinity = maybe({trial: _ => String(input)}) === `Infinity`;
     return {noInput, noShouldbe, compareTo, inputCTOR, isNaN, isInfinity, shouldBeFirstElementIsNothing};
   }
