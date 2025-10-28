@@ -137,7 +137,7 @@ function clickActionsFactory($) {
       countDownExampleCloser(counter, exampleTmp);
     }, 1000);
   };
-  $.fn(`showInExample`, (me, evt, withRemoveBttn = false) => {
+  $.fn(`showInExample`, (me, evt, withRemoveBttn = false, callback = null) => {
     const exampleHeader = $(evt.target.closest(`.exContainer`));
 
     if (!exampleHeader.is.empty && exampleHeader.find$(`[data-ex-tmp]`).is.empty) {
@@ -958,6 +958,37 @@ function clickActionsFactory($) {
         $.div(
           {class: "exTNL", html: "**Created and modified using [<code>nodes</code>]"},
           ...nodes) ).showInExample(evt, true);
+    },
+    triggerCustomEx: evt => {
+      // button handler
+      $.handle({
+        type: "click",
+        selector: "#triggerExBttn",
+        handler: function triggerCustomExBttn() {
+            $(`#triggerCustomEx`)
+            .trigger(`oowhello!`, CustomEvent, {
+              detail: {data: "There we have it!"}
+            });
+          }
+        }
+      );
+      // custom handler (event type "oowhello!") invocation
+      $.handle({
+        type: "oowhello!",
+        selector: "#triggerCustomEx",
+        handler: function triggerCustomEx({evt, me}) {
+          me.node.value = evt.detail.data;
+        }
+      });
+      
+      $.button(
+        {id: "triggerExBttn", style: "margin-right: 1em;"}, "text me...")
+      .after(
+        $.input({
+          style: "width: 200px", type: "text", id: "triggerCustomEx",
+          placeholder: "click button to give me a value", disabled: true}
+        )
+      ).showInExample(evt, true);
     },
     htmlForEx: evt => {
       // note: this example serves both for [JQx instance].html and [JQx instance].htmlFor

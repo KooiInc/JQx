@@ -82,6 +82,19 @@ function finalizeDocumentCreation() {
 
   $.log(`Document creation/implementation (without imports) took ${
     ((performance.now() - perform)/1000).toFixed(3)} seconds`);
+  
+  if (/navTo/.test(location.search)) {
+    const params = getSearchParams();
+    $(`[data-navitem='${params.navTo.trim()}']`).trigger(`click`);
+  }
+}
+
+function getSearchParams() {
+  return location.search.slice(1).split(`&`)
+    .reduce((acc, v) => {
+      const [key, value] = v.split("=");
+      return {...acc, [key]: value};
+    }, {});
 }
 
 // ---
