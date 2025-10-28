@@ -522,11 +522,11 @@ function instanceExtensionsFactory(jqx) {
       return [...instance.collection].map(el => document.importNode(el, true));
     },
     trigger(instance, evtType, SpecifiedEvent, options) {
-      SpecifiedEvent = /Event]$/.test(IS(SpecifiedEvent)) ? SpecifiedEvent : Event;
+      SpecifiedEvent = IS(SpecifiedEvent, Function) ? SpecifiedEvent : Event;
       options = IS(options, Object) ? { ...options, bubbles: options.bubbles??true} : {bubbles: true};
+      const evObj = new SpecifiedEvent( evtType, options );
       
       if (!instance.is.empty) {
-        const evObj = new SpecifiedEvent( evtType, options );
         instance.each(el => el.dispatchEvent(evObj));
       }
       
