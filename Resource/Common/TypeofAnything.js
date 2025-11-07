@@ -186,21 +186,22 @@ function SymbolAndCustomProxyFactory(IS, typeOf, useSymbolicExtension) {
   }
   
   function createCustomProxyFactory(nativeProxy) {
-    return function() {
-      Proxy = new nativeProxy(nativeProxy, {
-        construct(target, args) {
-          for (let item of args) { if (item.set) { item = modifySetter(item); } }
-          const wrappedProxy = new target(...args);
-          wrappedProxy[Symbol.proxy] = `Proxy (${ctor2String(args[0])})`;
-          return wrappedProxy;
-        }
-      })
-    };
+    Proxy = new nativeProxy(nativeProxy, {
+      construct(target, args) {
+        for (let item of args) { if (item.set) { item = modifySetter(item); } }
+        const wrappedProxy = new target(...args);
+        wrappedProxy[Symbol.proxy] = `Proxy (${ctor2String(args[0])})`;
+        return wrappedProxy;
+      }
+    });
+    return Proxy;
   }
   
   function setProxyFactory() {
     if (!Symbol.proxy) { Symbol.proxy = Symbol.for("toa.proxy"); }
     const nativeProxy = Proxy;
-    return { native() { Proxy = nativeProxy; }, custom: createCustomProxyFactory(nativeProxy) };
+    return {
+      native() { Proxy = nativeProxy; },
+      custom() { Proxy = createCustomProxyFactory(nativeProxy); } };
   }
 }
