@@ -1,27 +1,31 @@
-const { IS, maybe, $Wrap, xProxy, isNothing } = TOAFactory();
-export { IS as default, maybe, $Wrap, xProxy, isNothing };
+const { IS, maybe, $Wrap, isNothing, xProxy, addSymbolicExtensions } =
+  TOAFactory({useSymbolicExtensions: false});
+export { IS as default, maybe, $Wrap, xProxy, isNothing, addSymbolicExtensions };
 
-function TOAFactory() {
-  Symbol.proxy = Symbol.for(`toa.proxy`);
-  Symbol.is = Symbol.for(`toa.is`);
-  Symbol.type = Symbol.for(`toa.type`);
-  Symbol.isSymbol = Symbol.for(`toa.isASymbol`);
-  addSymbols2Anything();
+function TOAFactory(specs = {}) {
+  const {useSymbolicExtensions} = specs;
+  const {xProxy, addSymbolicExtensions} = SymbolAndCustomProxyFactory(IS, typeOf, useSymbolicExtensions);
   const maybe = maybeFactory();
-  const [$Wrap, xProxy] = [WrapAnyFactory(), setProxyFactory()];
+  const [$Wrap] = [WrapAnyFactory()];
   xProxy.custom();
-  return {IS, maybe, $Wrap, isNothing, xProxy};
+  !!useSymbolicExtensions && addSymbolicExtensions();
+  
+  return {IS, maybe, $Wrap, isNothing, xProxy, addSymbolicExtensions};
   
   function IS(anything, ...shouldBe) {
-    if (maybe({trial: _ => `isTypes` in (shouldBe?.[0] ?? {})})) {
-      const isTypeObj = shouldBe[0];
-      return `defaultValue` in (isTypeObj)
-        ? isOrDefault(anything, isTypeObj) : `notTypes` in isTypeObj
-          ? isExcept(anything, isTypeObj) : IS(anything, ...[isTypeObj.isTypes].flat());
-    }
-    
     const input = typeof anything === `symbol` ? Symbol.isSymbol : anything;
-    return shouldBe.length > 1 ? ISOneOf(input, ...shouldBe) : determineType(anything, ...shouldBe);
+    switch(true) {
+      case !!maybe({trial: _ => `isTypes` in (shouldBe?.[0] ?? {})}): return ISShouldIsObject(anything, shouldBe[0]);
+      default: return shouldBe.length > 1 ? ISOneOf(input, ...shouldBe) : determineType(anything, ...shouldBe);
+    }
+  }
+  
+  function ISShouldIsObject(anything, isTypeObj) {
+    switch(true) {
+      case `defaultValue` in isTypeObj: return isOrDefault(anything, isTypeObj);
+      case `notTypes` in isTypeObj: return isExcept(anything, isTypeObj);
+      default: return IS(anything, ...[isTypeObj.isTypes].flat());
+    }
   }
   
   function typeOf(anything) {
@@ -29,68 +33,61 @@ function TOAFactory() {
   }
   
   function determineType(input, ...shouldBe) {
-    let {
-      noInput,
-      noShouldbe,
-      compareTo,
-      inputCTOR,
-      isNaN,
-      isInfinity,
-      shouldBeFirstElementIsNothing
-    } = processInput(input, ...shouldBe);
+    let { noInput, noShouldbe, compareTo, inputCTOR, isNaN, isInfinity, shouldBeFirstElementIsNothing } =
+      processInput(input, ...shouldBe);
     shouldBe = shouldBe.length && shouldBe[0];
     
     switch (true) {
-      case shouldBeFirstElementIsNothing:
-        return String(input) === String(compareTo);
-      case input?.[Symbol.proxy] && noShouldbe:
-        return input[Symbol.proxy];
-      case isNaN:
-        return noShouldbe ? `NaN` : maybe({trial: _ => String(compareTo)}) === String(input);
-      case isInfinity:
-        return noShouldbe ? `Infinity` : maybe({trial: _ => String(compareTo)}) === String(input);
-      case noInput:
-        return noShouldbe ? String(input) : String(compareTo) === String(input);
-      case inputCTOR === Boolean:
-        return !shouldBe ? `Boolean` : inputCTOR === shouldBe;
-      default:
-        return getResult(input, shouldBe, noShouldbe, getMe(input, inputCTOR));
+      case shouldBeFirstElementIsNothing: return String(input) === String(compareTo);
+      case input?.[Symbol.proxy] && noShouldbe: return input[Symbol.proxy];
+      case isNaN: return noShouldbe ? `NaN` : String(compareTo) === String(input);
+      case isInfinity: return noShouldbe ? `Infinity` : String(compareTo) === String(input);
+      case noInput: return noShouldbe ? String(input) : String(compareTo) === String(input);
+      case inputCTOR === Boolean: return !shouldBe ? `Boolean` : inputCTOR === shouldBe;
+      default: return getResult(input, shouldBe, noShouldbe, getMe(input, inputCTOR));
     }
-  }
-  
-  function getMe(input, inputCTOR) {
-    return input === 0 ? Number : input === `` ? String : !input ? {name: String(input)} : inputCTOR;
   }
   
   function processInput(input, ...shouldBe) {
     const noShouldbe = shouldBe.length < 1;
-    const compareTo = !noShouldbe && shouldBe[0];
-    const shouldBeFirstElementIsNothing = !noShouldbe && isNothing(shouldBe[0]);
     const noInput = input === undefined || input === null;
-    const inputCTOR = !noInput && Object.getPrototypeOf(input)?.constructor;
-    const isNaN = Number.isNaN(input) || maybe({trial: _ => String(input) === `NaN`});
-    const isInfinity = maybe({trial: _ => String(input)}) === `Infinity`;
-    return {noInput, noShouldbe, compareTo, inputCTOR, isNaN, isInfinity, shouldBeFirstElementIsNothing};
+    
+    return {
+      noInput,
+      noShouldbe,
+      compareTo: !noShouldbe && shouldBe[0],
+      inputCTOR: !noInput && Object.getPrototypeOf(input)?.constructor,
+      isNaN: Number.isNaN(input) || maybe({trial: _ => String(input) === `NaN`}),
+      isInfinity: maybe({trial: _ => String(input)}) === `Infinity`,
+      shouldBeFirstElementIsNothing: !noShouldbe && isNothing(shouldBe[0])
+    };
+  }
+  
+  function getMe(input, inputCTOR) {
+    switch(true) {
+      case input === 0: return Number;
+      case input === ``: return String;
+      case !input: return {name: String(input)};
+      default: return inputCTOR;
+    }
   }
   
   function getResult(input, compareWith, noShouldbe, me) {
     switch(true) {
-      case (!noShouldbe && compareWith === input) ||
-              (input?.[Symbol.proxy] && compareWith === Proxy):
-        return true;
-      case maybe({trial: _ => String(compareWith)}) === `NaN`:
-        return String(input) === `NaN`;
-      case input?.[Symbol.toStringTag] && IS(compareWith, String):
-        return String(compareWith) === input[Symbol.toStringTag];
-      default:
-        return compareWith
-          ? maybe({trial: _ => input instanceof compareWith,}) ||
-            compareWith === me || compareWith === Object.getPrototypeOf(me) ||
-            `${compareWith?.name}` === me?.name
-          : input?.[Symbol.toStringTag] && `[object ${input?.[Symbol.toStringTag]}]` ||
-              me?.name ||
-              String(me);
+      case (!noShouldbe && compareWith === input) || (input?.[Symbol.proxy] && compareWith === Proxy): return true;
+      case String(compareWith) === `NaN`: return String(input) === `NaN`;
+      case input?.[Symbol.toStringTag] && IS(compareWith, String): return String(compareWith) === input[Symbol.toStringTag];
+      default: return compareWith ? resultWithComparison(input, compareWith, me) : resultWithoutComparison(input, me);
     }
+  }
+  
+  function resultWithoutComparison(input, me) {
+    return input?.[Symbol.toStringTag] && `[object ${input?.[Symbol.toStringTag]}]` || me?.name || String(me);
+  }
+  
+  function resultWithComparison(input, compareWith, me) {
+    return maybe({trial: _ => input instanceof compareWith}) || compareWith === me ||
+      compareWith === Object.getPrototypeOf(me) || `${compareWith?.name}` === me?.name;
   }
   
   function ISOneOf(obj, ...params) {
@@ -104,13 +101,9 @@ function TOAFactory() {
   }
   
   function maybeFactory() {
-    const tryFn = (maybeFn, maybeError) => maybeFn?.constructor === Function ? maybeFn(maybeError) : undefined;
-    return function ({trial, whenError = () => undefined} = {}) {
-      try {
-        return tryFn(trial)
-      } catch (err) {
-        return tryFn(whenError, err)
-      }
+    const errFn = err => undefined;
+    return function({trial, whenError = errFn } = {}) {
+      try { return trial(); } catch (err) { return whenError(err); }
     };
   }
   
@@ -153,46 +146,61 @@ function TOAFactory() {
     }
   }
   
-  function ctor2String(obj) {
-    const str = String(Object.getPrototypeOf(obj)?.constructor);
-    return str.slice(str.indexOf(`ion`) + 3, str.indexOf(`(`)).trim();
-  }
-  
   function modifySetter(setterMethod2Modify) {
     const oldSetter = setterMethod2Modify.set;
     setterMethod2Modify.set = (target, key, value) => {
-      if (key === Symbol.proxy) {
-        return target[key] = value;
-      }
-      
+      if (key === Symbol.proxy) { return target[key] = value; }
       return oldSetter(target, key, value);
     }
-    
+   
     return setterMethod2Modify;
+  }
+}
+
+function SymbolAndCustomProxyFactory(IS, typeOf, useSymbolicExtension) {
+  return {xProxy: setProxyFactory(), addSymbolicExtensions: addSymbols2Anything};
+  
+  if (!Symbol.isSymbol) { Symbol.isSymbol = Symbol.for(`toa.isASymbol`); }
+  
+  function addSymbols2Anything() {
+    if (!Symbol.is) {
+      Symbol.is = Symbol.for(`toa.is`);
+      Symbol.type = Symbol.for(`toa.type`);
+    }
+    
+    if (!Object.getOwnPropertyDescriptors(Object.prototype)[Symbol.is]) {
+      Object.defineProperties(Object.prototype, {
+        [Symbol.type]: { get() { return typeOf(this); }, enumerable: false, configurable: false },
+        [Symbol.is]: { value: function (...args) { return IS(this, ...args); }, enumerable: false, configurable: false },
+      });
+      Object.defineProperties(Object, {
+        [Symbol.type]: { value(obj) { return typeOf(obj); }, enumerable: false, configurable: false },
+        [Symbol.is]: { value: function (obj, ...args) { return IS(obj, ...args); }, enumerable: false, configurable: false },
+      });
+    }
+  }
+  
+  function ctor2String(obj) {
+    const ctor = Object.getPrototypeOf(obj)?.constructor;
+    return ctor?.name || `Object`;
+  }
+  
+  function createCustomProxyFactory(nativeProxy) {
+    return function() {
+      Proxy = new nativeProxy(nativeProxy, {
+        construct(target, args) {
+          for (let item of args) { if (item.set) { item = modifySetter(item); } }
+          const wrappedProxy = new target(...args);
+          wrappedProxy[Symbol.proxy] = `Proxy (${ctor2String(args[0])})`;
+          return wrappedProxy;
+        }
+      })
+    };
   }
   
   function setProxyFactory() {
+    if (!Symbol.proxy) { Symbol.proxy = Symbol.for("toa.proxy"); }
     const nativeProxy = Proxy;
-    return {
-      native() {
-        Proxy = nativeProxy;
-      },
-      custom() {
-        // adaptation of https://stackoverflow.com/a/53463589
-        Proxy = new nativeProxy(nativeProxy, {
-          construct(target, args) {
-            for (let item of args) {
-              if (item.set) {
-                item = modifySetter(item);
-              }
-            }
-            
-            const wrappedProxy = new target(...args);
-            wrappedProxy[Symbol.proxy] = `Proxy (${ctor2String(args[0])})`;
-            return wrappedProxy;
-          }
-        })
-      }
-    }
+    return { native() { Proxy = nativeProxy; }, custom: createCustomProxyFactory(nativeProxy) };
   }
 }
