@@ -145,16 +145,6 @@ function TOAFactory(specs = {}) {
       });
     }
   }
-  
-  function modifySetter(setterMethod2Modify) {
-    const oldSetter = setterMethod2Modify.set;
-    setterMethod2Modify.set = (target, key, value) => {
-      if (key === Symbol.proxy) { return target[key] = value; }
-      return oldSetter(target, key, value);
-    }
-   
-    return setterMethod2Modify;
-  }
 }
 
 function SymbolAndCustomProxyFactory(IS, typeOf, useSymbolicExtension) {
@@ -178,6 +168,16 @@ function SymbolAndCustomProxyFactory(IS, typeOf, useSymbolicExtension) {
         [Symbol.is]: { value: function (obj, ...args) { return IS(obj, ...args); }, enumerable: false, configurable: false },
       });
     }
+  }
+  
+  function modifySetter(setterMethod2Modify) {
+    const oldSetter = setterMethod2Modify.set;
+    setterMethod2Modify.set = (target, key, value) => {
+      if (key === Symbol.proxy) { return target[key] = value; }
+      return oldSetter(target, key, value);
+    }
+    
+    return setterMethod2Modify;
   }
   
   function ctor2String(obj) {
