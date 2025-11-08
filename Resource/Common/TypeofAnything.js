@@ -76,18 +76,23 @@ function TOAFactory(specs = {}) {
     switch(true) {
       case (!noShouldbe && compareWith === input) || (input?.[Symbol.proxy] && compareWith === Proxy): return true;
       case String(compareWith) === `NaN`: return String(input) === `NaN`;
-      case input?.[Symbol.toStringTag] && IS(compareWith, String): return String(compareWith) === input[Symbol.toStringTag];
+      case input?.[Symbol.toStringTag] && typeof compareWith === `string`:
+        return String(compareWith) === input[Symbol.toStringTag];
       default: return compareWith ? resultWithComparison(input, compareWith, me) : resultWithoutComparison(input, me);
     }
   }
   
   function resultWithoutComparison(input, me) {
-    return input?.[Symbol.toStringTag] && `[object ${input?.[Symbol.toStringTag]}]` || me?.name || String(me);
+    const toStringTag = input?.[Symbol.toStringTag] ?? input?.prototype?.[Symbol.toStringTag];
+    return toStringTag || me?.name || String(me);
   }
   
   function resultWithComparison(input, compareWith, me) {
-    return maybe({trial: _ => input instanceof compareWith}) || compareWith === me ||
-      compareWith === Object.getPrototypeOf(me) || `${compareWith?.name}` === me?.name;
+    return maybe({trial: _ =>
+      input instanceof compareWith}) ||
+      compareWith === me ||
+      compareWith === Object.getPrototypeOf(me) ||
+      `${compareWith?.name}` === me?.name;
   }
   
   function ISOneOf(obj, ...params) {
