@@ -5,9 +5,8 @@ export { IS as default, maybe, $Wrap, xProxy, isNothing, addSymbolicExtensions }
 
 function TOAFactory(specs = {}) {
   const { useSymbolicExtensions } = specs;
-  const { shouldbeIsSingleObject, ISOneOf, isOrDefault, isExcept, typeOf, SymbolAndCustomProxyFactory,
-          WrapAnyFactory, verifyNothingness, determineType, xProxy, addSymbolicExtensions,
-          maybe, $Wrap } = TOAHelpers(IS, useSymbolicExtensions);
+  const { shouldbeIsSingleObject, ISOneOf, isExcept, verifyNothingness, xProxy,
+          determineType, addSymbolicExtensions, maybe, $Wrap } = TOAHelpers(IS, useSymbolicExtensions);
   xProxy.custom();
   
   if (!!useSymbolicExtensions) { addSymbolicExtensions(); }
@@ -17,7 +16,8 @@ function TOAFactory(specs = {}) {
   function IS(anything, ...shouldBe) {
     const input = typeof anything === `symbol` ? Symbol.isSymbol : anything;
     switch(true) {
-      case !!maybe({trial: _ => `isTypes` in (shouldBe?.[0] ?? {})}): return shouldbeIsSingleObject(anything, shouldBe[0]);
+      case !!maybe({trial: _ => `isTypes` in (shouldBe?.[0] ?? {})}):
+        return shouldbeIsSingleObject(anything, shouldBe[0]);
       default: return shouldBe.length > 1 ? ISOneOf(input, ...shouldBe) : determineType(anything, ...shouldBe);
     }
   }
@@ -30,8 +30,8 @@ function TOAHelpers(IS, useSymbolicExtensions) {
   const [maybe, $Wrap] = [maybeFactory(), WrapAnyFactory(IS, typeOf)];
   
   return Object.freeze({
-    shouldbeIsSingleObject, ISOneOf, isOrDefault, isExcept, typeOf, SymbolAndCustomProxyFactory,
-    maybe, WrapAnyFactory, verifyNothingness, determineType, xProxy, addSymbolicExtensions, $Wrap });
+    shouldbeIsSingleObject, ISOneOf, isExcept, verifyNothingness, xProxy,
+    determineType, addSymbolicExtensions, maybe, $Wrap });
   
   function typeOf(anything) {
     return anything?.[Symbol.proxy] ?? IS(anything);
@@ -79,6 +79,7 @@ function AUXHelperFactory() {
     OBJECT: 'Object',
     PROXY_PREFIX: 'Proxy ('
   };
+  
   return Object.freeze({
       SymbolAndCustomProxyFactory, maybeFactory, WrapAnyFactory, verifyNothingness, determineType
     }
@@ -138,7 +139,7 @@ function AUXHelperFactory() {
       noInput,
       noShouldbe,
       compareTo: !noShouldbe && shouldBe[0],
-      inputCTOR: !noInput && Object.getPrototypeOf(input)?.constructor,
+      inputCTOR: !noInput && (input?.constructor || Object.getPrototypeOf(input)?.constructor),
       isNaN: Number.isNaN(input) || maybe({trial: _ => String(input) === TYPE_STRINGS.NAN}),
       isInfinity: maybe({trial: _ => String(input)}) === TYPE_STRINGS.INFINITY,
       shouldBeFirstElementIsNothing: !noShouldbe && verifyNothingness(shouldBe[0])
@@ -156,7 +157,7 @@ function AUXHelperFactory() {
       case isNaN: return noShouldbe ? TYPE_STRINGS.NAN : String(compareTo) === String(input);
       case isInfinity: return noShouldbe ? TYPE_STRINGS.INFINITY : String(compareTo) === String(input);
       case noInput: return noShouldbe ? String(input) : String(compareTo) === String(input);
-      case inputCTOR === Boolean: return !shouldBe ? TYPE_STRINGS.BOOLEAN : inputCTOR === shouldBe;
+      case inputCTOR === Boolean: return noShouldbe ? TYPE_STRINGS.BOOLEAN : inputCTOR === shouldBe;
       default: return getResult(input, shouldBe, noShouldbe, finalInputResolver(input, inputCTOR));
     }
   }
@@ -179,7 +180,8 @@ function AUXHelperFactory() {
       case input?.[Symbol.toStringTag] && typeof compareWith === `string`:
         return String(compareWith) === input[Symbol.toStringTag];
       default:
-        return compareWith ? resultWithComparison(input, compareWith, maybeResult) : resultWithoutComparison(input, maybeResult);
+        return compareWith ?
+          resultWithComparison(input, compareWith, maybeResult) : resultWithoutComparison(input, maybeResult);
     }
   }
   
