@@ -154,8 +154,8 @@ function instanceExtensionsFactory(jqx) {
     addClass(instance, ...classNames) {
       return loop(instance, el => el && classNames.forEach(cn => el.classList.add(cn)));
     },
-    after,
-    afterMe: after,
+    after(instance, elem) { return after(instance, elem); },
+    afterMe(instance, elem) { return after(instance, elem); },
     andThen(instance, elem2Add, before = false) {
       if (!elem2Add || !IS(elem2Add, String, Node, Proxy)) {
         systemLog.log(`[JQx instance].[before(Me) | after(Me) | andThen]: invalid/-sufficient input.`, );
@@ -240,8 +240,8 @@ function instanceExtensionsFactory(jqx) {
 
       return instance;
     },
-    before,
-    beforeMe: before,
+    before(instance, elem) { return before(instance, elem); },
+    beforeMe(instance, elem) { return before(instance, elem); },
     clear(instance) { return loop(instance, emptyElement); },
     closest(instance, selector) {
       const theClosest = isNonEmptyString(selector) ? instance.node?.closest(selector) : undefined;
