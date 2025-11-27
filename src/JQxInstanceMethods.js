@@ -1,7 +1,7 @@
 import {
   IS, isNode, ExamineElementFeatureFactory,
   isNonEmptyString, toDashedNotation, escHtml, systemLog, insertPositions,
-  datasetKeyProxy, loop, cloneAndDestroy, setData, before, after,
+  datasetKeyProxy, loop, cloneAndDestroy, setData, before as beforeFn, after as afterFn,
   findParentScrollDistance, emptyElement, checkProp, css, assignAttrValues,
   applyStyle, createElementFromHtmlString, inject2DOMTree,
 } from "./JQxUtilities.js";
@@ -154,8 +154,8 @@ function instanceExtensionsFactory(jqx) {
     addClass(instance, ...classNames) {
       return loop(instance, el => el && classNames.forEach(cn => el.classList.add(cn)));
     },
-    after(instance, elem) { return after(instance, elem); },
-    afterMe(instance, elem) { return after(instance, elem); },
+    after(instance, elem) { return afterFn(instance, elem); },
+    afterMe(instance, elem) { return afterFn(instance, elem); },
     andThen(instance, elem2Add, before = false) {
       if (!elem2Add || !IS(elem2Add, String, Node, Proxy)) {
         systemLog.log(`[JQx instance].[before(Me) | after(Me) | andThen]: invalid/-sufficient input.`, );
@@ -167,7 +167,6 @@ function instanceExtensionsFactory(jqx) {
         : IS(elem2Add, Node)
           ? jqx.virtual(elem2Add)
           : jqx.virtual(createElementFromHtmlString(elem2Add));
-      
       const [index, method, reCollected] = before
         ? [0, `before`, elem2Add.collection.concat(instance.collection)]
         : [instance.collection.length - 1, `after`, instance.collection.concat(elem2Add.collection)];
@@ -240,8 +239,11 @@ function instanceExtensionsFactory(jqx) {
 
       return instance;
     },
-    before(instance, elem) { return before(instance, elem); },
-    beforeMe(instance, elem) { return before(instance, elem); },
+    before(instance, elem2AddBefore) {
+      console.log(`WTF`, instance, elem2AddBefore, );
+      return instance.andThen(elem2AddBefore, true);
+    },
+    beforeMe(instance, elem) { return beforeFn(instance, elem); },
     clear(instance) { return loop(instance, emptyElement); },
     closest(instance, selector) {
       const theClosest = isNonEmptyString(selector) ? instance.node?.closest(selector) : undefined;

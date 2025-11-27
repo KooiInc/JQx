@@ -52,7 +52,7 @@ function createGroupChapters() {
 
 function createNavigationBlock() {
   for (const group of orderedGroups) { createNavigationItems(group); }
-  $(`.docBrowser`).before($(`#navigation`));
+  //$(`.docBrowser`).before($(`#navigation`));
   $(`.docs`).append($(`#navigation`));
   $.log(`Navigation block created ...`);
 }

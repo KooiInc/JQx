@@ -1,4 +1,4 @@
-import {default as IS, maybe} from "./TypeofAnything.js";
+import {default as IS, maybe, xProxy} from "./TypeofAnything.js";
 import {ATTRS} from "./EmbedResources.js";
 import {default as tagFNFactory} from "./tinyDOM.js";
 import styleFactory from "./LifeCSS.js";
@@ -6,7 +6,6 @@ import {createElementFromHtmlString, inject2DOMTree, cleanupHtml} from "./DOM.js
 import PopupFactory from "./Popup.js";
 import { HandlerFactory } from "./HandlerFactory.js";
 import tagLib from "./HTMLTags.js";
-
 const systemLog = systemLogFactory();
 const allwaysCaptureEventTypes = [
   `load`, `unload`, `scroll`, `focus`, `blur`, `DOMNodeRemovedFromDocument`,
@@ -29,6 +28,7 @@ const datasetKeyProxy = Object.freeze({
   configurable: false
 });
 const handlerIdCache = {};
+xProxy.custom();
 
 export {
   after, applyStyle, assignAttrValues, ATTRS, before, checkProp, cleanupHtml, clearAllTimers, cloneAndDestroy,
@@ -226,7 +226,8 @@ function after(instance, elem2AddAfter) {
   return instance.andThen(elem2AddAfter);
 }
 
-function before (instance, elem2AddBefore) {
+function before(instance, elem2AddBefore) {
+  console.log(`WTF`, instance, elem2AddBefore, );
   return instance.andThen(elem2AddBefore, true);
 }
 

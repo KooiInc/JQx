@@ -479,13 +479,12 @@ function clickActionsFactory($) {
             $.div("I am div 1").after($("<div>And I am div 2</div>")).showInExample(evt).removeAfter(5);
     },
     beforeMeEx: evt => {
-      const divs = $("<div>...and I am div 2</div>")
+      /*const divs = */$("<div>...and I am div 2</div>")
         .before( $.div("I am div 1") )
         .andThen(
           $.div("...and finally I am div 4" )
             .before( $.div("...hithere, I am div 3") )
-        )
-      divs.showInExample(evt).removeAfter(30);
+        ).showInExample(evt).removeAfter(30);
     },
     andThenEx: evt => {
       const ele1 = $.p("I am the first");
