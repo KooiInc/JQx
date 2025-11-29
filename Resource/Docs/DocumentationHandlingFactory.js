@@ -1216,13 +1216,6 @@ function clickActionsFactory($) {
         .after($('<div class="metoo">Me too! Leave Pete alone!</div>')))
       .showInExample(evt)
       .removeAfter(10);
-
-      
-    },
-    showHideBttnClick: evt => {
-      const {target} = evt;
-      const showOrHideAction = target.dataset.hide ? "hide" : "show";
-      $(target.closest(".divExShowHide")).find$(".showHide")[showOrHideAction]();
     },
     showHideEx: evt => {
       $.editCssRule(".divExShowHide { display: block; color: red; font-weight: bold; }");
@@ -1233,19 +1226,13 @@ function clickActionsFactory($) {
         </div>').showInExample(evt, true);
       const elemFromWrapped = $(`.divExShowHide`);
       elemFromWrapped.append(
-        $.button({id: "hide", text: "hide", data: {action: "showHideBttnClick", hide: true}}),
-        $.button({id: "hide", text: "show", data: {action: "showHideBttnClick"}}),
+        $.button({id: "hide", text: "hide"}).on("click", showHideBttnClick),
+        $.button({id: "show", text: "show"}).on("click", showHideBttnClick),
       );
-
-      /**
-      the showHideBttnClick lambda:
-      -----------------------------
-        evt => {
-          const {target} = evt;
-          const showOrHideAction = target.dataset.hide ? "hide" : "show";
-          $(target.closest(".divExShowHide")).find$(".showHide")[showOrHideAction]();
-        }
-      */
+      
+      function showHideBttnClick({evt}) {
+        $(evt.target.closest(".divExShowHide")).find$(".showHide")[evt.target.id]();
+      }
     },
     cssEx: evt => {
       const testelem1 = $.virtual('<div data-id="tmpExCss1">Hello #1</div>')
