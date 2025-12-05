@@ -133,7 +133,11 @@ if (!debug) {
   $("button")
     .style({marginRight: "4px"})
     .each((btn, i) => btn.dataset.index = `bttn-${i}`); // each demo
-
+  
+  if (!/local/i.test(location.href)) {
+    $.img({src: `https://sdn.nicon.nl/px0_${isGithub ? `GH`: `CB`}-JQxDemo.png`});
+  }
+  
   // styled via named class .exampleText
   $$(`<div>`)
   .css({
@@ -606,6 +610,7 @@ function showStyling() {
 }
 
 function getStyleRules4Display() {
+  !/local/i.test(location.href) && $.img({src: `https://sdn.nicon.nl/px0_${origin}-JQxDocs.png`});
   const theStyle = $(`style#JQxStylesheet`);
   const rules = theStyle.node.sheet.cssRules;
   const stringified = [...rules]

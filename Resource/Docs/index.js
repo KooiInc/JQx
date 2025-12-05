@@ -79,6 +79,7 @@ function finalizeDocumentCreation() {
   $(`.docBrowser`).append($.div({class: "spacer"}));
   $(`[data-group="jqx"]`).trigger(`click`);
   hljs.highlightAll();
+  !/local/i.test(location.href) && $.img({src: `https://sdn.nicon.nl/px0_${origin}-JQxDocs.png`});
   delete documentationTemplates.templates;
 
   $.log(`Document creation/implementation (without imports) took ${
@@ -88,11 +89,6 @@ function finalizeDocumentCreation() {
     const params = getSearchParams();
     $(`[data-navitem='${params.navTo.trim()}']`).trigger(`click`);
   }
-  
-  if (!/local/i.test(location.href)) {
-    $.img({src: `https://sdn.nicon.nl/px0_${origin}-JQxDocs.png`});
-  }
-  
 }
 
 function getSearchParams() {
