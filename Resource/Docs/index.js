@@ -75,6 +75,7 @@ function injectFavIcon() {
 
 function finalizeDocumentCreation() {
   setupHandling();
+  const origin = /codeberg/i.test(location.href) ? `CB` : `GH`;
   $(`.docBrowser`).append($.div({class: "spacer"}));
   $(`[data-group="jqx"]`).trigger(`click`);
   hljs.highlightAll();
@@ -87,6 +88,11 @@ function finalizeDocumentCreation() {
     const params = getSearchParams();
     $(`[data-navitem='${params.navTo.trim()}']`).trigger(`click`);
   }
+  
+  if (!/local/i.test(location.href)) {
+    $.img({src: `https://sdn.nicon.nl/px0_${origin}-JQxDocs.png`});
+  }
+  
 }
 
 function getSearchParams() {
