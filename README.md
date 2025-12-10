@@ -1,7 +1,5 @@
-<div align="center">
-  <a target="_blank" href="https://www.npmjs.com/package/jqx-es"
-    ><img src="https://img.shields.io/npm/v/jqx-es.svg?labelColor=cb3837&logo=npm&color=dcfdd9"></a>
-</div>
+[<img src="https://img.shields.io/npm/v/jqx-es.svg?labelColor=cb3837&logo=npm&color=dcfdd9">](https://www.npmjs.com/package/jqx-es)
+[![dependencies](https://depx.co/api/badge/jqx-es)](https://depx.co/pkg/jqx-es)
 
 > [!NOTE]
 > The listening to - and handling of events has been overhauled. This means that
