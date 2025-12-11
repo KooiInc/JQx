@@ -7,7 +7,7 @@ $.logger.enable;
 const started = performance.now();
 const debug = false;
 const isGithub = /github/i.test(location.href);
-injectFavIcon();
+injectFavIconAndCounterImage();
 
 // initialize styling for this page
 $.editCssRules(...cssRules);
@@ -576,8 +576,8 @@ function getBacklinks() {
     );
 }
 
-// location dependent favicon
-function injectFavIcon() {
+// :void. location dependent favicon & counter image
+function injectFavIconAndCounterImage() {
   const icons = {
     github: { href: "https://github.githubassets.com/favicons/favicon.png" },
     codeberg: { href: "../Common/Sites/codebergicon.ico" },
@@ -585,12 +585,17 @@ function injectFavIcon() {
   };
   const currentLink = $(`head link[rel="icon"]`);
   const link = $.link({rel: "icon"});
-
-  return /github/i.test(location.href)
-    ? currentLink.replaceWith(link.attr(icons.github))
-    : /codeberg/i.test(location.href)
-      ? currentLink.replaceWith(link.attr(icons.codeberg))
-      : currentLink.replaceWith(link.attr(icons.local));
+  const isCodeberg = /codeberg/i.test(location.href);
+  const isLocal = /local/i.test(location.href);
+  const counterSrc = `https://sdn.nicon.nl/px0_${isCodeberg ? `CB` : `GH`}-JQxDemo.png`;
+  // create counter image (if not in local debug window)
+  !isLocal && $.img({src: counterSrc});
+  
+  switch(true) {
+    case isLocal: return currentLink.replaceWith(link.attr(icons.local));
+    case isCodeberg: return currentLink.replaceWith(link.attr(icons.codeberg))
+    default: currentLink.replaceWith(link.attr(icons.github));
+  }
 }
 
 // for popup style rules
@@ -610,7 +615,6 @@ function showStyling() {
 }
 
 function getStyleRules4Display() {
-  !/local/i.test(location.href) && $.img({src: `https://sdn.nicon.nl/px0_${origin}-JQxDocs.png`});
   const theStyle = $(`style#JQxStylesheet`);
   const rules = theStyle.node.sheet.cssRules;
   const stringified = [...rules]
