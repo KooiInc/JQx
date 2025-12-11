@@ -70,4 +70,4 @@ $.div(`Hello JQx!`).appendTo(document.body);
 >
 > The CodeBerg repository will, until further notice, be synchronised to the Github repository.
 
-<img src="https://sdn.nicon.nl/px0_CB-JQx-readme.png">
+![linkedTo](https://sdn.nicon.nl/px0_JQx-readme.png)
