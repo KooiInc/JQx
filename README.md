@@ -1,19 +1,20 @@
-[![minsize](https://flat.badgen.net/bundlephobia/min/jqx-es)](https://bundlephobia.com/package/jqx-es@latest)
-[<img src="https://img.shields.io/npm/v/jqx-es.svg?labelColor=cb3837&logo=npm&color=dcfdd9">](https://www.npmjs.com/package/jqx-es)
-[![dependencies](https://depx.co/api/badge/jqx-es)](https://depx.co/pkg/jqx-es)
+[![](https://flat.badgen.net/bundlephobia/min/jqx-es)](https://bundlephobia.com/package/jqx-es@latest)
+[![](https://img.shields.io/npm/v/jqx-es.svg?labelColor=cb3837&logo=npm&color=dcfdd9)](https://www.npmjs.com/package/jqx-es)
+[![](https://depx.co/api/badge/jqx-es)](https://depx.co/pkg/jqx-es)
+[![](https://badgen.net/static/Download%20bundle/@JSDeliver/blue)](https://cdn.jsdelivr.net/gh/KooiInc/JQx@latest/Bundle/jqx.min.js)
 
 > [!NOTE]
 > The listening to - and handling of events has been overhauled. This means that
-> callbacks for event listeners now are always expected to have the 
+> callbacks for event listeners now are always expected to have the
 > signature`[handler]({evt, [me|self]})`. If you use `[JQx].delegate` or
 > `[JQx instance].on` in your code, please review.
-> 
+>
 > See also [documentation](https://kooiinc.codeberg.page/JQx/Resource/Docs/)
 
 # JQx
 
-This module was inspired by the idea that some parts of [JQuery](https://jquery.com) are too good [to ditch](https://youmightnotneedjquery.com/).  
-JQx is **not** a replacement for JQuery.  
+This module was inspired by the idea that some parts of [JQuery](https://jquery.com) are too good [to ditch](https://youmightnotneedjquery.com/).
+JQx is **not** a replacement for JQuery.
 Consider it a set of JQuery alike ES/JS-methods to programmatically ***create***, ***retrieve***, ***modify***, ***style*** and/or ***manipulate***
 (collections of) HTML elements in a HTML document.
 
@@ -21,13 +22,13 @@ The code is written in a modular fashion and uses plain ES20xx, so not really (o
 
 ### Documentation/demo
 - Documentation can be found @[Codeberg](https://kooiinc.codeberg.page/JQx/Resource/Docs/)
-or @[Github](https://kooiinc.github.io/JQx/Resource/Docs).  
+or @[Github](https://kooiinc.github.io/JQx/Resource/Docs).
 - A test and demo of this module can be found @[Codeberg](https://kooiinc.codeberg.page/JQx/Resource/Demo)
 or @[Github](https://kooiinc.github.io/JQx/Resource/Demo).
 
 ## Install/Import/Initialize
 
-### NPM 
+### NPM
 You can install this module from npm (package *jqx-es*). To create a HTML tree (DOM Object) server side you need a library like [jsdom](https://github.com/jsdom/jsdom).
 ```
 npm i jqx-es
@@ -41,8 +42,8 @@ For each flavor, the script is (bundled and) minified. The location of the minif
 ```javascript
 import $ from "https://kooiinc.codeberg.page/JQx/Bundle/jqx.min.js";
 // or
-const $ = ( await 
-  import("https://kooiinc.codeberg.page/JQx/Bundle/jqx.min.js") 
+const $ = ( await
+  import("https://kooiinc.codeberg.page/JQx/Bundle/jqx.min.js")
 ).default;
 $.div(`Hello JQx!`).appendTo(document.body);
 // ...
@@ -59,7 +60,7 @@ $.div(`Hello JQx!`).appendTo(document.body);
 ```
 
 > [!NOTE]
-> This repository was formerly known as **JQL**, residing on [Github](https://github.com/KooiInc/JQx).  
+> This repository was formerly known as **JQL**, residing on [Github](https://github.com/KooiInc/JQx).
 > The *authorative* code base for this module is now: @[https://codeberg.org/KooiInc/JQx](https://codeberg.org/KooiInc/JQx).
 >
 > The NPM package is copied to a new package (see top link).
