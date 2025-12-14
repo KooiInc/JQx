@@ -69,5 +69,3 @@ $.div(`Hello JQx!`).appendTo(document.body);
 > The Github JQL repository is renamed to _**JQx**_.
 >
 > The CodeBerg repository will, until further notice, be synchronised to the Github repository.
-
-![linkedTo](https://sdn.nicon.nl/px0_JQx-readme.png)
