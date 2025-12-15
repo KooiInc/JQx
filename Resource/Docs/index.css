@@ -389,7 +389,7 @@ img.gitLink {
   left: 50%;
   transform: translate(-50%, -50%);
   color: red;
-  animation: spinner 3s 0.2s linear infinite;
+  animation: spinner 3s linear infinite;
 }
 
 @keyframes spinner  {
