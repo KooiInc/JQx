@@ -11,7 +11,7 @@ $.logger.enable;
 const loader = $.div({class: "spin"}, `Loading...`).render;
 const perform = performance.now();
 const templatesImport = await fetch(`./templates.html`).then(r => r.text());
-const {componentStyle, clientHandling, allExampleActions,
+const {componentStyle, clientHandling, allExampleActions, navigationData,
   documentationTemplates, orderedGroups} = getVariablesInAllScopes();
 createCopyrightComponent();
 const docContainer = $.div({class: `docs`});
@@ -74,10 +74,9 @@ function createNavigationItems(groupLabel, nav) {
     .appendTo(ul);
   
   const groupUl = ul.find$(`ul`);
-  const data = getNavigationElementProps(documentationTemplates.templates);
   const navGroupUl = $.div({class: `navGroupItems`}).appendTo(groupUl);
-
-  for (const item of data.filter(v => v.label.startsWith(groupLabel.slice(0, groupLabel.indexOf(`_`) + 1)))) {
+  const chaptersFiltered = navigationData.filter(v => v.groupLabel === groupLabel.split(`_`)[0]);
+  for (const item of chaptersFiltered) {
     navGroupUl.append($.li({data: {key: item.label}},
         $.div({data: {navitem: item.label}, class: (item.isDeprecated ? `deprecated` : ``)},
           item.shortName)
@@ -90,11 +89,10 @@ function getNavigationElementProps(chapters) {
   const mappedChapterData = [];
   
   for (const chapter of chapters) {
-    mappedChapterData.push({
-      label: chapter.dataset.id,
-      isDeprecated: chapter.dataset.isDeprecated === "true",
-      shortName: removeGroupname(chapter.dataset.id)
-    });
+    const id = chapter.dataset.id;
+    const [label, groupLabel, shortName, isDeprecated] = [id, retrieveGroupname(id),
+      removeGroupname(id), $.toBool(chapter.dataset.isDeprecated === "true")];
+    mappedChapterData.push({ label, groupLabel, isDeprecated, shortName });
   }
   
   return mappedChapterData;
@@ -331,7 +329,11 @@ function groupNameOnly(idString) {
 }
 
 function removeGroupname(idString) {
-  return idString.slice(idString.indexOf(`_`) + 1)
+  return idString.slice(idString.indexOf(`_`) + 1);
+}
+
+function retrieveGroupname(idString) {
+  return idString.slice(0, idString.indexOf(`_`));
 }
 
 function getVariablesInAllScopes() {
@@ -339,6 +341,7 @@ function getVariablesInAllScopes() {
   let documentationTemplates = fetchAllChaptersFromTemplateDocument();
   const templates = documentationTemplates.templates;
   const componentStyle = $.style({textContent: `@import url(../Common/Sites/cright.css)`});
+  const navigationData = getNavigationElementProps(documentationTemplates.templates);
   const orderedGroups = [
     { groupId: `jqx_About`, groupLabel: `JQx` },
     { groupId: `static_About`, groupLabel: `Static` },
@@ -346,7 +349,7 @@ function getVariablesInAllScopes() {
     { groupId: `popup_About`, groupLabel: `Popup` },
   ];
   $.log(`Initializations done...`);
-  return {clientHandling, allExampleActions, documentationTemplates, orderedGroups, componentStyle};
+  return {clientHandling, allExampleActions, documentationTemplates, orderedGroups, componentStyle, navigationData};
 }
 
 function fetchAllChaptersFromTemplateDocument() {
@@ -360,7 +363,6 @@ function fetchAllChaptersFromTemplateDocument() {
 function createCopyrightComponent() {
   CreateComponent( { componentName: `copyright-slotted`, onConnect: copyrightComponentConnectHandler });
   renderCopyrightComponent();
-  $.log(`Copyright component (including repository backlink) created and inserted.`);
 }
 
 function renderCopyrightComponent() {
