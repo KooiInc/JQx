@@ -1,5 +1,9 @@
 export default documentHandlingFactory;
 
+function debug(...args) {
+  console.warn(`!!!`, ...args);
+}
+
 function documentHandlingFactory(jqx) {
   const clickActions = clickActionsFactory(jqx);
   jqx.editCssRules(`[data-id="tmpEx"], #tmpEx { white-space: normal; padding-top: 5px;}`, `.test, .warn { color: red; }`);
@@ -11,7 +15,7 @@ function documentHandlingFactory(jqx) {
       if (evt.type === `scroll`) {
         return handleScroll(evt);
       }
-
+      
       const groupItem = !evt.target?.closest?.(`[data-key]`) && evt.target.closest(`.navGroup`);
       const itemFromDoc = evt.target?.closest?.(`.methodName`);
       const action = evt.target.closest(`[data-action]`)?.dataset?.action;
@@ -1461,7 +1465,7 @@ function clickActionsFactory($) {
       const groupItem$ = $(groupItem);
       const isOpen = !groupItem$.hasClass("closed");
       $(`.navGroup`).each(group => $(group).addClass("closed"));
-      const selectChapter = groupItem.dataset.group + `_About`;
+      const selectChapter = groupItem.dataset.group;// + `_About` TODO;
       const groupElement = $.node(`h3[data-group-id="${selectChapter}"]`);
       $.node(`h3[data-group-id="${selectChapter}"]`).scrollIntoView();
       $(`.selected`).removeClass("selected");

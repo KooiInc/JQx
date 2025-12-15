@@ -227,7 +227,6 @@ function after(instance, elem2AddAfter) {
 }
 
 function before(instance, elem2AddBefore) {
-  console.log(`WTF`, instance, elem2AddBefore, );
   return instance.andThen(elem2AddBefore, true);
 }
 

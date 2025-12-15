@@ -240,7 +240,6 @@ function instanceExtensionsFactory(jqx) {
       return instance;
     },
     before(instance, elem2AddBefore) {
-      console.log(`WTF`, instance, elem2AddBefore, );
       return instance.andThen(elem2AddBefore, true);
     },
     beforeMe(instance, elem) { return beforeFn(instance, elem); },

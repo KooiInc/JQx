@@ -287,6 +287,10 @@ code:not([class*='language-']) {
   }
 }
 
+.loading {
+  position: absolute;
+}
+
 .red, .note b {
   color: red;
 }
@@ -373,5 +377,30 @@ img.gitLink {
     .docs {
       max-width: 95vw;
     }
+  }
+}
+
+.spin {
+  text-align: center;
+  position: absolute;
+  font-weight: bold;
+  font-size: 1.2rem;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: red;
+  animation: spinner 3s 0.2s linear infinite;
+}
+
+@keyframes spinner  {
+  from {
+    -moz-transform: rotateY(0deg);
+    -ms-transform: rotateY(0deg);
+    transform: rotateY(0deg);
+  }
+  to {
+    -moz-transform: rotateY(-360deg);
+    -ms-transform: rotateY(-360deg);
+    transform: rotateY(-360deg);
   }
 }
