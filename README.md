@@ -1,4 +1,4 @@
-[![](https://flat.badgen.net/bundlephobia/min/jqx-es)](https://bundlephobia.com/package/jqx-es@latest)
+[![](https://badgen.net/bundlephobia/min/jqx-es)](https://bundlephobia.com/package/jqx-es@latest)
 [![](https://img.shields.io/npm/v/jqx-es.svg?labelColor=cb3837&logo=npm&color=dcfdd9)](https://www.npmjs.com/package/jqx-es)
 [![](https://depx.co/api/badge/jqx-es)](https://depx.co/pkg/jqx-es)
 [![](https://badgen.net/static/Download%20bundle/@JSDeliver/blue)](https://cdn.jsdelivr.net/gh/KooiInc/JQx@latest/Bundle/jqx.min.js)
