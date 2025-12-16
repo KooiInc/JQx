@@ -22,7 +22,6 @@ function createDocument() {
   injectFavIcon();
   createGroupChapters();
   createNavigationBlock();
-  mainContainer.render;
   finalizeDocumentCreation();
 }
 
@@ -32,11 +31,10 @@ function createGroupingChapters() {
     .map(groupTemplate => {
       const groupId = groupTemplate.dataset.id;
       const displayName = createGroupHeaderLabel(groupId);
-      const text = groupTemplate.content.querySelector(`[data-text]`).outerHTML;
-
+      const text = groupTemplate.content.querySelector(`[data-text]`);
       return $.div(
           { data: {groupcontainer: groupId}, class: "description" },
-          $.h3({class: `groupHeader`, data: {groupId: groupId}}, displayName))
+          $.h3({class: `groupHeader`, data: {groupId: groupId}}, $.span(displayName)))
         .append(text);
     });
   $.log(`"About" chapters rendered...`);
@@ -45,18 +43,32 @@ function createGroupingChapters() {
 }
 
 function createGroupChapters() {
-  createChaptersGroup(mainContainer.node.querySelector(`[data-groupcontainer="static_About"]`), `JQx`);
-  createChaptersGroup(mainContainer.node.querySelector(`[data-groupcontainer="instance_About"]`), `JQx instance`);
-  createChaptersGroup(mainContainer.node.querySelector(`.container [data-groupcontainer="popup_About"]`), `JQx.Popup`);
+  const staticAbout = mainContainer.find$(`[data-groupcontainer="static_About"]`);
+  const staticChapters = createChaptersForGroup("static_About", `JQx`);
+  const instanceAbout = mainContainer.find$(`[data-groupcontainer="instance_About"]`)
+  const instanceChapters = createChaptersForGroup(`instance_About`, `JQx instance`);
+  const popupAbout = mainContainer.find$(`[data-groupcontainer="popup_About"]`);
+  const popupChapters = createChaptersForGroup(`popup_About`, `JQx.Popup`);
+  for (let chapter of staticChapters) {
+    staticAbout.andThen(chapter);
+  }
+  for (let chapter of instanceChapters) {
+    instanceAbout.andThen(chapter);
+  }
+  for (let chapter of popupChapters) {
+    popupAbout.andThen(chapter);
+  }
+  
   $.log(`Documentation chapters rendered...`);
 }
 
 function createNavigationBlock() {
-  const nav = $.div({id: `navigation`});
+  const nav = mainContainer.find$(`.navigation`);
   
   for (const group of orderedGroups) {
     createNavigationItems(group.groupId, nav);
   }
+  
   mainContainer.find$(`.docs`).append(nav);
   $.log(`Navigation block rendered...`);
 }
@@ -70,17 +82,19 @@ function createNavigationItems(groupLabel, nav) {
     class: "navGroup closed",
     data: {group: `${groupLabel}`}
   }).appendTo(nav);
-  const groupItems = $.li({class: "grouped"}, `${groupLabel}`, $.ul({class: `navGroupItems`}))
-    .appendTo(ul);
+  const groupItems = $.li(
+      {class: "grouped"},
+      $.b(`${groupLabel.split(`_`)[0].toUpperCase()}`),
+      $.ul({class: `navGroupItems`})
+    ).appendTo(ul);
   
   const groupUl = ul.find$(`ul`);
   const navGroupUl = $.div({class: `navGroupItems`}).appendTo(groupUl);
   const chaptersFiltered = navigationData.filter(v => v.groupLabel === groupLabel.split(`_`)[0]);
   for (const item of chaptersFiltered) {
     navGroupUl.append($.li({data: {key: item.label}},
-        $.div({data: {navitem: item.label}, class: (item.isDeprecated ? `deprecated` : ``)},
-          item.shortName)
-      )
+      $.div({data: {navitem: item.label}, class: (item.isDeprecated ? `deprecated` : ``)},
+        item.shortName) )
     );
   }
 }
@@ -115,6 +129,7 @@ function injectFavIcon() {
 }
 
 function finalizeDocumentCreation() {
+  mainContainer.render;
   setupHandling();
   const origin = /codeberg/i.test(location.href) ? `CB` : `GH`;
   $(`.docBrowser`).append($.div({class: "spacer"}));
@@ -169,29 +184,59 @@ function setupHandling() {
   }
 }
 
-function createChaptersGroup(forContainer, header) {
-  let lastChapter = forContainer;
-  const groupId = lastChapter.dataset.groupcontainer;
-  const prfx = groupId.slice(0, groupId.indexOf(`_`));
-
+function createChaptersForGroup(groupId, header) {
+  const prefix = groupId.slice(0, groupId.indexOf(`_`));
+  const chapters = [];
+  
   for (const groupChapter of documentationTemplates.templates) {
-    if (groupChapter.dataset.id.startsWith(prfx) && !/about$/i.test(groupChapter.dataset.id)) {
-      const { chapter, chapterName, paramJSON, params, returns, chapterTextElement, isDeprecated }
-        = getChapterProps(groupChapter);
-      isDeprecated && chapterTextElement.prepend($.b({class: `red`}, `*Deprecated*`));
-      const chapterElement
-        = createChapterElement( {chapterName, header, isDeprecated, params, returns, chapterTextElement});
+    if (groupChapter.dataset.id.startsWith(prefix) && !/about$/i.test(groupChapter.dataset.id)) {
+      const {chapterElement, chapterName} = createChapterElement( getChapterProps(groupChapter, header) );
       let i = 0;
 
       for (const codeElementPlaceholder of chapterElement.find(`[data-example]`)) {
         createCodeElement(codeElementPlaceholder, ++i);
       }
-      
-      chapterElement.renderTo(lastChapter, $.at.after);
-      lastChapter = chapterElement;
-      const chapterLogName = `(${chapterName.split(`_`).join(') ')}`;
+      chapters.push(chapterElement);
     }
   }
+  
+  return chapters;
+}
+
+function getChapterProps(chapterTemplate, header) {
+  const chapter = chapterTemplate.content;
+  const paramJSON = chapter.querySelector(`[data-params]`).dataset?.params;
+  const returnValue = escHtml(chapter.querySelector(`[data-return-value]`).dataset.returnValue)
+  const returns = returnValue.trim().length
+    ? $.div({class: "returnValue"}, `<b>Returns</b>: ${returnValue}`) : ``;
+  return {
+    chapter,
+    header,
+    chapterName: chapterTemplate.dataset.id,
+    paramJSON,
+    params: paramJSON && !/none/i.test(paramJSON) ? createParams(paramJSON) : "",
+    returns,
+    chapterTextElement: $.div({class:"description"}, chapter.querySelector(`[data-text]`).innerHTML),
+    isDeprecated: chapterTemplate.dataset.isDeprecated === "true",
+  };
+}
+
+function createChapterElement(aggregatedChapterProps) {
+  const {chapterName, header, isDeprecated, params, returns, chapterTextElement} = aggregatedChapterProps;
+  isDeprecated && chapterTextElement.prepend($.b({class: `red`}, `*Deprecated*`));
+  return {
+    chapterElement: $.div(
+      {class: "paragraph", data: {for: chapterName}},
+      $.h3(
+        {class: "methodName", data: {forId: `${chapterName}`}},
+        $.div(getChapterName(chapterName, header, isDeprecated))
+      ),
+      params,
+      returns,
+      chapterTextElement,
+    ),
+    chapterName
+  };
 }
 
 function createCodeElement(codeElemPlaceholder, i) {
@@ -218,48 +263,6 @@ function createExampleCodeElement(code, i) {
   return $.div(
       {class: "exContainer"}, head)
     .append(theCodeElement)
-}
-
-function createChapterElement(aggregatedChapterProps) {
-  const {chapterName, header, isDeprecated, params, returns, chapterTextElement} = aggregatedChapterProps;
-
-  return $.div(
-    {class: "paragraph", data: {for: chapterName}},
-    $.h3(
-      {class: "methodName", data: {forId: `${chapterName}`}},
-      getChapterName(chapterName, header, isDeprecated)
-    ),
-    params,
-    returns,
-    chapterTextElement,
-  );
-}
-
-function getChapterProps(chapterTemplate) {
-  const chapter = chapterTemplate.content;
-  const paramJSON = chapter.querySelector(`[data-params]`).dataset?.params;
-  const returnValue = escHtml(chapter.querySelector(`[data-return-value]`).dataset.returnValue)
-  const returns = returnValue.trim().length ?
-    $.div({class: "returnValue"}, `<b>Returns</b>: ${returnValue}`)
-    : ``;
-  return {
-     chapter,
-     chapterName: chapterTemplate.dataset.id,
-     paramJSON,
-     params: paramJSON && !/none/i.test(paramJSON) ? createParams(paramJSON) : "",
-     returns,
-     chapterTextElement: $.div({class:"description"}, chapter.querySelector(`[data-text]`).innerHTML),
-     isDeprecated: chapterTemplate.dataset.isDeprecated === "true",
-  };
-}
-
-function paramStr2Div(value) {
-  const params = [];
-  for ([key, val] of Object.entries(value)) {
-    const prm = /_isobject/i.test(key) ? `[Object&lt;string, any>]` : key;
-    params.push(`<div class="param"><code>${escHtml(prm)}</code>: ${escHtml(val)}</div>`);
-  }
-  return params;
 }
 
 function escHtml(str) {
@@ -295,9 +298,9 @@ function getCodeElement(content) {
 }
 
 function getChapterName(name, prefix, isDeprecated = false) {
-  return `<span class="group">[${prefix}].</span
-    ><span ${isDeprecated ? `class="deprecated"` : ""}>${
-      name.slice(name.indexOf(`_`) + 1)}</span>`;
+  return `<span class="group">[${prefix}]</span>.<span ${
+    isDeprecated ? `class="deprecated"` : ""}>${
+      name.split(/_/)[1]}</span></span>`;
 }
 
 function numberExample(el, i) {
@@ -306,10 +309,9 @@ function numberExample(el, i) {
 
 function renderGroupingChapters(groupElements) {
   docContainer.append($.div({class: `docBrowser`}, ...groupElements));
-  const mainContainer = $.div(
-    {class: `container`},
-    docContainer
-  );
+  const mainContainer = $.div( {class: `container`} );
+  mainContainer.append(docContainer);
+  docContainer.append($.div({class: `navigation`}));
 
   for (const group of [...groupElements]) {
     group.find$(`[data-example]`).each( createCodeElement );

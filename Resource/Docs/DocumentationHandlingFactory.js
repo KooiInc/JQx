@@ -1406,7 +1406,7 @@ function clickActionsFactory($) {
         .removeAfter(10);
     },
     firstEx: evt => {
-      const jqxElems = $("#navigation li[data-key]");
+      const jqxElems = $(".navigation li[data-key]");
       $.Popup.show({content: $(`<div>
          <code>jqxElems.collection.length</code>: ${jqxElems.collection.length},<br>
          outerHTML <code>jqxElems.first()</code>: ${jqxElems.first()?.outerHTML.replace(/</g, "&lt;")}</div>`)});

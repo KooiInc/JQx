@@ -14,7 +14,7 @@ body {
   overflow-y: auto;
   scroll-behavior: smooth;
 
-  #navigation, .docs {
+  .navigation, .docs {
     scrollbar-width: none; /* Firefox */
   }
 
@@ -35,7 +35,7 @@ body {
       }
     }
 
-    #navigation {
+    .navigation {
       position: fixed;
       overflow-y: auto;
       top: 3rem;
@@ -46,7 +46,7 @@ body {
   }
 }
 
-#navigation::-webkit-scrollbar, .docs::-webkit-scrollbar { /* WebKit */
+.navigation::-webkit-scrollbar, .docs::-webkit-scrollbar { /* WebKit */
   width: 0;
   height: 0;
 }
