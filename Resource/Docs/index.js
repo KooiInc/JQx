@@ -224,7 +224,7 @@ function createChapterElement(aggregatedChapterProps) {
         {class: "methodName", data: {forId: `${chapterName}`}},
         $.div(getChapterName(chapterName, header, isDeprecated))
       ),
-      params,
+      params ?? ``,
       returns,
       chapterTextElement,
     ),
