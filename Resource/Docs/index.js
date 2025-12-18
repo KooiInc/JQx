@@ -2,9 +2,7 @@ import {default as CreateComponent, createOrRetrieveShadowRoot} from "../Common/
 // ^ see https://github.com/KooiInc/es-webcomponent-factory
 import handlerFactory  from "./DocumentationHandlingFactory.js";
 const isDev = location.host.startsWith(`dev`) || location.host.startsWith(`localhost`);
-const importLink =  isDev ?
-  `../../index.js` :
-  `../../Bundle/jqx.min.js`;
+const importLink =  isDev ? `../../index.js` : `../../Bundle/jqx.min.js`;
 const $ = (await import(importLink)).default;
 window.$ = $;
 $.logger.enable;
@@ -43,21 +41,16 @@ function createGroupingChapters() {
 }
 
 function createGroupChapters() {
-  const staticAbout = mainContainer.find$(`[data-groupcontainer="static_About"]`);
   const staticChapters = createChaptersForGroup("static_About", `JQx`);
-  const instanceAbout = mainContainer.find$(`[data-groupcontainer="instance_About"]`)
   const instanceChapters = createChaptersForGroup(`instance_About`, `JQx instance`);
-  const popupAbout = mainContainer.find$(`[data-groupcontainer="popup_About"]`);
   const popupChapters = createChaptersForGroup(`popup_About`, `JQx.Popup`);
-  for (let chapter of staticChapters) {
-    staticAbout.andThen(chapter);
-  }
-  for (let chapter of instanceChapters) {
-    instanceAbout.andThen(chapter);
-  }
-  for (let chapter of popupChapters) {
-    popupAbout.andThen(chapter);
-  }
+  const staticAbout = mainContainer.find$(`[data-groupcontainer="static_About"]`);
+  const instanceAbout = mainContainer.find$(`[data-groupcontainer="instance_About"]`);
+  const popupAbout = mainContainer.find$(`[data-groupcontainer="popup_About"]`);
+  
+  for (let chapter of staticChapters) { staticAbout.andThen(chapter); }
+  for (let chapter of instanceChapters) { instanceAbout.andThen(chapter); }
+  for (let chapter of popupChapters) { popupAbout.andThen(chapter); }
   
   $.log(`Documentation chapters rendered...`);
 }
@@ -130,7 +123,7 @@ function injectFavIcon() {
 
 function finalizeDocumentCreation() {
   mainContainer.render;
-  setupHandling();
+  setupEventHandling();
   const origin = /codeberg/i.test(location.href) ? `CB` : `GH`;
   $(`.docBrowser`).append($.div({class: "spacer"}));
   $(`[data-group="jqx"]`).trigger(`click`);
@@ -158,7 +151,7 @@ function getSearchParams() {
 }
 
 // ---
-function setupHandling() {
+function setupEventHandling() {
   //const handler = clientHandling;
   let clicked = false;
   // wrap handling to avoid propagated/bubbling scroll handling on click
@@ -206,7 +199,7 @@ function createChaptersForGroup(groupId, header) {
 function getChapterProps(chapterTemplate, header) {
   const chapter = chapterTemplate.content;
   const paramJSON = chapter.querySelector(`[data-params]`).dataset?.params;
-  const returnValue = escHtml(chapter.querySelector(`[data-return-value]`).dataset.returnValue)
+  const returnValue = escapeHtmlForcodeblocks(chapter.querySelector(`[data-return-value]`).dataset.returnValue)
   const returns = returnValue.trim().length
     ? $.div({class: "returnValue"}, `<b>Returns</b>: ${returnValue}`) : ``;
   return {
@@ -251,7 +244,7 @@ function createExampleCodeElement(code, i) {
   const codeBody = allExampleActions[codeId];
 
   if (!codeBody) {
-    return getCodeElement(escHtml(code).trim());
+    return getCodeElement(escapeHtmlForcodeblocks(code).trim());
   }
 
   const theCodeElement = getCodeElement(codeBody);
@@ -265,7 +258,7 @@ function createExampleCodeElement(code, i) {
     .append(theCodeElement)
 }
 
-function escHtml(str) {
+function escapeHtmlForcodeblocks(str) {
   return str
     .replace(/</g, `&lt;`)
     .replace(/&lt;code/g, `<code`)
@@ -287,7 +280,7 @@ function createParams(paramsString) {
   }
 
   const mappedParams = Object.entries(paramsString).reduce((acc, [key, val]) =>
-    acc.concat(`<div class="param"><code>${key}</code>: ${escHtml(val || ``)}</div>`), ``)
+    acc.concat(`<div class="param"><code>${key}</code>: ${escapeHtmlForcodeblocks(val || ``)}</div>`), ``)
 
   return $.div({data: {parameters: true}}, `<b>Parameters</b>${mappedParams}</div>`);
 }

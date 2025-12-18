@@ -20,7 +20,7 @@ body {
 
   .docs {
     margin: 0 auto;
-    max-width: 60%;
+    max-width: 50%;
     padding-left: 10rem;
 
     .docBrowser {
@@ -297,7 +297,6 @@ code:not([class*='language-']) {
 
 .inlineExampleHeader {
   color: #999;
-  font-size: 1rem;
   border-bottom: 1px solid #AAA;
   padding: 0.2em;
   font-size: 1em;
@@ -359,7 +358,7 @@ img.gitLink {
 @media (max-width: 1440px) {
   .container {
     .docs {
-      max-width: 85vw;
+      max-width: 75vw;
     }
   }
 }
