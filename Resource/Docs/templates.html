@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2025-12-16 13:34:36 UTC-->
+<!-- Generated file, last update 2026-01-25 08:57:22 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -310,11 +310,17 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
 </template>
 
 <template data-id="instance_appendTo" class="instance_appendTo" data-is-deprecated="false">
-<div data-params='[{"appendTo":"JQx instance"}]'></div>
+<div data-params='[{"appendTo":"JQx instance | string (selector)"}]'></div>
 <div data-return-value='JQx Instance'></div>
-<div data-text='1'><div>Appends the collection of one JQx instance to another instance, so injects the element(s) of [JQx instance element collection] to each element of <code>appendTo</code> (for real, injected and visible in the DOM tree).</div>
+<div data-text='1'><div>Appends the collection of one JQx instance to another instance node(s), so injects the element(s) of [JQx instance element collection] to each element of <code>appendTo</code> (for real, injected and visible in the DOM tree).</div>
 
-<div class="note"><b>Note</b>: this returns <code>appendTo</code> (so, the <i>parent</i> JQx Instance).</div>
+<div class="note">
+  <b>Notes</b>
+  <ul> 
+    <li>when <code>[appendTo]</code> is a (selector) string the method will try to create a JQx instance</li>
+    <li><code>appendTo</code> returns the a JQx instance with the element(s) the instance is appended to</li>
+  </ul>
+</div>
 
 <div data-example>##EXAMPLECODE@appendToEx##</div></div>
 </template>
@@ -1046,11 +1052,15 @@ function createTimedPopup(content, timeout, callback) { return $.Popup.show({con
 <template data-id="instance_prependTo" class="instance_prependTo" data-is-deprecated="false">
 <div data-params='[{"prependTo":"string | JQx Instance"}]'></div>
 <div data-return-value='JQx Instance'></div>
-<div data-text='1'><div>Injects the current JQx Instance at the start of <code>prependTo</code>. </div>
+<div data-text='1'><div>Prepends the collection of one JQx instance to another instance node(s), so injects the element(s) of [JQx instance element collection] to te start of each element of <code>prependTo</code> (for real, injected and visible in the DOM tree).</div>
 
-<div>If <code>prependTo</code> is a HTML string, it is converted to a JQx Instance and thus validated.</div>
-
-<div>The syntax equals <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_appendTo">appendTo</div>.</div>
+<div class="note">
+  <b>Notes</b>
+  <ul> 
+    <li>when <code>[appendTo]</code> is a (selector) string the method will try to create a JQx instance</li>
+    <li><code>appendTo</code> returns the a JQx instance with the element(s) the instance is appended to</li>
+  </ul>
+</div>
 
 
 </div>
