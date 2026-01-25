@@ -200,9 +200,10 @@ function instanceExtensionsFactory(jqx) {
       return instance;
     },
     appendTo(instance, appendTo) {
+      appendTo = typeof appendTo === `string` ? jqx(appendTo) : appendTo;
       switch(true) {
-        case !appendTo.isJQx && !IS(appendTo, HTMLElement):
-          $.warn(`[JQx instance].appendTo: invalid input`);
+        case !appendTo?.isJQx && !IS(appendTo, HTMLElement) || appendTo?.collection?.length < 1:
+          jqx.warn(`[JQx instance].appendTo: invalid input`);
           return instance;
         default:
           (!appendTo.isJQx ? jqx(appendTo) : appendTo).append(instance);
@@ -363,12 +364,15 @@ function instanceExtensionsFactory(jqx) {
       return instance;
     },
     prependTo(instance, prependTo) {
-      if (!prependTo.isJQx) {
-        prependTo = jqx.virtual(prependTo);
+      prependTo = typeof prependTo === `string` ? jqx(prependTo) : prependTo;
+      switch(true) {
+        case !prependTo?.isJQx && !IS(prependTo, HTMLElement) || prependTo?.collection?.length < 1:
+          jqx.warn(`[JQx instance].appendTo: invalid input`);
+          return instance;
+        default:
+          (!prependTo.isJQx ? jqx(prependTo) : prependTo).prepend(instance);
+          return instance;
       }
-
-      prependTo.prepend(instance);
-      return instance;
     },
     prop(instance, nameOrProperties, value) {
       if (IS(nameOrProperties, String) && !value) {
