@@ -27,7 +27,7 @@ function addFnMethod(name, extensionMethod) {
     return systemLog.error("JQx.fn: method invalid parameter(s)");
   }
   
-  return instanceMethods[name] = (self, ...params) => extensionMethod(self, ...params);
+  instanceMethods[name] = (self, ...params) => extensionMethod(self, ...params);
   return systemLog.log(`JQx: added extension function [${name}]`);
 }
 

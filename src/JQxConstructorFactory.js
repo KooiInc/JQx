@@ -69,11 +69,3 @@ function JQxMainFactory() {
     return proxify(instance);
   }
 }
-
-function _getNodeContentForLog(instance) {
-  if (instance.node) {
-    return IS(instance.node, Comment)
-      ? `<!--${instance.node.textContent}-->`
-      :  instance.HTML.get(1).split(`>`)[0] + `>...`
-  }
-}
