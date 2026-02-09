@@ -1499,7 +1499,7 @@ function clickActionsFactory($) {
       if (linkOrigin) {
         const toGroup = linkOrigin.dataset.jumpgroup;
         const toKey = linkOrigin.dataset.jumpkey;
-        const jumpTo = toGroup ? $(`[data-group='${toGroup}']`) : $(`[data-navitem="${toKey}"]`);
+        const jumpTo = toGroup ? $(`[data-group='${toGroup}_About']`) : $(`[data-navitem="${toKey}"]`);
 
         return jumpTo.trigger("click");
       }
