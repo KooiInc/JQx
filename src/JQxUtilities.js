@@ -1,15 +1,15 @@
 import {
-  after, applyStyle, assignAttrValues, before, checkProp, cleanupHtml, clearAllTimers, cloneAndDestroy, convert2Bool,
-  createElementFromHtmlString, datasetKeyProxy, ElemArray2HtmlString, emptyElement, escHtml, findParentScrollDistance,
-  getAttributesForLogging, getHandlerName, HandlerFactory, inject2DOMTree, input2Collection, insertPositions, IS,
-  isArrayOfHtmlElements, isArrayOfHtmlStrings, isComment, isCommentOrTextNode, isHtmlString, isModal, isNode,
-  isNonEmptyString, isText, isVisible, isWritable, logTime, maybe, PopupFactory, randomNr, randomString,
+  after, applyStyle, assignAttrValues, beforeOrAfter, checkProp, cleanupHtml, clearAllTimers, cloneAndDestroy,
+  convert2Bool, createElementFromHtmlString, datasetKeyProxy, ElemArray2HtmlString, emptyElement, escHtml,
+  findParentScrollDistance, getAttributesForLogging, getHandlerName, HandlerFactory, inject2DOMTree, input2Collection,
+  insertPositions, IS,isArrayOfHtmlElements, isArrayOfHtmlStrings, isComment, isCommentOrTextNode, isHtmlString, isModal,
+  isNode, isNonEmptyString, isText, isVisible, isWritable, logTime, maybe, PopupFactory, randomNr, randomString,
   resolveEventTypeParameter, setData, styleFactory, systemLog, tagFNFactory, tagLib, toCamelcase, toDashedNotation,
   truncate2SingleStr, truncateHtmlStr,
 } from "../Resource/Common/Utilities.js"
 
 export {
-  after, applyStyle, assignAttrValues, before, checkProp, cleanupHtml, clearAllTimers, cloneAndDestroy,
+  after, applyStyle, assignAttrValues, beforeOrAfter, checkProp, cleanupHtml, clearAllTimers, cloneAndDestroy,
   convert2Bool, createElementFromHtmlString, css, datasetKeyProxy, ElemArray2HtmlString, emptyElement, escHtml,
   ExamineElementFeatureFactory, findParentScrollDistance, getAttributesForLogging, getHandlerName, getNodeContentForLog,
   HandlerFactory, inject2DOMTree, input2Collection, insertPositions, IS, isArrayOfHtmlElements, isArrayOfHtmlStrings,

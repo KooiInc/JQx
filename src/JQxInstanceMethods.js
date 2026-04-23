@@ -1,7 +1,7 @@
 import {
-  IS, isNode, ExamineElementFeatureFactory,
+  IS, isNode, ExamineElementFeatureFactory, beforeOrAfter,
   isNonEmptyString, toDashedNotation, escHtml, systemLog, insertPositions,
-  datasetKeyProxy, loop, cloneAndDestroy, setData, before as beforeFn, after as afterFn,
+  datasetKeyProxy, loop, cloneAndDestroy, setData,
   findParentScrollDistance, emptyElement, checkProp, css, assignAttrValues,
   applyStyle, createElementFromHtmlString, inject2DOMTree,
 } from "./JQxUtilities.js";
@@ -154,27 +154,9 @@ function instanceExtensionsFactory(jqx) {
     addClass(instance, ...classNames) {
       return loop(instance, el => el && classNames.forEach(cn => el.classList.add(cn)));
     },
-    after(instance, elem) { return afterFn(instance, elem); },
-    afterMe(instance, elem) { return afterFn(instance, elem); },
-    andThen(instance, elem2Add, before = false) {
-      if (!elem2Add || !IS(elem2Add, String, Node, Proxy)) {
-        systemLog.log(`[JQx instance].[before(Me) | after(Me) | andThen]: invalid/-sufficient input.`, );
-        return instance;
-      }
-      
-      elem2Add = elem2Add?.isJQx
-        ? elem2Add
-        : IS(elem2Add, Node)
-          ? jqx.virtual(elem2Add)
-          : jqx.virtual(createElementFromHtmlString(elem2Add));
-      const [index, method, reCollected] = before
-        ? [0, `before`, elem2Add.collection.concat(instance.collection)]
-        : [instance.collection.length - 1, `after`, instance.collection.concat(elem2Add.collection)];
-      
-      instance[index][method](...elem2Add.collection);
-      instance.collection = reCollected;
-      return instance;
-    },
+    after(instance, ...elems) { return beforeOrAfter(instance, jqx, true, ...elems); },
+    afterMe(instance, ...elems) { return beforeOrAfter(instance, jqx, true, ...elems); },
+    andThen(instance, ...elems) { return beforeOrAfter(instance, jqx, true, ...elems); },
     append(instance, ...elems2Append) {
       if (instance.is.empty || elems2Append.length < 1) { return instance;}
       const shouldMove = instance.length === 1;
@@ -240,10 +222,12 @@ function instanceExtensionsFactory(jqx) {
 
       return instance;
     },
-    before(instance, elem2AddBefore) {
-      return instance.andThen(elem2AddBefore, true);
+    before(instance, ...elems) {
+      return beforeOrAfter(instance, jqx, false, ...elems); //instance.andThen(false, ...elem2AddBefore);
     },
-    beforeMe(instance, elem) { return beforeFn(instance, elem); },
+    beforeMe(instance, ...elems) {
+      beforeOrAfter(instance, jqx, false, ...elems)
+    },
     clear(instance) { return loop(instance, emptyElement); },
     closest(instance, selector) {
       const theClosest = isNonEmptyString(selector) ? instance.node?.closest(selector) : undefined;

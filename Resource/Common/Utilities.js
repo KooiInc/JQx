@@ -31,13 +31,13 @@ const handlerIdCache = {};
 xProxy.custom();
 
 export {
-  after, applyStyle, assignAttrValues, ATTRS, before, checkProp, cleanupHtml, clearAllTimers, cloneAndDestroy,
-  convert2Bool, createElementFromHtmlString, datasetKeyProxy, ElemArray2HtmlString, emptyElement, escHtml,
-  findParentScrollDistance, getAttributesForLogging, getCaptureValue, getHandlerName, HandlerFactory, handlerIdCache,
-  inject2DOMTree, input2Collection, insertPositions, IS, isArrayOfHtmlElements, isArrayOfHtmlStrings, isComment,
-  isCommentOrTextNode, isHtmlString, isModal, isNode, isNonEmptyString, isText, isVisible, isWritable, logTime, maybe,
-  pad0,PopupFactory, randomNr, randomString, resolveEventTypeParameter, setData, styleFactory, systemLog,
-  tagFNFactory, tagLib, toCamelcase, toDashedNotation, truncate2SingleStr, truncateHtmlStr, ucFirst,
+  after, applyStyle, assignAttrValues, ATTRS, beforeOrAfter, checkProp, cleanupHtml, clearAllTimers,
+  cloneAndDestroy, convert2Bool, createElementFromHtmlString, datasetKeyProxy, ElemArray2HtmlString, emptyElement,
+  escHtml, findParentScrollDistance, getAttributesForLogging, getCaptureValue, getHandlerName, HandlerFactory,
+  handlerIdCache, inject2DOMTree, input2Collection, insertPositions, IS, isArrayOfHtmlElements, isArrayOfHtmlStrings,
+  isComment, isCommentOrTextNode, isHtmlString, isModal, isNode, isNonEmptyString, isText, isVisible, isWritable,
+  logTime, maybe, pad0,PopupFactory, randomNr, randomString, resolveEventTypeParameter, setData, styleFactory,
+  systemLog, tagFNFactory, tagLib, toCamelcase, toDashedNotation, truncate2SingleStr, truncateHtmlStr, ucFirst,
 };
 
 function clearAllTimers() {
@@ -222,8 +222,30 @@ function input2Collection(input) {
             : input.isJQx ? input.collection : undefined;
 }
 
+
+
 function after(instance, elem2AddAfter) {
   return instance.andThen(elem2AddAfter);
+}
+
+function beforeOrAfter(instance, jqx, after = true, ...toAdd) {
+  if (instance.is.empty) {
+    systemLog.log(`[JQx instance].[before(Me) | after(Me) | andThen]: instance is empty.`, );
+    return instance;
+  }
+  
+  toAdd = toAdd.map(elem => elem.isJQx ? elem.node : IS(elem, String) ? jqx(elem).node ?? elem : elem );
+  const noCando = toAdd.find(elem => !IS(elem, String, Element));
+  
+  if (noCando) {
+    const bOrA = after ? `after` : `before`;
+    systemLog.log(`[JQx instance].[${bOrA}(Me)]: invalid/-sufficient input.`, );
+    return instance;
+  }
+  
+  instance.node[after ? `after` : `before`](...toAdd);
+  
+  return instance;
 }
 
 function before(instance, elem2AddBefore) {
