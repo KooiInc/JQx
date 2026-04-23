@@ -482,13 +482,13 @@ function clickActionsFactory($) {
     },
     afterMeEx: evt => {
       $.div("I am div 1")
-        .showInExample(evt, true) // <= returns the created div
+        .showInExample(evt, true) // <= renders and returns the created div
         .after($("<div>And I am div 2</div>"));
     },
     beforeMeEx: evt => {
       $("<div>...and I am div 4</div>")
         .showInExample(evt)  // <=
-        .removeAfter(10)     // <= this returns the created div
+        .removeAfter(10)     // <= renders and returns the created div
         .before(
           $("<div>Div 1: present</div>"),
           $.div(`It's div 2 here`),
@@ -501,7 +501,7 @@ function clickActionsFactory($) {
       const codeLine1 = '<code>ele1.andThen(ele2)</code>';
       $(codeLine1)
         .showInExample(evt)  // <=
-        .removeAfter(5)      // <= this returns the created div
+        .removeAfter(5)      // <= renders and returns the created div
         .andThen(ele1, ele2);
     },
     isEx: evt => {
