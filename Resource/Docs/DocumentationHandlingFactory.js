@@ -977,7 +977,7 @@ function clickActionsFactory($) {
         handler: function triggerCustomExBttn() {
             $(`#triggerCustomEx`)
             .trigger(`oowhello!`, CustomEvent, {
-              detail: {data: "There we have it!"}
+              detail: {data: "You clicked: there we have it!"}
             });
           }
         }
@@ -993,12 +993,12 @@ function clickActionsFactory($) {
       
       $.button(
         {id: "triggerExBttn", style: "margin-right: 1em;"}, "text me...")
-      .after(
+      .showInExample(evt, true).after(
         $.input({
           style: "width: 200px", type: "text", id: "triggerCustomEx",
           placeholder: "click button to give me a value", disabled: true}
         )
-      ).showInExample(evt, true);
+      );
     },
     htmlForEx: evt => {
       // note: this example serves both for [JQx instance].html and [JQx instance].htmlFor
@@ -1121,34 +1121,32 @@ function clickActionsFactory($) {
       $.editCssRule(".someClass", {color: "brown"});
       const initial = $('<div data-id="exDuplicate" class="someClass">[hello]</div>')
         .showInExample(evt, true);
-
+      //initial.after($('[data-id="exDuplicate"]'));
+      
       const exEl = $('[data-id="exDuplicate"]');
       const exElDupe = exEl.duplicate();
-      exEl
+      
+      initial
         .after(
           exElDupe
             .append($.text(" world!"))
             .prepend($.text("We say: "))
-            .style({fontWeight: "bold"})
-        )
-        .after(
+            .style({fontWeight: "bold"}),
           exElDupe
-          .duplicate()
-          .replaceClass("someClass", "tmp")
-          .text(" That's right folks. Bye!", true)
-          .style({fontWeight: "normal", fontStyle: "italic"})
-        )
-        .after($.div(
-          `outerHTML `,
-          $.code(`div[data-id="exDuplicate"]`),
-          ` still: ${exEl.HTML.get(1, 1)}`)
+            .duplicate()
+            .replaceClass("someClass", "tmp")
+            .text(" That's right folks. Bye!", true)
+            .style({fontWeight: "normal", fontStyle: "italic"}),
+          $.div(
+            `outerHTML `,
+            $.code(`div[data-id="exDuplicate"]`),
+            ` still: ${exEl.HTML.get(1, 1)}`)
         );
     },
     hasClassEx: evt => {
       const tmpDiv = $('<div data-id="tmpExHC" class="one two tree">[Hello world]</div>')
         .showInExample(evt, true);
-      const tmpDivFromWrapped = $('[data-id="tmpExHC"]');
-
+      const tmpDivFromWrapped = $(`[data-id="tmpExHC"]`);
       tmpDivFromWrapped.after($.ul(
         $.li($.code(`tmpDivFromWrapped.hasClass("one", "tree")`), `=&gt; ${tmpDivFromWrapped.hasClass("one", "tree")}`),
         $.li($.code(`tmpDivFromWrapped.hasClass("one", "four")`), `=&gt; ${tmpDivFromWrapped.hasClass("one", "four")}`),
@@ -1224,9 +1222,9 @@ function clickActionsFactory($) {
          $.div("Here I am."),
          $.div("Call me Pete."),
          $.div("I hope they don't clear me!"))
-        .after($('<div class="metoo">Me too! Leave Pete alone!</div>')))
       .showInExample(evt)
-      .removeAfter(10);
+      .removeAfter(10)
+      .after($('<div class="metoo">Me too! Leave Pete alone!</div>')));
     },
     showHideEx: evt => {
       $.editCssRule(".divExShowHide { display: block; color: red; font-weight: bold; }");
