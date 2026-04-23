@@ -964,10 +964,10 @@ function clickActionsFactory($) {
       }
 
       // append the nodes (and colorize)
-      initialList.andThen(
+      initialList.showInExample(evt, true).andThen(
         $.div(
           {class: "exTNL", html: "**Created and modified using [<code>nodes</code>]"},
-          ...nodes) ).showInExample(evt, true);
+          ...nodes) );
     },
     triggerCustomEx: evt => {
       // button handler
@@ -1246,17 +1246,20 @@ function clickActionsFactory($) {
     cssEx: evt => {
       const testelem1 = $.virtual('<div data-id="tmpExCss1">Hello #1</div>')
         .css({paddingLeft: "4px", color: "white", backgroundColor: "#000"})
-         //  ^ class name will be created
+         //   ^ a unique class name will be created
         .css({textDecoration: `underline`});
-        //   ^ will use the created class name
+        //    ^ will use the created unique class name
       const cClass = [...testelem1.node.classList].shift();
-      testelem1
-        .andThen( $.div(`*Created class name '${cClass}' in &lt;style#JQxStylesheet>`) )
-        .andThen( $(`<p data-id="tmpExCss2" class="leftRedBorder">Hello #2</p>`)
-          .css({className: "leftRedBorder", paddingLeft: "4px", color: "green", borderLeft: "12px solid red"}))
-           //     ^ explicit class name
-        .andThen( $.div("*Created class name 'leftRedBorder' in &lt;style#JQxStylesheet>") )
-      .showInExample(evt, true);
+      $.div(`*Create element with css creates class name '${cClass}' in &lt;style#JQxStylesheet> ➡️`)
+        .showInExample(evt, true)
+        .andThen(
+          testelem1,
+          $.div("*Create element with explicit css class name 'leftRedBorder' in &lt;style#JQxStylesheet> ➡️"),
+          $(`<div data-id="tmpExCss2" class="leftRedBorder">Hello #2</div>`)
+            .css({className: "leftRedBorder", paddingLeft: "4px", color: "green", borderLeft: "12px solid red"}),
+            //                ^ explicit class name
+        );
+      
     },
     styleRulingsEx: evt => {
       $.div({class: "StyleEx"}, "Hello").append($.span(" world"))
@@ -1365,14 +1368,14 @@ function clickActionsFactory($) {
     },
     computedStyleEx: evt => {
       $.editCssRule(".redEx {color: red; font-weight: bold}");
-      $('<p class="redEx">Hello!</p>')
+      $('<p class="redEx">Hello!</p>').showInExample(evt).removeAfter(10)
         .andThen(
           $.div(
             `<code>$(".redEx").computedStyle("color")</code>: ${
                $(`.redEx`).computedStyle("color") }<br>
                <code>$(".redEx").computedStyle("font-weight")</code>: ${
                $(`.redEx`).computedStyle("font-weight") }`),
-        ).showInExample(evt).removeAfter(10);
+        );
     },
 
     dimEx: evt => {
@@ -1440,7 +1443,7 @@ function clickActionsFactory($) {
       $.editCssRule("[data-is-universe]:after {content: ' ... and the universe!'; color: red;}");
       helloWrld.data.add({isUniverse: true, something: "else", "dashed-prop-given": 1});
       const {all: myDATA} = helloWrld.data;
-      helloWrld.andThen(
+      helloWrld.showInExample(evt, true).andThen(
         $.ul()
           .append(
             $.li(`<code>helloWrld.data.all</code> =&gt; ${JSON.stringify(helloWrld.data.all)}`),
@@ -1456,7 +1459,7 @@ function clickActionsFactory($) {
             $.li(`<code>myDATA.something</code> =&gt; ${myDATA.something}`),
             $.li(`<code>myDATA.isUniverse</code> =&gt; ${myDATA.isUniverse}`),
           )
-      ).showInExample(evt, true);
+      );
 
       setTimeout(() => $(`[data-is-universe]`).data.remove("isUniverse"), 3000);
     },
