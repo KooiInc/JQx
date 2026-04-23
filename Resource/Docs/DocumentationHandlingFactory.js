@@ -143,20 +143,21 @@ function clickActionsFactory($) {
   };
   $.fn(`showInExample`, (me, evt, withRemoveBttn = false, callback = null) => {
     const exampleHeader = $(evt.target.closest(`.exContainer`));
-
+    
     if (!exampleHeader.is.empty && exampleHeader.find$(`[data-ex-tmp]`).is.empty) {
       const bttn = withRemoveBttn ? removeBttn() : ``;
-      const exTmp = $.div({data: {exTmp: "1"}})
-        .append(
-          me.before($.div(
-            $.div(
-              { data:{tmpHead: "1"},
-                class: "inlineExampleHeader",
-                text: `*Example result*`},
-                bttn,)
-            )
-          )
-        );
+      const exTmp = $.div({data: {exTmp: "1"}}).append(me);
+      
+      me.before(
+        $.div(
+          $.div(
+            { data:{tmpHead: "1"},
+              class: "inlineExampleHeader",
+              text: `*Example result*`},
+            bttn,)
+        )
+      );
+      
       exampleHeader.find$(`div:first-child`).after(exTmp);
     }
 
@@ -480,22 +481,28 @@ function clickActionsFactory($) {
       ).showInExample(evt).removeAfter(5);
     },
     afterMeEx: evt => {
-            $.div("I am div 1").after($("<div>And I am div 2</div>")).showInExample(evt).removeAfter(5);
+      $.div("I am div 1")
+        .showInExample(evt, true) // <= returns the created div
+        .after($("<div>And I am div 2</div>"));
     },
     beforeMeEx: evt => {
-      /*const divs = */$("<div>...and I am div 2</div>")
-        .before( $.div("I am div 1") )
-        .andThen(
-          $.div("...and finally I am div 4" )
-            .before( $.div("...hithere, I am div 3") )
-        ).showInExample(evt).removeAfter(30);
+      $("<div>...and I am div 4</div>")
+        .showInExample(evt)  // <=
+        .removeAfter(10)     // <= this returns the created div
+        .before(
+          $("<div>Div 1: present</div>"),
+          $.div(`It's div 2 here`),
+          $.div("Ok, I am div 3")
+        );
     },
     andThenEx: evt => {
       const ele1 = $.p("I am the first");
       const ele2 = $.p("I am the second");
       const codeLine1 = '<code>ele1.andThen(ele2)</code>';
-      $(codeLine1).andThen(ele1).andThen(ele2)
-        .showInExample(evt).removeAfter(5);
+      $(codeLine1)
+        .showInExample(evt)  // <=
+        .removeAfter(5)      // <= this returns the created div
+        .andThen(ele1, ele2);
     },
     isEx: evt => {
       const toCodeElement = str => `<code>${str}</code>`;

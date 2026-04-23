@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2026-02-09 09:15:22 UTC-->
+<!-- Generated file, last update 2026-04-23 10:51:08 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -1387,7 +1387,7 @@ In html and css a data-attribute like <code>helloWorld</code> will show up as <c
 </template>
 
 <template data-id="instance_afterMe" class="instance_afterMe" data-is-deprecated="false">
-<div data-params='[{"elem2AddAfter":"JQx instance | HtmlElement | (valid) HTML string"}]'></div>
+<div data-params='[{"...elems":"(Element | String | JQx instance)[]"}]'></div>
 <div data-return-value='JQx instance'></div>
 <div data-text='1'><div>Alias for <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_after">[JQx instance].after</div>.</div>
 </div>
@@ -1402,9 +1402,9 @@ Alias for <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_be
 </template>
 
 <template data-id="instance_andThen" class="instance_andThen" data-is-deprecated="false">
-<div data-params='[{"elem2Add":"JQx instance | single HtmlElement | HTML string"},{"before":"Boolean (default value = false)"}]'></div>
+<div data-params='[{"...elems":"(Element | String | JQx instance)[]"}]'></div>
 <div data-return-value='JQx instance'></div>
-<div data-text='1'><div><code>.andThen</code> injects [elem2Add] into the parent of the current JQx instance, right <i>before</i> (before = true) or <i>after</i> it. The original instance is replaced with a JQx instance containing both elements in its collection. The return value is the new instance.</div>
+<div data-text='1'><div>Yet another alias for <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_after">[JQx instance].after</div>.</div>
 
 <div data-example>##EXAMPLECODE@andThenEx##</div></div>
 </template>
@@ -1550,17 +1550,31 @@ So removal of <code>.test1, test2 {...}</code> will fail using <code>$.removeCss
 </template>
 
 <template data-id="instance_after" class="instance_after" data-is-deprecated="false">
-<div data-params='[{"elem2AddAfter":"JQx instance | HtmlElement | (valid) HTML string"}]'></div>
+<div data-params='[{"...elems":"(Element | String | JQx instance)[]"}]'></div>
 <div data-return-value='JQx instance'></div>
-<div data-text='1'><div><code>.after</code> injects [elem2Add] into the parent of the current JQx instance, right <i>after</i> it. The original instance is replaced with an JQx instance containing both elements in its collection. The return value is the new instance.</div>
+<div data-text='1'><div>
+  <code>.after</code> injects [...elems] into the parent of the current JQx instance, right <i>after</i> 
+  the first node of the JQx instance collection. 
+</div>
 
+<div>Returns the current JQx instance after invocation</div>
+
+<div class="note"><b>Note</b>: the instance <i>should</i> exist in the DOM (so <code>JQx.virtual(...).after(...)</code> will not work.
+  
 <div data-example>##EXAMPLECODE@afterMeEx##</div></div>
 </template>
 
 <template data-id="instance_before" class="instance_before" data-is-deprecated="false">
-<div data-params='[{"elem2AddBefore":"JQx instance | HtmlElement | (valid) HTML string"}]'></div>
+<div data-params='[{"...elems":"(Element | String | JQx instance)[]"}]'></div>
 <div data-return-value='JQx instance'></div>
-<div data-text='1'><div><code>.beforeMe</code> injects [elem2Add] into the parent of the current JQx instance, right <i>before</i> it. The original instance is replaced with an JQx instance containing both elements in its collection. The return value is the new instance.</div>
+<div data-text='1'><div>
+  <code>.after</code> injects [...elems] into the parent of the current JQx instance, right <i>before</i> 
+  the first node of the JQx instance collection.
+</div>
+
+<div>Returns the current JQx instance after invocation</div>
+
+<div class="note"><b>Note</b>: the instance <i>should</i> exist in the DOM (so <code>JQx.virtual(...).before(...)</code> will not work.
 
 <div data-example>##EXAMPLECODE@beforeMeEx##</div></div>
 </template>

@@ -47,11 +47,9 @@ function createGroupChapters() {
   const staticAbout = mainContainer.find$(`[data-groupcontainer="static_About"]`);
   const instanceAbout = mainContainer.find$(`[data-groupcontainer="instance_About"]`);
   const popupAbout = mainContainer.find$(`[data-groupcontainer="popup_About"]`);
-  
-  for (let chapter of staticChapters) { staticAbout.andThen(chapter); }
-  for (let chapter of instanceChapters) { instanceAbout.andThen(chapter); }
-  for (let chapter of popupChapters) { popupAbout.andThen(chapter); }
-  
+  staticAbout.andThen(...staticChapters);
+  instanceAbout.andThen(...instanceChapters);
+  popupAbout.andThen(...popupChapters);
   $.log(`Documentation chapters rendered...`);
 }
 
