@@ -356,7 +356,7 @@ if (!debug) {
       class: `exampleText codeVwr`,
       data: {updown: `\u25BC Display `, forid: `cbBoxCode`, hidden: 1} },
     `the code for the <code>[JQx instance].cbBox</code> extension ☝`,
-    ).afterMe(
+    ).appendTo(JQxRoot).afterMe(
       $.div({id: `cbBoxCode`, class: `upDownFader`}, $.pre(
           $.code(
             `$.fn("cbBox", checkboxJQxFactory); // &lt;= create the extension\n`,
@@ -381,7 +381,7 @@ if (!debug) {
           )
         )
       )
-    ).appendTo(JQxRoot);
+    );
   
   // append multiline comment to p#JQxRoot
   COMMENT(`Hi, I am a multiline HTML-comment.
