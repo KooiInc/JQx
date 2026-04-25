@@ -482,27 +482,36 @@ function clickActionsFactory($) {
     },
     afterMeEx: evt => {
       $.div("I am div 1")
-        .showInExample(evt, true) // <= renders and returns the created div
-        .after($("<div>And I am div 2</div>"));
+        .appendTo($.div())
+    //  ∟ wrappping in an empty div enables .before/after
+        .after($("<div>And I am div 2</div>"))
+        .parent
+    //   ∟ to display all elements, we need the parent they are wrapped into
+        .showInExample(evt, true);
     },
     beforeMeEx: evt => {
-      $("<div>...and I am div 4</div>")
-        .showInExample(evt)  // <=
-        .removeAfter(10)     // <= renders and returns the created div
+      $.virtual("<div>...and I am div 4</div>")
+        .appendTo($.div())
+    //  ∟ wrappping in an empty div enables .before/after
         .before(
           $("<div>Div 1: present</div>"),
           $.div(`It's div 2 here`),
           $.div("Ok, I am div 3")
-        );
+        ).parent
+    //    ∟ to display all elements, we need the parent they are wrapped into
+        .showInExample(evt, true);
     },
     andThenEx: evt => {
       const ele1 = $.p("I am the first");
       const ele2 = $.p("I am the second");
-      const codeLine1 = '<code>ele1.andThen(ele2)</code>';
-      $(codeLine1)
-        .showInExample(evt)  // <=
-        .removeAfter(5)      // <= renders and returns the created div
-        .andThen(ele1, ele2);
+      
+      $.virtual('<code>ele1.andThen(ele2)</code>')
+        .appendTo($.div())
+    //  ∟ wrappping in an empty div enables .before/after
+        .andThen(ele1, ele2)
+        .parent
+    //  ∟ to display all elements, we need the parent they are wrapped into
+        .showInExample(evt, true);
     },
     isEx: evt => {
       const toCodeElement = str => `<code>${str}</code>`;

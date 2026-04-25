@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2026-04-23 10:51:08 UTC-->
+<!-- Generated file, last update 2026-04-25 08:45:38 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -1559,7 +1559,10 @@ So removal of <code>.test1, test2 {...}</code> will fail using <code>$.removeCss
 
 <div>Returns the current JQx instance after invocation</div>
 
-<div class="note"><b>Note</b>: the instance <i>should</i> exist in the DOM (so <code>JQx.virtual(...).after(...)</code> will not work.
+<div class="note">
+  <b>Note</b>: <code>[instance].after</code> only works when the first element of the instance has a parent node.
+  Wrapping a standalone virtual instance (not yet in the DOM) will make it work (see example).
+</div>
   
 <div data-example>##EXAMPLECODE@afterMeEx##</div></div>
 </template>
@@ -1574,7 +1577,10 @@ So removal of <code>.test1, test2 {...}</code> will fail using <code>$.removeCss
 
 <div>Returns the current JQx instance after invocation</div>
 
-<div class="note"><b>Note</b>: the instance <i>should</i> exist in the DOM (so <code>JQx.virtual(...).before(...)</code> will not work.
+<div class="note">
+  <b>Note</b>: <code>[instance].before</code> only works when the first element of the instance has a parent node.
+  Wrapping a standalone virtual instance (not yet in the DOM) will make it work (see example).
+</div>
 
 <div data-example>##EXAMPLECODE@beforeMeEx##</div></div>
 </template>
