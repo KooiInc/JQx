@@ -223,7 +223,7 @@ function instanceExtensionsFactory(jqx) {
       return instance;
     },
     before(instance, ...elems) {
-      return beforeOrAfter(instance, jqx, false, ...elems); //instance.andThen(false, ...elem2AddBefore);
+      return beforeOrAfter(instance, jqx, false, ...elems);
     },
     beforeMe(instance, ...elems) {
       beforeOrAfter(instance, jqx, false, ...elems)
