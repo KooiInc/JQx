@@ -505,10 +505,11 @@ function clickActionsFactory($) {
       const ele1 = $.p("I am the first");
       const ele2 = $.p("I am the second");
       
-      $.virtual('<code>ele1.andThen(ele2)</code>')
+      $.virtual('<code>[this line].andThen(ele1).andThen(ele2)</code>')
         .appendTo($.div())
     //  ∟ wrappping in an empty div enables .before/after
-        .andThen(ele1, ele2)
+        .andThen(ele1)
+        .andThen(ele2)
         .parent
     //  ∟ to display all elements, we need the parent they are wrapped into
         .showInExample(evt, true);
@@ -1117,20 +1118,15 @@ function clickActionsFactory($) {
       $.editCssRule(".tmpExAppendTo { color: blue; font-weight: normal; }");
       const helloWorld = $.virtual('<div class="tmpExAppendTo">Hello World</div>');
       const div2Append = $.span({class: "red"}, " ... And bye again");
+      $.div({style: `color: green`}, `Wait for it ...`).appendTo(helloWorld);
       helloWorld.showInExample(evt, true);
 
-      setTimeout(() => {
-        // note: showInExample wrapped [helloWorld],
-        // so we retrieve the original element first:
-        const helloWorldFromWrapped = helloWorld.parent.find$(`div.tmpExAppendTo`)
-        div2Append.appendTo(helloWorldFromWrapped); // <= appendTo here
-      }, 2000);
+      setTimeout(() => div2Append.appendTo(helloWorld), 1500); // <= appendTo here;
     },
     duplicateEx: evt => {
       $.editCssRule(".someClass", {color: "brown"});
       const initial = $('<div data-id="exDuplicate" class="someClass">[hello]</div>')
         .showInExample(evt, true);
-      //initial.after($('[data-id="exDuplicate"]'));
       
       const exEl = $('[data-id="exDuplicate"]');
       const exElDupe = exEl.duplicate();
