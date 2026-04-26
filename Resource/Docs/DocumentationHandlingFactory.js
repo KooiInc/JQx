@@ -136,7 +136,7 @@ function clickActionsFactory($) {
       return exampleTmp.remove();
     }
 
-    to = setTimeout(_ => {
+    setTimeout(_ => {
       counter.dataset.n = `${current - 1}`;
       countDownExampleCloser(counter, exampleTmp);
     }, 1000);
@@ -508,8 +508,9 @@ function clickActionsFactory($) {
       $.virtual('<code>[this line].andThen(ele1).andThen(ele2)</code>')
         .appendTo($.div())
     //  ∟ wrappping in an empty div enables .before/after
-        .andThen(ele1)
         .andThen(ele2)
+        .andThen(ele1)
+    // ∟ note the sequence here
         .parent
     //  ∟ to display all elements, we need the parent they are wrapped into
         .showInExample(evt, true);
@@ -584,7 +585,7 @@ function clickActionsFactory($) {
       const myBrandNewCssSheet = $.node("#exampleStyleSheet");
       const ismyBrandNewCssSheetAStyleSheet = `Is <code>myBrandNewCssSheet</code>
           really a stylesheet? ${ $.IS(myBrandNewCssSheet, HTMLStyleElement) ? "YEP" : "NOPE" }`;
-      const rules = [... myBrandNewCssSheet.sheet.rules].reduce((acc, rule) => acc.concat(rule.cssText), []);
+      const rules = [... myBrandNewCssSheet.sheet.cssRules].reduce((acc, rule) => acc.concat(rule.cssText), []);
       const checkMsg = "While this popup is open, open the developer console (tab 'Elements')\
         and check if &lt;head> contains <code class='inline'>style#exampleStyleSheet</code>";
       $.Popup.show( {
@@ -838,6 +839,7 @@ function clickActionsFactory($) {
       }, 2000);
     },
     ISEx: evt => {
+      // noinspection JSPrimitiveTypeWrapperUsage
       const someVars = {
         Object: {say: "hello"},
         Array: [1, 2, 3],
