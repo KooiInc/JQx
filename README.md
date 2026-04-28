@@ -12,7 +12,7 @@ Bundlephobia is a lost case
 > signature`[handler]({evt, [me|self]})`. If you use `[JQx].delegate` or
 > `[JQx instance].on` in your code, please review.
 >
-> See also [documentation](https://kooiinc.codeberg.page/JQx/Resource/Docs/)
+> See [documentation](https://kooiinc.codeberg.page/JQx/Resource/Docs/?navTo=static_handle) for the new `handle` functionality.
 
 # JQx
 
