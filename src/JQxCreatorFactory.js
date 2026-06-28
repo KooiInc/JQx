@@ -261,7 +261,7 @@ function staticMethodsFactory(jqx) {
   const getNamedListener = getNamedListenerFactory(jqx);
   const staticFN = staticFNMethodFactory(jqx);
   $T.setError = key => {
-    error(`JQx element creation error: [${key}] is not a valid tag`);
+    error(`JQx direct element creation error: [${key}] is not a valid tag`);
     return jqx.br();
   }
   return {
