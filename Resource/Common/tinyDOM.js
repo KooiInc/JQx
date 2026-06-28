@@ -27,42 +27,39 @@ function getProxy() {
       }
     },
     set(tagFns, key, value) {
-      if (key === `setError` && typeof value === 'function') { tagFunctionError = value; }
-      if (key === `newCustomElement` && validateCustomElementTag(value)) {
-        registerCustomElement(value);
-      }
-      return true;
-    },
+        if (key === `setError` && typeof value === 'function') { tagFunctionError = value; }
+        return true;
+      },
     enumerable: false, configurable: false
   };
-}
-
-function validateCustomElementTag(tagName) {
-  return typeof tagName === `string` &&
-    tagName.length > 2 &&
-    /^[a-z]/i.test(tagName) &&
-    /[_a-z0-9]/gi.test(tagName) &&
-    (tagName.includes(`-`) || /([a-z][A-Z])+/.test(tagName));
-}
-
-function registerCustomElement(value) {
-  const [dashed, camel] = value.includes(`-`) ? [value, toCamelcase(value)] : [toDashedNotation(value), value];
-  customElementRegistry[dashed] = dashed;
-  customElementRegistry[camel] = dashed;
-  createTagFunctionProperty({tag: dashed, custom: camel, debug: true});
 }
 
 function createTagFunctionProperty({tag, key, custom, debug = false, isError = false} = {}) {
   let unfrozenElementFunctionCollection = cloneExact();
   
+  if (isError) {
+    Object.defineProperty(unfrozenElementFunctionCollection, tag, {
+      get() { return _ => tagFunctionError(key) ?? ``; }
+    } );
+    
+    return reFreeze(unfrozenElementFunctionCollection, tag);
+  }
+  
+  if (tag.includes(`-`)) {
+    const [dashed, camel] = tag.includes(`-`) ? [tag, toCamelcase(tag)] : [toDashedNotation(tag), tag];
+    customElementRegistry[dashed] = dashed;
+    customElementRegistry[camel] = dashed;
+    custom = camel;
+  }
+  
   if (!!custom) {
     Object.defineProperty(unfrozenElementFunctionCollection, custom, {
-      get() { return isError ? _ => tagFunctionError(key) ?? `` : tag2FN(custom); }
-    })
+      get() { return tag2FN(tag); }
+    });
   }
   
   Object.defineProperty(unfrozenElementFunctionCollection, tag, {
-    get() { return isError ? _ => tagFunctionError(key) ?? `` : tag2FN(tag); }
+    get() { return tag2FN(tag); }
   } );
   
   return reFreeze(unfrozenElementFunctionCollection, tag);
@@ -81,7 +78,7 @@ function cloneExact() {
 }
 
 function processNext(root, next, tagName) {
-  next = next?.isJQx && next.first() || next;
+  next = next?.isJQx && next.node || next;
   return maybe({
     trial: _ => containsHTML(next) ? root.insertAdjacentHTML(`beforeend`, next) : root.append(next),
     whenError: err => console.info(`${tagName} not created, reason\n`, err)
@@ -95,7 +92,7 @@ function tagFN(tagName, initial, ...nested) {
 }
 
 function retrieveElementFromInitial(initial, tag) {
-  initial = isComment(tag) ? cleanupComment(initial) : initial.isJQx ? initial.node : initial;
+  initial = isComment(tag) ? cleanupComment(initial) : initial?.isJQx ? initial.node : initial;
   
   switch(true) {
     case initial?.[Symbol.is](String): return createElement(tag, containsHTML(initial, tag) ? {html: initial} : {text: initial});
@@ -165,7 +162,18 @@ function containsHTML(str, tag) {
 
 function isComment(tag) { return /comment/i.test(tag); }
 
-function validateTag(name) { return name in customElementRegistry || !createElement(name)?.[Symbol.is](HTMLUnknownElement); }
+function validateTag(name) {
+  return validateElementTagName(name) &&
+    (name in customElementRegistry ||
+      !createElement(name)?.[Symbol.is](HTMLUnknownElement));
+}
+
+function validateElementTagName(tagName) {
+  return typeof tagName === `string` &&
+    tagName.length > 0 &&
+    /^[a-z]/i.test(tagName) &&
+    /[a-z0-9-]/gi.test(tagName);
+}
 
 function tag2FN(tagName) {
   tagName = tagName in customElementRegistry ?  customElementRegistry[tagName] : tagName;
