@@ -260,6 +260,7 @@ function staticMethodsFactory(jqx) {
     capturedHandling, log, warn, error, handlerWrapper } = getSelectedStaticMethods(jqx);
   const getNamedListener = getNamedListenerFactory(jqx);
   const staticFN = staticFNMethodFactory(jqx);
+  $T.setError = key => error(`JQx element creation error: [${key}] is not a valid tag`);
   return {
     log,
     warn,

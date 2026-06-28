@@ -425,6 +425,10 @@ if (!debug) {
     $.div(`Page creation took ${donePerf.toFixed(3)} seconds`)
       .afterMe( $.div(`All done, enjoy 😎!` ) );
   $.Popup.show({content: perfMessage, closeAfter: 5});
+  
+  // this invalid tag will result in an error message in the console.
+  $.allowTag(`div123`);
+  $.div123();
 }
 /* DEBUG EXIT POINT */
 

@@ -1,4 +1,4 @@
-import { maybe, addSymbolicExtensions } from "https://unpkg.com/typeofanything@latest/Dist/toa.min.js";
+import { maybe, addSymbolicExtensions } from "./TypeofAnything.js";
 const converts = { html: `innerHTML`, text: `textContent`,  class: `className` };
 let elementFunctionCollection = {};
 const customElementRegistry = {};
@@ -169,10 +169,12 @@ function validateTag(name) {
 }
 
 function validateElementTagName(tagName) {
+  tagName = tagName.toLowerCase();
+  
   return typeof tagName === `string` &&
     tagName.length > 0 &&
-    /^[a-z]/i.test(tagName) &&
-    /[a-z0-9-]/gi.test(tagName);
+    /^[a-z]/.test(tagName) &&
+    /^[a-z0-9-]+$/gi.test(tagName);
 }
 
 function tag2FN(tagName) {
