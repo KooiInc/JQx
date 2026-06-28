@@ -428,7 +428,7 @@ if (!debug) {
   
   // this invalid tag will result in an error message in the console.
   $.allowTag(`div123`);
-  $.div123();
+  $.div123(`Will NOT work`);
 }
 /* DEBUG EXIT POINT */
 
