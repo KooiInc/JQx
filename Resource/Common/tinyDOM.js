@@ -1,38 +1,90 @@
-// JQx adapted from https://github.com/KooiInc/tinyDOM
-import { IS, maybe } from "./Utilities.js";
+import { maybe, addSymbolicExtensions } from "https://unpkg.com/typeofanything@latest/Dist/toa.min.js";
 const converts = { html: `innerHTML`, text: `textContent`,  class: `className` };
+let elementFunctionCollection = {};
+const customElementRegistry = {};
+let tagFunctionError = tag => {
+  console.error(`tinyDOM error: "${tag}" is not a valid HTML tag`);
+  return undefined;
+};
+
+addSymbolicExtensions();
 
 export default tinyDOM();
 
 function tinyDOM() {
-  const tinyDOMProxyGetter = { get(obj, key) {
-      const tag = String(key)?.toLowerCase();
-      switch(true) {
-        case tag in obj: return obj[tag];
-        case validateTag(tag): return createTagFunctionProperty(obj, tag, key);
-        default: return createTagFunctionProperty(obj, tag, key, true);
-      }
-    }, enumerable: false, configurable: false
-  };
-  return new Proxy({}, tinyDOMProxyGetter);
+  return Object.freeze(new Proxy(elementFunctionCollection, getProxy()));
 }
 
-function createTagFunctionProperty(obj, tag, key, isError = false) {
-  Object.defineProperty(obj, tag, { get() { return isError ? _ => errorElement(key) : tag2FN(tag); } } );
-  return obj[tag];
+function getProxy() {
+  return {
+    get(tagFns, key) {
+      const tag = String(key);
+      
+      switch(true) {
+        case tag in tagFns: return tagFns[tag];
+        case validateTag(tag): return createTagFunctionProperty({tag, key});
+        default: return createTagFunctionProperty({tag, key, isError: true});
+      }
+    },
+    set(tagFns, key, value) {
+      if (key === `setError` && typeof value === 'function') { tagFunctionError = value; }
+      if (key === `newCustomElement` && validateCustomElementTag(value)) {
+        registerCustomElement(value);
+      }
+      return true;
+    },
+    enumerable: false, configurable: false
+  };
+}
+
+function validateCustomElementTag(tagName) {
+  return typeof tagName === `string` &&
+    tagName.length > 2 &&
+    /^[a-z]/i.test(tagName) &&
+    /[_a-z0-9]/gi.test(tagName) &&
+    (tagName.includes(`-`) || /([a-z][A-Z])+/.test(tagName));
+}
+
+function registerCustomElement(value) {
+  const [dashed, camel] = value.includes(`-`) ? [value, toCamelcase(value)] : [toDashedNotation(value), value];
+  customElementRegistry[dashed] = dashed;
+  customElementRegistry[camel] = dashed;
+  createTagFunctionProperty({tag: dashed, custom: camel, debug: true});
+}
+
+function createTagFunctionProperty({tag, key, custom, debug = false, isError = false} = {}) {
+  let unfrozenElementFunctionCollection = cloneExact();
+  
+  if (!!custom) {
+    Object.defineProperty(unfrozenElementFunctionCollection, custom, {
+      get() { return isError ? _ => tagFunctionError(key) ?? `` : tag2FN(custom); }
+    })
+  }
+  
+  Object.defineProperty(unfrozenElementFunctionCollection, tag, {
+    get() { return isError ? _ => tagFunctionError(key) ?? `` : tag2FN(tag); }
+  } );
+  
+  return reFreeze(unfrozenElementFunctionCollection, tag);
+}
+
+function reFreeze(unfrozenCollection, tag) {
+  elementFunctionCollection = Object.freeze(new Proxy(unfrozenCollection, getProxy()));
+  elementFunctionCollection[Symbol.for.proxy] = `Proxy (Object)`;
+  return elementFunctionCollection[tag];
+}
+
+function cloneExact() {
+  return Object.fromEntries(
+    Object.entries(Object.getOwnPropertyDescriptors(elementFunctionCollection))
+  );
 }
 
 function processNext(root, next, tagName) {
   next = next?.isJQx && next.first() || next;
-  
   return maybe({
-    trial: _ => {
-      return isText(next)
-        ? root.append(next)
-        : containsHTML(next)
-          ? root.insertAdjacentHTML(`beforeend`, next) : root.append(next)
-    },
-    whenError: err => console.info(`${tagName} (for root ${root}) not created, reason\n`, err)
+    trial: _ => containsHTML(next) ? root.insertAdjacentHTML(`beforeend`, next) : root.append(next),
+    whenError: err => console.info(`${tagName} not created, reason\n`, err)
   });
 }
 
@@ -43,31 +95,13 @@ function tagFN(tagName, initial, ...nested) {
 }
 
 function retrieveElementFromInitial(initial, tag) {
-  initial = isComment(tag) ? cleanupComment(initial) : initial?.isJQx ? initial.first() : initial;
+  initial = isComment(tag) ? cleanupComment(initial) : initial.isJQx ? initial.node : initial;
   
   switch(true) {
-    case IS(initial, String): return createElement(tag, containsHTML(initial, tag) ? {html: initial} : {text: initial});
-    case IS(initial, Node): return createElementAndAppend(tag, initial);
+    case initial?.[Symbol.is](String): return createElement(tag, containsHTML(initial, tag) ? {html: initial} : {text: initial});
+    case initial?.[Symbol.is](Node): return createElementAndAppend(tag, initial);
     default: return createElement(tag, initial);
   }
-}
-
-function cleanupProps(props) {
-  delete props.data;
-  if (Object.keys(props).length < 1) {
-    return props;
-  }
-  
-  Object.keys(props).forEach(key => {
-    const keyLowercase = key.toLowerCase();
-    
-    if (keyLowercase in converts) {
-      props[converts[keyLowercase]] = props[key];
-      delete props[key];
-    }
-  });
-  
-  return props;
 }
 
 function createElementAndAppend(tag, element2Append) {
@@ -76,28 +110,79 @@ function createElementAndAppend(tag, element2Append) {
   return elem;
 }
 
-function createElement(tagName, props = {}) {
-  props = isObjectCheck(props, {});
+function cleanupProps(props) {
+  if ( Object.keys(props).length < 1 ) { return {assignable: {}, specials: [...Array(3)] }; }
+  
+  const specials = retrieveSpecialProps(props);
+  Object.keys(props).forEach( key => {
+    const keyCI = key.toLowerCase();
+    keyCI in converts && (props[converts[keyCI]] = props[key]) && delete props[key]; } );
+  
+  return { assignable: props, specials };
+}
+
+function retrieveSpecialProps(props) {
+  if (!props?.[Symbol.is](Object)) { return Array(3); }
   
   const data = Object.entries(props.data ?? {});
+  const attributes = Object.entries(props.attributes ?? {});
+  const classList = props.class?.split(/[ ,]/).map(v => v.trim()).filter(v => v.length > 1);
+  delete props.data;
+  delete props.attributes;
+  delete props.class;
+  
+  return [data, attributes, classList];
+}
+
+function assignSpecialProps(specialProps, element) {
+  const [data, attributes, classList] = specialProps;
+  
+  data?.length && data.forEach(([key, value]) => element.dataset[key] = value);
+  attributes?.length && attributes.forEach( ([key, value]) => element.setAttribute(key, value) );
+  classList?.forEach( value => element.classList.add(value));
+}
+
+function createElement(tagName, props) {
+  props = props || {};
+  const {assignable, specials} = cleanupProps(props);
   const elem = Object.assign(
-    isComment(tagName) ? new Comment(props?.text) : document.createElement(tagName),
-    cleanupProps( props ) );
-  data.length && data.forEach(([key, value]) => elem.dataset[key] = String(value));
+    isComment(tagName) ? new Comment() : document.createElement(tagName),
+    assignable
+  );
+  assignSpecialProps(specials, elem);
+  
   return elem;
 }
 
-function isObjectCheck(someObject, defaultValue) {
-  return defaultValue
-    ? IS(someObject, {isTypes: Object, notTypes: [Array, null, NaN, Proxy], defaultValue})
-    : IS(someObject, {isTypes: Object, notTypes: [Array, null, NaN, Proxy]});
+
+function cleanupComment(initial) {
+  return initial?.constructor === Comment ? initial?.textContent : String(initial);
 }
 
-function toCommentTag(commentElement) {}
-function cleanupComment(initial) { return isObjectCheck(initial) ? initial?.text ?? initial?.textContent ?? `` : String(initial); }
-function errorElement(key) { return createElement(`b`, {style:`color:red`,text:`'${key}' is not a valid HTML-tag`}); }
-function containsHTML(str, tag) { return !isComment(tag) && IS(str, String) && /<.*>|&[#|0-9a-z]+[^;];/i.test(str); }
-function isText(tag) { return tag?.constructor === Comment || tag?.constructor === CharacterData; }
-function isComment(tag) { return tag?.constructor === Comment || /comment/i.test(tag); }
-function validateTag(name) { return !IS(createElement(name), HTMLUnknownElement); }
-function tag2FN(tagName) { return (initial, ...args) => tagFN(tagName, initial, ...args); }
+function containsHTML(str, tag) {
+  return !isComment(tag) && str?.[Symbol.is](String) && /<.*>|&[#|0-9a-z]+[^;];/i.test(str);
+}
+
+function isComment(tag) { return /comment/i.test(tag); }
+
+function validateTag(name) { return name in customElementRegistry || !createElement(name)?.[Symbol.is](HTMLUnknownElement); }
+
+function tag2FN(tagName) {
+  tagName = tagName in customElementRegistry ?  customElementRegistry[tagName] : tagName;
+  return (initial, ...args) => tagFN(tagName, initial, ...args);
+}
+
+function ucFirst([first, ...theRest]) { return `${first.toUpperCase()}${theRest.join(``)}`; }
+
+function toDashedNotation(str2Convert) {
+  return str2Convert.replace(/[A-Z]/g, a => `-${a.toLowerCase()}`).replace(/^-|-$/, ``);
+}
+
+function toCamelcase(str2Convert) {
+  return str2Convert[Symbol.is](String)
+    ? str2Convert.toLowerCase()
+      .split(`-`)
+      .map( (str, i) => i && `${ucFirst(str)}` || str)
+      .join(``)
+    : str2Convert;
+}
