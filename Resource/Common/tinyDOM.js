@@ -78,8 +78,7 @@ function cloneExact() {
 }
 
 function processNext(root, next, tagName) {
-  next = next?.isJQx && next.node || next[Symbol.is](String, Number) ? String(next) : next;
-  
+  next = next?.isJQx && next.node || next;
   return maybe({
     trial: _ => containsHTML(next) ? root.insertAdjacentHTML(`beforeend`, next) : root.append(next),
     whenError: err => console.info(`${tagName} not created, reason\n`, err)
