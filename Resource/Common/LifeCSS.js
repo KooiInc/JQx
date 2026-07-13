@@ -1,12 +1,260 @@
-var{IS:P,maybe:N,$Wrap:q,isNothing:w,xProxy:G,addSymbolicExtensions:J}=v({useSymbolicExtensions:!1});function v(n={}){let{useSymbolicExtensions:c}=n,{shouldbeIsSingleObject:l,ISOneOf:f,isExcept:m,verifyNothingness:S,xProxy:$,determineType:p,addSymbolicExtensions:y,maybe:x,$Wrap:b}=C(g,c);return c&&y(),{IS:g,maybe:x,$Wrap:b,isNothing:S,xProxy:$,addSymbolicExtensions:y};function g(i,...a){let o=typeof i=="symbol"?Symbol.isSymbol:i;switch(!0){case!!x({trial:u=>"isTypes"in(a?.[0]??{})}):return l(i,a[0]);default:return a.length>1?f(o,...a):p(i,...a)}}}function C(n,c){let{SymbolAndCustomProxyFactory:l,maybeFactory:f,WrapAnyFactory:m,verifyNothingness:S,determineType:$}=Y(n,g),{xProxy:p,addSymbolicExtensions:y}=l(n,g,c),[x,b]=[f(),m(n,g)];return Object.freeze({shouldbeIsSingleObject:i,ISOneOf:a,isExcept:u,verifyNothingness:S,xProxy:p,determineType:$,addSymbolicExtensions:y,maybe:x,$Wrap:b});function g(e){return e?.[Symbol.proxy]??n(e)}function i(e,r){switch(!0){case"defaultValue"in r:return o(e,r);case"notTypes"in r:return u(e,r);default:return n(e,...[r.isTypes].flat())}}function a(e,...r){return r.some(t=>n(e,t))}function o(e,{defaultValue:r,isTypes:t=[void 0],notTypes:s}={}){return t=t?.constructor!==Array?[t]:t,s=s&&s?.constructor!==Array?[s]:[],s.length<1?n(e,...t)?e:r:u(e,{isTypes:t,notTypes:s})?e:r}function u(e,{isTypes:r=[void 0],notTypes:t=[void 0]}={}){return r=r?.constructor!==Array?[r]:r,t=t?.constructor!==Array?[t]:t,n(e,...r)&&!n(e,...t)}}function Y(){let n={IS:"toa.is",TYPE:"toa.type",IS_SYMBOL:"toa.isASymbol",PROXY:"toa.proxy"},c={NAN:"NaN",INFINITY:"Infinity",BOOLEAN:"Boolean",OBJECT:"Object",PROXY_PREFIX:"Proxy ("};return Object.freeze({SymbolAndCustomProxyFactory:f,maybeFactory:o,WrapAnyFactory:a,verifyNothingness:u,determineType:y});function l(e,r){Symbol.is||(Symbol.is=Symbol.for(n.IS),Symbol.type=Symbol.for(n.TYPE),Object.defineProperties(Object.prototype,{[Symbol.type]:{get(){return r(this)},enumerable:!1,configurable:!1},[Symbol.is]:{value:function(...t){return e(this,...t)},enumerable:!1,configurable:!1}}),Object.defineProperties(Object,{[Symbol.type]:{value(t){return r(t)},enumerable:!1,configurable:!1},[Symbol.is]:{value:function(t,...s){return e(t,...s)},enumerable:!1,configurable:!1}}))}function f(e,r,t){return Symbol.isSymbol||(Symbol.isSymbol=Symbol.for(n.IS_SYMBOL)),{xProxy:$(),addSymbolicExtensions:()=>l(e,r)}}function m(e){return(w(e,!0)?{name:"unknown"}:Object.getPrototypeOf(e)?.constructor).name}function S(e,r){return Proxy=new e(e,{construct(t,s){let d=new t(...s);return Object.defineProperty(d,r,{value:`${c.PROXY_PREFIX}${m(s[0])})`}),d}}),Proxy}function $(){Symbol.proxy||(Symbol.proxy=Symbol.for(n.PROXY));let e=Proxy;return{native(){Proxy=e},custom(){Proxy=S(e,Symbol.proxy)}}}function p(e,...r){let t=r.length<1,s=e==null;return{noInput:s,noShouldbe:t,compareTo:!t&&r[0],inputCTOR:!s&&(e?.constructor||Object.getPrototypeOf(e)?.constructor),isNaN:Number.isNaN(e)||N({trial:d=>String(e)===c.NAN}),isInfinity:N({trial:d=>String(e)})===c.INFINITY,shouldBeFirstElementIsNothing:!t&&u(r[0])}}function y(e,...r){let{noInput:t,noShouldbe:s,compareTo:d,inputCTOR:O,isNaN:F,isInfinity:I,shouldBeFirstElementIsNothing:j}=p(e,...r);switch(r=r.length&&r[0],!0){case j:return String(e)===String(d);case(e?.[Symbol.proxy]&&s):return e[Symbol.proxy];case F:return s?c.NAN:String(d)===String(e);case I:return s?c.INFINITY:String(d)===String(e);case t:return s?String(e):String(d)===String(e);case O===Boolean:return s?c.BOOLEAN:O===r;default:return b(e,r,s,x(e,O))}}function x(e,r){switch(!0){case e===0:return Number;case e==="":return String;case!e:return{name:String(e)};default:return r}}function b(e,r,t,s){switch(!0){case(!t&&r===e||e?.[Symbol.proxy]&&r===Proxy):return!0;case String(r)===c.NAN:return String(e)===c.NAN;case(e?.[Symbol.toStringTag]&&typeof r=="string"):return String(r)===e[Symbol.toStringTag];default:return r?i(e,r,s):g(e,s)}}function g(e,r){return(e?.[Symbol.toStringTag]??e?.prototype?.[Symbol.toStringTag])||r?.name||String(r)}function i(e,r,t){return N({trial:s=>e instanceof r})||r===t||r===Object.getPrototypeOf(t)||`${r?.name}`===t?.name}function a(e,r){return function(t){let s={get value(){return t},is(...d){return e(t,...d)},get type(){return r(t)}};return Object[Symbol.type]&&Object.defineProperties(s,{[Symbol.type]:{get(){return r(t)}},[Symbol.is]:{value(...d){return e(t,...d)}}}),Object.freeze(s)}}function o(){let e=r=>{};return function({trial:r,whenError:t=e}={}){try{return r()}catch(s){return t(s)}}}function u(e,r=!1){let t=e==null;return t=r?t||P(e,1/0)||P(e,NaN):t,t}}var Q=_;function _({styleSheet:n,createWithId:c}={}){let{tryParseAtOrNestedRules:l,ruleExists:f,checkParams:m,sheet:S,removeRules:$,consider:p,currentSheetID:y}=T({styleSheet:n,createWithId:c});function x(o,u){if(o&&u.removeProperties){Object.keys(u.removeProperties).forEach(e=>o.style.removeProperty(R(e)));return}Object.entries(u).forEach(([e,r])=>{e=R(e.trim()),r=r.trim();let t;if(/!important/.test(r)&&(r=r.slice(0,r.indexOf("!important")).trim(),t="important"),!CSS.supports(e,r))return console.error(`StylingFactory ${y} error: '${e}' with value '${r}' not supported (yet)`);E(()=>o.style.setProperty(e,r,t),`StylingFactory ${y} (setRule4Selector) failed`)})}function b(o,u,e=S){if(o=o?.trim?.(),!P(o,String)||!o.length||/[;,]$/g.test(o))return console.error(`StylingFactory ${y} (setRules): [${o||"[no selector given]"}] is not a valid selector`);if(u.removeRule)return $(o);let r=f(o,!0),t=r||e.cssRules[e.insertRule(`${o} {}`,e.cssRules.length||0)];return p(()=>x(t,u),o,r)}function g(o){let u=o.trim().split(/{/,2),e=u.shift().trim();if(!P(e,String)||!e?.trim()?.length)return console.error(`StylingFactory ${y} (doParse): no (valid) selector could be extracted from rule ${h(o)}`);let r=U(u.shift());return E(()=>b(e,r),`StylingFactory ${y} (setRules) failed`)}function i(o){let u=l(o);return u.done?u.existing:g(o)}function a(o,u){return o.trim().startsWith("@media")?i(L(o,u)):b(o,u)}return function(o,u={}){return m(o,u)&&(Object.keys(u).length?a(o,u):i(o))}}function T({styleSheet:n,createWithId:c}){let l="Note: The rule or some of its properties may not be supported by your browser (yet)",f=`for style#${c}`;n=c?m(c):n;function m(i){let a=document.querySelector(`#${i}`)?.sheet;if(a)return a;let o=Object.assign(document.createElement("style"),{id:i});return document.head.insertAdjacentElement("beforeend",o),o.sheet}function S(i){return console.error(`StylingFactory ${f} [rule: ${i}]
-    => @charset, @namespace and @import are not supported here`),{done:!0}}function $(i,a){return[...n.rules].find(o=>a?A(o.selectorText||"",i):M`${X(i)}${[..."gim"]}`.test(o.cssText))}function p(i){return/^@charset|@import|namespace/i.test(i.trim())?S(i):i.match(/}/g)?.length>1?{existing:b(i,1),done:!0}:{done:!1}}function y(i){let a=[...n.cssRules].reduce((u,e,r)=>A(e.selectorText||"",i)&&u.concat(r)||u,[]),o=a.length;return a.forEach(u=>n.deleteRule(u)),o>0?console.info(`\u2714 Removed ${o} instance${o>1?"s":""} of selector ${i} from ${f.slice(4)}`):console.info(`\u2714 Remove rule: selector ${i} does not exist in ${f.slice(4)}`)}function x(i,a){return i&&P(i,String)&&i.trim().length>0&&P(a,Object)||(console.error(`StylingFactory ${f} called with invalid parameters`),!1)}function b(i){i=i.trim();let a=i.slice(0,i.indexOf("{")).trim(),o=!!$(a);try{return n.insertRule(`${i}`,n.cssRules.length),o}catch(u){return console.error(`StylingFactory ${f} (tryParse) ${u.name} Error:
-${u.message}
-Rule: ${h(i)}
-${l}`),o}}function g(i,a,o){try{return i(),o}catch(u){return console.error(`StylingFactory ${f} (tryAddOrModify) ${u.name} Error:
-${u.message}
-Rule: ${h(a)}
-${l}`),o}}return{sheet:n,removeRules:y,tryParseAtOrNestedRules:p,ruleExists:$,checkParams:x,tryParse:b,consider:g,currentSheetID:f}}function L(n,c){return`${n.trim()} ${Object.entries(c).map(([l,f])=>`${l}: { ${k(f)}`)}`}function h(n){let c=(n||"NO RULE").trim().slice(0,50).replace(/\n/g,"\\n").replace(/\s{2,}/g," ");return n.length>c.length?`${c.trim()}...truncated`:c}function k(n){return Object.entries(n).map(([c,l])=>`${c}: ${l.trim()}`).join(`;
-`)}function X(n){return n.replace(/([*\[\]()-+{}.$?\\])/g,c=>`\\${c}`)}function M(n,...c){let l=c.length&&Array.isArray(c.slice(-1))?c.pop().join(""):"";return new RegExp((c.length&&n.raw.reduce((f,m,S)=>f.concat(c[S-1]||"").concat(m),"")||n.raw.join("")).split(`
-`).map(f=>f.replace(/\s|\/\/.*$/g,"").trim().replace(/(@s!)/g," ")).join(""),l)}function R(n){return n.replace(/[A-Z]/g,c=>`-${c.toLowerCase()}`).replace(/[^--]^-|-$/,"")}function E(n,c){try{return n()}catch(l){console.error(`${c||"an error occured"}: ${l.message}`)}}function z(n){return n.replace(/\/\*.+?\*\//gm,"").replace(/[}{\r\n]/g,"").replace(/(data:.+?);/g,(c,l)=>`${l}\\3b`).split(";").map(c=>c.trim()).join(`;
-`).replaceAll("\\3b",";").split(`
-`)}function H(n){return n.reduce((c,l)=>{let[f,m]=[l.slice(0,l.indexOf(":")).trim(),l.slice(l.indexOf(":")+1).trim().replace(/;$|;.+(?=\/*).+\/$/,"")];return f&&m?{...c,[f]:m}:c},{})}function U(n){return H(z(n))}function A(n,c){return n?.replace("::",":")===c?.replace("::",":")}export{Q as default};
+import {default as IS} from "./TypeofAnything.js";
+export default LifeStyleFactory;
+
+/* region factory */
+function LifeStyleFactory({styleSheet, createWithId} = {}) {
+  const { tryParseAtOrNestedRules, ruleExists, checkParams,
+    sheet, removeRules, consider, currentSheetID } = sheetHelpers({styleSheet, createWithId});
+
+  function setRules4Selector(rule, properties) {
+    if (rule && properties.removeProperties) {
+      Object.keys(properties.removeProperties)
+        .forEach( prop => rule.style.removeProperty(toDashedNotation(prop)) );
+      return;
+    }
+
+    Object.entries(properties)
+      .forEach( ([prop, value]) => {
+        prop = toDashedNotation(prop.trim());
+        value = value.trim();
+
+        let priority;
+
+        if (/!important/.test(value)) {
+          value = value.slice(0, value.indexOf(`!important`)).trim();
+          priority = `important`;
+        }
+
+        if (!CSS.supports(prop, value)) {
+          return console.error(`StylingFactory ${currentSheetID} error: '${
+            prop}' with value '${value}' not supported (yet)`);
+        }
+
+        tryAndCatch( () => rule.style.setProperty(prop, value, priority),
+          `StylingFactory ${currentSheetID} (setRule4Selector) failed`);
+      });
+  }
+
+  function setRules(selector, styleRules, sheetOrMediaRules = sheet) {
+    selector = selector?.trim?.();
+    if (!IS(selector, String) || !selector.length || /[;,]$/g.test(selector)) {
+      return console.error(`StylingFactory ${currentSheetID} (setRules): [${
+        selector || `[no selector given]` }] is not a valid selector`);
+    }
+
+    if (styleRules.removeRule) {
+      return removeRules(selector);
+    }
+
+    const exists = ruleExists(selector, true);
+    const rule4Selector = exists
+      || sheetOrMediaRules.cssRules[sheetOrMediaRules.insertRule(`${selector} {}`, sheetOrMediaRules.cssRules.length || 0)];
+
+    return consider( () => setRules4Selector(rule4Selector, styleRules), selector, exists );
+  }
+
+  function doParse(cssDeclarationString) {
+    const rule = cssDeclarationString.trim().split(/{/, 2);
+    const selector = rule.shift().trim();
+
+    if (!IS(selector, String) || !selector?.trim()?.length) {
+      return console.error(`StylingFactory ${currentSheetID} (doParse): no (valid) selector could be extracted from rule ${
+        shortenRule(cssDeclarationString)}`);
+    }
+
+    const cssRules =  cssRuleFromText(rule.shift());
+
+    return tryAndCatch( () => setRules(selector, cssRules), `StylingFactory ${currentSheetID} (setRules) failed`  );
+  }
+
+  function styleFromString(cssDeclarationString) {
+    const checkAts = tryParseAtOrNestedRules(cssDeclarationString);
+    return checkAts.done ? checkAts.existing : doParse(cssDeclarationString);
+  }
+
+  function styleFromObject(selector, rulesObj) {
+    if (selector.trim().startsWith(`@media`)) {
+      return styleFromString(atMedia2String(selector, rulesObj));
+    }
+    return setRules(selector, rulesObj);
+  }
+
+  return function(cssBlockOrSelector, rulesObj = {}) {
+    const checksOk = checkParams(cssBlockOrSelector, rulesObj);
+
+    return checksOk && (
+      Object.keys(rulesObj).length ?
+        styleFromObject(cssBlockOrSelector, rulesObj) :
+        styleFromString(cssBlockOrSelector) );
+  };
+}
+/* endregion factory */
+
+/* region helpers */
+function sheetHelpers({styleSheet, createWithId}) {
+  const notification = `Note: The rule or some of its properties may not be supported by your browser (yet)`;
+  const currentSheetID = `for style#${createWithId}`;
+  styleSheet = createWithId ? retrieveOrCreateSheet(createWithId) : styleSheet;
+
+  function retrieveOrCreateSheet(id) {
+    const existingSheet = document.querySelector(`#${id}`)?.sheet;
+
+    if (existingSheet) { return existingSheet; }
+
+    const newSheet = Object.assign(document.createElement(`style`), { id });
+    document.head.insertAdjacentElement(`beforeend`, newSheet);
+    return newSheet.sheet;
+  }
+
+  function notSupported(rule) {
+    console.error(`StylingFactory ${currentSheetID} [rule: ${rule}]
+    => @charset, @namespace and @import are not supported here`);
+    return {done: true};
+  }
+
+  function ruleExists(ruleFragOrSelector, isSelector) {
+    return [...styleSheet.rules].find( r =>
+      isSelector ?
+        compareSelectors((r.selectorText || ``), ruleFragOrSelector) :
+        createRE`${escape4RegExp(ruleFragOrSelector)}${[...`gim`]}`.test(r.cssText));
+  }
+
+  function tryParseAtOrNestedRules(cssDeclarationString) {
+    if (/^@charset|@import|namespace/i.test(cssDeclarationString.trim())) {
+      return notSupported(cssDeclarationString);
+    }
+
+    if (cssDeclarationString.match(/}/g)?.length > 1) {
+      return {existing: tryParse(cssDeclarationString, 1), done: true}
+    }
+
+    return { done: false };
+  }
+
+  function removeRules(selector) {
+    const rulesAt = [...styleSheet.cssRules].reduce( (acc, v, i) =>
+      compareSelectors(v.selectorText || ``, selector) && acc.concat(i) || acc, [] );
+    const len = rulesAt.length;
+    rulesAt.forEach(idx => styleSheet.deleteRule(idx));
+
+    return len > 0
+      ? console.info(`✔ Removed ${len} instance${len > 1 ? `s` : ``} of selector ${
+        selector} from ${currentSheetID.slice(4)}`)
+      : console.info(`✔ Remove rule: selector ${selector} does not exist in ${
+        currentSheetID.slice(4)}`);
+  }
+
+  function checkParams(cssBlockOrSelector, rulesObj) {
+    return cssBlockOrSelector
+      && IS(cssBlockOrSelector, String)
+      && cssBlockOrSelector.trim().length > 0
+      && IS(rulesObj, Object) ||
+      (console.error(`StylingFactory ${currentSheetID} called with invalid parameters`), false);
+  }
+
+  function tryParse(cssDeclarationString) {
+    cssDeclarationString = cssDeclarationString.trim();
+    const rule = cssDeclarationString.slice(0, cssDeclarationString.indexOf(`{`)).trim();
+    const exists = !!ruleExists(rule);
+
+    try {
+      return (styleSheet.insertRule(`${cssDeclarationString}`, styleSheet.cssRules.length), exists);
+    } catch(err) {
+      return (console.error(`StylingFactory ${currentSheetID} (tryParse) ${err.name} Error:\n${
+        err.message}\nRule: ${
+        shortenRule(cssDeclarationString)}\n${
+        notification}`),
+        exists);
+    }
+  }
+
+  function consider(fn, rule, existing) {
+    try {
+      return (fn(), existing);
+    } catch(err) {
+      return (
+        console.error(`StylingFactory ${currentSheetID} (tryAddOrModify) ${err.name} Error:\n${
+          err.message}\nRule: ${shortenRule(rule)}\n${notification}`),
+          existing
+      );
+    }
+  }
+
+  return {
+    sheet: styleSheet, removeRules, tryParseAtOrNestedRules,
+    ruleExists, checkParams, tryParse, consider,
+    currentSheetID };
+}
+/* endregion helpers */
+
+/* region globalOrShared */
+function atMedia2String(selector, rulesObj) {
+  return `${selector.trim()} ${
+    Object.entries(rulesObj).map( ( [ selectr, rule] ) =>
+      `${selectr}: { ${stringifyMediaRule(rule) }` ) }`;
+}
+
+function shortenRule(rule) {
+  const shortRule = (rule || `NO RULE`).trim().slice(0, 50).replace(/\n/g, `\\n`).replace(/\s{2,}/g, ` `);
+  return rule.length > shortRule.length ? `${shortRule.trim()}...truncated`  : shortRule;
+}
+
+function stringifyMediaRule(mediaObj) {
+  return Object.entries(mediaObj)
+    .map( ([key, value]) => `${key}: ${value.trim()}`).join(`;\n`);
+}
+
+function escape4RegExp(str) {
+  return str.replace(/([*\[\]()-+{}.$?\\])/g, a => `\\${a}`);
+}
+
+function createRE(regexStr, ...args) {
+  const flags = args.length && Array.isArray(args.slice(-1)) ? args.pop().join(``) : ``;
+
+  return new RegExp(
+    (args.length &&
+      regexStr.raw.reduce( (a, v, i ) => a.concat(args[i-1] || ``).concat(v), ``) ||
+      regexStr.raw.join(``))
+      .split(`\n`)
+      .map( line => line.replace(/\s|\/\/.*$/g, ``).trim().replace(/(@s!)/g, ` `) )
+      .join(``), flags);
+}
+
+function toDashedNotation(str2Convert) {
+  return str2Convert.replace(/[A-Z]/g, a => `-${a.toLowerCase()}`).replace(/[^--]^-|-$/, ``);
+}
+
+function tryAndCatch(fn, msg) {
+  try { return fn(); }
+  catch(err) { console.error( `${msg || `an error occured`}: ${err.message}` ); }
+}
+
+function prepareCssRuleFromText(rule) {
+  return rule
+    .replace(/\/\*.+?\*\//gm, ``)
+    .replace(/[}{\r\n]/g, ``)
+    .replace(/(data:.+?);/g, (_,b) => `${b}\\3b`)
+    .split(`;`)
+    .map(l => l.trim())
+    .join(`;\n`)
+    .replaceAll(`\\3b`, `;`)
+    .split(`\n`);
+}
+
+function toRuleObject(preparedRule) {
+  return preparedRule
+    .reduce( (acc, v) => {
+      const [key, value] = [
+        v.slice(0, v.indexOf(`:`)).trim(),
+        v.slice(v.indexOf(`:`) + 1).trim().replace(/;$|;.+(?=\/*).+\/$/, ``)];
+      return key && value ? {...acc, [key]: value} : acc; }, {} );
+}
+
+function cssRuleFromText(rule) {
+  return toRuleObject(prepareCssRuleFromText(rule));
+}
+
+function compareSelectors(s1, s2) {
+  return s1?.replace(`::`, `:`) === s2?.replace(`::`, `:`);
+}
+/* endregion globalOrShared */

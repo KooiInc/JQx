@@ -2,6 +2,7 @@ const converts = { html: `innerHTML`, text: `textContent`,  class: `className` }
 const maybe = maybeFactory();
 let elementFunctionCollection = {};
 const customElementRegistry = {};
+const checkType = typeCheckFactory();
 let tagFunctionError = tag => {
   console.error(`tinyDOM error: "${tag}" is not a valid HTML tag`);
   return undefined;
@@ -204,13 +205,31 @@ function maybeFactory() {
   };
 }
 
-function checkType(obj, type2Check) {
-  if (type2Check === null || type2Check === undefined) { return false; }
+function typeCheckFactory() {
+  const collate = new Intl.Collator(`en`, {sensitivity: 'base'});
+  const nameOf = type2Check => type2Check instanceof Function ? type2Check.name : `noCTOR`;
   
-  return Object.prototype.toString.call(obj).toLowerCase() === `[object ${ctor2String(type2Check)}]`.toLowerCase();
+  return function (obj, type2Check) {
+    return 0 === collate.compare(
+      Object.prototype.toString.call(obj),
+      `[object ${nameOf(type2Check)}]`
+    ) || obj?.name === type2Check?.name;
+  }
 }
 
-function ctor2String(type2Check) {
-  let ctorStringified = type2Check instanceof Function ? String(type2Check) : `not a constructor`;
-  return ctorStringified.slice(ctorStringified.indexOf(` `) + 1, ctorStringified.indexOf(`(`));
+function _typeCheckFactory() {
+  const noCTOR = String(function NoCtor() {});
+  const collate = new Intl.Collator(`en`, {sensitivity: 'base'});
+  
+  return function (obj, type2Check) {
+    return 0 === collate.compare(
+      Object.prototype.toString.call(obj),
+      `[object ${ctor2String(type2Check)}]`
+    );
+  }
+  
+  function ctor2String(type2Check) {
+    let ctorStringified = type2Check instanceof Function ? String(type2Check) : noCTOR;
+    return /^function (?<typeName>.+)\(.*$/.exec(ctorStringified)?.groups?.typeName;
+  }
 }

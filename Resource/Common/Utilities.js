@@ -1,4 +1,4 @@
-import {default as IS, maybe, xProxy} from "./TypeofAnything.js";
+import {default as IS, maybe, proxyWrapper, addSymbolicExtensions} from "./TypeofAnything.js";
 import {ATTRS} from "./EmbedResources.js";
 import {default as tagFNFactory} from "./tinyDOM.js";
 import styleFactory from "./LifeCSS.js";
@@ -6,6 +6,7 @@ import {createElementFromHtmlString, inject2DOMTree, cleanupHtml} from "./DOM.js
 import PopupFactory from "./Popup.js";
 import { HandlerFactory } from "./HandlerFactory.js";
 import tagLib from "./HTMLTags.js";
+addSymbolicExtensions();
 const systemLog = systemLogFactory();
 const allwaysCaptureEventTypes = [
   `load`, `unload`, `scroll`, `focus`, `blur`, `DOMNodeRemovedFromDocument`,
@@ -28,7 +29,6 @@ const datasetKeyProxy = Object.freeze({
   configurable: false
 });
 const handlerIdCache = {};
-xProxy.custom();
 
 export {
   after, applyStyle, assignAttrValues, ATTRS, beforeOrAfter, checkProp, cleanupHtml, clearAllTimers,
@@ -36,8 +36,9 @@ export {
   escHtml, findParentScrollDistance, getAttributesForLogging, getCaptureValue, getHandlerName, HandlerFactory,
   handlerIdCache, inject2DOMTree, input2Collection, insertPositions, IS, isArrayOfHtmlElements, isArrayOfHtmlStrings,
   isComment, isCommentOrTextNode, isHtmlString, isModal, isNode, isNonEmptyString, isText, isVisible, isWritable,
-  logTime, maybe, pad0,PopupFactory, randomNr, randomString, resolveEventTypeParameter, setData, styleFactory,
-  systemLog, tagFNFactory, tagLib, toCamelcase, toDashedNotation, truncate2SingleStr, truncateHtmlStr, ucFirst,
+  logTime, maybe, pad0,PopupFactory, proxyWrapper, randomNr, randomString, resolveEventTypeParameter, setData,
+  styleFactory, systemLog, tagFNFactory, tagLib, toCamelcase, toDashedNotation, truncate2SingleStr, truncateHtmlStr,
+  ucFirst,
 };
 
 function clearAllTimers() {
@@ -215,7 +216,7 @@ function setData(el, keyValuePairs) {
 
 function input2Collection(input) {
   return !input ? []
-    : IS(input, Proxy) ? [input.EL]
+    : input.EL ? [input.EL]
       : IS(input, NodeList) ? [...input]
         : isNode(input) ? [input]
           : isArrayOfHtmlElements(input) ? input

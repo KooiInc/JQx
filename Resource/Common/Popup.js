@@ -96,7 +96,7 @@ export default function($) {
   }
 
   function failModalClose(warnMessage) {
-    if (!$.IS(warnMessage, String, HTMLElement, Proxy)) { return; }
+    if (!$.IS(warnMessage, String, HTMLElement) && !warnMessage.isJQx) { return; }
     let modalWarningBox = popupContent.find$(`.warn`);
     // note: fall through is intentional.
     switch(true) {

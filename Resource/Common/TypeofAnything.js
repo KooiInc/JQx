@@ -1,16 +1,16 @@
-const { IS, maybe, $Wrap, isNothing, xProxy, addSymbolicExtensions } =
+const { IS, maybe, $Wrap, isNothing, addSymbolicExtensions, detectableProxy } =
   TOAFactory({useSymbolicExtensions: false});
 
-export { IS as default, maybe, $Wrap, xProxy, isNothing, addSymbolicExtensions };
+export { IS as default, maybe, $Wrap, detectableProxy as proxyWrapper, isNothing, addSymbolicExtensions };
 
 function TOAFactory(specs = {}) {
   const { useSymbolicExtensions } = specs;
-  const { shouldbeIsSingleObject, ISOneOf, isExcept, verifyNothingness, xProxy,
-          determineType, addSymbolicExtensions, maybe, $Wrap } = TOAHelpers(IS, useSymbolicExtensions);
+  const { shouldbeIsSingleObject, ISOneOf, isExcept, verifyNothingness, determineType,
+    addSymbolicExtensions, maybe, $Wrap, detectableProxy } = TOAHelpers(IS, useSymbolicExtensions);
   
   if (!!useSymbolicExtensions) { addSymbolicExtensions(); }
   
-  return {IS, maybe, $Wrap, isNothing: verifyNothingness, xProxy, addSymbolicExtensions};
+  return {IS, maybe, $Wrap, isNothing: verifyNothingness, addSymbolicExtensions, detectableProxy};
   
   function IS(anything, ...shouldBe) {
     const input = typeof anything === `symbol` ? Symbol.isSymbol : anything;
@@ -24,16 +24,16 @@ function TOAFactory(specs = {}) {
 
 function TOAHelpers(IS, useSymbolicExtensions) {
   const { SymbolAndCustomProxyFactory, maybeFactory, WrapAnyFactory,
-          verifyNothingness, determineType } = AUXHelperFactory(IS, typeOf);
-  const {xProxy, addSymbolicExtensions} = SymbolAndCustomProxyFactory(IS, typeOf, useSymbolicExtensions);
+          verifyNothingness, determineType, detectableProxy } = AUXHelperFactory(IS, typeOf);
+  const {addSymbolicExtensions} = SymbolAndCustomProxyFactory(IS, typeOf, useSymbolicExtensions);
   const [maybe, $Wrap] = [maybeFactory(), WrapAnyFactory(IS, typeOf)];
   
   return Object.freeze({
-    shouldbeIsSingleObject, ISOneOf, isExcept, verifyNothingness, xProxy,
-    determineType, addSymbolicExtensions, maybe, $Wrap });
+    shouldbeIsSingleObject, ISOneOf, isExcept, verifyNothingness,
+    determineType, detectableProxy, addSymbolicExtensions, maybe, $Wrap });
   
   function typeOf(anything) {
-    return anything?.[Symbol.proxy] ?? IS(anything);
+    return anything?.[Symbol.proxy] || IS(anything);
   }
   
   function shouldbeIsSingleObject(anything, isTypeObj) {
@@ -68,7 +68,7 @@ function AUXHelperFactory() {
     IS: 'toa.is',
     TYPE: 'toa.type',
     IS_SYMBOL: 'toa.isASymbol',
-    PROXY: 'toa.proxy'
+    PROXY: 'toa.proxyFor'
   };
   
   const TYPE_STRINGS = {
@@ -78,11 +78,35 @@ function AUXHelperFactory() {
     OBJECT: 'Object',
     PROXY_PREFIX: 'Proxy ('
   };
+  const detectableProxy = detectableProxyFactory();
   
   return Object.freeze({
-      SymbolAndCustomProxyFactory, maybeFactory, WrapAnyFactory, verifyNothingness, determineType
+      SymbolAndCustomProxyFactory: addSymbolsFactory, maybeFactory, WrapAnyFactory,
+      verifyNothingness, determineType, detectableProxy,
     }
   );
+  
+  function detectableProxyFactory() {
+    const trapped = type => ({
+      get(obj, key) { return key === Symbol.proxy ? `Proxy for ${type}` : Reflect.get(obj, key); },
+      has(obj, key) { return key === Symbol.proxy ? true : key in obj; }
+    });
+    
+    function wrapProxy(proxy2Wrap) {
+      const type = proxy2Wrap.name || proxy2Wrap.constructor.name;
+      return new Proxy( proxy2Wrap, trapped(type) );
+    }
+    
+    function createDetectableProxy(target, traps) {
+      traps = traps || {};
+      return wrapProxy(new Proxy(target, traps));
+    }
+    
+    return {
+      wrap: wrapProxy,
+      create: createDetectableProxy
+    };
+  }
   
   function addSymbols2Anything(IS, typeOf) {
     if (!Symbol.is) {
@@ -90,7 +114,7 @@ function AUXHelperFactory() {
       Symbol.type = Symbol.for(SYMBOL_KEYS.TYPE);
       
       Object.defineProperties(Object.prototype, {
-        [Symbol.type]: { get() { return typeOf(this); }, enumerable: false, configurable: false },
+        [Symbol.type]: { get() { return typeOf(this); }, enumerable: false, configurable: true },
         [Symbol.is]: { value: function (...args) { return IS(this, ...args); }, enumerable: false, configurable: false },
       });
       Object.defineProperties(Object, {
@@ -100,35 +124,17 @@ function AUXHelperFactory() {
     }
   }
   
-  function SymbolAndCustomProxyFactory(IS, typeOf, useSymbolicExtension) {
-    if (!Symbol.isSymbol) { Symbol.isSymbol = Symbol.for(SYMBOL_KEYS.IS_SYMBOL); }
-   
-    return {xProxy: setCustomOrDefaultProxyFactory(), addSymbolicExtensions: () => addSymbols2Anything(IS, typeOf)};
+  function addSymbolsFactory(IS, typeOf, useSymbolicExtension) {
+    if (!Symbol.isSymbol) {
+      Symbol.isSymbol = Symbol.for(SYMBOL_KEYS.IS_SYMBOL);
+      Symbol.proxy = Symbol.for(SYMBOL_KEYS.PROXY);
+    }
+    return {addSymbolicExtensions: () => addSymbols2Anything(IS, typeOf)};
   }
   
   function constructor2String(obj) {
     const ctor = !isNothing(obj, true) ? Object.getPrototypeOf(obj)?.constructor : {name: `unknown`};
     return ctor.name;
-  }
-  
-  function createCustomProxy(nativeProxy, proxySymbol) {
-    Proxy = new nativeProxy(nativeProxy, {
-      construct(target, args) {
-        const wrappedProxy = new target(...args);
-        Object.defineProperty(wrappedProxy, proxySymbol, {
-          value: `${TYPE_STRINGS.PROXY_PREFIX}${constructor2String(args[0])})` });
-        return wrappedProxy;
-      }
-    });
-    return Proxy;
-  }
-  
-  function setCustomOrDefaultProxyFactory() {
-    if (!Symbol.proxy) { Symbol.proxy = Symbol.for(SYMBOL_KEYS.PROXY); }
-    const nativeProxy = Proxy;
-    return {
-      native() { Proxy = nativeProxy; },
-      custom() { Proxy = createCustomProxy(nativeProxy, Symbol.proxy); } };
   }
   
   function processInput(input, ...shouldBe) {

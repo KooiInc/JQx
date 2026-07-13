@@ -1,7 +1,7 @@
 import {
   randomString, toDashedNotation, IS, tagFNFactory as $T, styleFactory, toCamelcase, systemLog,
   escHtml, isNonEmptyString, resolveEventTypeParameter, selectedFactoryHelpers, insertPositions,
-  cleanupHtml, PopupFactory, tagLib, HandlerFactory, clearAllTimers, convert2Bool, maybe,
+  cleanupHtml, PopupFactory, proxyWrapper, tagLib, HandlerFactory, clearAllTimers, convert2Bool, maybe,
   getAttributesForLogging,
 } from "./JQxUtilities.js";
 import allMethodsFactory from "./JQxInstanceMethods.js";
@@ -51,17 +51,23 @@ function staticFNMethodFactory(jqx) {
 }
 
 function proxify(instance) {
-  return new Proxy( instance, Object.freeze({ get: (obj, key) => proxyKeyFactory(obj, key, instance) }) );
+  const proxifiedInstance = new Proxy(
+    instance,
+    Object.freeze({
+      get: (obj, key) => proxyKeyFactory(obj, key, instance)
+    } )
+  );
+  return proxifiedInstance;
 }
 
 function wrap(method, instance) {
-  return (...args) => IS(method, Function) && method(proxify(instance), ...args);
+  return (...args) => typeof method === `function` && method(proxify(instance), ...args);
 }
 
 function proxyKeyFactory(self, key, instance) {
   switch(true) {
-    case IS(key, Symbol): return maybe({trial: () => self[key], whenError: () => self });
-    case IS(+key, Number): return self.collection?.[key] || undefined;
+    case typeof key === `symbol`: return maybe({trial: () => self[key], whenError: () => self });
+    case !Number.isNaN(+key) && typeof +key === `number`: return self.collection?.[key] || undefined;
     case (key in instanceGetters): return wrap(instanceGetters[key], instance)();
     case (key in instanceMethods): return wrap(instanceMethods[key], instance);
     default: return self[key];
@@ -274,6 +280,7 @@ function staticMethodsFactory(jqx) {
     editCssRule,
     escHtml,
     logger: systemLog,
+    proxyWrapper,
     text(str, isComment = false) { return isComment ? jqx.comment(str) : document.createTextNode(str); },
     node(selector, root = document) { return root.querySelector(selector, root); },
     nodes(selector, root = document) { return [...root.querySelectorAll(selector, root)]; },

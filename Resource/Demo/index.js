@@ -54,7 +54,8 @@ if (!debug) {
     SPAN(I( B( {class: `attention`}, U(`Everything`) ) ),
       ` on this page was dynamically created using JQx.`),
     P( B({class: `arrRight`, html: `&#8594;`}, ),
-      ` Check the HTML source &mdash; right click anywhere, and select 'View page source'.`)
+      ` Check the HTML source &mdash; right click anywhere, and select 'View page source',
+        or (for some browsers) press CTRL+U.`)
   ).appendTo(JQxRoot);
 
   // onclick is not allowed, so will be removed on element creation
@@ -511,7 +512,7 @@ function modalDemo() {
       BR() ).append(closeBttn),
     modal: true,
     callback: callbackAfterClose,
-    warnMessage: `There's only <b><i>one</i></b> escape`,
+    warnMessage: $.div(`There's only <b><i>one</i></b> escape`),
   });
 }
 
