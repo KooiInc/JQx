@@ -28,44 +28,41 @@ function JQxMainFactory() {
     
     const isRawElemCollection = isArrayOfHtmlElements(instance.collection);
     
-    if (instance.collection.length && isRawElemCollection) {
-      if (!isVirtual) {
-        instance.collection.forEach(el => {
+    switch(true) {
+      case instance.collection.length && isRawElemCollection && !isVirtual:
+        for (const el of instance.collection) {
           if (!root.contains(el)) {
             inject2DOMTree([el], root, position);
           }
-        });
-      }
-      
-      return proxify(instance);
-    }
-    
-    if (shouldCreateElements) {
-      [input].flat().forEach(htmlStringOrComment =>
-        instance.collection.push(createElementFromHtmlString(htmlStringOrComment)));
-      
-      if (instance.collection.length > 0) {
-        const errors = instance.collection.filter( el => el?.dataset?.jqxcreationerror );
-        instance.collection = instance.collection.filter(el => !el?.dataset?.jqxcreationerror);
-        const elemsCreated = instance.collection.map(el => `${String(el.constructor).split(/function|\(/)[1].trim()}`);
-        const multiple = elemsCreated.length > 1;
-        instance = proxify(instance);
-        const collectionLog = instance.collection.length > 0
-          ? getNodeContentForLog(instance)
-          : "sanitized: no elements remaining";
-        
-        systemLog.log(`JQx: created ${instance.isVirtual ? `(virtual)` : ``} instance from ` +
-          `${multiple ? `array of ` : ``}HTML string${multiple ? `s` : ``} ${collectionLog}`);
-        
-        if (!instance.isVirtual) {
-          inject2DOMTree(instance.collection, root, position);
         }
-      }
+        break;
+      case shouldCreateElements:
+        for (const htmlStringOrComment of [input].flat()) {
+          instance.collection.push(createElementFromHtmlString(htmlStringOrComment));
+        }
+        
+        if (instance.collection.length > 0) {
+          const errors = instance.collection.filter( el => el?.dataset?.jqxcreationerror );
+          instance.collection = instance.collection.filter(el => !el?.dataset?.jqxcreationerror);
+          const elemsCreated = instance.collection.map(el => `${String(el.constructor).split(/function|\(/)[1].trim()}`);
+          const multiple = elemsCreated.length > 1;
+          instance = proxify(instance);
+          const collectionLog = instance.collection.length > 0
+            ? getNodeContentForLog(instance)
+            : "sanitized: no elements remaining";
+          
+          systemLog.log(`JQx: created ${instance.isVirtual ? `(virtual)` : ``} instance from ` +
+            `${multiple ? `array of ` : ``}HTML string${multiple ? `s` : ``} ${collectionLog}`);
+          
+          if (!instance.isVirtual) {
+            inject2DOMTree(instance.collection, root, position);
+          }
+        }
+        break;
+      default: setCollectionFromCssSelector(input, root, instance);
       
-      return instance;
     }
     
-    setCollectionFromCssSelector(input, root, instance);
     return proxify(instance);
   }
 }

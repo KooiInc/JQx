@@ -38,6 +38,7 @@ function getNodeContentForLog(instance) {
 
 function setCollectionFromCssSelector(input, root, self) {
   const selectorRoot = root !== document.body && (IS(input, String) && input.toLowerCase() !== "body") ? root : document;
+  if (!IS(input, String) || input.trim().length < 1) { return; }
   try { self.collection = [...selectorRoot.querySelectorAll(input)]; }
   catch (err) { systemLog.warn(`JQx: Invalid CSS querySelector. [${!IS(input, String) ? `Not a string!` : input}]`); }
 }

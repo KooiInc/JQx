@@ -1,8 +1,25 @@
 import {
-  randomString, toDashedNotation, IS, tagFNFactory as $T, styleFactory, toCamelcase, systemLog,
-  escHtml, isNonEmptyString, resolveEventTypeParameter, selectedFactoryHelpers, insertPositions,
-  cleanupHtml, PopupFactory, proxyWrapper, tagLib, HandlerFactory, clearAllTimers, convert2Bool, maybe,
+  cleanupHtml,
+  clearAllTimers,
+  convert2Bool,
+  escHtml,
   getAttributesForLogging,
+  HandlerFactory,
+  insertPositions,
+  IS,
+  isNonEmptyString,
+  maybe,
+  PopupFactory,
+  proxyWrapper,
+  randomString,
+  resolveEventTypeParameter,
+  selectedFactoryHelpers,
+  styleFactory,
+  systemLog,
+  tagFNFactory as $T,
+  tagLib,
+  toCamelcase,
+  toDashedNotation,
 } from "./JQxUtilities.js";
 import allMethodsFactory from "./JQxInstanceMethods.js";
 
@@ -54,23 +71,25 @@ function proxify(instance) {
   const proxifiedInstance = new Proxy(
     instance,
     Object.freeze({
-      get: (obj, key) => proxyKeyFactory(obj, key, instance)
+      get: (target, key) => proxyTrapFactory(target, key, instance)
     } )
   );
+  
   return proxifiedInstance;
 }
 
-function wrap(method, instance) {
+function reProxify(method, instance) {
   return (...args) => typeof method === `function` && method(proxify(instance), ...args);
 }
 
-function proxyKeyFactory(self, key, instance) {
+function proxyTrapFactory(self, key, instance) {
   switch(true) {
+    case key === Symbol.proxy || key === Symbol.type: return `JQx instance proxy`;
     case typeof key === `symbol`: return maybe({trial: () => self[key], whenError: () => self });
     case !Number.isNaN(+key) && typeof +key === `number`: return self.collection?.[key] || undefined;
-    case (key in instanceGetters): return wrap(instanceGetters[key], instance)();
-    case (key in instanceMethods): return wrap(instanceMethods[key], instance);
-    default: return self[key];
+    case (key in instanceGetters): return reProxify(instanceGetters[key], instance)();
+    case (key in instanceMethods): return reProxify(instanceMethods[key], instance);
+    default: return Reflect.get(self, key);
   }
 }
 
