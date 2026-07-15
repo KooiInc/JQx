@@ -98,7 +98,7 @@ function AUXHelperFactory() {
     }
     
     function createDetectableProxy(target, traps) {
-      traps = traps || {};
+      traps = IS(traps, Object) ? traps : {};
       return wrapProxy(new Proxy(target, traps));
     }
     
