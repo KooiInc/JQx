@@ -68,18 +68,18 @@ function staticFNMethodFactory(jqx) {
 }
 
 function proxify(instance) {
-  const proxifiedInstance = new Proxy(
+  return new Proxy(
     instance,
     Object.freeze({
       get: (target, key) => proxyTrapFactory(target, key, instance)
     } )
   );
-  
-  return proxifiedInstance;
 }
 
 function reProxify(method, instance) {
-  return (...args) => typeof method === `function` && method(proxify(instance), ...args);
+  return (...args) =>
+    instance = typeof method === `function`
+      ? method(proxify(instance), ...args) : instance;
 }
 
 function proxyTrapFactory(self, key, instance) {
