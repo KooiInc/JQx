@@ -1,24 +1,32 @@
-const { IS, maybe, $Wrap, isNothing, addSymbolicExtensions, detectableProxy } =
+const { IS, isOnly, maybe, $Wrap, isNothing, addSymbolicExtensions, detectableProxy } =
   TOAFactory({useSymbolicExtensions: false});
 
-export { IS as default, maybe, $Wrap, detectableProxy as proxyWrapper, isNothing, addSymbolicExtensions };
+export { IS as default, maybe, isOnly, $Wrap, detectableProxy as proxyWrapper, isNothing, addSymbolicExtensions };
 
 function TOAFactory(specs = {}) {
   const { useSymbolicExtensions } = specs;
+  const isJust = typeCheckFactory();
   const { shouldbeIsSingleObject, ISOneOf, isExcept, verifyNothingness, determineType,
     addSymbolicExtensions, maybe, $Wrap, detectableProxy } = TOAHelpers(IS, useSymbolicExtensions);
   
   if (!!useSymbolicExtensions) { addSymbolicExtensions(); }
   
-  return {IS, maybe, $Wrap, isNothing: verifyNothingness, addSymbolicExtensions, detectableProxy};
+  return {IS, isOnly, maybe, $Wrap, isNothing: verifyNothingness, addSymbolicExtensions, detectableProxy};
   
   function IS(anything, ...shouldBe) {
-    const input = typeof anything === `symbol` ? Symbol.isSymbol : anything;
+    const unChained = Object.getOwnPropertySymbols(anything || {})?.some(v => v === Symbol.justME) && shouldBe.length > 0;
+    const single = anything?.[Symbol.justME];
+    const input = unChained ? single : typeof anything === `symbol` ? Symbol.isSymbol : anything;
     switch(true) {
+      case unChained: return isJust(single, ...shouldBe);
       case !!maybe({trial: _ => `isTypes` in (shouldBe?.[0] ?? {})}):
         return shouldbeIsSingleObject(anything, shouldBe[0]);
       default: return shouldBe.length > 1 ? ISOneOf(input, ...shouldBe) : determineType(anything, ...shouldBe);
     }
+  }
+  
+  function isOnly(anything, ...shouldBe) {
+    return IS({[Symbol.justME]: anything}, ...shouldBe);
   }
 }
 
@@ -68,7 +76,8 @@ function AUXHelperFactory() {
     IS: 'toa.is',
     TYPE: 'toa.type',
     IS_SYMBOL: 'toa.isASymbol',
-    PROXY: 'toa.proxyFor'
+    PROXY: 'toa.proxyFor',
+    TARGET: 'toa.target',
   };
   
   const TYPE_STRINGS = {
@@ -76,7 +85,9 @@ function AUXHelperFactory() {
     INFINITY: 'Infinity',
     BOOLEAN: 'Boolean',
     OBJECT: 'Object',
-    PROXY_PREFIX: 'Proxy ('
+    PROXY_PREFIX: 'Proxy for',
+    JUSTME: 'justME',
+    
   };
   const detectableProxy = detectableProxyFactory();
   
@@ -88,8 +99,13 @@ function AUXHelperFactory() {
   
   function detectableProxyFactory() {
     const trapped = type => ({
-      get(obj, key) { return key === Symbol.proxy ? `Proxy for ${type}` : Reflect.get(obj, key); },
-      has(obj, key) { return key === Symbol.proxy ? true : key in obj; }
+      get(target, key) {
+        return key === Symbol.proxy
+          ? `Proxy for ${type}`
+          : key === Symbol.target
+            ? target : Reflect.get(target, key);
+      },
+      has(target, key) { return key === Symbol.proxy ? true : key in target; }
     });
     
     function wrapProxy(proxy2Wrap) {
@@ -128,6 +144,8 @@ function AUXHelperFactory() {
     if (!Symbol.isSymbol) {
       Symbol.isSymbol = Symbol.for(SYMBOL_KEYS.IS_SYMBOL);
       Symbol.proxy = Symbol.for(SYMBOL_KEYS.PROXY);
+      Symbol.target = Symbol.for(SYMBOL_KEYS.target);
+      Symbol.justME = Symbol.for(SYMBOL_KEYS.JUSTME);
     }
     return {addSymbolicExtensions: () => addSymbols2Anything(IS, typeOf)};
   }
@@ -160,6 +178,8 @@ function AUXHelperFactory() {
     switch (true) {
       case shouldBeFirstElementIsNothing: return String(input) === String(compareTo);
       case input?.[Symbol.proxy] && noShouldbe: return input[Symbol.proxy];
+      case input?.[Symbol.proxy] && typeof shouldBe === `string`:
+        return input[Symbol.proxy].toLowerCase() === shouldBe.toLowerCase();
       case isNaN: return noShouldbe ? TYPE_STRINGS.NAN : String(compareTo) === String(input);
       case isInfinity: return noShouldbe ? TYPE_STRINGS.INFINITY : String(compareTo) === String(input);
       case noInput: return noShouldbe ? String(input) : String(compareTo) === String(input);
@@ -233,5 +253,43 @@ function AUXHelperFactory() {
     let nada = maybeNothing === null || maybeNothing === undefined;
     nada = all ? nada || IS(maybeNothing, Infinity) || IS(maybeNothing, NaN) : nada;
     return nada;
+  }
+}
+
+function typeCheckFactory() {
+  const collate = new Intl.Collator(`en`, {sensitivity: 'base'});
+  const nameOf = type2Check => {
+    return typeof type2Check?.constructor === `function`
+      ? type2Check?.name || type2Check?.constructor?.name
+      : typeof type2Check === `string` ? type2Check : typeof type2Check;
+  };
+  const isNothing = obj => [null, undefined, Infinity, NaN].some(v => v === obj);
+  
+  function checkSingleType(obj, type2Check) {
+    if (
+      type2Check !== obj &&
+      ( isNothing(obj) || type2Check === Number && (Number.isNaN(obj) || !Number.isFinite(obj)) )
+    ) { return false; }
+    const [objName, typeName] = [nameOf(obj), nameOf(type2Check)];
+    
+    return obj?.[Symbol.proxy] === type2Check ||
+      type2Check === obj?.name ||
+      0 === collate.compare(objName, typeName) ||
+      0 === collate.compare(obj.constructor?.name, type2Check?.name) ||
+      obj.constructor?.name === type2Check ||
+      objName === type2Check ||
+      0 === collate.compare( Object.prototype.toString.call(obj), `[object ${typeName}]` );
+  }
+  
+  return function checkType(obj, ...type2Check) {
+    if (Array.isArray(type2Check) && type2Check.length > 1) {
+      for (const chkType of type2Check) {
+        if (checkSingleType(obj, chkType)) { return true; }
+      }
+      
+      return false;
+    }
+    
+    return checkSingleType(obj, type2Check?.[0]);
   }
 }

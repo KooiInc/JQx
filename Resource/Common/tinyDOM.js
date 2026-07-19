@@ -206,30 +206,40 @@ function maybeFactory() {
 }
 
 function typeCheckFactory() {
+  const proxySymbol = Symbol.for(`toa.proxyFor`);
   const collate = new Intl.Collator(`en`, {sensitivity: 'base'});
-  const nameOf = type2Check => type2Check instanceof Function ? type2Check.name : `noCTOR`;
+  const nameOf = type2Check => {
+    return typeof type2Check?.constructor === `function`
+      ? type2Check?.name || type2Check?.constructor?.name
+      : typeof type2Check === `string` ? type2Check : typeof type2Check;
+  };
+  const isNothing = obj => [null, undefined, Infinity, NaN].some(v => v === obj);
   
-  return function (obj, type2Check) {
-    return 0 === collate.compare(
-      Object.prototype.toString.call(obj),
-      `[object ${nameOf(type2Check)}]`
-    ) || obj?.name === type2Check?.name;
+  function checkSingleType(obj, type2Check) {
+    if (
+      type2Check !== obj &&
+      ( isNothing(obj) || type2Check === Number && (Number.isNaN(obj) || !Number.isFinite(obj)) )
+    ) { return false; }
+    const [objName, typeName] = [nameOf(obj), nameOf(type2Check)];
+    
+    return obj?.[proxySymbol] === type2Check ||
+      type2Check === obj?.name ||
+      objName === typeName ||
+      obj.constructor?.name === type2Check?.name ||
+      obj.constructor?.name === type2Check ||
+      objName === type2Check ||
+      0 === collate.compare( Object.prototype.toString.call(obj), `[object ${typeName}]` );
   }
-}
-
-function _typeCheckFactory() {
-  const noCTOR = String(function NoCtor() {});
-  const collate = new Intl.Collator(`en`, {sensitivity: 'base'});
   
-  return function (obj, type2Check) {
-    return 0 === collate.compare(
-      Object.prototype.toString.call(obj),
-      `[object ${ctor2String(type2Check)}]`
-    );
-  }
-  
-  function ctor2String(type2Check) {
-    let ctorStringified = type2Check instanceof Function ? String(type2Check) : noCTOR;
-    return /^function (?<typeName>.+)\(.*$/.exec(ctorStringified)?.groups?.typeName;
+  return function checkType(obj, ...type2Check) {
+    if (Array.isArray(type2Check) && type2Check.length > 1) {
+      for (const chkType of type2Check) {
+        if (checkSingleType(obj, chkType)) { return true; }
+      }
+      
+      return false;
+    }
+    
+    return checkSingleType(obj, type2Check?.[0]);
   }
 }
