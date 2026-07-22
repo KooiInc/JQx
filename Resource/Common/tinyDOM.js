@@ -206,7 +206,6 @@ function maybeFactory() {
 }
 
 function typeCheckFactory() {
-  const proxySymbol = Symbol.for(`toa.proxyFor`);
   const collate = new Intl.Collator(`en`, {sensitivity: 'base'});
   const nameOf = type2Check => {
     return typeof type2Check?.constructor === `function`
@@ -222,10 +221,10 @@ function typeCheckFactory() {
     ) { return false; }
     const [objName, typeName] = [nameOf(obj), nameOf(type2Check)];
     
-    return obj?.[proxySymbol] === type2Check ||
+    return obj?.[Symbol.proxy] === type2Check ||
       type2Check === obj?.name ||
-      objName === typeName ||
-      obj.constructor?.name === type2Check?.name ||
+      0 === collate.compare(objName, typeName) ||
+      0 === collate.compare(obj.constructor?.name, type2Check?.name) ||
       obj.constructor?.name === type2Check ||
       objName === type2Check ||
       0 === collate.compare( Object.prototype.toString.call(obj), `[object ${typeName}]` );
