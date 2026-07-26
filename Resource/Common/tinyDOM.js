@@ -11,10 +11,10 @@ let tagFunctionError = tag => {
 export default tinyDOM();
 
 function tinyDOM() {
-  return Object.freeze(new Proxy(elementFunctionCollection, getProxy()));
+  return Object.seal(new Proxy(elementFunctionCollection, proxyTraps()));
 }
 
-function getProxy() {
+function proxyTraps() {
   return {
     get(tagFns, key) {
       const tag = String(key);
@@ -34,14 +34,14 @@ function getProxy() {
 }
 
 function createTagFunctionProperty({tag, key, custom, debug = false, isError = false} = {}) {
-  let unfrozenElementFunctionCollection = cloneExact();
+  let unsealedElementFunctionCollection = cloneExact();
   
   if (isError) {
-    Object.defineProperty(unfrozenElementFunctionCollection, tag, {
+    Object.defineProperty(unsealedElementFunctionCollection, tag, {
       get() { return _ => tagFunctionError(key) ?? ``; }
     } );
     
-    return reFreeze(unfrozenElementFunctionCollection, tag);
+    return reSeal(unsealedElementFunctionCollection, tag);
   }
   
   if (tag.includes(`-`)) {
@@ -52,21 +52,20 @@ function createTagFunctionProperty({tag, key, custom, debug = false, isError = f
   }
   
   if (!!custom) {
-    Object.defineProperty(unfrozenElementFunctionCollection, custom, {
+    Object.defineProperty(unsealedElementFunctionCollection, custom, {
       get() { return tag2FN(tag); }
     });
   }
   
-  Object.defineProperty(unfrozenElementFunctionCollection, tag, {
+  Object.defineProperty(unsealedElementFunctionCollection, tag, {
     get() { return tag2FN(tag); }
   } );
   
-  return reFreeze(unfrozenElementFunctionCollection, tag);
+  return reSeal(unsealedElementFunctionCollection, tag);
 }
 
-function reFreeze(unfrozenCollection, tag) {
-  elementFunctionCollection = Object.freeze(new Proxy(unfrozenCollection, getProxy()));
-  elementFunctionCollection[Symbol.for.proxy] = `Proxy (Object)`;
+function reSeal(unsealedCollection, tag) {
+  elementFunctionCollection = Object.seal(new Proxy(unsealedCollection, proxyTraps()));
   return elementFunctionCollection[tag];
 }
 
@@ -165,8 +164,7 @@ function isComment(tag) { return /comment/i.test(tag); }
 
 function validateTag(name) {
   return validateElementTagName(name) &&
-    (name in customElementRegistry ||
-      !checkType(createElement(name), HTMLUnknownElement));
+    (name in customElementRegistry || !checkType(createElement(name), HTMLUnknownElement));
 }
 
 function validateElementTagName(tagName) {
