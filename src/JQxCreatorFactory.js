@@ -73,20 +73,21 @@ function proxify(instance) {
   );
 }
 
-function reProxify(method, instance) {
-  return (...args) =>
-    instance = typeof method === `function`
-      ? method(proxify(instance), ...args) : instance;
+function maybeReProxify(method, instance, isGetter = false) {
+  instance = !!instance[Symbol.proxy] ? instance : proxify(instance);
+  const returnValue = function(...args) { return method(instance, ...args); }
+  return isGetter ? returnValue() : returnValue;
 }
 
-function proxyTrapFactory(self, key, instance) {
+function proxyTrapFactory(JQxtarget, key, instance) {
   switch(true) {
-    case key === Symbol.proxy || key === Symbol.type: return `JQx instance proxy`;
-    case typeof key === `symbol`: return maybe({trial: () => self[key], whenError: () => self });
-    case !Number.isNaN(+key) && typeof +key === `number`: return self.collection?.[key] || undefined;
-    case (key in instanceGetters): return reProxify(instanceGetters[key], instance)();
-    case (key in instanceMethods): return reProxify(instanceMethods[key], instance);
-    default: return Reflect.get(self, key);
+    case key === Symbol.proxy:
+      return `Proxy for JQx ${instance.collection.length < 1 ? `empty ` : ``}instance`;
+    case typeof key === `symbol`: return maybe({trial: () => JQxtarget[key], whenError: () => JQxtarget });
+    case !Number.isNaN(+key) && typeof +key === `number`: return JQxtarget.collection?.[key] || undefined;
+    case (key in instanceGetters): return maybeReProxify(instanceGetters[key], instance, true);
+    case (key in instanceMethods): return maybeReProxify(instanceMethods[key], instance);
+    default: return Reflect.get(JQxtarget, key);
   }
 }
 
