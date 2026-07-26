@@ -79,10 +79,13 @@ function maybeReProxify(method, instance, isGetter = false) {
   return isGetter ? returnValue() : returnValue;
 }
 
+function proxyReporter(instance) {
+  return `Proxy for JQx${instance.collection.length < 1 ? ` (empty)` : ``} instance`;
+}
+
 function proxyTrapFactory(JQxtarget, key, instance) {
   switch(true) {
-    case key === Symbol.proxy:
-      return `Proxy for JQx ${instance.collection.length < 1 ? `empty ` : ``}instance`;
+    case key === Symbol.proxy: return proxyReporter(instance);
     case typeof key === `symbol`: return maybe({trial: () => JQxtarget[key], whenError: () => JQxtarget });
     case !Number.isNaN(+key) && typeof +key === `number`: return JQxtarget.collection?.[key] || undefined;
     case (key in instanceGetters): return maybeReProxify(instanceGetters[key], instance, true);
