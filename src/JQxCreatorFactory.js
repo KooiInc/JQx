@@ -88,8 +88,8 @@ function proxyTrapFactory(JQxtarget, key, instance) {
     case key === Symbol.proxy: return proxyReporter(instance);
     case typeof key === `symbol`: return maybe({trial: () => JQxtarget[key], whenError: () => JQxtarget });
     case !Number.isNaN(+key) && typeof +key === `number`: return JQxtarget.collection?.[key] || undefined;
-    case (key in instanceGetters): return maybeReProxify(instanceGetters[key], instance, true);
-    case (key in instanceMethods): return maybeReProxify(instanceMethods[key], instance);
+    case (instanceGetters.hasOwnProperty(key)): return maybeReProxify(instanceGetters[key], instance, true);
+    case (instanceMethods.hasOwnProperty(key)): return maybeReProxify(instanceMethods[key], instance);
     default: return Reflect.get(JQxtarget, key);
   }
 }
