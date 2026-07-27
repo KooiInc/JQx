@@ -1,7 +1,7 @@
 const converts = { html: `innerHTML`, text: `textContent`,  class: `className` };
 const maybe = maybeFactory();
-let elementFunctionCollection = {};
-const customElementRegistry = {};
+let elementFunctionCollection = Object.create(null, {});
+const customElementRegistry = Object.create(null, {});
 const checkType = typeCheckFactory();
 let tagFunctionError = tag => {
   console.error(`tinyDOM error: "${tag}" is not a valid HTML tag`);
@@ -177,7 +177,7 @@ function validateElementTagName(tagName) {
 }
 
 function tag2FN(tagName) {
-  tagName = tagName in customElementRegistry ?  customElementRegistry[tagName] : tagName;
+  tagName = customElementRegistry[tagName] ?? tagName;
   return (initial, ...args) => tagFN(tagName, initial, ...args);
 }
 
