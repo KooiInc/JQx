@@ -1,6 +1,6 @@
 import {default as IS, maybe, proxyWrapper, addSymbolicExtensions} from "./TypeofAnything.js";
 import {ATTRS} from "./EmbedResources.js";
-import {default as tagFNFactory} from "./tinyDOM.bundle.js";
+import {default as tagFNFactory} from "./tinyDOM.js";
 import styleFactory from "./LifeCSS.js";
 import {createElementFromHtmlString, inject2DOMTree, cleanupHtml} from "./DOM.js";
 import PopupFactory from "./Popup.js";
