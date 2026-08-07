@@ -1,3 +1,4 @@
+// Standalone available @ https://www.npmjs.com/package/tinydom-es
 // Src/helpers.js
 var checkType = typeCheckFactory();
 var maybe = maybeFactory();
