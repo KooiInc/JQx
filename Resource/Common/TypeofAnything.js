@@ -126,8 +126,8 @@ function AUXHelperFactory() {
   
   function addSymbols2Anything(IS, typeOf) {
     if (!Symbol.is) {
-      Symbol.is = Symbol.for(SYMBOL_KEYS.IS);
-      Symbol.type = Symbol.for(SYMBOL_KEYS.TYPE);
+      Symbol.is = Symbol(SYMBOL_KEYS.IS);
+      Symbol.type = Symbol(SYMBOL_KEYS.TYPE);
       
       Object.defineProperties(Object.prototype, {
         [Symbol.type]: { get() { return typeOf(this); }, enumerable: false, configurable: true },
@@ -142,10 +142,10 @@ function AUXHelperFactory() {
   
   function addSymbolsFactory(IS, typeOf, useSymbolicExtension) {
     if (!Symbol.isSymbol) {
-      Symbol.isSymbol = Symbol.for(SYMBOL_KEYS.IS_SYMBOL);
-      Symbol.proxy = Symbol.for(SYMBOL_KEYS.PROXY);
-      Symbol.target = Symbol.for(SYMBOL_KEYS.target);
-      Symbol.justME = Symbol.for(SYMBOL_KEYS.JUSTME);
+      Symbol.isSymbol = Symbol(SYMBOL_KEYS.IS_SYMBOL);
+      Symbol.proxy = Symbol(SYMBOL_KEYS.PROXY);
+      Symbol.target = Symbol(SYMBOL_KEYS.target);
+      Symbol.justME = Symbol(SYMBOL_KEYS.JUSTME);
     }
     return {addSymbolicExtensions: () => addSymbols2Anything(IS, typeOf)};
   }
