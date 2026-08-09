@@ -1,17 +1,18 @@
-const { IS, isOnly, maybe, $Wrap, isNothing, addSymbolicExtensions, detectableProxy } =
+const { IS, isOnly, maybe, $Wrap, isNothing, addSymbolicExtensions, proxyWrapper } =
   TOAFactory({useSymbolicExtensions: false});
 
-export { IS as default, maybe, isOnly, $Wrap, detectableProxy as proxyWrapper, isNothing, addSymbolicExtensions };
+export { IS as default, maybe, isOnly, $Wrap, proxyWrapper, isNothing, addSymbolicExtensions };
 
 function TOAFactory(specs = {}) {
   const { useSymbolicExtensions } = specs;
   const isJust = typeCheckFactory();
   const { shouldbeIsSingleObject, ISOneOf, isExcept, verifyNothingness, determineType,
     addSymbolicExtensions, maybe, $Wrap, detectableProxy } = TOAHelpers(IS, useSymbolicExtensions);
+  const proxyWrapper = detectableProxy;
   
   if (!!useSymbolicExtensions) { addSymbolicExtensions(); }
   
-  return {IS, isOnly, maybe, $Wrap, isNothing: verifyNothingness, addSymbolicExtensions, detectableProxy};
+  return {IS, isOnly, maybe, $Wrap, isNothing: verifyNothingness, addSymbolicExtensions, proxyWrapper};
   
   function IS(anything, ...shouldBe) {
     const unChained = Object.getOwnPropertySymbols(anything || {})?.some(v => v === Symbol.justME) && shouldBe.length > 0;
