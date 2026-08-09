@@ -1,7 +1,8 @@
-const { IS, isOnly, maybe, $Wrap, isNothing, addSymbolicExtensions, proxyWrapper } =
+const TOASymbols = Object.create(null, {});
+const { IS, isOnly, maybe, $Wrap, isNothing, addSymbolicExtensions, proxyWrapper, } =
   TOAFactory({useSymbolicExtensions: false});
 
-export { IS as default, maybe, isOnly, $Wrap, proxyWrapper, isNothing, addSymbolicExtensions };
+export { IS as default, maybe, isOnly, $Wrap, proxyWrapper, isNothing, addSymbolicExtensions, TOASymbols };
 
 function TOAFactory(specs = {}) {
   const { useSymbolicExtensions } = specs;
@@ -12,12 +13,12 @@ function TOAFactory(specs = {}) {
   
   if (!!useSymbolicExtensions) { addSymbolicExtensions(); }
   
-  return {IS, isOnly, maybe, $Wrap, isNothing: verifyNothingness, addSymbolicExtensions, proxyWrapper};
+  return {IS, isOnly, maybe, $Wrap, isNothing: verifyNothingness, addSymbolicExtensions, proxyWrapper, TOASymbols};
   
   function IS(anything, ...shouldBe) {
-    const unChained = Object.getOwnPropertySymbols(anything || {})?.some(v => v === Symbol.justME) && shouldBe.length > 0;
-    const single = anything?.[Symbol.justME];
-    const input = unChained ? single : typeof anything === `symbol` ? Symbol.isSymbol : anything;
+    const unChained = Object.getOwnPropertySymbols(anything || {})?.some(v => v === TOASymbols.justME) && shouldBe.length > 0;
+    const single = anything?.[TOASymbols.justME];
+    const input = unChained ? single : typeof anything === `symbol` ? TOASymbols.isSymbol : anything;
     switch(true) {
       case unChained: return isJust(single, ...shouldBe);
       case !!maybe({trial: _ => `isTypes` in (shouldBe?.[0] ?? {})}):
@@ -27,7 +28,7 @@ function TOAFactory(specs = {}) {
   }
   
   function isOnly(anything, ...shouldBe) {
-    return IS({[Symbol.justME]: anything}, ...shouldBe);
+    return IS({[TOASymbols.justME]: anything}, ...shouldBe);
   }
 }
 
@@ -42,7 +43,7 @@ function TOAHelpers(IS, useSymbolicExtensions) {
     determineType, detectableProxy, addSymbolicExtensions, maybe, $Wrap });
   
   function typeOf(anything) {
-    return anything?.[Symbol.proxy] || IS(anything);
+    return anything?.[TOASymbols.proxy] || IS(anything);
   }
   
   function shouldbeIsSingleObject(anything, isTypeObj) {
@@ -79,6 +80,7 @@ function AUXHelperFactory() {
     IS_SYMBOL: 'toa.isASymbol',
     PROXY: 'toa.proxyFor',
     TARGET: 'toa.target',
+    JUSTME: 'toa.justME',
   };
   
   const TYPE_STRINGS = {
@@ -87,8 +89,6 @@ function AUXHelperFactory() {
     BOOLEAN: 'Boolean',
     OBJECT: 'Object',
     PROXY_PREFIX: 'Proxy for',
-    JUSTME: 'justME',
-    
   };
   const detectableProxy = detectableProxyFactory();
   
@@ -101,12 +101,12 @@ function AUXHelperFactory() {
   function detectableProxyFactory() {
     const trapped = type => ({
       get(target, key) {
-        return key === Symbol.proxy
+        return key === TOASymbols.proxy
           ? `Proxy for ${type}`
-          : key === Symbol.target
+          : key === TOASymbols.target
             ? target : Reflect.get(target, key);
       },
-      has(target, key) { return key === Symbol.proxy ? true : key in target; }
+      has(target, key) { return key === TOASymbols.proxy ? true : key in target; }
     });
     
     function wrapProxy(proxy2Wrap) {
@@ -126,27 +126,27 @@ function AUXHelperFactory() {
   }
   
   function addSymbols2Anything(IS, typeOf) {
-    if (!Symbol.is) {
-      Symbol.is = Symbol(SYMBOL_KEYS.IS);
-      Symbol.type = Symbol(SYMBOL_KEYS.TYPE);
+    if (!TOASymbols.is) {
+      TOASymbols.is = Symbol(SYMBOL_KEYS.IS);
+      TOASymbols.type = Symbol(SYMBOL_KEYS.TYPE);
       
       Object.defineProperties(Object.prototype, {
-        [Symbol.type]: { get() { return typeOf(this); }, enumerable: false, configurable: true },
-        [Symbol.is]: { value: function (...args) { return IS(this, ...args); }, enumerable: false, configurable: false },
+        [TOASymbols.type]: { get() { return typeOf(this); }, enumerable: false, configurable: true },
+        [TOASymbols.is]: { value: function (...args) { return IS(this, ...args); }, enumerable: false, configurable: false },
       });
       Object.defineProperties(Object, {
-        [Symbol.type]: { value(obj) { return typeOf(obj); }, enumerable: false, configurable: false },
-        [Symbol.is]: { value: function (obj, ...args) { return IS(obj, ...args); }, enumerable: false, configurable: false },
+        [TOASymbols.type]: { value(obj) { return typeOf(obj); }, enumerable: false, configurable: false },
+        [TOASymbols.is]: { value: function (obj, ...args) { return IS(obj, ...args); }, enumerable: false, configurable: false },
       });
     }
   }
   
   function addSymbolsFactory(IS, typeOf, useSymbolicExtension) {
-    if (!Symbol.isSymbol) {
-      Symbol.isSymbol = Symbol(SYMBOL_KEYS.IS_SYMBOL);
-      Symbol.proxy = Symbol(SYMBOL_KEYS.PROXY);
-      Symbol.target = Symbol(SYMBOL_KEYS.target);
-      Symbol.justME = Symbol(SYMBOL_KEYS.JUSTME);
+    if (!TOASymbols.isSymbol) {
+      TOASymbols.isSymbol = Symbol(SYMBOL_KEYS.IS_SYMBOL);
+      TOASymbols.proxy = Symbol(SYMBOL_KEYS.PROXY);
+      TOASymbols.target = Symbol(SYMBOL_KEYS.TARGET);
+      TOASymbols.justME = Symbol(SYMBOL_KEYS.JUSTME);
     }
     return {addSymbolicExtensions: () => addSymbols2Anything(IS, typeOf)};
   }
@@ -178,9 +178,9 @@ function AUXHelperFactory() {
     
     switch (true) {
       case shouldBeFirstElementIsNothing: return String(input) === String(compareTo);
-      case input?.[Symbol.proxy] && noShouldbe: return input[Symbol.proxy];
-      case input?.[Symbol.proxy] && typeof shouldBe === `string`:
-        return input[Symbol.proxy].toLowerCase() === shouldBe.toLowerCase();
+      case input?.[TOASymbols.proxy] && noShouldbe: return input[TOASymbols.proxy];
+      case input?.[TOASymbols.proxy] && typeof shouldBe === `string`:
+        return input[TOASymbols.proxy].toLowerCase() === shouldBe.toLowerCase();
       case isNaN: return noShouldbe ? TYPE_STRINGS.NAN : String(compareTo) === String(input);
       case isInfinity: return noShouldbe ? TYPE_STRINGS.INFINITY : String(compareTo) === String(input);
       case noInput: return noShouldbe ? String(input) : String(compareTo) === String(input);
@@ -200,7 +200,7 @@ function AUXHelperFactory() {
   
   function getResult(input, compareWith, noShouldbe, maybeResult) {
     switch (true) {
-      case (!noShouldbe && compareWith === input) || (input?.[Symbol.proxy] && compareWith === Proxy):
+      case (!noShouldbe && compareWith === input) || (input?.[TOASymbols.proxy] && compareWith === Proxy):
         return true;
       case String(compareWith) === TYPE_STRINGS.NAN:
         return String(input) === TYPE_STRINGS.NAN;
@@ -233,10 +233,10 @@ function AUXHelperFactory() {
         get type() { return typeOf(someObj); },
       };
       
-      if (Object[Symbol.type]) {
+      if (Object[TOASymbols.type]) {
         Object.defineProperties(wrapper, {
-          [Symbol.type]: { get() { return typeOf(someObj);} },
-          [Symbol.is]: { value(...args) { return IS(someObj, ...args); }}
+          [TOASymbols.type]: { get() { return typeOf(someObj);} },
+          [TOASymbols.is]: { value(...args) { return IS(someObj, ...args); }}
         });
       }
       return Object.freeze(wrapper);
@@ -273,7 +273,7 @@ function typeCheckFactory() {
     ) { return false; }
     const [objName, typeName] = [nameOf(obj), nameOf(type2Check)];
     
-    return obj?.[Symbol.proxy] === type2Check ||
+    return obj?.[TOASymbols.proxy] === type2Check ||
       type2Check === obj?.name ||
       0 === collate.compare(objName, typeName) ||
       0 === collate.compare(obj.constructor?.name, type2Check?.name) ||
