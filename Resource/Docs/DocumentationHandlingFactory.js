@@ -418,11 +418,17 @@ function clickActionsFactory($) {
         ".user:before {content: 'Hi user! ';}"
       );
 
-      $(`<div id="tmpEx">That's a demo</div>`).showInExample(evt).removeAfter(10);
+      $(`<div id="tmpEx">That's a demo</div>`).showInExample(evt, true);
+      
+      const dummyNo = false;
+      const toFn = () => {
+        const tmpEx = $("#tmpEx");
+        tmpEx.addClass("warnUser", "user", dummyNo && `dummyClass`)
+          //                               ∟ conditional class name
+          .append($.div({style: `color: #555`}, `(div#tmpEx className now: "${tmpEx.attr(`class`)}")`));
+      }
 
-      setTimeout(() => {
-        $("#tmpEx").addClass("warnUser", "user");
-      }, 1500);
+      setTimeout(toFn, 1500);
     },
     showLogEx: evt => {
       $.log(`***Showing the backlog (from example)`);
