@@ -152,7 +152,8 @@ function factoryExtensionsFactory(jqx) {
 function instanceExtensionsFactory(jqx) {
   return {
     addClass(instance, ...classNames) {
-      return loop(instance, el => el && classNames.forEach(cn => el.classList.add(cn)));
+      return loop(instance, el => el && classNames
+        .forEach(cn => isNonEmptyString(cn) && el.classList.add(cn)));
     },
     after(instance, ...elems) { return beforeOrAfter(instance, jqx, true, ...elems); },
     afterMe(instance, ...elems) { return beforeOrAfter(instance, jqx, true, ...elems); },
