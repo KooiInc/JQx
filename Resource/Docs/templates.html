@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2026-09-09 11:19:37 UTC-->
+<!-- Generated file, last update 2026-09-09 11:56:02 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -629,7 +629,8 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
 <div data-text='1'><div>Add [classNames] to each element of the element collection of the JQx instance. <code>...classNames</code> Can be one or more strings.</div>
 
 <div class="note">
-  <b>Note</b>: class names that are not of type string or empty string values are discarded.
+  <b>Note</b>: class names that are not of type string or empty string values are discarded. This means for example that's possible 
+   to <i>conditionally</i> add css-classes. See the example.
 </div>
 
 <div data-example>##EXAMPLECODE@addClassEx##</div>
