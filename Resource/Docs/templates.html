@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2026-09-09 11:56:02 UTC-->
+<!-- Generated file, last update 2026-09-16 07:11:40 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -1354,15 +1354,19 @@ In html and css a data-attribute like <code>helloWorld</code> will show up as <c
 </template>
 
 <template data-id="static_fn" class="static_fn" data-is-deprecated="false">
-<div data-params='[{"name":"string"},{"extensionMethod":"function"}]'></div>
+<div data-params='[{"name":"string"},{"extensionMethod":"function"},{"isGetter":"boolean|undefined"}]'></div>
 <div data-return-value='Nothing'></div>
-<div data-text='1'><div>Add custom method to JQx instances. </div>
+<div data-text='1'><div>Add custom method or getter for use with JQx instances.</div>
 
+<h3>Method</h3>
 <div>The first argument of function [fn] is the JQx instance. Calling the added method, you only need [...arguments]. See both examples for usage.</div>
-
 <div data-example>##EXAMPLECODE@fnEx##</div>
 
-<div data-example>##EXAMPLECODE@fnEx2##</div></div>
+<h3>Getter (isGetter = true)</h3>
+<div>The first argument of function [fn] is the JQx instance.</div>
+<div data-example>##EXAMPLECODE@fnEx2##</div>
+
+</div>
 </template>
 
 <template data-id="instance_closest" class="instance_closest" data-is-deprecated="false">

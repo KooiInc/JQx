@@ -630,12 +630,13 @@ function clickActionsFactory($) {
     },
 
     fnEx2: evt => {
-      $.fn( `colorRed`, me => { me.style({color: "red", fontWeight: "bold"}); return me; } );
+      $.fn( `colorRed`, me => me.style({color: "red", fontWeight: "bold"}), /*isGetter*/ true );
       const someDiv = $.virtual(`<div data-id="tmpEx">Hello world</div>`)
-        .colorRed()
+        .colorRed
         .showInExample(evt)
-        .removeAfter(3);
+        .removeAfter(5);
     },
+    
     valEx: evt => {
       $.input({name: "inputEx", data: {inputId: "inputEx", type: "text"}, value: "hello world"})
         .showInExample(evt, true);
