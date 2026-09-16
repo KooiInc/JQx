@@ -37,24 +37,30 @@ function selectedUtilitiesFactory() {
     addFn: addFnMethod };
 }
 
-function addFnMethod(name, extensionMethod) {
+function addFnMethod(name, extensionMethod, isGetter) {
   name = name?.trim();
   
   if (!isNonEmptyString(name) || !IS(extensionMethod, Function) ) {
     return systemLog.error("JQx.fn: method invalid parameter(s)");
   }
   
-  instanceMethods[name] = (self, ...params) => extensionMethod(self, ...params);
-  return systemLog.log(`JQx: added extension function [${name}]`);
+  if (isGetter) {
+    instanceGetters[name] = self => extensionMethod(self);
+  } else {
+    instanceMethods[name] = (self, ...params) => extensionMethod(self, ...params);
+  }
+  
+  return systemLog.log(`JQx: added extension ${isGetter ? `getter` : `function`} [${name}]`);
 }
 
 function staticFNMethodFactory(jqx) {
-  return function(name, extensionMethod, isGetter){
+  return function(name, extensionMethod, isGetter) {
     name = name?.trim();
     if (!isNonEmptyString(name) || !IS(extensionMethod, Function) ) {
       return jqx.error("JQx.staticFn: invalid parameter(s)");
     }
-    const ext = isGetter
+    
+    const ext = !!isGetter
       ? { get() { return extensionMethod(); } }
       : { value(...args) { return extensionMethod(...args); } };
     
@@ -63,7 +69,7 @@ function staticFNMethodFactory(jqx) {
       return jqx.warn(`JQx.staticFn: extension [${name}] already exists`);
     }
     
-    return systemLog.log(`JQx: added static extension function [${name}]`);
+    return systemLog.log(`JQx: added static extension ${!!isGetter ? `getter` : `function`} [${name}]`);
   }
 }
 
