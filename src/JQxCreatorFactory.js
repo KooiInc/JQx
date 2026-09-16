@@ -34,26 +34,26 @@ export { proxify, addJQxStaticMethods };
 function selectedUtilitiesFactory() {
    return {
     ...selectedFactoryHelpers(),
-    addFn: addFnMethod };
+    addFn: addInstanceMethodOrGetter };
 }
 
-function addFnMethod(name, extensionMethod, isGetter) {
+function addInstanceMethodOrGetter(name, extensionMethod, isGetter) {
   name = name?.trim();
-  
   if (!isNonEmptyString(name) || !IS(extensionMethod, Function) ) {
     return systemLog.error("JQx.fn: method invalid parameter(s)");
   }
   
-  if (isGetter) {
-    instanceGetters[name] = self => extensionMethod(self);
-  } else {
-    instanceMethods[name] = (self, ...params) => extensionMethod(self, ...params);
+  const logMsg = `JQx: added instance extension ${isGetter ? `getter` : `function`} [${name}]`;
+  
+  switch(!!isGetter) {
+    case true: instanceGetters[name] = self => extensionMethod(self); break;
+    default: instanceMethods[name] = (self, ...params) => extensionMethod(self, ...params);
   }
   
   return systemLog.log(`JQx: added instance extension ${isGetter ? `getter` : `function`} [${name}]`);
 }
 
-function staticFNMethodFactory(jqx) {
+function addCTORMethodOrGetterFactory(jqx) {
   return function(name, extensionMethod, isGetter) {
     name = name?.trim();
     if (!isNonEmptyString(name) || !IS(extensionMethod, Function) ) {
@@ -291,7 +291,7 @@ function staticMethodsFactory(jqx) {
   const { editCssRule, createStyle, editCssRules, allowProhibit, handle,
     capturedHandling, log, warn, error, handlerWrapper } = getSelectedStaticMethods(jqx);
   const getNamedListener = getNamedListenerFactory(jqx);
-  const staticFN = staticFNMethodFactory(jqx);
+  const staticFN = addCTORMethodOrGetterFactory(jqx);
   $T.setError = key => {
     error(`JQx direct element creation error: [${key}] is not a valid tag`);
     return jqx.br();
