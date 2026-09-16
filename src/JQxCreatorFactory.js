@@ -42,14 +42,10 @@ function addInstanceMethodOrGetter(name, extensionMethod, isGetter) {
   if (!isNonEmptyString(name) || !IS(extensionMethod, Function) ) {
     return systemLog.error("JQx.fn: method invalid parameter(s)");
   }
-  
-  const logMsg = `JQx: added instance extension ${isGetter ? `getter` : `function`} [${name}]`;
-  
   switch(!!isGetter) {
     case true: instanceGetters[name] = self => extensionMethod(self); break;
     default: instanceMethods[name] = (self, ...params) => extensionMethod(self, ...params);
   }
-  
   return systemLog.log(`JQx: added instance extension ${isGetter ? `getter` : `function`} [${name}]`);
 }
 
