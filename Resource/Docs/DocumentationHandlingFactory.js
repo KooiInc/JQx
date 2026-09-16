@@ -648,11 +648,14 @@ function clickActionsFactory($) {
           custom(color) { return colorize(color); }
         }
       }, true);
-      const someDiv = $.div(`Hello world`).color.green;
+      const someDiv = $.div(`Hello world - I'm green`).color.green;
       $.Popup.show({
         content: someDiv,
-        closeAfter: 5,
-        callback: _ => $.Popup.show({content: someDiv.color.custom(`#336699`)})
+        closeAfter: 3,
+        callback: _ => $.Popup.show({
+          content: someDiv.HTML.set(`Hello world - now I'm blue`).color.custom(`#336699`),
+          closeAfter: 5,
+        })
       });
     },
     
