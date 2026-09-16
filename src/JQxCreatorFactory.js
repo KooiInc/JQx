@@ -50,7 +50,7 @@ function addFnMethod(name, extensionMethod, isGetter) {
     instanceMethods[name] = (self, ...params) => extensionMethod(self, ...params);
   }
   
-  return systemLog.log(`JQx: added extension ${isGetter ? `getter` : `function`} [${name}]`);
+  return systemLog.log(`JQx: added instance extension ${isGetter ? `getter` : `function`} [${name}]`);
 }
 
 function staticFNMethodFactory(jqx) {
