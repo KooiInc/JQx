@@ -637,6 +637,25 @@ function clickActionsFactory($) {
         .removeAfter(5);
     },
     
+    fnEx3: evt => {
+      $.fn(`color`, me => {
+        const colorize = color => me.style({color: color});
+        return {
+          get red() { return colorize(`red`); },
+          get green() { return colorize(`green`); },
+          get orange() { return colorize(`orange`); },
+          get blue() { return colorize(`blue`); },
+          custom(color) { return colorize(color); }
+        }
+      }, true);
+      const someDiv = $.div(`Hello world`).color.green;
+      $.Popup.show({
+        content: someDiv,
+        closeAfter: 5,
+        callback: _ => $.Popup.show({content: someDiv.color.custom(`#336699`)})
+      });
+    },
+    
     valEx: evt => {
       $.input({name: "inputEx", data: {inputId: "inputEx", type: "text"}, value: "hello world"})
         .showInExample(evt, true);
