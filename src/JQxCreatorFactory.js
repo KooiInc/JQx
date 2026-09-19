@@ -34,27 +34,29 @@ export { proxify, addJQxStaticMethods };
 function selectedUtilitiesFactory() {
    return {
     ...selectedFactoryHelpers(),
-    addFn: addFnMethod };
+    addFn: addInstanceMethodOrGetter };
 }
 
-function addFnMethod(name, extensionMethod) {
+function addInstanceMethodOrGetter(name, extensionMethod, isGetter) {
   name = name?.trim();
-  
   if (!isNonEmptyString(name) || !IS(extensionMethod, Function) ) {
     return systemLog.error("JQx.fn: method invalid parameter(s)");
   }
-  
-  instanceMethods[name] = (self, ...params) => extensionMethod(self, ...params);
-  return systemLog.log(`JQx: added extension function [${name}]`);
+  switch(!!isGetter) {
+    case true: instanceGetters[name] = self => extensionMethod(self); break;
+    default: instanceMethods[name] = (self, ...params) => extensionMethod(self, ...params);
+  }
+  return systemLog.log(`JQx: added instance extension ${isGetter ? `getter` : `function`} [${name}]`);
 }
 
-function staticFNMethodFactory(jqx) {
-  return function(name, extensionMethod, isGetter){
+function addCTORMethodOrGetterFactory(jqx) {
+  return function(name, extensionMethod, isGetter) {
     name = name?.trim();
     if (!isNonEmptyString(name) || !IS(extensionMethod, Function) ) {
       return jqx.error("JQx.staticFn: invalid parameter(s)");
     }
-    const ext = isGetter
+    
+    const ext = !!isGetter
       ? { get() { return extensionMethod(); } }
       : { value(...args) { return extensionMethod(...args); } };
     
@@ -63,7 +65,7 @@ function staticFNMethodFactory(jqx) {
       return jqx.warn(`JQx.staticFn: extension [${name}] already exists`);
     }
     
-    return systemLog.log(`JQx: added static extension function [${name}]`);
+    return systemLog.log(`JQx: added static extension ${!!isGetter ? `getter` : `function`} [${name}]`);
   }
 }
 
@@ -285,7 +287,7 @@ function staticMethodsFactory(jqx) {
   const { editCssRule, createStyle, editCssRules, allowProhibit, handle,
     capturedHandling, log, warn, error, handlerWrapper } = getSelectedStaticMethods(jqx);
   const getNamedListener = getNamedListenerFactory(jqx);
-  const staticFN = staticFNMethodFactory(jqx);
+  const staticFN = addCTORMethodOrGetterFactory(jqx);
   $T.setError = key => {
     error(`JQx direct element creation error: [${key}] is not a valid tag`);
     return jqx.br();

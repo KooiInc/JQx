@@ -630,12 +630,35 @@ function clickActionsFactory($) {
     },
 
     fnEx2: evt => {
-      $.fn( `colorRed`, me => { me.style({color: "red", fontWeight: "bold"}); return me; } );
+      $.fn( `colorRed`, me => me.style({color: "red", fontWeight: "bold"}), /*isGetter*/ true );
       const someDiv = $.virtual(`<div data-id="tmpEx">Hello world</div>`)
-        .colorRed()
+        .colorRed
         .showInExample(evt)
-        .removeAfter(3);
+        .removeAfter(5);
     },
+    
+    fnEx3: evt => {
+      $.fn(`color`, me => {
+        const colorize = color => me.style({color: color});
+        return {
+          get red() { return colorize(`red`); },
+          get green() { return colorize(`green`); },
+          get orange() { return colorize(`orange`); },
+          get blue() { return colorize(`blue`); },
+          custom(color) { return colorize(color); }
+        }
+      }, true);
+      const someDiv = $.div(`Hello world - I'm green`).color.green;
+      $.Popup.show({
+        content: someDiv,
+        closeAfter: 3,
+        callback: _ => $.Popup.show({
+          content: someDiv.HTML.set(`Hello world - now I'm blue`).color.custom(`#336699`),
+          closeAfter: 5,
+        })
+      });
+    },
+    
     valEx: evt => {
       $.input({name: "inputEx", data: {inputId: "inputEx", type: "text"}, value: "hello world"})
         .showInExample(evt, true);
