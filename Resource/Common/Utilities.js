@@ -29,9 +29,10 @@ const datasetKeyProxy = Object.freeze({
   configurable: false
 });
 const handlerIdCache = {};
+const canIUseSetHTML = !!document.createElement(`span`).setHTML;
 
 export {
-  after, applyStyle, assignAttrValues, ATTRS, beforeOrAfter, checkProp, cleanupHtml, clearAllTimers,
+  after, applyStyle, assignAttrValues, ATTRS, beforeOrAfter, canIUseSetHTML, checkProp, cleanupHtml, clearAllTimers,
   cloneAndDestroy, convert2Bool, createElementFromHtmlString, datasetKeyProxy, ElemArray2HtmlString, emptyElement,
   escHtml, findParentScrollDistance, getAttributesForLogging, getCaptureValue, getHandlerName, HandlerFactory,
   handlerIdCache, inject2DOMTree, input2Collection, insertPositions, IS, isArrayOfHtmlElements, isArrayOfHtmlStrings,
