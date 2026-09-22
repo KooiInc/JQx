@@ -70,6 +70,11 @@ function JQxMainFactory() {
 function createCTORProxy() {
   const notValid = key => function() { return systemLog.error(`JQx: "${key}" is not a valid tag or property`); };
   const factory = JQxMainFactory();
-  const trap = { get(target, key) { return Object.hasOwn(target, key) ? target[key] : notValid(key) } };
+  const trap = { get(target, key) {
+      if (Object.hasOwn(target, key)) { return target[key]; }
+      systemLog.error(`JQx: "${String(key)}" is not a valid tag or property`)
+      return () => `⨻ JQx: nothing to do`;
+   }
+  };
   return new Proxy(factory, trap);
 }
