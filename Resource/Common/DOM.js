@@ -1,5 +1,5 @@
-import { cleanupHtml, getRestricted, } from "./DOMCleanup.js";
-import {ATTRS, IS, insertPositions, isNode, truncateHtmlStr} from "./Utilities.js";
+import { cleanupHtml, getRestricted, globalSanitizer} from "./DOMCleanup.js";
+import {ATTRS, canIUseSetHTML, IS, insertPositions, isNode, truncateHtmlStr} from "./Utilities.js";
 
 export {
   getRestricted, createElementFromHtmlString, element2DOM,
@@ -9,6 +9,13 @@ export {
 function htmlToVirtualElement(htmlString) {
   const placeholderNode = document.createElement("div");
   placeholderNode.insertAdjacentHTML(insertPositions.end, htmlString);
+  
+  if (canIUseSetHTML) {
+    globalSanitizer.removeUnsafe();
+    placeholderNode.setHTML(htmlString, globalSanitizer);
+    return placeholderNode;
+  }
+  
   return placeholderNode.childNodes.length
     ? cleanupHtml(placeholderNode)
     : undefined;
@@ -62,9 +69,9 @@ function createElementFromHtmlString(htmlStrOrText) {
 
   const nwElem = htmlToVirtualElement(htmlStrOrText);
 
-  if (nwElem.childNodes.length < 1) {
+  if (!nwElem || nwElem.childNodes.length < 1) {
     return createElementFromHtmlString(`<span data-jqxcreationerror="1">${truncateHtmlStr(htmlStrOrText, 60)}</span>`);
   }
 
-  return nwElem.children[0];
+  return nwElem?.children[0] ?? document.createElement(`span`);
 }

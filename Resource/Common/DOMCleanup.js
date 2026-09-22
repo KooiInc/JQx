@@ -67,16 +67,18 @@ function cleanupHtml(el2Clean) {
         const tag = (child?.outerHTML || child?.textContent).trim();
         let tagValue = truncate2SingleStr(tag, 60) ?? `EMPTY`;
         tagValue += tagValue.length === 60 ? `...` : ``;
-        elCreationInfo.removed[`<${child.nodeName?.toLowerCase()}>`] = `not allowed, not rendered. Value: ${
-          tagValue}`;
+        elCreationInfo.removed[`tag <${child.nodeName?.toLowerCase()}>`] =
+            `not allowed, can and will not be rendered.`;
         child.remove();
       }
     });
   }
+  
   logContingentErrors(elCreationInfo);
 
   return el2Clean;
 }
+
 const emphasize = str => `***${str}***`;
 const getRestricted = emphasizeTag =>
   Object.entries(cleanupTagInfo)
@@ -85,4 +87,7 @@ const getRestricted = emphasizeTag =>
       [...acc, (emphasizeTag && key === emphasizeTag ? emphasize(key) : key)] ||
       acc, []);
 
-export { cleanupHtml, getRestricted, ATTRS};
+const globalSanitizer = cleanupTagInfo.globalSanitizer;
+globalSanitizer.removeUnsafe();
+
+export { cleanupHtml, getRestricted, ATTRS, globalSanitizer};

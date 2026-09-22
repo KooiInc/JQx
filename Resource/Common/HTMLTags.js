@@ -1,11 +1,17 @@
 import { allTags } from "./EmbedResources.js";
 import { IS } from "./Utilities.js";
+
 let lenient = false;
 const allowUnknownHtmlTags = {
   on: () => lenient = true,
   off: () => lenient = false,
 };
+const globalSanitizer = new Sanitizer({
+  elements: Object.entries(allTags).filter(([tag, cando]) => cando).map(([tag,]) => tag)}
+);
+
 export default {
+  globalSanitizer,
   tagsRaw: allTags,
   allowUnknownHtmlTags,
   isAllowed(elem) {
