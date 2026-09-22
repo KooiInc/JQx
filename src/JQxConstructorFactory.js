@@ -5,8 +5,7 @@ import {
   insertPositions, inject2DOMTree, createElementFromHtmlString,
   getNodeContentForLog,
 } from "./JQxUtilities.js";
-
-export default JQxMainFactory();
+export default createCTORProxy();
 
 function JQxMainFactory() {
   const logLineLength = 70;
@@ -66,4 +65,11 @@ function JQxMainFactory() {
       
       return proxify(instance);
   })
+}
+
+function createCTORProxy() {
+  const notValid = key => function() { return systemLog.error(`JQx: "${key}" is not a valid tag or property`); };
+  const factory = JQxMainFactory();
+  const trap = { get(target, key) { return Object.hasOwn(target, key) ? target[key] : notValid(key) } };
+  return new Proxy(factory, trap);
 }
