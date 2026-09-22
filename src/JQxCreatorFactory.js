@@ -169,10 +169,10 @@ function tagGetterFactory(tagName, cando, jqx, webComponentTagName) {
         const instance = cando && jqx.virtual(cleanupHtml($T[tagName](...args))) || undefined;
         const isElem = !IS(instance?.node, Comment, Text, undefined);
         let reportIdOrClass = isElem ? getAttributesForLogging(instance) : ``;
-        
-        systemLog.log( cando
+        const logMsg = cando
           ? `JQx: created (virtual) instance from [JQx].${tagName} ${reportIdOrClass}`
-          : `JQx: ${tagName.toUpperCase()} is prohibited. Use [JQx].allowTag if necessary.`);
+          : `JQx: the tag "${tagName}" is prohibited. Use [JQx].allowTag if necessary.`
+        systemLog[cando ? `log` : `error`](logMsg);
         return instance;
       }
     },
