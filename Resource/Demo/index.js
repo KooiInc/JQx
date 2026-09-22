@@ -74,8 +74,8 @@ if (!debug) {
   // data-attributes are removed initially, but may be added later
   // styles are inline here
   $( [`<script id="noscripts">alert('hi');</script>`,
-     `<div id="delegates" class="delegates">Hi 1</div>`], JQxRoot)
-    .data.add({hello: "Added post creation"})
+     `<div id="delegates" data-id="delegates">Hi 1</div>`], JQxRoot)
+    .data.add({id: "delegates"})
     .html(` [you may <b><i>click</i> me</b>] `, true)
     .style({cursor: `pointer`});
 
