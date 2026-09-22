@@ -11,7 +11,6 @@ function htmlToVirtualElement(htmlString) {
   placeholderNode.insertAdjacentHTML(insertPositions.end, htmlString);
   
   if (canIUseSetHTML) {
-    globalSanitizer.removeUnsafe();
     placeholderNode.setHTML(htmlString, globalSanitizer);
     return placeholderNode;
   }
