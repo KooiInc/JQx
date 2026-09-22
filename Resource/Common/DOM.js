@@ -1,5 +1,5 @@
-import { cleanupHtml, getRestricted, globalSanitizer} from "./DOMCleanup.js";
-import {ATTRS, canIUseSetHTML, IS, insertPositions, isNode, truncateHtmlStr} from "./Utilities.js";
+import { cleanupHtml, getRestricted, } from "./DOMCleanup.js";
+import {ATTRS, IS, insertPositions, isNode, truncateHtmlStr} from "./Utilities.js";
 
 export {
   getRestricted, createElementFromHtmlString, element2DOM,
@@ -9,11 +9,6 @@ export {
 function htmlToVirtualElement(htmlString) {
   const placeholderNode = document.createElement("div");
   placeholderNode.insertAdjacentHTML(insertPositions.end, htmlString);
-  
-  if (canIUseSetHTML) {
-    placeholderNode.setHTML(htmlString, globalSanitizer);
-    return placeholderNode;
-  }
   
   return placeholderNode.childNodes.length
     ? cleanupHtml(placeholderNode)

@@ -87,7 +87,4 @@ const getRestricted = emphasizeTag =>
       [...acc, (emphasizeTag && key === emphasizeTag ? emphasize(key) : key)] ||
       acc, []);
 
-const globalSanitizer = cleanupTagInfo.globalSanitizer;
-globalSanitizer.removeUnsafe();
-
-export { cleanupHtml, getRestricted, ATTRS, globalSanitizer};
+export { cleanupHtml, getRestricted, ATTRS, };

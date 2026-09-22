@@ -58,28 +58,31 @@ if (!debug) {
         or (for some browsers) press CTRL+U.`)
   ).appendTo(JQxRoot);
 
+  // The JQx constructor ($) is a proxy, so static element
+  // creation will result in an error log message (see log)
+  $.nocando(`I will NOT render!`);
+  $.script()?.render;
+  // ^ returns undefined. But there is a log entry (error)
+
+  
   // onclick is not allowed, so will be removed on element creation
   const msg = `hi there, you won't see me`;
   $(`<div id="nohandling" onclick="alert('${msg}')"></div>`)
     .html(`<h1>H e l l o  &nbsp;w o r l d</h1>`).appendTo(JQxRoot);
 
-  // script and data attribute will be removed, but you can add data-attributes later
+  // <script> tag is removed.
+  // data-attributes are removed initially, but may be added later
   // styles are inline here
-  $([
-      `<script id="noscripts">alert('hi');</script>`,
-      `<div data-cando="1" id="delegates">Hi 1</div>`
-    ], JQxRoot)
+  $( [`<script id="noscripts">alert('hi');</script>`,
+     `<div id="delegates" class="delegates">Hi 1</div>`], JQxRoot)
     .data.add({hello: "Added post creation"})
     .html(` [you may <b><i>click</i> me</b>] `, true)
     .style({cursor: `pointer`});
 
   // <notallowed> is ... well ... not allowed, so will be removed
-  // styles inline
-  $([`<notallowed id="will_not_be_created"></notallowed>`,
-    `<div>Hi 2</div>`])
-    .text(` [Hey! You can click AND hover me! (see log)]`, true)
-    .style({color: `red`, marginTop: `0.7rem`, cursor: `pointer`})
-    .appendTo(JQxRoot)
+  $.div({style: `cursor: pointer; margin-top: 0.7em;`},
+    `<notallowed id="will_not_be_created"></notallowed>`,
+    `Hi 2 [Hey! You can click AND hover me! (see log)]`)
     // add a click, mouseover and mouseout listener in one go
     .on(`click, mouseover, mouseout`, function heyHandler({evt, me}) {
       const currentColor = me.node.style.color;
@@ -98,7 +101,7 @@ if (!debug) {
           me.addClass(`IAmHovered`);
           return log(`HI from div.exampleText (you moved your mouse pointer over me)`);
       }
-    });
+    }).renderTo(JQxRoot);
 
   // create and position a few buttons. Some already contain an event handler (delegated)
   const cssBttns = {
@@ -140,18 +143,18 @@ if (!debug) {
   }
   
   // styled via named class .exampleText
-  $$(`<div>`)
-  .css({
-    className: "exampleText",
-    borderTop: "2px dotted #999",
-    borderLeft: "5px solid red",
-    paddingLeft: "5px",
-    display: "block",
-    'margin-top': "1rem",
-    'padding-top': "0.2rem", })
-  .prepend($$("<span>Styling</span>"))
-  .html(" examples", true)
-  .appendTo(JQxRoot);
+ // $.virtual(`<div/>`)
+  $.editCssRules(`.exampleText {
+      borderTop: 2px dotted #999;
+      borderLeft: 5px solid red;
+      paddingLeft: 5px;
+      display: block;
+      margin-top: 1rem;
+      padding-top: 0.2rem;
+    }`);
+  $.div({class: "exampleText"})
+  .append($.span(`Styling`).html(" examples", true))
+  .renderTo(JQxRoot);
   
   // styled with intermediate class
   $$(`<div id="helloworld"/>`)
