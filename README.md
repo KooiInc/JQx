@@ -9,7 +9,7 @@ Bundlephobia is a lost case
 > [!NOTE]
 > The listening to - and handling of events has been overhauled. This means that
 > callbacks for event listeners now are always expected to have the
-> signature`[handler]({evt, [me|self]})`. If you use `[JQx].delegate` or
+> signature`[handler]({evt: event, me: JQx instance})`. If you use `[JQx].delegate` or
 > `[JQx instance].on` in your code, please review.
 >
 > See [documentation](https://kooiinc.codeberg.page/JQx/Resource/Docs/?navTo=static_handle) for the new `handle` functionality.
