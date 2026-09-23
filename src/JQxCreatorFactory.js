@@ -97,8 +97,12 @@ function proxyTrapFactory(JQxtarget, key, instance) {
 }
 
 function addJQxStaticMethods(jqx) {
+  const { factoryExtensions, instanceExtensions } = allMethodsFactory(jqx);
+  instanceGetters = factoryExtensions;
+  instanceMethods = instanceExtensions;
+  
   const staticMethods = defaultStaticMethodsFactory(jqx);
-
+  
   for (const [key, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(staticMethods))) {
     Object.defineProperty(jqx, key, descriptor);
   }
@@ -171,7 +175,7 @@ function tagGetterFactory(tagName, cando, jqx, webComponentTagName) {
         let reportIdOrClass = isElem ? getAttributesForLogging(instance) : ``;
         const logMsg = cando
           ? `JQx: created (virtual) instance from [JQx].${tagName} ${reportIdOrClass}`
-          : `JQx: the tag "${tagName}" is prohibited. Use [JQx].allowTag if necessary.`
+          : `JQx: direct element creation error: <${tagName}> is not allowed. Use [JQx].allowTag if necessary.`
         systemLog[cando ? `log` : `error`](logMsg);
         return instance;
       }
@@ -190,9 +194,8 @@ function addGetters(tag, cando, jqx, webComponentTagName) {
 }
 
 function defaultStaticMethodsFactory(jqx) {
-  return combineObjectSources(
-    Object.entries(tagLib.tagsRaw).reduce(staticTagsLambda(jqx), {}),
-    staticMethodsFactory(jqx));
+  const tags = Object.entries(tagLib.tagsRaw).reduce(staticTagsLambda(jqx), {});
+  return combineObjectSources(tags, staticMethodsFactory(jqx));
 }
 
 function staticTagsLambda(jqx) {
@@ -281,11 +284,10 @@ function getSelectedStaticMethods(jqx) {
 }
 
 function staticMethodsFactory(jqx) {
-  const { factoryExtensions, instanceExtensions } = allMethodsFactory(jqx);
-  instanceGetters = factoryExtensions;
-  instanceMethods = instanceExtensions;
-  const { editCssRule, createStyle, editCssRules, allowProhibit, handle,
-    capturedHandling, log, warn, error, handlerWrapper } = getSelectedStaticMethods(jqx);
+  const {
+    editCssRule, createStyle, editCssRules, allowProhibit, handle,
+    capturedHandling, log, warn, error, handlerWrapper
+  } = getSelectedStaticMethods(jqx);
   const getNamedListener = getNamedListenerFactory(jqx);
   const staticFN = addCTORMethodOrGetterFactory(jqx);
   $T.setError = key => {

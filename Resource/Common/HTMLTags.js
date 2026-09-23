@@ -7,6 +7,10 @@ const allowUnknownHtmlTags = {
   off: () => lenient = false,
 };
 
+function allowOrProhibit(tag, allow) {
+  allTags[tag] = allow;
+}
+
 export default {
   tagsRaw: allTags,
   allowUnknownHtmlTags,
@@ -15,6 +19,6 @@ export default {
     const nodeName = IS(elem, String) ? elem.toLowerCase() : elem?.nodeName.toLowerCase() || `none`;
     return nodeName === `#text` || !!allTags[nodeName];
   },
-  allowTag: tag2Allow => allTags[tag2Allow.toLowerCase()] = true,
-  prohibitTag: tag2Prohibit => allTags[tag2Prohibit.toLowerCase()] = false,
+  allowTag: tag => allowOrProhibit(tag, true),
+  prohibitTag: tag => allowOrProhibit(tag, false),
 };
