@@ -2,7 +2,7 @@ import {
   IS, isNode, ExamineElementFeatureFactory, beforeOrAfter,
   isNonEmptyString, toDashedNotation, escHtml, systemLog, insertPositions,
   datasetKeyProxy, loop, cloneAndDestroy, setData,
-  findParentScrollDistance, emptyElement, checkProp, css, assignAttrValues,
+  findParentScrollDistance, emptyElement, checkPropertyOrAttribute, css, assignAttrValues,
   applyStyle, createElementFromHtmlString, inject2DOMTree,
 } from "./JQxUtilities.js";
 
@@ -370,7 +370,7 @@ function instanceExtensionsFactory(jqx) {
       for (let [propName, propValue] of Object.entries(props)) {
         propName = propName.trim();
 
-        if (propValue && !checkProp(propName) || !propValue) {
+        if (propValue && !checkPropertyOrAttribute(propName) || !propValue) {
           return false;
         }
 

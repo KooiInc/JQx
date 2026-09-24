@@ -32,14 +32,14 @@ const handlerIdCache = {};
 const canIUseSetHTML = !!document.createElement(`span`).setHTML;
 
 export {
-  after, applyStyle, assignAttrValues, ATTRS, beforeOrAfter, canIUseSetHTML, checkProp, cleanupHtml, clearAllTimers,
-  cloneAndDestroy, convert2Bool, createElementFromHtmlString, datasetKeyProxy, ElemArray2HtmlString, emptyElement,
-  escHtml, findParentScrollDistance, getAttributesForLogging, getCaptureValue, getHandlerName, HandlerFactory,
-  handlerIdCache, inject2DOMTree, input2Collection, insertPositions, IS, isArrayOfHtmlElements, isArrayOfHtmlStrings,
-  isComment, isCommentOrTextNode, isHtmlString, isModal, isNode, isNonEmptyString, isText, isVisible, isWritable,
-  logTime, maybe, pad0,PopupFactory, proxyWrapper, randomNr, randomString, resolveEventTypeParameter, setData,
-  styleFactory, systemLog, tagFNFactory, tagLib, toCamelcase, toDashedNotation, truncate2SingleStr, truncateHtmlStr,
-  ucFirst,
+  after, applyStyle, assignAttrValues, ATTRS, beforeOrAfter, canIUseSetHTML, checkPropertyOrAttribute, cleanupHtml,
+  clearAllTimers,cloneAndDestroy, convert2Bool, createElementFromHtmlString, datasetKeyProxy, ElemArray2HtmlString,
+  emptyElement, escHtml, findParentScrollDistance, getAttributesForLogging, getCaptureValue, getHandlerName,
+  HandlerFactory,handlerIdCache, inject2DOMTree, input2Collection, insertPositions, IS, isArrayOfHtmlElements,
+  isArrayOfHtmlStrings, isComment, isCommentOrTextNode, isHtmlString, isModal, isNode, isNonEmptyString, isText,
+  isVisible, isWritable, logTime, maybe, pad0,PopupFactory, proxyWrapper, randomNr, randomString,
+  resolveEventTypeParameter, setData, styleFactory, systemLog, tagFNFactory, tagLib, toCamelcase, toDashedNotation,
+  truncate2SingleStr, truncateHtmlStr, ucFirst,
 };
 
 function clearAllTimers() {
@@ -84,8 +84,11 @@ function getCaptureValue(eventType, captureValue) {
   return !!(allwaysCaptureEventTypes.find(t => t === eventType)) || !!captureValue;
 }
 
-function checkProp(prop) {
-  return prop.startsWith(`data`) || ATTRS.html.find(attr => prop.toLowerCase() === attr);
+function checkPropertyOrAttribute(prop) {
+  prop = prop?.toLowerCase() || ``;
+  return prop.startsWith(`data`) ||
+    ATTRS.html[prop.toLowerCase()] === prop ||
+    ATTRS.svg[prop.toLowerCase()] === prop;
 }
 
 function emptyElement(el) {
@@ -200,7 +203,7 @@ function assignAttrValues(el, keyValuePairs) {
         return setData(el, value);
       }
       
-      if (IS(value, String) && checkProp(key)) {
+      if (IS(value, String) && checkPropertyOrAttribute(key)) {
         el.setAttribute(key, value.split(/[, ]/)?.join(` `));
       }
     }

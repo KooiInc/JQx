@@ -1,5 +1,5 @@
 import {
-  after, applyStyle, assignAttrValues, beforeOrAfter, checkProp, cleanupHtml, clearAllTimers, cloneAndDestroy,
+  after, applyStyle, assignAttrValues, beforeOrAfter, checkPropertyOrAttribute, cleanupHtml, clearAllTimers, cloneAndDestroy,
   convert2Bool, createElementFromHtmlString, datasetKeyProxy, ElemArray2HtmlString, emptyElement, escHtml,
   findParentScrollDistance, getAttributesForLogging, getHandlerName, HandlerFactory, inject2DOMTree, input2Collection,
   insertPositions, IS, isArrayOfHtmlElements, isArrayOfHtmlStrings, isComment, isCommentOrTextNode, isHtmlString,
@@ -9,7 +9,7 @@ import {
 } from "../Resource/Common/Utilities.js"
 
 export {
-  after, applyStyle, assignAttrValues, beforeOrAfter, checkProp, cleanupHtml, clearAllTimers, cloneAndDestroy,
+  after, applyStyle, assignAttrValues, beforeOrAfter, checkPropertyOrAttribute, cleanupHtml, clearAllTimers, cloneAndDestroy,
   convert2Bool, createElementFromHtmlString, css, datasetKeyProxy, ElemArray2HtmlString, emptyElement, escHtml,
   ExamineElementFeatureFactory, findParentScrollDistance, getAttributesForLogging, getHandlerName, getNodeContentForLog,
   HandlerFactory, inject2DOMTree, input2Collection, insertPositions, IS, isArrayOfHtmlElements, isArrayOfHtmlStrings,
