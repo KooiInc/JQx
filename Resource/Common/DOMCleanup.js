@@ -47,7 +47,7 @@ function cleanupHtml(el2Clean) {
             const evilValue = name === "href"
               ? !attrRegExpStore.validURL.test(value)
               : attrRegExpStore.notAllowedValues.test(value);
-            const evilAttrib = name.startsWith(`on`) || name.startsWith(`data`)
+            const evilAttrib = name.startsWith(`data`)
               ? !attrRegExpStore.data.test(name)
               : !!attrStore[name];
 
