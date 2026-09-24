@@ -342,11 +342,9 @@ function resolveEventTypeParameter (maybeTypes) {
 }
 
 function isModal(elem) {
-  if (elem?.isConnected) {
-    return !![...document.querySelectorAll(`:is(:modal)`)]?.find(el => el === elem);
-  }
-  
-  return false;
+  return elem?.isConnected
+    ? !![...document.querySelectorAll(`:is(:modal)`)]?.find(el => el === elem)
+    : false;
 }
 
 function convert2Bool(value, defaultValue) {
