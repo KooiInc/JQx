@@ -308,9 +308,11 @@ function isWritable(elem) {
 
 function ElemArray2HtmlString(elems) {
   return elems?.filter(el => el).reduce((acc, el) =>
-    acc.concat(isComment(el) ? `<!--${el.data}-->`
-      : isCommentOrTextNode(el) ?  el.textContent
-        : el.outerHTML), ``);
+    acc.concat( isComment(el)
+      ? `<!--${el.data}-->`
+        : isCommentOrTextNode(el)
+          ?  el.textContent
+          : el.outerHTML), ``);
 }
 
 /* private */
@@ -341,8 +343,7 @@ function resolveEventTypeParameter (maybeTypes) {
 
 function isModal(elem) {
   if (elem?.isConnected) {
-    return !![...document.querySelectorAll(`:is(:modal)`)]
-      .find(el => el === elem) ? true : false;
+    return !![...document.querySelectorAll(`:is(:modal)`)]?.find(el => el === elem);
   }
   
   return false;
@@ -393,7 +394,7 @@ function isCommentOrTextNode(node) {
 }
 
 function isComment(input) {
-  IS(input, Comment);
+  return IS(input, Comment);
 }
 
 function isText(input) {
