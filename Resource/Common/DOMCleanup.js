@@ -66,11 +66,7 @@ function cleanupHtml(el2Clean) {
         child.constructor === Comment;
 
       if (!allowed) {
-        const tag = (child?.outerHTML || child?.textContent).trim();
-        let tagValue = truncate2SingleStr(tag, 60) ?? `EMPTY`;
-        tagValue += tagValue.length === 60 ? `...` : ``;
-        elCreationInfo.removed[`tag <${child.nodeName?.toLowerCase()}>`] =
-            `not allowed, can and will not be rendered.`;
+        elCreationInfo.removed[`tag <${child.nodeName?.toLowerCase()}>`] = `not allowed, can and will not be rendered.`;
         child.remove();
       }
     });
