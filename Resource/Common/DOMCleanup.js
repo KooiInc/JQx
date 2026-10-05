@@ -49,9 +49,10 @@ function cleanupHtml(el2Clean) {
               : attrRegExpStore.notAllowedValues.test(value);
             const evilAttrib = name.startsWith(`data`)
               ? !attrRegExpStore.data.test(name)
-              : !!attrStore[name];
+              : !!!attrStore[name];
 
             if (evilValue || evilAttrib) {
+              console.log(name, attrStore[name]);
               let val = truncate2SingleStr(attr.value || `none`, 60);
               val += val.length === 60 ? `...` : ``;
               elCreationInfo.removed[`${attr.name}`] = `attribute/property/value not allowed, removed. Value: ${

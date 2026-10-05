@@ -5,6 +5,8 @@ const isDev = location.host.startsWith(`dev`) || location.host.startsWith(`local
 const importLink =  isDev ? `../../index.js` : `../../Bundle/jqx.min.js`;
 const $ = (await import(importLink)).default;
 window.$ = $;
+$.allowTag(`copyright-slotted`);
+$.allowTag(`link`);
 $.logger.enable;
 const loader = $.div({class: "spin"}, `Loading...`).render;
 const perform = performance.now();
@@ -359,7 +361,6 @@ function createCopyrightComponent() {
 }
 
 function renderCopyrightComponent() {
-  $.allowTag(`copyright-slotted`);
   const backLinks = {
     github: "//github.com/KooiInc/JQx",
     codeberg: "//codeberg.org/KooiInc/JQx",
@@ -381,6 +382,7 @@ function renderCopyrightComponent() {
 
 function copyrightComponentConnectHandler(elem) {
   const shadow = createOrRetrieveShadowRoot(elem);
-  const content = $.div({html: `&copy; <span><slot name="year"/></span> KooiInc <slot name="link"/>`});
+  const slots = $.span($.slot({name: "year"}), ` KooiInc `, $.slot({name: "link"}));
+  const content = $.div({html: `&copy; ${slots.HTML.get(1)}`});
   shadow.append(content.node, componentStyle.node);
 }
