@@ -369,7 +369,7 @@ function instanceExtensionsFactory(jqx) {
       const props = !IS(nameOrProperties, Object) ? { [nameOrProperties]: value } : nameOrProperties;
       for (let [propName, propValue] of Object.entries(props)) {
         propName = propName.trim();
-
+        
         if (propValue && !checkPropertyOrAttribute(propName) || !propValue) {
           return false;
         }

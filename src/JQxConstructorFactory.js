@@ -3,17 +3,18 @@ import {
   isHtmlString, isArrayOfHtmlStrings, isArrayOfHtmlElements,
   input2Collection, setCollectionFromCssSelector, IS, systemLog,
   insertPositions, inject2DOMTree, createElementFromHtmlString,
-  getNodeContentForLog,
+  getNodeContentForLog, tagFNFactory as $T,
 } from "./JQxUtilities.js";
+
 export default createCTORProxy();
 
 function JQxMainFactory() {
   const logLineLength = 70;
   
-  return addJQxStaticMethods(
+  const ctor = addJQxStaticMethods(
     function(input, root, position = insertPositions.BeforeEnd) {
       if (input?.isJQx) { return input; }
-      const isVirtual = IS(root, HTMLBRElement);
+      const isVirtual = IS(root, HTMLBRElement) || root === true;
       root = (!isVirtual && root && root.isJQx ? root[0] : root) || document.body;
       position = position && Object.values(insertPositions).find(pos => position === pos) ? position : undefined;
       const isRawHtml = isHtmlString(input);
@@ -64,17 +65,32 @@ function JQxMainFactory() {
       }
       
       return proxify(instance);
-  })
+  });
+  
+  $T.setError = key => {};
+  return ctor;
+}
+
+function createFromTDFactory(key, factory) {
+  return function(...args) {
+    systemLog.log(`JQx: created (virtual) instance from static ${key.toLowerCase()} property`);
+    return factory($T[key](...args), true);
+  }
 }
 
 function createCTORProxy() {
-  const notValid = key => function() { return systemLog.error(`JQx: "${key}" is not a valid tag or property`); };
   const factory = JQxMainFactory();
-  const trap = { get(target, key) {
-      if (Object.hasOwn(target, key)) { return target[key]; }
-      systemLog.error(`JQx: "${String(key)}" is not a valid JQx property`);
-      return () => `⨻ JQx: nothing to do`;
+  const getterTrap = { get(target, key) {
+      const isStaticTag = !!$T[key]();
+      switch(true) {
+        case isStaticTag: return createFromTDFactory(key, factory);
+        case Object.hasOwn(target, key): return target[key];
+        default:
+          systemLog.error(`JQx: "${String(key)}" is not a valid JQx property`);
+          return () => {};
+      }
    }
   };
-  return new Proxy(factory, trap);
+  
+  return new Proxy(factory, getterTrap);
 }

@@ -3,7 +3,7 @@ import { popupStyling as styleRules } from "./EmbedResources.js";
 export default function($) {
   if ($.node(`#jqxPopup`)) { return; }
   $.logger.log(`JQx: [JQx].Popup first call. Dialog element created.`);
-  $.dialog({id: `jqxPopup`}, $.div({ id: "jqxPopupContent" })).render;
+  $(`<dialog id="jqxPopup"><div id="jqxPopupContent"></div></dialog>`); //.div({ id: "jqxPopupContent" })).render;
   $.editCssRules(...styleRules);
   let timers = [];
   const [popupContent, popupNode] = [$(`#jqxPopupContent`), $.node(`#jqxPopup`)];
@@ -50,8 +50,8 @@ export default function($) {
     popupContent.clear();
     let {content, modal, closeAfter} = currentProps;
     modal = $.IS(modal, Boolean) ? modal : false;
-    const closerIcon = modal ? "" : $.div({ id: "closeHandleIcon"});
-    popupContent.append(closerIcon, $.IS(content, String) ? $.div(content) : content);
+    const closerIcon = modal ? "" : $(`<div id="closeHandleIcon">`);
+    popupContent.append(closerIcon, $.IS(content, String) ? $(`<div>${content}</div>`) : content);
     popupNode.showModal();
     if (!modal && $.IS(closeAfter, Number)) { createTimer(initHidePopup, closeAfter); }
   }

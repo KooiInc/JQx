@@ -101,9 +101,8 @@ function addJQxStaticMethods(jqx) {
   instanceGetters = factoryExtensions;
   instanceMethods = instanceExtensions;
   
-  const staticMethods = defaultStaticMethodsFactory(jqx);
-  
-  for (const [key, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(staticMethods))) {
+  for (const [key, descriptor] of
+      Object.entries(Object.getOwnPropertyDescriptors(staticMethodsFactory(jqx)))) {
     Object.defineProperty(jqx, key, descriptor);
   }
 
@@ -117,12 +116,12 @@ function allowances(jqx) {
       const webComponentTagName = isWebComponent && tagName;
       tagName =  isWebComponent ? toCamelcase(tagName) : tagName.toLowerCase();
       tagLib.allowTag(tagName);
-      Object.defineProperties( jqx, addGetters(tagName, true, jqx, webComponentTagName) );
+      isWebComponent && $T[webComponentTagName];
+      isWebComponent && tagLib.allowTag(webComponentTagName);
     },
     prohibit(tagName) {
       tagName = tagName.toLowerCase();
       tagLib.prohibitTag(tagName);
-      Object.defineProperties( jqx, addGetters(tagName, false, jqx) );
     }
   }
 }
@@ -165,44 +164,9 @@ function combineObjectSources(...sources) {
   return result;
 }
 
-function tagGetterFactory(tagName, cando, jqx, webComponentTagName) {
-  tagName = toDashedNotation(webComponentTagName || tagName.toLowerCase());
-  return {
-    get() {
-      return (...args) => {
-        const instance = cando && jqx.virtual(cleanupHtml($T[tagName](...args))) || undefined;
-        const isElem = !IS(instance?.node, Comment, Text, undefined);
-        let reportIdOrClass = isElem ? getAttributesForLogging(instance) : ``;
-        const logMsg = cando
-          ? `JQx: created (virtual) instance from [JQx].${tagName} ${reportIdOrClass}`
-          : `JQx: direct element creation error: <${tagName}> is not allowed. Use [JQx].allowTag if necessary.`
-        systemLog[cando ? `log` : `error`](logMsg);
-        return instance;
-      }
-    },
-    enumerable: false,
-    configurable: true,
-  }
-}
-
-function addGetters(tag, cando, jqx, webComponentTagName) {
-  tag = tag.toLowerCase();
-  const jqxGetterForThisTag = tagGetterFactory(tag, cando, jqx, webComponentTagName);
-  return webComponentTagName
-    ? { [webComponentTagName]: jqxGetterForThisTag, [toCamelcase(webComponentTagName)]: jqxGetterForThisTag, }
-    : { [tag]: jqxGetterForThisTag, [tag.toUpperCase()]: jqxGetterForThisTag, };
-}
 
 function defaultStaticMethodsFactory(jqx) {
-  const tags = Object.entries(tagLib.tagsRaw).reduce(staticTagsLambda(jqx), {});
-  return combineObjectSources(tags, staticMethodsFactory(jqx));
-}
-
-function staticTagsLambda(jqx) {
-  return function(acc, [tag, cando]) {
-    Object.defineProperties( acc, addGetters(tag, cando, jqx) );
-    return acc;
-  }
+  return staticMethodsFactory(jqx);
 }
 
 function delegateFactory(listen) {
@@ -290,10 +254,7 @@ function staticMethodsFactory(jqx) {
   } = getSelectedStaticMethods(jqx);
   const getNamedListener = getNamedListenerFactory(jqx);
   const staticFN = addCTORMethodOrGetterFactory(jqx);
-  $T.setError = key => {
-    error(`JQx direct element creation error: [${key}] is not a valid tag`);
-    return jqx.br();
-  }
+  
   return {
     log,
     warn,
@@ -305,7 +266,7 @@ function staticMethodsFactory(jqx) {
     escHtml,
     logger: systemLog,
     proxyWrapper,
-    text(str, isComment = false) { return isComment ? jqx.comment(str) : document.createTextNode(str); },
+    text(str, isComment = false) { return isComment ? jqx(`<!--${str}-->`) : document.createTextNode(str); },
     node(selector, root = document) { return root.querySelector(selector, root); },
     nodes(selector, root = document) { return [...root.querySelectorAll(selector, root)]; },
     clearAllTimers,

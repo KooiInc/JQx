@@ -5,8 +5,8 @@ const isDev = location.host.startsWith(`dev`) || location.host.startsWith(`local
 const importLink =  isDev ? `../../index.js` : `../../Bundle/jqx.min.js`;
 const $ = (await import(importLink)).default;
 window.$ = $;
-$.allowTag(`copyright-slotted`);
 $.allowTag(`link`);
+$.allowTag(`copyright-slotted`);
 $.logger.enable;
 const loader = $.div({class: "spin"}, `Loading...`).render;
 const perform = performance.now();

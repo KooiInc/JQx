@@ -84,11 +84,11 @@ function getCaptureValue(eventType, captureValue) {
   return !!(allwaysCaptureEventTypes.find(t => t === eventType)) || !!captureValue;
 }
 
-function checkPropertyOrAttribute(prop) {
-  prop = prop?.toLowerCase() || ``;
-  return prop.startsWith(`data`) ||
-    ATTRS.html[prop.toLowerCase()] === prop ||
-    ATTRS.svg[prop.toLowerCase()] === prop;
+function checkPropertyOrAttribute(propOrAttributeName) {
+  propOrAttributeName = propOrAttributeName?.toLowerCase() || ``;
+  return propOrAttributeName.startsWith(`data`) ||
+    ATTRS.html[propOrAttributeName.toLowerCase()] ||
+    ATTRS.svg[propOrAttributeName.toLowerCase()];
 }
 
 function emptyElement(el) {
