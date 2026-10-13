@@ -232,7 +232,7 @@ if (!debug) {
       const box = me.closest(`[data-id="${boxId}"]`);
       const checked = box.find(`.checkboxBlock input[type="checkbox"]:checked`);
       const all = box.find(`input[type="checkbox"]`);
-      $(`[data-all]`).data.set({all: checked.length === all.length});
+      $(`[data-all]`).data.set({all: checked.length !== all.length});
     }
     
     function handleAllOrNoneBttn({self}) {
