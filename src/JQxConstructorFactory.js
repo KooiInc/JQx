@@ -73,7 +73,8 @@ function JQxMainFactory() {
 
 function createFromTDFactory(key, factory) {
   return function(...args) {
-    systemLog.log(`JQx: created (virtual) instance from static ${key.toLowerCase()} property`);
+    systemLog.log(`JQx: created (virtual) instance (static ${
+      key.toLowerCase()} JQx method)`);
     return factory($T[key](...args), true);
   }
 }
