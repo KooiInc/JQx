@@ -100,7 +100,7 @@ export default function($) {
     let modalWarningBox = popupContent.find$(`.warn`);
     // note: fall through is intentional.
     switch(true) {
-      case modalWarningBox.is.empty: modalWarningBox = $.div({class: `warn`}, warnMessage);
+      case modalWarningBox.is.empty: modalWarningBox = $(`<div class="warn">${warnMessage}</div>`);
       default: popupContent.append(modalWarningBox.addClass(`active`));
         createTimer(() => popupContent.find$(`.warn`).removeClass(`active`), 2);
     }
