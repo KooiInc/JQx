@@ -114,10 +114,16 @@ function allowances(jqx) {
     allow(tagName) {
       const isWebComponent = /-/.test(tagName);
       const webComponentTagName = isWebComponent && tagName;
-      tagName =  isWebComponent ? toCamelcase(tagName) : tagName.toLowerCase();
       tagLib.allowTag(tagName);
-      isWebComponent && $T[webComponentTagName];
-      isWebComponent && tagLib.allowTag(webComponentTagName);
+      if (isWebComponent) {
+        $T[webComponentTagName];
+        tagName =  isWebComponent ? toCamelcase(tagName) : tagName.toLowerCase();
+        tagLib.allowTag(tagName)
+        tagLib.allowTag(webComponentTagName);
+        console.log(tagName, webComponentTagName);
+        
+      }
+      
     },
     prohibit(tagName) {
       tagName = tagName.toLowerCase();

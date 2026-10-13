@@ -3,7 +3,7 @@ import {
   isHtmlString, isArrayOfHtmlStrings, isArrayOfHtmlElements,
   input2Collection, setCollectionFromCssSelector, IS, systemLog,
   insertPositions, inject2DOMTree, createElementFromHtmlString,
-  getNodeContentForLog, tagFNFactory as $T,
+  getNodeContentForLog, tagFNFactory as $T, tagLib
 } from "./JQxUtilities.js";
 
 export default createCTORProxy();
@@ -82,13 +82,13 @@ function createFromTDFactory(key, factory) {
 function createCTORProxy() {
   const factory = JQxMainFactory();
   const getterTrap = { get(target, key) {
-      const isStaticTag = !!$T[key]();
+      const isStaticTag = tagLib.isAllowed(key) && !!$T[key]();
       switch(true) {
         case isStaticTag: return createFromTDFactory(key, factory);
         case Object.hasOwn(target, key): return target[key];
         default:
           systemLog.error(`JQx: "${String(key)}" is not a valid JQx property`);
-          return () => {};
+          return () => factory(`<br>`);
       }
    }
   };
