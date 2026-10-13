@@ -14,10 +14,10 @@ function allowOrProhibit(tag, allow, isWebComponent) {
 export default {
   tagsRaw: allTags,
   allowUnknownHtmlTags,
-  isAllowed(elem) {
+  isAllowed(nameOrElem) {
     if (lenient) { return true; }
-    const WCName = IS(elem, String) ? elem : elem?.nodeName || `none`
-    const nodeName = IS(elem, String) ? elem.toLowerCase() : elem?.nodeName.toLowerCase() || `none`;
+    const WCName = nameOrElem || `none`;
+    const nodeName = IS(nameOrElem, String) ? nameOrElem.toLowerCase() : nameOrElem?.nodeName.toLowerCase() || `none`;
     return nodeName === `#text` || allTags[WCName] || !!allTags[nodeName];
   },
   allowTag: (tag) => {
