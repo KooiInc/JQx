@@ -1,9 +1,7 @@
 import {
-  cleanupHtml,
   clearAllTimers,
   convert2Bool,
   escHtml,
-  getAttributesForLogging,
   HandlerFactory,
   insertPositions,
   IS,
@@ -19,7 +17,6 @@ import {
   tagFNFactory as $T,
   tagLib,
   toCamelcase,
-  toDashedNotation,
 } from "./JQxUtilities.js";
 import allMethodsFactory from "./JQxInstanceMethods.js";
 
