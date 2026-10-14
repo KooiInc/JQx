@@ -3,7 +3,7 @@ import {
   isHtmlString, isArrayOfHtmlStrings, isArrayOfHtmlElements,
   input2Collection, setCollectionFromCssSelector, IS, systemLog,
   insertPositions, inject2DOMTree, createElementFromHtmlString,
-  getNodeContentForLog, tagFNFactory as $T, tagLib
+  getNodeContentForLog, tagFNFactory as $T
 } from "./JQxUtilities.js";
 
 export default createCTORProxy();
@@ -75,14 +75,14 @@ function createFromTDFactory(key, factory) {
   return function(...args) {
     systemLog.log(`JQx: created (virtual) instance (static ${
       key.toLowerCase()} JQx method)`);
-    return factory($T[key](...args), true);
+    return factory($T[key](...args).outerHTML, true);
   }
 }
 
 function createCTORProxy() {
   const factory = JQxMainFactory();
   const getterTrap = { get(target, key) {
-      const isStaticTag = tagLib.isAllowed(key) && !!$T[key]();
+      const isStaticTag = !!$T[key]();
       switch(true) {
         case isStaticTag: return createFromTDFactory(key, factory);
         case Object.hasOwn(target, key): return target[key];

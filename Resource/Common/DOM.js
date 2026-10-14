@@ -1,8 +1,8 @@
-import { cleanupHtml, getRestricted, } from "./DOMCleanup.js";
-import {ATTRS, IS, insertPositions, isNode, truncateHtmlStr} from "./Utilities.js";
+import { cleanupHtml } from "./DOMCleanup.js";
+import { ATTRS, IS, insertPositions, isNode, truncateHtmlStr} from "./Utilities.js";
 
 export {
-  getRestricted, createElementFromHtmlString, element2DOM,
+  createElementFromHtmlString, element2DOM,
   cleanupHtml, inject2DOMTree, ATTRS
 };
 
