@@ -149,6 +149,7 @@ h3[data-for-id], [data-group-id] {
     content: "↺";
     display: inline-block;
     margin-right: 0.3em;
+    font-weight: bold;
   }
 }
 
@@ -336,8 +337,10 @@ a {
 
 a[target]:before {
   color: rgba(0, 0, 238, 0.7);
-  padding-right: 2px;
   vertical-align: baseline;
+  font-weight: bold;
+  display: inline-block;
+  margin-right: 0.2em;
 }
 
 a[target="_top"]:before {

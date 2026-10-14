@@ -31,11 +31,16 @@ function createGroupingChapters() {
     .map(groupTemplate => {
       const groupId = groupTemplate.dataset.id;
       const displayName = createGroupHeaderLabel(groupId);
-      const text = groupTemplate.content.querySelector(`[data-text]`);
+      const textElement = groupTemplate.content.querySelector(`[data-text]`);
+      
+      textElement.querySelectorAll(`[data-example]`).forEach(example => {
+        createCodeElement(example);
+      })
+      
       return $.div(
           { data: {groupcontainer: groupId}, class: "description" },
           $.h3({class: `groupHeader`, data: {groupId: groupId}}, $.span(displayName)))
-        .append(text);
+        .append(textElement);
     });
   $.log(`"About" chapters rendered...`);
   
@@ -240,22 +245,19 @@ function createCodeElement(codeElemPlaceholder, i) {
 }
 
 function createExampleCodeElement(code, i) {
-  const codeId = code.split(/(##)|@/)[4]
+  const codeId = code.split(/(##)|@/)[4];
   const codeBody = allExampleActions[codeId];
-
+  
   if (!codeBody) {
     return getCodeElement(escapeHtmlForcodeblocks(code).trim());
   }
-
+  
   const theCodeElement = getCodeElement(codeBody);
-
   const head = $.div(
     $.h3({class:"example", text: `Example${i && i > 1  ? ` ${i}` : ``}`}),
     $.button({class: "exRunBttn", data: {action: `${codeId}`}}, `Try it`));
 
-  return $.div(
-      {class: "exContainer"}, head)
-    .append(theCodeElement)
+  return $.div( {class: "exContainer"}, head ).append(theCodeElement)
 }
 
 function escapeHtmlForcodeblocks(str) {
@@ -349,7 +351,7 @@ function getVariablesInAllScopes() {
 
 function fetchAllChaptersFromTemplateDocument() {
   $.allowTag(`template`);
-  const templates = $.div(templatesImport).node.querySelectorAll(`template`);
+  const templates = $(`<div>${templatesImport}</div>`).node.querySelectorAll(`template`);
   const templatesElementsSortedById = [...templates].sort((el1, el2) => el1.dataset.id.localeCompare(el2.dataset.id));
   $.log(`Fetched documenter templates...`);
   return {templates: templatesElementsSortedById};

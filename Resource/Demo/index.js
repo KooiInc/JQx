@@ -402,12 +402,9 @@ if (!debug) {
     .prependTo(JQxRoot);
 
   // comment insertion test (note: this works with before-/afterMe/andThen too now)
-  $( COMMENT(`Comment @ #JQxRoot beforebegin (verify it in DOM tree)`),
-    JQxRoot, $.at.BeforeBegin);
-  $( COMMENT(`Comment @ #JQxRoot beforebegin (verify it in DOM tree)`),
-      JQxRoot, $.at.BeforeBegin)
-
-  $(`<!--Comment @ #bttnblock afterend (verify it in DOM tree) -->`,
+  $($.comment(`Comment @ #JQxRoot beforebegin (verify it in DOM tree)`), JQxRoot, $.at.BeforeBegin);
+  
+  $(`<!--Comment @ #bttnblock afterend (verify it in DOM tree)-->`,
     $(`#bttnblock`), $.at.AfterEnd);
 
   $(`<!--Comment @ #bttnblock afterbegin (so, prepend) verify it in DOM tree) -->`,
@@ -431,7 +428,6 @@ if (!debug) {
   $.Popup.show({content: perfMessage, closeAfter: 5});
   
   // this invalid tag will result in an error message in the console.
-  $.allowTag(`div123`);
   $.div123(`Will NOT work`);
 }
 /* DEBUG EXIT POINT */
@@ -592,12 +588,14 @@ function injectFavIconAndCounterImage() {
     local: { href: "../Common/Sites/devIco.png" },
   };
   const currentLink = $(`head link[rel="icon"]`);
+  $.allowTag(`link`);
   const link = $.link({rel: "icon"});
   const isCodeberg = /codeberg/i.test(location.href);
   const isLocal = /local/i.test(location.href);
   const counterSrc = `https://sdn.nicon.nl/px0_${isCodeberg ? `CB` : `GH`}-JQxDemo.png`;
   // create counter image (if not in local debug window)
   !isLocal && $.img({src: counterSrc});
+  $.prohibitTag(`link`);
   
   switch(true) {
     case isLocal: return currentLink.replaceWith(link.attr(icons.local));
