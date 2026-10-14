@@ -135,15 +135,21 @@ h3[data-for-id], [data-group-id] {
   display: inline-block;
   cursor: pointer;
 
-  code.inline {
-    color: blue;
+  code {
+    color: blue !important;
     cursor: pointer;
     display: inline-block;
     margin: 1px 0;
   }
 
-  &:hover, .inline:hover {
+  &:hover, code:hover {
     text-decoration: underline;
+  }
+
+  &:before {
+    content: "↺";
+    display: inline-block;
+    margin-right: 0.3em;
   }
 }
 
@@ -323,7 +329,7 @@ code:not([class*='language-']) {
 
 a {
   text-decoration: none;
-  font-weight: bold;
+
   &:hover {
     text-decoration: underline;
   }
