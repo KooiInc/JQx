@@ -8,9 +8,13 @@ const allowUnknownHtmlTags = {
   off: () => lenient = false,
 };
 
-function allowOrProhibit(tag, allow, isWebComponent) {
+function allowOrProhibit(tag, allow) {
   allTags[tag] = allow;
-  sanitizerConfig.addTag(tag);
+  if (allow) {
+    return sanitizerConfig.addTag(tag);
+  }
+  
+  return sanitizerConfig.removeTag(tag);
 }
 
 export default {

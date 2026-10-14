@@ -8,6 +8,8 @@ function sanitizerConfigFactory() {
     USE_PROFILES: { html: true, svg: true },
     IN_PLACE: true,
     KEEP_CONTENT: true,
+    ADD_TAGS: [],
+    FORBID_TAGS: [],
     ADD_ATTR: [`_target`, `target`],
     FORCE_BODY: true,
   };
@@ -15,17 +17,23 @@ function sanitizerConfigFactory() {
   return {
     get current() { return baseConfig; },
     addTag(tagName) {
-      baseConfig.ADD_TAGS = baseConfig.ADD_TAGS || []
       baseConfig.ADD_TAGS.push(tagName);
+      baseConfig.ADD_TAGS = [...new Set(baseConfig.ADD_TAGS)];
+      
+      baseConfig.FORBID_TAGS.includes(tagName) &&
+         baseConfig.FORBID_TAGS.splice( baseConfig.FORBID_TAGS.findIndex(t => t === tagName), 1);
+    },
+    removeTag(tagName) {
+      baseConfig.FORBID_TAGS.push(tagName);
+      baseConfig.FORBID_TAGS = [...new Set(baseConfig.FORBID_TAGS)];
+      
+      baseConfig.ADD_TAGS.includes(tagName) &&
+        baseConfig.ADD_TAGS.splice(baseConfig.ADD_TAGS.findIndex(t => t === tagName), 1);
     },
     addAttribute(attributeName) {
       baseConfig.ADD_ATTRIBUTE = baseConfig.ADD_ATTRIBUTE || []
       baseConfig.ADD_ATTRIBUTE.push(tagName);
     },
-    
-    set current( entries2Add ) {
-      baseConfig = {...baseConfig, ...entries2Add };
-    }
   }
 }
 

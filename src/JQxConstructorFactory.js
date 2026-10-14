@@ -13,7 +13,6 @@ function JQxMainFactory() {
   
   const ctor = addJQxStaticMethods(
     function(input, root, position = insertPositions.BeforeEnd) {
-      if (input?.isJQx) { return input; }
       const isVirtual = IS(root, HTMLBRElement) || root === true;
       root = (!isVirtual && root && root.isJQx ? root[0] : root) || document.body;
       position = position && Object.values(insertPositions).find(pos => position === pos) ? position : undefined;
@@ -75,7 +74,7 @@ function createFromTDFactory(key, factory) {
   return function(...args) {
     systemLog.log(`JQx: created (virtual) instance (static ${
       key.toLowerCase()} JQx method)`);
-    return key === `comment`
+    return /^comment$/i.test(String(key))
       ? factory($T[key](...args), true)
       : factory($T[key](...args)?.outerHTML, true);
   }
