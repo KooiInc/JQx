@@ -39,7 +39,7 @@ export {
   isArrayOfHtmlStrings, isComment, isCommentOrTextNode, isHtmlString, isModal, isNode, isNonEmptyString, isText,
   isVisible, isWritable, logTime, maybe, pad0,PopupFactory, proxyWrapper, randomNr, randomString,
   resolveEventTypeParameter, setData, styleFactory, systemLog, tagFNFactory, tagLib, toCamelcase, toDashedNotation,
-  truncate, truncate2SingleStr, truncateHtmlStr, ucFirst,
+  truncate, truncateHtmlStr, ucFirst,
 };
 
 function clearAllTimers() {

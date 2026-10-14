@@ -62,11 +62,8 @@ function factoryExtensionsFactory(jqx) {
     HTML(instance) {
       return {
         get(outer, escaped) {
-          if (instance.is.empty) {
-            return `NO ELEMENTS IN COLLECTION`;
-          }
           const html = outer ? instance.outerHtml : instance.html();
-          return escaped ? escHtml(html) : html;
+          return escaped ? escHtml(html ?? ``) : html;
         },
         set(content, append = false, escape = false) {
           content = content.isJQx ? content.HTML.get(1) : content;

@@ -72,13 +72,12 @@ function JQxMainFactory() {
 
 function createFromTDFactory(key, factory) {
   return function(...args) {
-    
     const instance = /^comment$/i.test(String(key))
       ? factory($T[key](...args), true)
       : factory(cleanupHtml($T.div($T[key](...args)).firstChild), true);
-    const html = instance.HTML.get(1);
-    html && systemLog.log(`JQx: created instance from ${
-      truncate(html.replace(/\n/g, ``), {at: 45})}`);
+    const instanceHtml = instance.outerHtml;
+    instanceHtml && systemLog.log(`JQx: created instance from ${
+      truncate(instanceHtml.replace(/\n/g, ``), {at: 45})}`);
     return instance;
   }
 }
