@@ -3,7 +3,7 @@ import {
   isHtmlString, isArrayOfHtmlStrings, isArrayOfHtmlElements,
   input2Collection, setCollectionFromCssSelector, IS, systemLog,
   insertPositions, inject2DOMTree, createElementFromHtmlString,
-  getNodeContentForLog, tagFNFactory as $T
+  getNodeContentForLog, tagFNFactory as $T, cleanupHtml,
 } from "./JQxUtilities.js";
 
 export default createCTORProxy();
@@ -73,7 +73,7 @@ function createFromTDFactory(key, factory) {
   return function(...args) {
     return /^comment$/i.test(String(key))
       ? factory($T[key](...args), true)
-      : factory($T[key](...args)?.outerHTML, true);
+      : factory(cleanupHtml($T.div($T[key](...args)).firstChild), true);
   }
 }
 

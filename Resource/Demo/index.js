@@ -61,7 +61,7 @@ if (!debug) {
   // The JQx constructor ($) is a proxy, so static element
   // creation will result in an error log message (see log)
   $.nocando(`I will NOT render!`);
-  $.script()?.render;
+  $.script.render;
   // ^ returns undefined. But there is a log entry (error)
 
   
