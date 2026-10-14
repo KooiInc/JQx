@@ -1205,8 +1205,9 @@ function clickActionsFactory($) {
         const hello = $.h2({class: "helloAtEx"}, "world").prepend($.span({class: "helloAtEx"}, "Hello"));
         hello.toDOM(evt.target.parentNode, $.at.before);
         // first                           ^ render [hello] before the button
-        // next, move [hello] to example node after 2 seconds
         setTimeout(() => hello.showInExample(evt).removeAfter(5), 2000);
+        // next          ^ move [hello] into example node after   ^ 2 seconds
+        
       }
     },
     staticHandleEx: evt => {
