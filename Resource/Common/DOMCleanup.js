@@ -55,7 +55,7 @@ function getHtmlOrNodeNameString(value) {
   
   if (value.outerHTML) {
     const html = value.outerHTML;
-    return value.outerHTML.slice(0, 60) + (html.length > 60 ? `...` : ``);
+    return value.outerHTML.slice(0, 45) + (html.length > 45 ? `...` : ``);
   }
   
   return value.nodeName;
@@ -70,9 +70,8 @@ function logSanitation(removed, initial) {
       Object.entries(record).reduce((acc, [key, value]) => {
           isComment = isComment || value.nodeName === `#comment`;
           
-          return value.nodeName === `#comment`
-            ? acc + initial : acc + `, ${key}: ${value.nodeName} ${/from/i.test(key) ? `(${initial})` : ``}`;
-        }, ``).slice(2);
+          return acc + `, ${key} ${value.nodeName} ${/from/i.test(key) ? `(${initial.trim()})` : ``}`;
+        }, ``).slice(2).replace(/ , /g, `, `);
     !isComment && systemLog.error(warnString);
   }
 }
