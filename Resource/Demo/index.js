@@ -585,7 +585,7 @@ function getBacklinks() {
 // :void. location dependent favicon & counter image
 function injectFavIconAndCounterImage() {
   const icons = {
-    github: { href: "https://github.githubassets.com/favicons/favicon.png" },
+    github: { href: "../Common/Sites/GHfavicon.png"  },
     codeberg: { href: "../Common/Sites/codebergicon.ico" },
     local: { href: "../Common/Sites/devIco.png" },
   };
