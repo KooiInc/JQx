@@ -324,11 +324,13 @@ code:not([class*='language-']) {
 a {
   text-decoration: none;
   font-weight: bold;
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 a[target]:before {
   color: rgba(0, 0, 238, 0.7);
-  font-size: 1.1rem;
   padding-right: 2px;
   vertical-align: baseline;
 }
