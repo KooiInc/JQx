@@ -94,10 +94,18 @@ export default function($) {
       timers.push(setTimeout(callback, seconds * 1000));
     }
   }
+  
+  function getWarnMessageHTML(warnMessage) {
+    return (warnMessage.node ?? warnMessage).outerHTML ?? warnMessage;
+  }
+  
 
   function failModalClose(warnMessage) {
     if (!$.IS(warnMessage, String, HTMLElement) && !warnMessage.isJQx) { return; }
+    
+    warnMessage = getWarnMessageHTML(warnMessage);
     let modalWarningBox = popupContent.find$(`.warn`);
+    
     // note: fall through is intentional.
     switch(true) {
       case modalWarningBox.is.empty: modalWarningBox = $(`<div class="warn">${warnMessage}</div>`);
