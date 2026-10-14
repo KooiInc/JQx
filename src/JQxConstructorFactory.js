@@ -75,7 +75,9 @@ function createFromTDFactory(key, factory) {
   return function(...args) {
     systemLog.log(`JQx: created (virtual) instance (static ${
       key.toLowerCase()} JQx method)`);
-    return factory($T[key](...args).outerHTML, true);
+    return key === `comment`
+      ? factory($T[key](...args), true)
+      : factory($T[key](...args)?.outerHTML, true);
   }
 }
 
@@ -88,7 +90,7 @@ function createCTORProxy() {
         case Object.hasOwn(target, key): return target[key];
         default:
           systemLog.error(`JQx: "${String(key)}" is not a valid JQx property`);
-          return () => factory(`<br>`);
+          return () => factory(``);
       }
    }
   };

@@ -117,8 +117,6 @@ function allowances(jqx) {
         tagName =  isWebComponent ? toCamelcase(tagName) : tagName.toLowerCase();
         tagLib.allowTag(tagName)
         tagLib.allowTag(webComponentTagName);
-        console.log(tagName, webComponentTagName);
-        
       }
       
     },

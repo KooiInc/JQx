@@ -101,7 +101,7 @@ function factoryExtensionsFactory(jqx) {
       switch(true) {
         case !instance.is.empty: return instance.toDOM();
         default:
-          jqx.logger.warn(`[JQx.render]: empty collection`);
+          jqx.logger.warn(`[JQx.render]: empty collection, nothing to render`);
           return instance;
       }
     },

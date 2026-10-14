@@ -1,5 +1,6 @@
 import { allTags, } from "./EmbedResources.js";
 import { IS } from "./Utilities.js";
+import { sanitizerConfig } from "./DOMCleanup.js";
 
 let lenient = false;
 const allowUnknownHtmlTags = {
@@ -9,6 +10,7 @@ const allowUnknownHtmlTags = {
 
 function allowOrProhibit(tag, allow, isWebComponent) {
   allTags[tag] = allow;
+  sanitizerConfig.addTag(tag);
 }
 
 export default {
