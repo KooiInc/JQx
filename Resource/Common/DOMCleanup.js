@@ -10,6 +10,7 @@ function sanitizerConfigFactory() {
     KEEP_CONTENT: true,
     ADD_TAGS: [],
     FORBID_TAGS: [],
+    FORBID_ATTR: [],
     ADD_ATTR: [`_target`, `target`],
     FORCE_BODY: true,
   };

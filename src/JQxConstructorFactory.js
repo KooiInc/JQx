@@ -51,8 +51,7 @@ function JQxMainFactory() {
               ? getNodeContentForLog(instance)
               : "sanitized: no elements remaining";
             
-            systemLog.log(`JQx: created ${instance.isVirtual ? `(virtual)` : ``} instance from ` +
-              `${multiple ? `array of ` : ``}HTML string${multiple ? `s` : ``} ${collectionLog}`);
+            systemLog.log(`JQx: created ${instance.isVirtual ? `(virtual)` : ``} instance from ${collectionLog}`);
             
             if (!instance.isVirtual) {
               inject2DOMTree(instance.collection, root, position);
@@ -72,8 +71,6 @@ function JQxMainFactory() {
 
 function createFromTDFactory(key, factory) {
   return function(...args) {
-    systemLog.log(`JQx: created (virtual) instance (static ${
-      key.toLowerCase()} JQx method)`);
     return /^comment$/i.test(String(key))
       ? factory($T[key](...args), true)
       : factory($T[key](...args)?.outerHTML, true);

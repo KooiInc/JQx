@@ -10,11 +10,7 @@ const allowUnknownHtmlTags = {
 
 function allowOrProhibit(tag, allow) {
   allTags[tag] = allow;
-  if (allow) {
-    return sanitizerConfig.addTag(tag);
-  }
-  
-  return sanitizerConfig.removeTag(tag);
+  return allow ? sanitizerConfig.addTag(tag) : sanitizerConfig.removeTag(tag);
 }
 
 export default {

@@ -429,6 +429,8 @@ if (!debug) {
   
   // this invalid tag will result in an error message in the console.
   $.div123(`Will NOT work`);
+  
+  $.prohibitTag(`link`);
 }
 /* DEBUG EXIT POINT */
 
@@ -595,7 +597,6 @@ function injectFavIconAndCounterImage() {
   const counterSrc = `https://sdn.nicon.nl/px0_${isCodeberg ? `CB` : `GH`}-JQxDemo.png`;
   // create counter image (if not in local debug window)
   !isLocal && $.img({src: counterSrc});
-  $.prohibitTag(`link`);
   
   switch(true) {
     case isLocal: return currentLink.replaceWith(link.attr(icons.local));

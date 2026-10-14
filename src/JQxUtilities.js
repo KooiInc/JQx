@@ -29,9 +29,10 @@ function loop(instance, callback) {
 
 function getNodeContentForLog(instance) {
   if (instance.node) {
-    return IS(instance.node, Comment)
+    const txt = IS(instance.node, Comment)
       ? `<!--${instance.node.textContent}-->`
-      :  instance.HTML.get(1).split(`>`)[0] + `>...`
+      :  instance.HTML.get(1).split(`>`)[0];
+    return txt.length > 45 ? `${txt.slice(0, 35)} ...` : `${txt}>`
   }
   return ``;
 }
