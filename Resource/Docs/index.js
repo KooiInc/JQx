@@ -112,7 +112,7 @@ function getNavigationElementProps(chapters) {
 
 function injectFavIcon() {
   const icons = {
-    github: {href: "https://github.githubassets.com/favicons/favicon.png"},
+    github: { href: "../Common/Sites/GHfavicon.png"  },
     codeberg: {href: "../Common/Sites/codebergicon.ico"},
     local: {href: "../Common/Sites/devico.png"},
   };
