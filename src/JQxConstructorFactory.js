@@ -3,7 +3,7 @@ import {
   isHtmlString, isArrayOfHtmlStrings, isArrayOfHtmlElements,
   input2Collection, setCollectionFromCssSelector, IS, systemLog,
   insertPositions, inject2DOMTree, createElementFromHtmlString,
-  getNodeContentForLog, tagFNFactory as $T, cleanupHtml,
+  getNodeContentForLog, tagFNFactory as $T, truncate, cleanupHtml,
 } from "./JQxUtilities.js";
 
 export default createCTORProxy();
@@ -51,7 +51,8 @@ function JQxMainFactory() {
               ? getNodeContentForLog(instance)
               : "sanitized: no elements remaining";
             
-            systemLog.log(`JQx: created ${instance.isVirtual ? `(virtual)` : ``} instance from ${collectionLog}`);
+            systemLog.log(`JQx: created ${instance.isVirtual ? `(virtual)` : ``} instance from ${
+              collectionLog}`);
             
             if (!instance.isVirtual) {
               inject2DOMTree(instance.collection, root, position);
@@ -71,9 +72,14 @@ function JQxMainFactory() {
 
 function createFromTDFactory(key, factory) {
   return function(...args) {
-    return /^comment$/i.test(String(key))
+    
+    const instance = /^comment$/i.test(String(key))
       ? factory($T[key](...args), true)
       : factory(cleanupHtml($T.div($T[key](...args)).firstChild), true);
+    const html = instance.HTML.get(1);
+    html && systemLog.log(`JQx: created instance from ${
+      truncate(html.replace(/\n/g, ``), {at: 45})}`);
+    return instance;
   }
 }
 

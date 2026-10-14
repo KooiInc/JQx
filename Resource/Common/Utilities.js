@@ -39,7 +39,7 @@ export {
   isArrayOfHtmlStrings, isComment, isCommentOrTextNode, isHtmlString, isModal, isNode, isNonEmptyString, isText,
   isVisible, isWritable, logTime, maybe, pad0,PopupFactory, proxyWrapper, randomNr, randomString,
   resolveEventTypeParameter, setData, styleFactory, systemLog, tagFNFactory, tagLib, toCamelcase, toDashedNotation,
-  truncate2SingleStr, truncateHtmlStr, ucFirst,
+  truncate, truncate2SingleStr, truncateHtmlStr, ucFirst,
 };
 
 function clearAllTimers() {
@@ -227,7 +227,23 @@ function input2Collection(input) {
             : input.isJQx ? input.collection : undefined;
 }
 
-
+function truncate(string, {at, html = false, wordBoundary = false} = {} ) {
+  html = html?.constructor === Boolean && html || false;
+  wordBoundary = wordBoundary?.constructor === Boolean && wordBoundary || false;
+  
+  if (string.length <= at) { return string; }
+  
+  const subString = string.slice(0, at - 1);
+  const endwith = html ? "&hellip;" : `...`;
+  const boundary = wordBoundary
+    ? getWordBoundary(subString)
+    : subString.length;
+  
+  return (wordBoundary
+    ? subString.slice(0, boundary+1).trim()
+    : subString) + endwith;
+  
+}
 
 function after(instance, elem2AddAfter) {
   return instance.andThen(elem2AddAfter);
