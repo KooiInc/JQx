@@ -11,7 +11,7 @@ function allowOrProhibitTag(tag, allow) {
 }
 
 function allowOrProhibitAttribute(attribute, allow) {
-  return allow ? sanitizerConfig.addAttribute(tag) : sanitizerConfig.removeAttribute(tag);
+  return allow ? sanitizerConfig.addAttribute(attribute) : sanitizerConfig.removeAttribute(attribute);
 }
 
 export default {

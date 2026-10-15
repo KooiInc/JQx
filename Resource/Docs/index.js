@@ -4,7 +4,7 @@ import handlerFactory  from "./DocumentationHandlingFactory.js";
 const isDev = location.host.startsWith(`dev`) || location.host.startsWith(`localhost`);
 const importLink =  isDev ? `../../index.js` : `../../Bundle/jqx.min.js`;
 const $ = (await import(importLink)).default;
-setAllowedTags($);
+setAllowedTagsAndAttributes($);
 window.$ = $;
 $.logger.enable;
 const loader = $.div({class: "spin"}, `Loading...`).render;
@@ -355,13 +355,15 @@ function fetchAllChaptersFromTemplateDocument() {
   return {templates: templatesElementsSortedById};
 }
 
-function setAllowedTags($) {
+function setAllowedTagsAndAttributes($) {
   $.allowTag(`link`, `copyright-slotted`, `template`, `#comment`);
-  $.log(`Allowed additional tags: link, copyright-slotted, template`);
+  $.allowAttributes(`target`);
+  $.log(`Allowed additional tags/attributes: link, copyright-slotted, template, target`);
   
   setTimeout(() => {
       $.prohibitTag(`link`, `copyright-slotted`, `template`, `#comment`);
-      $.log(`Prohibited now obsolete tags: link, copyright-slotted, template, #comment`);
+      $.prohibitAttributes(`target`);
+      $.log(`Prohibited now obsolete tags/attributes: link, copyright-slotted, template, #comment, target`);
     }, 2000);
 }
 

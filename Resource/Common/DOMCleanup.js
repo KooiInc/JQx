@@ -11,16 +11,15 @@ function sanitizerConfigFactory() {
     ADD_TAGS: [],
     FORBID_TAGS: [],
     FORBID_ATTR: [],
-    ADD_ATTR: [`_target`, `target`, `data-is-deprecated`],
-    FORCE_BODY: true,
+    ADD_ATTR: [],
+    FORCE_BODY: false,
   };
   let forDebug = false;
   
   return {
     get current() { return baseConfig; },
     get notInPlaceConfig() {
-      const configClean = {...baseConfig};
-      configClean.IN_PLACE = false;
+      const configClean = {...baseConfig, IN_PLACE: false};
       return configClean;
     },
     get forDebug() { return forDebug; },
@@ -40,16 +39,16 @@ function sanitizerConfigFactory() {
     },
   }
   
-  function addRemoveHelper(tagName, pushTo, removeFrom) {
-    baseConfig[pushTo].push(tagName);
+  function addRemoveHelper(namely, pushTo, removeFrom) {
+    baseConfig[pushTo].push(namely);
     baseConfig[pushTo] = [...new Set(baseConfig[pushTo])];
-    baseConfig[removeFrom].includes(tagName) &&
-    baseConfig[removeFrom].splice( baseConfig[removeFrom].findIndex(t => t === tagName), 1);
+    baseConfig[removeFrom].includes(namely) &&
+    baseConfig[removeFrom].splice( baseConfig[removeFrom].findIndex(t => t === namely), 1);
   }
 }
 
 function sanitizeNow(HTMLStringOrElement, notInPlace) {
-  let configClean = notInPlace ? config.notInPlaceConfig : config.current;
+  const configClean = notInPlace || typeof HTMLStringOrElement === `string` ? config.notInPlaceConfig : config.current;
   const sane = DOMPurify.sanitize(HTMLStringOrElement, configClean);
   
   if (DOMPurify.removed.length > 0) {
