@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2026-10-15 08:10:40 UTC-->
+<!-- Generated file, last update 2026-10-15 08:45:32 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -573,7 +573,7 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
 <div class="note"><b>Notes</b>:</div>
 
 <ul>
-  <li>Properties are validated (so, e.g. no <code>onclick</code> etc. - see example).</li>
+  <li>After setting properties the element(s) under consideration are sanitized again. See example.</li>
   <li>When the property is <code>id</code>, the id for the first element of the JQx instance collection will be set (duplicate id's are not allowed in html).</li>
   <li>See all information on properties and attributes @<a target="_blank" href="https://javascript.info/dom-attributes-and-properties">javascript.info</a></li>
 </ul>
@@ -619,6 +619,10 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
    </li>
    <li>
       Setting an attribute value ([keyOrObj] returns the JQx instance.
+    </li>
+    <li>
+      After setting attribute values the element(s) under consideration
+      are <i>sanitized</i> again.
     </li>
    <li>
      See all information on attributes and properties @<a target="_blank" 

@@ -1379,7 +1379,7 @@ function clickActionsFactory($) {
         class: "volatile, red",
         fantastic: "true",
         data: {myTitle: "title as data", meaningOfLife: 42, "make-it-so": "engage!"},
-        onclick: _ => alert("O NO!"), // <= not allowed
+        onclick: () => alert("O NO!"), // <= not allowed
       })
 
       function attrField(attr, str) {

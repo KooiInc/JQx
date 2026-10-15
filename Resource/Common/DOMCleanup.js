@@ -1,5 +1,5 @@
 import DOMPurify from "./DOMPurify.js";
-import {systemLog} from "./Utilities.js";
+import {systemLog, truncate} from "./Utilities.js";
 const config = sanitizerConfigFactory();
 export { sanitizeStringOrElement as cleanupHtml, config as sanitizerConfig};
 
@@ -74,8 +74,7 @@ function getHtmlOrNodeNameString(value) {
   if (value.outerHTML) {
     const html = value.outerHTML;
     return config.forDebug
-      ? value.outerHTML : value.outerHTML.slice(0, 45) +
-        (html.length > 45 ? `...` : ``);
+      ? value.outerHTML : truncate(value.outerHTML, {at: 45, wordBoundary: true});
   }
   
   return value.nodeName;

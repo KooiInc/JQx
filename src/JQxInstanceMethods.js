@@ -4,6 +4,7 @@ import {
   datasetKeyProxy, loop, cloneAndDestroy, setData,
   findParentScrollDistance, emptyElement, css, assignAttrValues,
   applyStyle, createElementFromHtmlString, inject2DOMTree,
+  cleanupHtml
 } from "./JQxUtilities.js";
 
 const instanceIs = ExamineElementFeatureFactory();
@@ -377,7 +378,7 @@ function instanceExtensionsFactory(jqx) {
           }
 
           el[propName] = propValue;
-          el = cleanupHtml(el);
+          cleanupHtml(el);
         });
       }
 

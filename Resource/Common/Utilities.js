@@ -197,7 +197,7 @@ function assignAttrValues(el, keyValuePairs) {
       
       if (IS(value, String)) {
         el.setAttribute(key, value.split(/[, ]/)?.join(` `));
-        el = cleanupHtml(el);
+        cleanupHtml(el);
       }
     }
   }
@@ -208,6 +208,7 @@ function setData(el, keyValuePairs) {
     for (const [key, value] of Object.entries(keyValuePairs)) {
       el.setAttribute(`data-${toDashedNotation(key)}`, value);
     }
+    cleanupHtml(el);
   }
 }
 
