@@ -19,6 +19,5 @@
   "bugs": {
     "url": "https://codeberg.org/KooiInc/JQx/issues"
   },
-  "sideEffects": false,
   "main": "./Bundle/jqx.min.js"
 }

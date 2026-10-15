@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2026-10-15 10:55:07 UTC-->
+<!-- Generated file, last update 2026-10-15 11:58:47 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -2230,4 +2230,15 @@ $.div({winners: "0", "custom-color": "marine", lost: "none"});
    e.g. <code>$.prohibitAttributes(`my-beautiful-attribute`, `somethingElse`)</code>.</div>
 </div>
 </div>
+</template>
+
+<template data-id="static_HTMLSanitizer" class="static_HTMLSanitizer" data-is-deprecated="false">
+<div data-params='[{"HTMLStringOrElement":"string | Element"}]'></div>
+<div data-return-value='string | Element'></div>
+<div data-text='1'><div>
+  Uses <a target="_blank" href="https://github.com/cure53/DOMPurify">DOMPurify</a> with the internal 
+  JQx configuration to sanitize the given string or (HTML/SVG)Element. If you used 
+  <code>allowTag/allowAttributes</code> in your code before invoking, that will be 
+  honored as per the JQx configuration.
+</div></div>
 </template>
