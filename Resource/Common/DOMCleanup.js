@@ -21,23 +21,24 @@ function sanitizerConfigFactory() {
     get forDebug() { return forDebug; },
     set forDebug(value) { forDebug = value; },
     addTag(tagName) {
-      baseConfig.ADD_TAGS.push(tagName);
-      baseConfig.ADD_TAGS = [...new Set(baseConfig.ADD_TAGS)];
-      
-      baseConfig.FORBID_TAGS.includes(tagName) &&
-         baseConfig.FORBID_TAGS.splice( baseConfig.FORBID_TAGS.findIndex(t => t === tagName), 1);
+      addRemoveHelper(tagName, `ADD_TAGS`, `FORBID_TAGS`);
     },
     removeTag(tagName) {
-      baseConfig.FORBID_TAGS.push(tagName);
-      baseConfig.FORBID_TAGS = [...new Set(baseConfig.FORBID_TAGS)];
-      
-      baseConfig.ADD_TAGS.includes(tagName) &&
-        baseConfig.ADD_TAGS.splice(baseConfig.ADD_TAGS.findIndex(t => t === tagName), 1);
+      addRemoveHelper(tagName, `FORBID_TAGS`, `ADD_TAGS`);
     },
     addAttribute(attributeName) {
-      baseConfig.ADD_ATTRIBUTE = baseConfig.ADD_ATTRIBUTE || []
-      baseConfig.ADD_ATTRIBUTE.push(tagName);
+      addRemoveHelper(attributeName, `ADD_ATTR`, `FORBID_ATTR`);
     },
+    removeAttribute(attributeName) {
+      addRemoveHelper(attributeName, `FORBID_ATTR`, `ADD_ATTR`);
+    },
+  }
+  
+  function addRemoveHelper(tagName, pushTo, removeFrom) {
+    baseConfig[pushTo].push(tagName);
+    baseConfig[pushTo] = [...new Set(baseConfig[pushTo])];
+    baseConfig[removeFrom].includes(tagName) &&
+    baseConfig[removeFrom].splice( baseConfig[removeFrom].findIndex(t => t === tagName), 1);
   }
 }
 
@@ -62,6 +63,7 @@ function sanitizeStringOrElement(HTMLStringOrElement) {
   try {
     return sanitizeNow(HTMLStringOrElement);
   } catch(err) {
+    systemLog.log(`JQX: sanitition NOT in place`);
     return sanitizeNow(HTMLStringOrElement, true);
   }
 }
@@ -74,7 +76,8 @@ function getHtmlOrNodeNameString(value) {
   if (value.outerHTML) {
     const html = value.outerHTML;
     return config.forDebug
-      ? value.outerHTML : truncate(value.outerHTML, {at: 45, wordBoundary: true});
+      ? value.outerHTML
+      : truncate(value.outerHTML.replace(/\n/g, ``).replace(/ {2,}/g, ` `), {at: 45, wordBoundary: true});
   }
   
   return value.nodeName;
@@ -87,7 +90,7 @@ function logSanitation(removed, initial) {
     let isComment;
     const warnString = `JQx: sanitized input => ` +
       Object.entries(record).reduce((acc, [key, value]) => {
-          return acc + `, ${key} ${value.nodeName} ${/from/i.test(key) ? `(${initial.trim()})` : `no value`}`;
+          return acc + `, ${key} ${value.nodeName} ${/from/i.test(key) ? `(${initial.trim()})` : `no origin`}`;
         }, ``).slice(2).replace(/ , /g, `, `);
      systemLog.error(warnString);
   }

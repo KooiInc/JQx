@@ -106,37 +106,48 @@ function addJQxStaticMethods(jqx) {
   return jqx;
 }
 
-function allowances(jqx) {
+function tagAndAttributeAllowances(jqx) {
   return {
-    allow(tagName) {
+    allowTags(tagName) {
       const isWebComponent = /-/.test(tagName);
-      const webComponentTagName = isWebComponent && tagName;
       tagLib.allowTag(tagName);
+      
       if (isWebComponent) {
-        $T[webComponentTagName];
-        tagName =  isWebComponent ? toCamelcase(tagName) : tagName.toLowerCase();
+        const kebabCasedTagName = tagName;
+        $T[kebabCasedTagName];
+        tagName =  isWebComponent
+          ? toCamelcase(tagName) : tagName.toLowerCase();
         tagLib.allowTag(tagName)
-        tagLib.allowTag(webComponentTagName);
+        tagLib.allowTag(kebabCasedTagName);
       }
       
     },
-    prohibit(tagName) {
-      tagName = tagName.toLowerCase();
+    prohibitTags(tagName) {
+      const isWebComponent = /-/.test(tagName);
       tagLib.prohibitTag(tagName);
+      if (isWebComponent) { tagLib.prohibitTag(toCamelcase(tagName)); }
     }
   }
 }
 
 function allowOrProhibitFactory(jqx) {
-  const allowOrProhibit = allowances(jqx);
+  const allowOrProhibit = tagAndAttributeAllowances(jqx);
   return {
-    allow: function(...tags) {
-      for (const tag of tags) { allowOrProhibit.allow(tag); }
+    allowTags: function(...tags) {
+      for (const tag of tags) { allowOrProhibit.allowTags(tag); }
       setTimeout(_ => systemLog.log(`JQx: tags allowed => ${tags.join(`, `)}`));
     },
-    prohibit: function(...tags) {
-      for (const tag of tags) { allowOrProhibit.prohibit(tag); }
+    prohibitTags: function(...tags) {
+      for (const tag of tags) { allowOrProhibit.prohibitTags(tag); }
       setTimeout(_ => systemLog.log(`JQx: tags prohibited => ${tags.join(`, `)}`));
+    },
+    allowAttributes(...attributes) {
+      for (const attribute of attributes) { tagLib.allowAttributes(attribute); }
+      setTimeout(_ => systemLog.log(`JQx: attributes allowed => ${attributes.join(`, `)}`));
+    },
+    prohibitAttributes(...attributes) {
+      for (const attribute of attributes) { tagLib.prohibitAttributes(attribute); }
+      setTimeout(_ => systemLog.log(`JQx: attributes prohibited => ${attributes.join(`, `)}`));
     }
   }
 }
@@ -289,8 +300,10 @@ function staticMethodsFactory(jqx) {
     get toBool() { return convert2Bool; },
     get getNamedListener() { return getNamedListener; },
     get virtual() { return virtualFactory(jqx); },
-    get allowTag() { return allowProhibit.allow; },
-    get prohibitTag() { return allowProhibit.prohibit; },
+    get allowTag() { return allowProhibit.allowTags; },
+    get prohibitTag() { return allowProhibit.prohibitTags; },
+    get allowAttributes() { return allowProhibit.allowAttributes; },
+    get prohibitAttributes() { return allowProhibit.prohibitAttributes; },
     get removeCssRule() { return cssRemove; },
     get removeCssRules() { return cssRemove; },
     get delegate()  { return delegateFactory(capturedHandling); },
