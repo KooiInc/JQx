@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2026-10-15 08:45:32 UTC-->
+<!-- Generated file, last update 2026-10-15 10:55:07 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -1218,7 +1218,7 @@ $.TEMPLATE({id: "myTemplate", innerHTML: "..."}).render;</div>
 <template data-id="static_prohibitTag" class="static_prohibitTag" data-is-deprecated="false">
 <div data-params='[{"...tags":"string[] tag names to prohibit"}]'></div>
 <div data-return-value='Nothing'></div>
-<div data-text='1'><div>The creation of most html-tags is allowed by default. You can prohibit the creation of on or more tags using this the <code>prohibitTag</code> method, e.g. <code>$.prohibitTag(`dialog`)</code>.</div>
+<div data-text='1'><div>The creation of most html-tags is allowed by default. You can prohibit the creation of one or more tags using this the <code>prohibitTag</code> method, e.g. <code>$.prohibitTag(`dialog`)</code>.</div>
 
 <div>
 Prohibiting a <code>tagName</code> also disables its use as a static JQx extension method. So
@@ -2193,4 +2193,41 @@ See <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_is"
     data-jumpkey="static_logger">[JQx].logger</div> 
   for more information.
 </div></div>
+</template>
+
+<template data-id="static_allowAttributes" class="static_allowAttributes" data-is-deprecated="false">
+<div data-params='[{"...attributes":"string[] attributes to allow"}]'></div>
+<div data-return-value='Nothing'></div>
+<div data-text='1'><div>
+  The use of some attributes are prohibited/not enabled by default (like <code>onclick</code>, <code>target</code>).
+  You can allow the use of one or more of such attributes using this static method, e.g.
+</div>
+
+<div data-example>$.allowAttributes('winners', 'custom-color');
+$.div({winners: "0", "custom-color": "marine", lost: "none"});
+//                                             ^ will be removed</div>
+
+<div class="note">
+  <b>Notes</b>: 
+   <ul>
+     <li>allowing certain attributes may constitute <b>security risks</b>. <i>Handle with care</i>!</li>
+     <li>
+        For all manually allowed tags it may be wise to 
+        <div class="linkLike"
+             data-action="jump2Nav" 
+             data-jumpkey="static_prohibitAttributes">prohibit</div> 
+        them after use.
+     </li>
+<div></div>
+</template>
+
+<template data-id="static_prohibitAttributes" class="static_prohibitAttributes" data-is-deprecated="false">
+<div data-params='[{"...attributes":"string[]"}]'></div>
+<div data-return-value='Nothing'></div>
+<div data-text='1'><div>
+  <div>The use of most html-attributes is allowed by default. 
+  You can prohibit one or more tags using this the <code>prohibitAttributes</code> method, 
+   e.g. <code>$.prohibitAttributes(`my-beautiful-attribute`, `somethingElse`)</code>.</div>
+</div>
+</div>
 </template>
