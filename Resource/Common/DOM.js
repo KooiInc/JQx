@@ -1,9 +1,9 @@
 import { cleanupHtml } from "./DOMCleanup.js";
-import { ATTRS, IS, insertPositions, isNode, truncateHtmlStr} from "./Utilities.js";
+import { IS, insertPositions, isNode, truncateHtmlStr} from "./Utilities.js";
 
 export {
   createElementFromHtmlString, element2DOM,
-  cleanupHtml, inject2DOMTree, ATTRS
+  cleanupHtml, inject2DOMTree,
 };
 
 function htmlToVirtualElement(htmlString) {

@@ -90,7 +90,7 @@ function HandlerFactory(jqx) {
         type}] exists, it is not re-assigned.`);
     }
   }
-  // todo: maybe enable a custom unListen handler
+  
   return {
     remove(...args) { return remove(...args); },
     listen: function(spec) {

@@ -1,5 +1,4 @@
 import {default as IS, maybe, proxyWrapper, addSymbolicExtensions, } from "./TypeofAnything.js";
-import {ATTRS} from "./EmbedResources.js";
 import {default as tagFNFactory} from "./tinyDOM.js";
 import styleFactory from "./LifeCSS.js";
 import {createElementFromHtmlString, inject2DOMTree, cleanupHtml} from "./DOM.js";
@@ -32,7 +31,7 @@ const handlerIdCache = {};
 const canIUseSetHTML = !!document.createElement(`span`).setHTML;
 
 export {
-  after, applyStyle, assignAttrValues, ATTRS, beforeOrAfter, canIUseSetHTML, checkPropertyOrAttribute, cleanupHtml,
+  after, applyStyle, assignAttrValues, beforeOrAfter, canIUseSetHTML, cleanupHtml,
   clearAllTimers,cloneAndDestroy, convert2Bool, createElementFromHtmlString, datasetKeyProxy, ElemArray2HtmlString,
   emptyElement, escHtml, findParentScrollDistance, getAttributesForLogging, getCaptureValue, getHandlerName,
   HandlerFactory,handlerIdCache, inject2DOMTree, input2Collection, insertPositions, IS, isArrayOfHtmlElements,
@@ -82,13 +81,6 @@ function uniqueHandlerID(idCache) {
 
 function getCaptureValue(eventType, captureValue) {
   return !!(allwaysCaptureEventTypes.find(t => t === eventType)) || !!captureValue;
-}
-
-function checkPropertyOrAttribute(propOrAttributeName) {
-  propOrAttributeName = propOrAttributeName?.toLowerCase() || ``;
-  return propOrAttributeName.startsWith(`data`) ||
-    ATTRS.html[propOrAttributeName.toLowerCase()] ||
-    ATTRS.svg[propOrAttributeName.toLowerCase()];
 }
 
 function emptyElement(el) {
@@ -203,8 +195,9 @@ function assignAttrValues(el, keyValuePairs) {
         return setData(el, value);
       }
       
-      if (IS(value, String) && checkPropertyOrAttribute(key)) {
+      if (IS(value, String)) {
         el.setAttribute(key, value.split(/[, ]/)?.join(` `));
+        el = cleanupHtml(el);
       }
     }
   }
@@ -225,6 +218,11 @@ function input2Collection(input) {
         : isNode(input) ? [input]
           : isArrayOfHtmlElements(input) ? input
             : input.isJQx ? input.collection : undefined;
+}
+
+function getWordBoundary(string) {
+  const match = [...string.matchAll(/\p{Pe}|\p{Z}/gu)].at(-1);
+  return match?.index ?? string.length;
 }
 
 function truncate(string, {at, html = false, wordBoundary = false} = {} ) {

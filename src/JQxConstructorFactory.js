@@ -77,7 +77,7 @@ function createFromTDFactory(key, factory) {
       : factory(cleanupHtml($T.div($T[key](...args)).firstChild), true);
     const instanceHtml = instance.outerHtml;
     instanceHtml && systemLog.log(`JQx: created instance from ${
-      truncate(instanceHtml.replace(/\n/g, ``), {at: 45})}`);
+      truncate(instanceHtml.replace(/\n/g, ``), {at: 55, wordBoundary: true})}`);
     return instance;
   }
 }

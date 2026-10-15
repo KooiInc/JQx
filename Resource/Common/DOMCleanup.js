@@ -8,7 +8,7 @@ function sanitizerConfigFactory() {
     USE_PROFILES: { html: true, svg: true },
     IN_PLACE: true,
     KEEP_CONTENT: true,
-    ADD_TAGS: [`#comment`],
+    ADD_TAGS: [],
     FORBID_TAGS: [],
     FORBID_ATTR: [],
     ADD_ATTR: [`_target`, `target`, `data-is-deprecated`],

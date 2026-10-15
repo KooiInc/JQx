@@ -1,20 +1,5 @@
 let popupStyling = getPopupStyling();
-const ATTRS = getAttrs();
-const allTags = getPermissions();
-export {popupStyling, ATTRS, allTags};
-
-function getAttrs() {
-  return {
-    html: Object.freeze(`accept,action,align,alt,autocapitalize,autocomplete,autopictureinpicture,autoplay,background,bgcolor,border,capture,cellpadding,cellspacing,checked,cite,class,clear,contenteditable,color,cols,colspan,controls,controlslist,coords,crossorigin,datetime,decoding,default,dir,disabled,disablepictureinpicture,disableremoteplayback,download,draggable,enctype,enterkeyhint,face,for,headers,height,hidden,high,href,hreflang,id,inputmode,integrity,is,ismap,kind,label,lang,link,list,loading,loop,low,max,maxlength,media,method,min,minlength,multiple,muted,name,nonce,noshade,novalidate,nowrap,open,optimum,pattern,placeholder,playsinline,poster,preload,pubdate,radiogroup,readonly,rel,required,rev,reversed,role,rows,rowspan,spellcheck,scope,selected,shape,size,sizes,slot,span,srclang,start,src,srcset,step,style,summary,tabindex,target,title,translate,type,usemap,valign,value,width,xmlns`
-      .split(`,`).reduce((acc, v) => ({...acc, [v]: true}), {})),
-    svg: Object.freeze(`accent-height,accumulate,additive,alignment-baseline,ascent,attributename,attributetype,azimuth,basefrequency,baseline-shift,begin,bias,by,class,clip,clippathunits,clip-path,clip-rule,color,color-interpolation,color-interpolation-filters,color-profile,color-rendering,cx,cy,d,dx,dy,diffuseconstant,direction,display,divisor,dur,edgemode,elevation,end,fill,fill-opacity,fill-rule,filter,filterunits,flood-color,flood-opacity,font-family,font-size,font-size-adjust,font-stretch,font-style,font-variant,font-weight,fx,fy,g1,g2,glyph-name,glyphref,gradientunits,gradienttransform,height,href,id,image-rendering,in,in2,k,k1,k2,k3,k4,kerning,keypoints,keysplines,keytimes,lang,lengthadjust,letter-spacing,kernelmatrix,kernelunitlength,lighting-color,local,marker-end,marker-mid,marker-start,markerheight,markerunits,markerwidth,maskcontentunits,maskunits,max,mask,media,method,mode,min,name,numoctaves,offset,operator,opacity,order,orient,orientation,origin,overflow,paint-order,path,pathlength,patterncontentunits,patterntransform,patternunits,points,preservealpha,preserveaspectratio,primitiveunits,r,rx,ry,radius,refx,refy,repeatcount,repeatdur,restart,result,rotate,scale,seed,shape-rendering,specularconstant,specularexponent,spreadmethod,startoffset,stddeviation,stitchtiles,stop-color,stop-opacity,stroke-dasharray,stroke-dashoffset,stroke-linecap,stroke-linejoin,stroke-miterlimit,stroke-opacity,stroke,stroke-width,style,surfacescale,systemlanguage,tabindex,targetx,targety,transform,text-anchor,text-decoration,text-rendering,textlength,type,u1,u2,unicode,values,viewbox,visibility,version,vert-adv-y,vert-origin-x,vert-origin-y,width,word-spacing,wrap,writing-mode,xchannelselector,ychannelselector,x,x1,x2,xmlns,y,y1,y2,z,zoomandpan`
-      .split(`,`).reduce((acc, v) => ({...acc, [v]: true}), {})),
-  };
-}
-
-function getPermissions() {
-  return {a:true,area:true,audio:false,br:true,base:true,body:true,button:true,canvas:true,comment:true,dl:true,data:true,datalist:true,div:true,em:true, embed:false,fieldset:true,font:true,footer:true,form:false,hr:true,head:true,header:true,output:true,iframe:false,frameset:false,img:true,input:true,li:true,label:true,legend:true,link:true,map:true,mark:true,menu:true,media:true,meta:true,nav:true,meter:true,ol:true,object:false,optgroup:true,option:true,p:true,param:true,picture:true,pre:true,progress:false,quote:true,script:false,select:true,source:true,span:true,style:true,caption:true,td:true,col:true,table:true,tr:true,template:false,textarea:true,time:true,title:true,track:true,details:true,ul:true,video:true,del:true,ins:true,slot:true,blockquote:true,svg:true,dialog:true,summary:true,main:true,address:true,colgroup:true,tbody:true,tfoot:true,thead:true,th:true,dd:true,dt:true,figcaption:true,figure:true,i:true,b:true,code:true,h1:true,h2:true,h3:true,h4:true,abbr:true,bdo:true,dfn:true,kbd:true,q:true,rb:true,rp:true,rt:true,ruby:true,s:true,strike:true,samp:true,small:true,strong:true,sup:true,sub:true,u:true,use:false,var:true,wbr:true,nobr:true,tt:true,noscript:true};
-}
+export {popupStyling/*, ATTRS, allTags*/};
 
 function getPopupStyling() {
   return [

@@ -1,5 +1,4 @@
-import { allTags, } from "./EmbedResources.js";
-import { IS, systemLog } from "./Utilities.js";
+//import { allTags, } from "./EmbedResources.js";
 import { sanitizerConfig } from "./DOMCleanup.js";
 
 let lenient = false;
@@ -9,19 +8,20 @@ const allowUnknownHtmlTags = {
 };
 
 function allowOrProhibit(tag, allow) {
-  allTags[tag] = allow;
+  //allTags[tag] = allow;
   return allow ? sanitizerConfig.addTag(tag) : sanitizerConfig.removeTag(tag);
 }
 
 export default {
-  tagsRaw: allTags,
-  allowUnknownHtmlTags,
-  isAllowed(nameOrElem) {
-    if (lenient) { return true; }
-    const WCName = nameOrElem || `none`;
-    const nodeName = IS(nameOrElem, String) ? nameOrElem.toLowerCase() : nameOrElem?.nodeName.toLowerCase() || `none`;
-    return nodeName === `#text` || allTags[WCName] || !!allTags[nodeName];
-  },
+  //tagsRaw: allTags,
+  //allowUnknownHtmlTags,
+  // isAllowed(nameOrElem) {
+  //   if (lenient) { return true; }
+  //   const WCName = nameOrElem || `none`;
+  //   const nodeName = typeof nameOrElem === `string`
+  //     ? nameOrElem.toLowerCase() : nameOrElem?.nodeName.toLowerCase() || `none`;
+  //   return nodeName === `#text` || allTags[WCName] || !!allTags[nodeName];
+  // },
   allowTag(tag) {
     allowOrProhibit(tag, true);
   },
