@@ -90,7 +90,7 @@ function logSanitation(removed, initial) {
     let isComment;
     const warnString = `JQx: sanitized input => ` +
       Object.entries(record).reduce((acc, [key, value]) => {
-          return acc + `, ${key} ${value.nodeName} ${/from/i.test(key) ? `(${initial.trim()})` : `no origin`}`;
+          return acc + `, ${key} ${value.nodeName} ${/from/i.test(key) ? `(${initial.trim()})` : ``}`;
         }, ``).slice(2).replace(/ , /g, `, `);
      systemLog.error(warnString);
   }
