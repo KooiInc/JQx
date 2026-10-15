@@ -1,5 +1,5 @@
 import { allTags, } from "./EmbedResources.js";
-import { IS } from "./Utilities.js";
+import { IS, systemLog } from "./Utilities.js";
 import { sanitizerConfig } from "./DOMCleanup.js";
 
 let lenient = false;
@@ -22,8 +22,10 @@ export default {
     const nodeName = IS(nameOrElem, String) ? nameOrElem.toLowerCase() : nameOrElem?.nodeName.toLowerCase() || `none`;
     return nodeName === `#text` || allTags[WCName] || !!allTags[nodeName];
   },
-  allowTag: (tag) => {
+  allowTag(tag) {
     allowOrProhibit(tag, true);
-},
-  prohibitTag: tag => allowOrProhibit(tag, false),
+  },
+  prohibitTag(tag) {
+    allowOrProhibit(tag, false);
+  }
 };

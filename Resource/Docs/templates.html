@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2026-10-14 16:40:25 UTC-->
+<!-- Generated file, last update 2026-10-15 06:51:19 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -522,7 +522,7 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
 </template>
 
 <template data-id="instance_htmlFor" class="instance_htmlFor" data-is-deprecated="false">
-<div data-params='[{"forQuery":"string.  A (valid) css selector."},{"htmlString":"string. (valid) HTML string."},{"append":"Boolean. Default false"}]'></div>
+<div data-params='[{"forSelector":""},{"htmlString":"string. (valid) HTML string"},{"append":"Boolean. Default false"}]'></div>
 <div data-return-value='JQx Instance'></div>
 <div data-text='1'><div>
   Sets/adds/removes html for one or more elements 
@@ -1165,9 +1165,9 @@ So removal of <code>.test1, test2 {...}</code> will fail using <code>$.removeCss
 </template>
 
 <template data-id="static_allowTag" class="static_allowTag" data-is-deprecated="false">
-<div data-params='[{"tagName":"string (e.g. \"template\")"}]'></div>
+<div data-params='[{"...tags":"string[] tag names to allow"}]'></div>
 <div data-return-value='Nothing'></div>
-<div data-text='1'><div>The creation of some html-tags are prohibited/not enabled by default (like <code>&lt;frameset></code>, or <code>&lt;script></code>). You can allow the creation of such tags using this static method.</div>
+<div data-text='1'><div>The creation of some html-tags are prohibited/not enabled by default (like <code>&lt;frameset></code>, or <code>&lt;script></code>). You can allow the creation of one or more of such tags using this static method.</div>
 
 <div>
 Allowing a <code>tagName</code> also enables its use as a static JQx extension method. So
@@ -1196,9 +1196,9 @@ $.TEMPLATE({id: "myTemplate", innerHTML: "..."}).render;</div>
 </template>
 
 <template data-id="static_prohibitTag" class="static_prohibitTag" data-is-deprecated="false">
-<div data-params='[{"tagName":"string (a <code>tagName</code>, e.g. \"embed\")"}]'></div>
+<div data-params='[{"...tags":"string[] tag names to prohibit"}]'></div>
 <div data-return-value='Nothing'></div>
-<div data-text='1'><div>The creation of most html-tags is allowed by default. You can prohibit the creation of a tag using this the <code>prohibitTag</code> method, e.g. <code>$.prohibitTag(`dialog`)</code>.</div>
+<div data-text='1'><div>The creation of most html-tags is allowed by default. You can prohibit the creation of on or more tags using this the <code>prohibitTag</code> method, e.g. <code>$.prohibitTag(`dialog`)</code>.</div>
 
 <div>
 Prohibiting a <code>tagName</code> also disables its use as a static JQx extension method. So

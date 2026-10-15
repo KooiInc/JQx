@@ -4,9 +4,8 @@ import handlerFactory  from "./DocumentationHandlingFactory.js";
 const isDev = location.host.startsWith(`dev`) || location.host.startsWith(`localhost`);
 const importLink =  isDev ? `../../index.js` : `../../Bundle/jqx.min.js`;
 const $ = (await import(importLink)).default;
+setAllowedTags($);
 window.$ = $;
-$.allowTag(`link`);
-$.allowTag(`copyright-slotted`);
 $.logger.enable;
 const loader = $.div({class: "spin"}, `Loading...`).render;
 const perform = performance.now();
@@ -350,16 +349,25 @@ function getVariablesInAllScopes() {
 }
 
 function fetchAllChaptersFromTemplateDocument() {
-  $.allowTag(`template`);
   const templates = $(`<div>${templatesImport}</div>`).node.querySelectorAll(`template`);
   const templatesElementsSortedById = [...templates].sort((el1, el2) => el1.dataset.id.localeCompare(el2.dataset.id));
   $.log(`Fetched documenter templates...`);
   return {templates: templatesElementsSortedById};
 }
 
+function setAllowedTags($) {
+  $.allowTag(`link`, `copyright-slotted`, `template`);
+  $.log(`Allowed additional tags: link, copyright-slotted, template`);
+  
+  setTimeout(() => {
+      $.prohibitTag(`link`, `copyright-slotted`, `template`);
+      $.log(`Prohibited now obsolete tags: link, copyright-slotted, template`);
+    }, 2000);
+}
+
 function createCopyrightComponent() {
   CreateComponent( { componentName: `copyright-slotted`, onConnect: copyrightComponentConnectHandler });
-  renderCopyrightComponent();
+  renderCopyrightComponent(componentStyle);
 }
 
 function renderCopyrightComponent() {

@@ -127,6 +127,20 @@ function allowances(jqx) {
   }
 }
 
+function allowOrProhibitFactory(jqx) {
+  const allowOrProhibit = allowances(jqx);
+  return {
+    allow: function(...tags) {
+      for (const tag of tags) { allowOrProhibit.allow(tag); }
+      setTimeout(_ => systemLog.log(`JQx: tags allowed => ${tags.join(`, `)}`));
+    },
+    prohibit: function(...tags) {
+      for (const tag of tags) { allowOrProhibit.prohibit(tag); }
+      setTimeout(_ => systemLog.log(`JQx: tags prohibited => ${tags.join(`, `)}`));
+    }
+  }
+}
+
 function cssRemove(...rules) {
   if (rules.length === 1) {
     const ruleStr = String(rules.shift().trim());
@@ -237,7 +251,7 @@ function getSelectedStaticMethods(jqx) {
   const editCssRule = (ruleOrSelector, ruleObject) => cssRuleEdit(ruleOrSelector, ruleObject);
   const createStyle = function(id) {return styleFactory({createWithId: id || `jqx${randomString()}`}); };
   const editCssRules = function(...rules) { for (const rule of rules) { cssRuleEdit(rule); } };
-  const allowProhibit = allowances(jqx);
+  const allowProhibit = allowOrProhibitFactory(jqx);
   const handlerWrapper = HandlerFactory(jqx);
   const capturedHandling = delegateCaptureFactory(handlerWrapper);
   const log = (...line) => systemLog.on.log(...line).off;

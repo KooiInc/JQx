@@ -8,15 +8,18 @@ function sanitizerConfigFactory() {
     USE_PROFILES: { html: true, svg: true },
     IN_PLACE: true,
     KEEP_CONTENT: true,
-    ADD_TAGS: [],
+    ADD_TAGS: [`#comment`],
     FORBID_TAGS: [],
     FORBID_ATTR: [],
-    ADD_ATTR: [`_target`, `target`],
+    ADD_ATTR: [`_target`, `target`, `data-is-deprecated`],
     FORCE_BODY: true,
   };
+  let forDebug = false;
   
   return {
     get current() { return baseConfig; },
+    get forDebug() { return forDebug; },
+    set forDebug(value) { forDebug = value; },
     addTag(tagName) {
       baseConfig.ADD_TAGS.push(tagName);
       baseConfig.ADD_TAGS = [...new Set(baseConfig.ADD_TAGS)];
@@ -38,14 +41,29 @@ function sanitizerConfigFactory() {
   }
 }
 
-function sanitizeStringOrElement(HTMLStringOrElement) {
-  const sane = DOMPurify.sanitize(HTMLStringOrElement, config.current);
+function sanitizeNow(HTMLStringOrElement, notInPlace) {
+  let configClean = config.current;
+  
+  if (notInPlace) {
+    configClean = {...config};
+    config.IN_PLACE = false;
+  }
+  
+  const sane = DOMPurify.sanitize(HTMLStringOrElement, configClean);
   
   if (DOMPurify.removed.length > 0) {
     logSanitation(DOMPurify.removed, HTMLStringOrElement);
   }
   
   return sane;
+}
+
+function sanitizeStringOrElement(HTMLStringOrElement) {
+  try {
+    return sanitizeNow(HTMLStringOrElement);
+  } catch(err) {
+    return sanitizeNow(HTMLStringOrElement, true);
+  }
 }
 
 function getHtmlOrNodeNameString(value) {
@@ -55,7 +73,9 @@ function getHtmlOrNodeNameString(value) {
   
   if (value.outerHTML) {
     const html = value.outerHTML;
-    return value.outerHTML.slice(0, 45) + (html.length > 45 ? `...` : ``);
+    return config.forDebug
+      ? value.outerHTML : value.outerHTML.slice(0, 45) +
+        (html.length > 45 ? `...` : ``);
   }
   
   return value.nodeName;
@@ -68,10 +88,8 @@ function logSanitation(removed, initial) {
     let isComment;
     const warnString = `JQx: sanitized input => ` +
       Object.entries(record).reduce((acc, [key, value]) => {
-          isComment = isComment || value.nodeName === `#comment`;
-          
-          return acc + `, ${key} ${value.nodeName} ${/from/i.test(key) ? `(${initial.trim()})` : ``}`;
+          return acc + `, ${key} ${value.nodeName} ${/from/i.test(key) ? `(${initial.trim()})` : `no value`}`;
         }, ``).slice(2).replace(/ , /g, `, `);
-    !isComment && systemLog.error(warnString);
+     systemLog.error(warnString);
   }
 }
