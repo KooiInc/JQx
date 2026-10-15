@@ -18,8 +18,14 @@ function sanitizerConfigFactory() {
   
   return {
     get current() { return baseConfig; },
+    get notInPlaceConfig() {
+      const configClean = {...config};
+      config.IN_PLACE = false;
+      return configClean;
+    },
     get forDebug() { return forDebug; },
     set forDebug(value) { forDebug = value; },
+    
     addTag(tagName) {
       addRemoveHelper(tagName, `ADD_TAGS`, `FORBID_TAGS`);
     },
@@ -43,14 +49,9 @@ function sanitizerConfigFactory() {
 }
 
 function sanitizeNow(HTMLStringOrElement, notInPlace) {
-  let configClean = config.current;
+  let config = notInPlace ? config.notInPlaceConfig : config.current;
   
-  if (notInPlace) {
-    configClean = {...config};
-    config.IN_PLACE = false;
-  }
-  
-  const sane = DOMPurify.sanitize(HTMLStringOrElement, configClean);
+  const sane = DOMPurify.sanitize(HTMLStringOrElement, config);
   
   if (DOMPurify.removed.length > 0) {
     logSanitation(DOMPurify.removed, HTMLStringOrElement);
