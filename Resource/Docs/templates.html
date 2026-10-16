@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2026-10-15 11:58:47 UTC-->
+<!-- Generated file, last update 2026-10-16 09:53:48 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -126,7 +126,7 @@ chapters:
   </li>
   <li>
     Using <a target="_blank" href="https://github.com/cure53/DOMPurify">DOMPurify</a>,
-    every element <i><b>created</b></i> with JQx will be sanitized.
+    every element <i>created</i> or <i>modified</i> with JQx will be sanitized.
   </li> 
   <li>
     This document is <i>completely</i> built using JQx.
@@ -1168,7 +1168,7 @@ So removal of <code>.test1, test2 {...}</code> will fail using <code>$.removeCss
 </div></div>
 </template>
 
-<template data-id="static_allowTag" class="static_allowTag" data-is-deprecated="false">
+<template data-id="static_allowTags" class="static_allowTags" data-is-deprecated="false">
 <div data-params='[{"...tags":"string[] tag names to allow"}]'></div>
 <div data-return-value='Nothing'></div>
 <div data-text='1'><div>The creation of some html-tags are prohibited/not enabled by default (like <code>&lt;frameset></code>, or <code>&lt;script></code>). You can allow the creation of one or more of such tags using this static method.</div>
@@ -1185,7 +1185,10 @@ $.TEMPLATE({id: "myTemplate", innerHTML: "..."}).render;</div>
 <b>Notes</b>
   <ul>
     <li>
-      using <code>allowTag</code> may introduce 
+       For backward compatibility also available as <code>allow<b class="red">Tag</b></code>
+    </li>
+    <li>
+      Using <code>allowTag</code> may introduce 
       security problems. <b class="warn">Handle with care</b>!
      </li>
     <li>
@@ -1213,21 +1216,6 @@ $.TEMPLATE({id: "myTemplate", innerHTML: "..."}).render;</div>
     </li>
   </uL>
 </div></div>
-</template>
-
-<template data-id="static_prohibitTag" class="static_prohibitTag" data-is-deprecated="false">
-<div data-params='[{"...tags":"string[] tag names to prohibit"}]'></div>
-<div data-return-value='Nothing'></div>
-<div data-text='1'><div>The creation of most html-tags is allowed by default. You can prohibit the creation of one or more tags using this the <code>prohibitTag</code> method, e.g. <code>$.prohibitTag(`dialog`)</code>.</div>
-
-<div>
-Prohibiting a <code>tagName</code> also disables its use as a static JQx extension method. So
-</div>
-
-<div data-example>$.prohibitTag('template');
-// this will show an error message in the console
-// Message: JQx: "template" not allowed, not rendered
-$.TEMPLATE({id: "myTemplate", innerHTML: "..."})?.toDOM();</div></div>
 </template>
 
 <template data-id="instance_length" class="instance_length" data-is-deprecated="false">
@@ -2241,4 +2229,21 @@ $.div({winners: "0", "custom-color": "marine", lost: "none"});
   <code>allowTag/allowAttributes</code> in your code before invoking, that will be 
   honored as per the JQx configuration.
 </div></div>
+</template>
+
+<template data-id="static_prohibitTags" class="static_prohibitTags" data-is-deprecated="false">
+<div data-params='[{"...tags":"string[] tag names to prohibit"}]'></div>
+<div data-return-value='Nothing'></div>
+<div data-text='1'><div>The creation of most html-tags is allowed by default. You can prohibit the creation of one or more tags using this the <code>prohibitTag</code> method, e.g. <code>$.prohibitTag(`dialog`)</code>.</div>
+
+<div class="note"><b>Note</b>: for backward compatibility also available as <code>prohibit<b>Tag</b></code></div>
+
+<div>
+Prohibiting a <code>tagName</code> also disables its use as a static JQx extension method. So
+</div>
+
+<div data-example>$.prohibitTag('template');
+// this will show an error message in the console
+// Message: JQx: "template" not allowed, not rendered
+$.TEMPLATE({id: "myTemplate", innerHTML: "..."})?.toDOM();</div></div>
 </template>
