@@ -217,6 +217,13 @@ function instanceExtensionsFactory(jqx) {
       }
 
       if (IS(keyOrObj, Object) && !instance.is.empty) {
+        const inlineEvt = Object.keys(keyOrObj).find(k => k.trim().startsWith(`on`));
+        
+        if (inlineEvt) {
+          systemLog.error(`JQx: attribute '${inlineEvt}' not allowed.`);
+          keyOrObj[inlineEvt] = null;
+        }
+        
         assignAttrValues(instance.node, keyOrObj);
       }
 

@@ -190,7 +190,8 @@ function logTime() {
 function assignAttrValues(el, keyValuePairs) {
   if (el) {
     for (let [key, value] of Object.entries(keyValuePairs)) {
-      key = toDashedNotation(key);
+      key = toDashedNotation(key.trim());
+      
       if (key.startsWith(`data`)) {
         return setData(el, value);
       }
