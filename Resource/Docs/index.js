@@ -356,12 +356,12 @@ function fetchAllChaptersFromTemplateDocument() {
 }
 
 function setAllowedTagsAndAttributes($) {
-  $.allowTag(`link`, `copyright-slotted`, `template`, `#comment`);
+  $.allowTags(`link`, `copyright-slotted`, `template`, `#comment`);
   $.allowAttributes(`target`);
   $.log(`Allowed additional tags/attributes: link, copyright-slotted, template, target`);
   
   setTimeout(() => {
-      $.prohibitTag(`link`, `copyright-slotted`, `template`, `#comment`);
+      $.prohibitTags(`link`, `copyright-slotted`, `template`, `#comment`);
       $.prohibitAttributes(`target`);
       $.log(`Prohibited now obsolete tags/attributes: link, copyright-slotted, template, #comment, target`);
     }, 2000);

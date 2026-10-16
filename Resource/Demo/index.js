@@ -430,7 +430,7 @@ if (!debug) {
   // this invalid tag will result in an error message in the console.
   $.div123(`Will NOT work`);
   
-  $.prohibitTag(`link`, `#comment`);
+  $.prohibitTags(`link`, `#comment`);
 }
 /* DEBUG EXIT POINT */
 
@@ -590,7 +590,7 @@ function injectFavIconAndCounterImage() {
     local: { href: "../Common/Sites/devIco.png" },
   };
   const currentLink = $(`head link[rel="icon"]`);
-  $.allowTag(`link`, `#comment`);
+  $.allowTags(`link`, `#comment`);
   const link = $.link({rel: "icon"});
   const isCodeberg = /codeberg/i.test(location.href);
   const isLocal = /local/i.test(location.href);

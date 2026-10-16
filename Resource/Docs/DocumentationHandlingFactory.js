@@ -1106,7 +1106,7 @@ function clickActionsFactory($) {
     },
     textOrCommentEx: evt => {
       // need to allow comment nodes first
-      $.allowTag(`#comment`);
+      $.allowTags(`#comment`);
       const commentNode = $.text("Some comment here", true);
       const textNode = $.text("Some text here");
       const divWithTextNodes = $.div( textNode, commentNode );
@@ -1118,7 +1118,7 @@ function clickActionsFactory($) {
          $.div(textContentStringified)
       ).showInExample(evt).removeAfter(10);
       // disallow comments again
-      $.prohibitTag(`#comment`);
+      $.prohibitTags(`#comment`);
     },
     replaceEx: () => {
       const div = $.virtual('\
