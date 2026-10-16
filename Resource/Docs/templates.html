@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2026-10-16 10:04:00 UTC-->
+<!-- Generated file, last update 2026-10-16 15:31:55 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -614,8 +614,14 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
       to <i>add</i> classes to an Element.</div>
    </li>
    <li>
-     All attributes are validated (so, event handler attributes (e.g. <code>onclick</code>)
-     and/or made up attribute names can not be used.
+     All attributes are validated/sanitized (so, event handler attributes 
+     (e.g. <code>onclick</code>)) and/or made up attribute names can not be used
+     (unless the are allowed using <div class="linkLike"
+             data-action="jump2Nav" 
+             data-jumpkey="static_allowAttributes">[JQx].allowAttributes</div>). 
+     In the example you'll see that the 'fantastic' attribute was weeded 
+     out by the sanitation - which is reported
+    in the console too.
    </li>
    <li>
       Setting an attribute value ([keyOrObj] returns the JQx instance.
