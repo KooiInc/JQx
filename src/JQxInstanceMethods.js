@@ -168,6 +168,7 @@ function instanceExtensionsFactory(jqx) {
         }
 
         if (isNode(elem2Append)) {
+          cleanupHtml(elem2Append);
           loop(instance, el => el.append(shouldMove ? elem2Append : cloneAndDestroy(elem2Append)));
         }
 
@@ -434,6 +435,7 @@ function instanceExtensionsFactory(jqx) {
             : oldChild;
 
         if (IS(oldChild, HTMLElement, NodeList, Array) && IS(newChild, HTMLElement)) {
+          cleanupHtml(newChild);
           (IS(oldChild, HTMLElement) ? [oldChild] : [...oldChild])
             .forEach(chld => chld.replaceWith(newChild.cloneNode(true)));
         }
@@ -484,6 +486,7 @@ function instanceExtensionsFactory(jqx) {
         if (value && IS(keyOrKvPairs, String)) {
           keyOrKvPairs = { [keyOrKvPairs]: value || `none` };
         }
+        cleanupHtml(el);
         applyStyle(el, keyOrKvPairs);
       };
       return loop(instance, loopCollectionLambda);

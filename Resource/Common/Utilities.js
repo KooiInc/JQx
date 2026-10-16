@@ -254,7 +254,7 @@ function beforeOrAfter(instance, jqx, after = true, ...toAdd) {
     return instance;
   }
   
-  toAdd = toAdd.map(elem => elem.isJQx ? elem.node : IS(elem, String) ? jqx(elem).node ?? elem : elem );
+  toAdd = toAdd.map(elem => elem.isJQx ? elem.node : IS(elem, String) ? jqx(elem).node ?? elem : cleanupHtml(elem) );
   const noCando = toAdd.find(elem => !IS(elem, String, Element));
   
   if (noCando) {

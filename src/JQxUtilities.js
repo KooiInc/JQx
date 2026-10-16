@@ -92,6 +92,8 @@ function ExamineElementFeatureFactory() {
 }
 
 function css(el, keyOrKvPairs, value, jqx) {
+  cleanupHtml(el);
+  
   if (value && IS(keyOrKvPairs, String)) {
     keyOrKvPairs = {[keyOrKvPairs]: value === "-" ? "" : value};
   }
