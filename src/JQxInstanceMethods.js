@@ -381,8 +381,12 @@ function instanceExtensionsFactory(jqx) {
         if (isId) { return instance[0].id = propValue; }
 
         loop(instance, el => {
+          if (propName.startsWith(`on`)) {
+            return systemLog.error(`JQx: property '${propName}' not allowed`);
+          }
+          
           if (propName.startsWith(`data`)) {
-            return el.dataset[propName.slice(propName.indexOf(`-`)+1)] = propValue;
+            return el.dataset[propName.slice(propName.indexOf(`-`) + 1)] = propValue;
           }
 
           el[propName] = propValue;
