@@ -19,8 +19,7 @@ function sanitizerConfigFactory() {
   return {
     get current() { return baseConfig; },
     get notInPlaceConfig() {
-      const configClean = {...baseConfig, IN_PLACE: false};
-      return configClean;
+      return {...baseConfig, IN_PLACE: false};
     },
     get forDebug() { return forDebug; },
     set forDebug(value) { forDebug = value; },
