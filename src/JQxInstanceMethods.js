@@ -220,7 +220,7 @@ function instanceExtensionsFactory(jqx) {
         const inlineEvt = Object.keys(keyOrObj).find(k => k.trim().startsWith(`on`));
         
         if (inlineEvt) {
-          systemLog.error(`JQx: attribute '${inlineEvt}' not allowed.`);
+          systemLog.error(`JQx: [instance].attr => '${inlineEvt}' not allowed.`);
           keyOrObj[inlineEvt] = null;
         }
         
@@ -382,7 +382,7 @@ function instanceExtensionsFactory(jqx) {
 
         loop(instance, el => {
           if (propName.startsWith(`on`)) {
-            return systemLog.error(`JQx: property '${propName}' not allowed`);
+            return systemLog.error(`JQx: [instance].prop => '${propName}' not allowed`);
           }
           
           if (propName.startsWith(`data`)) {
