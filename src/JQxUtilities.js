@@ -3,7 +3,7 @@ import {
   cloneAndDestroy, convert2Bool, createElementFromHtmlString, datasetKeyProxy, ElemArray2HtmlString, emptyElement,
   escHtml, findParentScrollDistance, getAttributesForLogging, getHandlerName, HandlerFactory, inject2DOMTree,
   input2Collection, insertPositions, IS, isArrayOfHtmlElements, isArrayOfHtmlStrings, isComment, isCommentOrTextNode,
-  isHtmlString, isModal, isNode, isNonEmptyString, isText, isVisible, isWritable, logTime, maybe, PopupFactory,
+  isHtmlString, isModal, isNode, isNonEmptyString, isText, isVisible, isWritable, logTime, maybe, lcFirst, PopupFactory,
   propertyIsReflected, proxyWrapper, randomNr, randomString, resolveEventTypeParameter, setData, styleFactory,
   systemLog, tagFNFactory, tagLib, toCamelcase, toDashedNotation, truncate,
 } from "../Resource/Common/Utilities.js"
@@ -13,7 +13,7 @@ export {
   convert2Bool, createElementFromHtmlString, css, datasetKeyProxy, ElemArray2HtmlString, emptyElement, escHtml,
   ExamineElementFeatureFactory, findParentScrollDistance, getAttributesForLogging, getHandlerName, getNodeContentForLog,
   HandlerFactory, inject2DOMTree, input2Collection, insertPositions, IS, isArrayOfHtmlElements, isArrayOfHtmlStrings,
-  isCommentOrTextNode, isHtmlString, isNode, isNonEmptyString, logTime, loop, maybe, PopupFactory,
+  isCommentOrTextNode, isHtmlString, isNode, isNonEmptyString, lcFirst, logTime, loop, maybe, PopupFactory,
   propertyIsReflected, proxyWrapper, randomNr, randomString, resolveEventTypeParameter, selectedFactoryHelpers,
   setCollectionFromCssSelector, setData, styleFactory, systemLog, tagFNFactory, tagLib, toCamelcase, toDashedNotation,
   truncate,

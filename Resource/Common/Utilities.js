@@ -5,7 +5,6 @@ import {createElementFromHtmlString, inject2DOMTree, cleanupHtml} from "./DOM.js
 import PopupFactory from "./Popup.js";
 import { HandlerFactory } from "./HandlerFactory.js";
 import tagLib from "./HTMLTags.js";
-import {loop} from "../../src/JQxUtilities.js";
 addSymbolicExtensions();
 const systemLog = systemLogFactory();
 const allwaysCaptureEventTypes = [
@@ -37,9 +36,9 @@ export {
   emptyElement, escHtml, findParentScrollDistance, getAttributesForLogging, getCaptureValue, getHandlerName,
   HandlerFactory,handlerIdCache, inject2DOMTree, input2Collection, insertPositions, IS, isArrayOfHtmlElements,
   isArrayOfHtmlStrings, isComment, isCommentOrTextNode, isHtmlString, isModal, isNode, isNonEmptyString, isText,
-  isVisible, isWritable, logTime, maybe, pad0, PopupFactory, propertyIsReflected, proxyWrapper, randomNr, randomString,
-  resolveEventTypeParameter, setData, styleFactory, systemLog, tagFNFactory, tagLib, toCamelcase, toDashedNotation,
-  truncate, truncateHtmlStr, ucFirst,
+  isVisible, isWritable, lcFirst, logTime, maybe, pad0, PopupFactory, propertyIsReflected, proxyWrapper, randomNr,
+  randomString, resolveEventTypeParameter, setData, styleFactory, systemLog, tagFNFactory, tagLib, toCamelcase,
+  toDashedNotation, truncate, truncateHtmlStr, ucFirst,
 };
 
 function clearAllTimers() {
@@ -211,8 +210,8 @@ function assignAttrValues(el, keyValuePairs) {
 
 function propertyIsReflected(el, prop) {
   const clone = el.cloneNode();
-  el[prop] = 42;
-  return !!el.getAttribute(prop);
+  clone[prop] = 42;
+  return !!clone.getAttribute(prop);
 }
 
 function assignPropertyValues(el, keyValuePairs) {
@@ -221,18 +220,19 @@ function assignPropertyValues(el, keyValuePairs) {
 
     switch (true) {
       case propName.startsWith(`on`):
-        return systemLog.error(`JQx: [instance].prop => '${propName}' not allowed`);
+        systemLog.error(`JQx: [instance].prop => '${propName}' not allowed`); break;
       case propName.startsWith(`data-`):
         assignAttrValues(el, {data: {[propName.replace(/^data-/, ``)]: propValue}});  break;
       case /data/i.test(propName) && IS(propValue, Object):
         assignAttrValues(el, {data: {...propValue}}); break;
       case typeof propValue === `function`:
-        return systemLog.error(`JQx: [instance].prop => '${propName}' function values not allowed`);
+        systemLog.error(`JQx: [instance].prop => '${propName}' function values not allowed`); break;
       default:
         el[propName] = propValue;
-        cleanupHtml(el);
     }
   }
+  
+  cleanupHtml(el);
 }
 
 function setData(el, keyValuePairs) {
@@ -432,6 +432,10 @@ function toDashedNotation(str2Convert) {
 
 function ucFirst([first, ...theRest]) {
   return `${first.toUpperCase()}${theRest.join(``)}`;
+}
+
+function lcFirst([first, ...theRest]) {
+  return `${first.toLowerCase()}${theRest.join(``)}`;
 }
 
 function isCommentOrTextNode(node) {

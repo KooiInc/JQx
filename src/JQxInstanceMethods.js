@@ -4,7 +4,8 @@ import {
   datasetKeyProxy, loop, cloneAndDestroy, setData,
   findParentScrollDistance, emptyElement, css, assignAttrValues,
   applyStyle, createElementFromHtmlString, inject2DOMTree,
-  assignPropertyValues, cleanupHtml, toCamelcase
+  assignPropertyValues, cleanupHtml, toCamelcase, propertyIsReflected,
+  lcFirst
 } from "./JQxUtilities.js";
 
 const instanceIs = ExamineElementFeatureFactory();
@@ -366,10 +367,18 @@ function instanceExtensionsFactory(jqx) {
       }
     },
     prop(instance, nameOrKVStore, value) {
+      const node = instance.node;
+      
       if (IS(nameOrKVStore, String) && !value && !instance.is.empty) {
-        return nameOrKVStore.startsWith(`data`)
-          ? instance[0].dataset[toCamelcase(nameOrKVStore.replace(/^data-/, ``))]
-          : instance[0].getAttribute(nameOrKVStore);
+        let key = nameOrKVStore.trim();
+        switch(true) {
+          case /^data/i.test(key):
+            key = key.replace(/data-/, ``);
+            key = /(-\w)/.test(key) ? toCamelcase(key) : key;
+            return node.dataset[key]
+          default:
+            return propertyIsReflected(node, key) ? node.getAttribute(key) : node[key];
+        }
       }
 
       const props = !IS(nameOrKVStore, Object) ? { [nameOrKVStore]: value } : nameOrKVStore;

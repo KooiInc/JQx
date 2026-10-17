@@ -739,21 +739,21 @@ function clickActionsFactory($) {
       exElem.prop({
           id: "ElementWithProps",
           title: "now I have a title",
-          notAValidProperty: "hi",
+          justAProperty: "hi",
           "data-fantastic-stuff": true,
           data: {helloWorld: "Hello! World!"},
-          onclick: 'javascript:alert("hello!")',
-          value: () => alert(`hello`),
+          onclick: 'javascript:alert("hello!")', // <= not allowed, see console
+          value: () => alert(`hello`),           // <= not allowed, see console
         }
       );
 
       $.Popup.show( {
         content: $.div(`<code>exElem.prop("title")</code> =&gt; ${exElem.prop("title")}
-          <br><code>exElem.prop("onclick")</code> =&gt; ${exElem.prop("id")}
+          <br><code>exElem.prop("id")</code> =&gt; ${exElem.prop("id")}
           <br><code>exElem.prop("onclick")</code> =&gt; ${exElem.prop("onclick")}
-          <br><code>exElem.prop("notAValidProperty")</code> =&gt; ${exElem.prop("notAValidProperty")}
+          <br><code>exElem.prop("justAProperty")</code> =&gt; ${exElem.prop("justAProperty")}
           <br><code>exElem.prop("data-fantastic-stuff")</code> =&gt; ${exElem.prop("data-fantastic-stuff")}
-          <br><code>exElem.prop("data-hello-world")</code> =&gt; ${exElem.prop("data-hello-world")}
+          <br><code>exElem.prop("data-helloWorld")</code> =&gt; ${exElem.prop("data-helloWorld")}
           <br><code>exElem.prop("value")</code> =&gt; ${exElem.prop("value")}
           <br>Serialized element =&gt;`).append($.pre({class: `outerhtml`}, exElem.HTML.get(1, 1)))
       } );
