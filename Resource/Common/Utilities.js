@@ -197,7 +197,7 @@ function assignAttrValues(el, keyValuePairs) {
         return setData(el, value);
       }
       
-      if (propertyIsReflected(el, value)) {
+      if (propertyIsReflected(el, key)) {
         return assignPropertyValues(el, keyValuePairs);
       }
       
