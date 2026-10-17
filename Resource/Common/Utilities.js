@@ -217,7 +217,6 @@ function propertyIsReflected(el, prop) {
 
 function assignPropertyValues(el, keyValuePairs) {
   for (let [propName, propValue] of Object.entries(keyValuePairs)) {
-    console.log(`MMM`, propName, propValue);
     propName = propName.trim();
 
     switch (true) {
