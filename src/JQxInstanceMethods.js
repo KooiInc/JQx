@@ -5,7 +5,6 @@ import {
   findParentScrollDistance, emptyElement, css, assignAttrValues,
   applyStyle, createElementFromHtmlString, inject2DOMTree,
   assignPropertyValues, cleanupHtml, toCamelcase, propertyIsReflected,
-  lcFirst
 } from "./JQxUtilities.js";
 
 const instanceIs = ExamineElementFeatureFactory();
