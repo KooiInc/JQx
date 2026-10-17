@@ -5,7 +5,7 @@ export { sanitizeStringOrElement as cleanupHtml, config as sanitizerConfig};
 
 function sanitizerConfigFactory() {
   let baseConfig = {
-    USE_PROFILES: { html: true, svg: true },
+    USE_PROFILES: { html: true, svg: true, svgFilters: true },
     IN_PLACE: true,
     KEEP_CONTENT: true,
     ADD_TAGS: [],
