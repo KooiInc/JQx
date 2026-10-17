@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2026-10-17 10:07:49 UTC-->
+<!-- Generated file, last update 2026-10-17 11:33:10 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -566,9 +566,9 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
 </template>
 
 <template data-id="instance_prop" class="instance_prop" data-is-deprecated="false">
-<div data-params='[{"nameOrProperties":"string (e.g. <code>title</code>) or Object&lt;string, any>"},{"value":"string | undefined."}]'></div>
+<div data-params='[{"nameOrKVStore":""},{"value":"string | undefined."}]'></div>
 <div data-return-value='string | JQx Instance'></div>
-<div data-text='1'><div>Set one or more properties (e.g. <code>title</code> or <code>disabled</code>) value for each element of the JQx Instance element collection. Or, without <code>[value]</code> retrieve the value of [property] of the first (root) element from the JQx Instance collection.</div>
+<div data-text='1'><div>Set one or more properties (e.g. <code>title</code> or <code>disabled</code>) value for the first element of the JQx Instance element collection. Or, without <code>[value]</code> retrieves the value of [property] of the first (root) element from the JQx Instance collection.</div>
 
 <div class="note"><b>Notes</b>:</div>
 
@@ -579,9 +579,6 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
      (unless the are allowed using <div class="linkLike"
              data-action="jump2Nav" 
              data-jumpkey="static_allowAttributes">[JQx].allowAttributes</div>). 
-     In the example you'll see that the 'fantastic' attribute was weeded 
-     out by the sanitation - which is reported
-     in the console too.
    </li>
    <li>After setting properties the element(s) under consideration are sanitized again. See example.</li>
   <li>When the property is <code>id</code>, the id for the first element of the JQx instance collection will be set (duplicate id's are not allowed in html).</li>
