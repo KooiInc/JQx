@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2026-10-16 15:31:55 UTC-->
+<!-- Generated file, last update 2026-10-16 16:12:36 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -190,7 +190,7 @@ Otherwise returns the JQx Instance.</div></div>
 </template>
 
 <template data-id="instance_remove" class="instance_remove" data-is-deprecated="false">
-<div data-params='[{"instance":""},{"selector":"string. A (valid) css selector string, e.g. <code>#someDiv.someClass</code>"}]'></div>
+<div data-params='[{"selector":"string. A (valid) css selector string, e.g. <code>#someDiv.someClass</code>"}]'></div>
 <div data-return-value='None'></div>
 <div data-text='1'><div>Removes every element of the instance element collection, <i>or</i>, when <code>selector</code> is present, removes every child element from of the instance element collection for which the selector applies.</div>
 
@@ -573,7 +573,17 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
 <div class="note"><b>Notes</b>:</div>
 
 <ul>
-  <li>After setting properties the element(s) under consideration are sanitized again. See example.</li>
+  <li>
+    All properties are validated/sanitized (so, inline event handler attributes 
+     (e.g. <code>onclick</code>)) and/or made up property names can not be used
+     (unless the are allowed using <div class="linkLike"
+             data-action="jump2Nav" 
+             data-jumpkey="static_allowAttributes">[JQx].allowAttributes</div>). 
+     In the example you'll see that the 'fantastic' attribute was weeded 
+     out by the sanitation - which is reported
+     in the console too.
+   </li>
+   <li>After setting properties the element(s) under consideration are sanitized again. See example.</li>
   <li>When the property is <code>id</code>, the id for the first element of the JQx instance collection will be set (duplicate id's are not allowed in html).</li>
   <li>See all information on properties and attributes @<a target="_blank" href="https://javascript.info/dom-attributes-and-properties">javascript.info</a></li>
 </ul>
@@ -614,7 +624,7 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
       to <i>add</i> classes to an Element.</div>
    </li>
    <li>
-     All attributes are validated/sanitized (so, event handler attributes 
+     All attributes are validated/sanitized (so, inline event handler attributes 
      (e.g. <code>onclick</code>)) and/or made up attribute names can not be used
      (unless the are allowed using <div class="linkLike"
              data-action="jump2Nav" 

@@ -4,7 +4,7 @@ import {
   datasetKeyProxy, loop, cloneAndDestroy, setData,
   findParentScrollDistance, emptyElement, css, assignAttrValues,
   applyStyle, createElementFromHtmlString, inject2DOMTree,
-  cleanupHtml
+  assignPropertyValues, cleanupHtml, toCamelcase
 } from "./JQxUtilities.js";
 
 const instanceIs = ExamineElementFeatureFactory();
@@ -365,35 +365,16 @@ function instanceExtensionsFactory(jqx) {
           return instance;
       }
     },
-    prop(instance, nameOrProperties, value) {
-      if (IS(nameOrProperties, String) && !value) {
-        return nameOrProperties.startsWith(`data`)
-          ? instance[0]?.dataset[nameOrProperties.slice(nameOrProperties.indexOf(`-`)+1)]
-          : instance[0]?.[nameOrProperties];
+    prop(instance, nameOrKVStore, value) {
+      if (IS(nameOrKVStore, String) && !value && !instance.is.empty) {
+        return nameOrKVStore.startsWith(`data`)
+          ? instance[0].dataset[toCamelcase(nameOrKVStore.replace(/^data-/, ``))]
+          : instance[0].getAttribute(nameOrKVStore);
       }
 
-      const props = !IS(nameOrProperties, Object) ? { [nameOrProperties]: value } : nameOrProperties;
-      for (let [propName, propValue] of Object.entries(props)) {
-        propName = propName.trim();
-        
-        const isId = propName.toLowerCase() === `id`;
-
-        if (isId) { return instance[0].id = propValue; }
-
-        loop(instance, el => {
-          if (propName.startsWith(`on`)) {
-            return systemLog.error(`JQx: [instance].prop => '${propName}' not allowed`);
-          }
-          
-          if (propName.startsWith(`data`)) {
-            return el.dataset[propName.slice(propName.indexOf(`-`) + 1)] = propValue;
-          }
-
-          el[propName] = propValue;
-          cleanupHtml(el);
-        });
-      }
-
+      const props = !IS(nameOrKVStore, Object) ? { [nameOrKVStore]: value } : nameOrKVStore;
+      assignPropertyValues(instance.node, nameOrKVStore);
+      
       return instance;
     },
     remove(instance, selector) {

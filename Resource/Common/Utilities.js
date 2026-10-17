@@ -5,6 +5,7 @@ import {createElementFromHtmlString, inject2DOMTree, cleanupHtml} from "./DOM.js
 import PopupFactory from "./Popup.js";
 import { HandlerFactory } from "./HandlerFactory.js";
 import tagLib from "./HTMLTags.js";
+import {loop} from "../../src/JQxUtilities.js";
 addSymbolicExtensions();
 const systemLog = systemLogFactory();
 const allwaysCaptureEventTypes = [
@@ -31,12 +32,12 @@ const handlerIdCache = {};
 const canIUseSetHTML = !!document.createElement(`span`).setHTML;
 
 export {
-  after, applyStyle, assignAttrValues, beforeOrAfter, canIUseSetHTML, cleanupHtml,
+  after, applyStyle, assignAttrValues, assignPropertyValues, beforeOrAfter, canIUseSetHTML, cleanupHtml,
   clearAllTimers,cloneAndDestroy, convert2Bool, createElementFromHtmlString, datasetKeyProxy, ElemArray2HtmlString,
   emptyElement, escHtml, findParentScrollDistance, getAttributesForLogging, getCaptureValue, getHandlerName,
   HandlerFactory,handlerIdCache, inject2DOMTree, input2Collection, insertPositions, IS, isArrayOfHtmlElements,
   isArrayOfHtmlStrings, isComment, isCommentOrTextNode, isHtmlString, isModal, isNode, isNonEmptyString, isText,
-  isVisible, isWritable, logTime, maybe, pad0,PopupFactory, proxyWrapper, randomNr, randomString,
+  isVisible, isWritable, logTime, maybe, pad0, PopupFactory, propertyIsReflected, proxyWrapper, randomNr, randomString,
   resolveEventTypeParameter, setData, styleFactory, systemLog, tagFNFactory, tagLib, toCamelcase, toDashedNotation,
   truncate, truncateHtmlStr, ucFirst,
 };
@@ -196,10 +197,41 @@ function assignAttrValues(el, keyValuePairs) {
         return setData(el, value);
       }
       
+      if (propertyIsReflected(el, value)) {
+        return assignPropertyValues(el, keyValuePairs);
+      }
+      
       if (IS(value, String)) {
         el.setAttribute(key, value.split(/[, ]/)?.join(` `));
         cleanupHtml(el);
       }
+    }
+  }
+}
+
+function propertyIsReflected(el, prop) {
+  const clone = el.cloneNode();
+  el[prop] = 42;
+  return !!el.getAttribute(prop);
+}
+
+function assignPropertyValues(el, keyValuePairs) {
+  for (let [propName, propValue] of Object.entries(keyValuePairs)) {
+    console.log(`MMM`, propName, propValue);
+    propName = propName.trim();
+
+    switch (true) {
+      case propName.startsWith(`on`):
+        return systemLog.error(`JQx: [instance].prop => '${propName}' not allowed`);
+      case propName.startsWith(`data-`):
+        assignAttrValues(el, {data: {[propName.replace(/^data-/, ``)]: propValue}});  break;
+      case /data/i.test(propName) && IS(propValue, Object):
+        assignAttrValues(el, {data: {...propValue}}); break;
+      case typeof propValue === `function`:
+        return systemLog.error(`JQx: [instance].prop => '${propName}' function values not allowed`);
+      default:
+        el[propName] = propValue;
+        cleanupHtml(el);
     }
   }
 }

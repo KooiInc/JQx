@@ -327,6 +327,14 @@ code:not([class*='language-']) {
   }
 }
 
+#jqxPopupContent {
+  pre.outerhtml {
+    white-space: pre-wrap;
+    max-width: 500px;
+    margin: 0 1em;
+  }
+}
+
 a {
   text-decoration: none;
 

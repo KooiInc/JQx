@@ -736,13 +736,27 @@ function clickActionsFactory($) {
       const exElem = $('<div data-id="tmpEx"><b>Hello</b> <span>World</span>! (hover me)</div>')
         .showInExample(evt)
         .removeAfter(15);
-      exElem.prop({title: "now I have a title", onclick: 'javascript:alert("hello!")'});
+      exElem.prop({
+          id: "ElementWithProps",
+          title: "now I have a title",
+          notAValidProperty: "hi",
+          "data-fantastic-stuff": true,
+          data: {helloWorld: "Hello! World!"},
+          onclick: 'javascript:alert("hello!")',
+          value: () => alert(`hello`),
+        }
+      );
 
       $.Popup.show( {
-        content: `<code>exElem.prop("title")</code> =&gt; ${exElem.prop("title")}
-          <br><code>exElem.prop("onclick")</code> =&gt; ${exElem.prop("onclick")}`,
-        closeAfter: 5 }
-      );
+        content: $.div(`<code>exElem.prop("title")</code> =&gt; ${exElem.prop("title")}
+          <br><code>exElem.prop("onclick")</code> =&gt; ${exElem.prop("id")}
+          <br><code>exElem.prop("onclick")</code> =&gt; ${exElem.prop("onclick")}
+          <br><code>exElem.prop("notAValidProperty")</code> =&gt; ${exElem.prop("notAValidProperty")}
+          <br><code>exElem.prop("data-fantastic-stuff")</code> =&gt; ${exElem.prop("data-fantastic-stuff")}
+          <br><code>exElem.prop("data-hello-world")</code> =&gt; ${exElem.prop("data-hello-world")}
+          <br><code>exElem.prop("value")</code> =&gt; ${exElem.prop("value")}
+          <br>Serialized element =&gt;`).append($.pre({class: `outerhtml`}, exElem.HTML.get(1, 1)))
+      } );
     },
     removeClassEx: evt => {
       $.editCssRule(".exRemoveClassTest { color: red; font-weight: bold; }");
@@ -1377,9 +1391,9 @@ function clickActionsFactory($) {
         title: "Yes, I have a title now!",
         style: "font-weight: bold",
         class: "volatile, red",
-        fantastic: "true",
+        fantastic: "true", // <= sanitized (see console)
         data: {myTitle: "title as data", meaningOfLife: 42, "make-it-so": "engage!"},
-        onclick: () => alert("O NO!"), // <= not allowed
+        onclick: () => alert("O NO!"), // <= not allowed (see console)
       })
 
       function attrField(attr, str) {
