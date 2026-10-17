@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2026-10-17 11:33:10 UTC-->
+<!-- Generated file, last update 2026-10-17 11:51:09 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -575,14 +575,15 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
 <ul>
   <li>
     All properties are validated/sanitized (so, inline event handler attributes 
-     (e.g. <code>onclick</code>)) and/or made up property names can not be used
+     (e.g. <code>onclick</code>)) can not be used. It's also not allowed to use 
+     a function as property value.
      (unless the are allowed using <div class="linkLike"
              data-action="jump2Nav" 
              data-jumpkey="static_allowAttributes">[JQx].allowAttributes</div>). 
    </li>
    <li>After setting properties the element(s) under consideration are sanitized again. See example.</li>
-  <li>When the property is <code>id</code>, the id for the first element of the JQx instance collection will be set (duplicate id's are not allowed in html).</li>
-  <li>See all information on properties and attributes @<a target="_blank" href="https://javascript.info/dom-attributes-and-properties">javascript.info</a></li>
+   <li>When the property is <code>id</code>, the id for the first element of the JQx instance collection will be set (duplicate id's are not allowed in html).</li>
+   <li>See all information on properties and attributes @<a target="_blank" href="https://javascript.info/dom-attributes-and-properties">javascript.info</a></li>
 </ul>
 
 <div data-example>##EXAMPLECODE@propEx##</div></div>
