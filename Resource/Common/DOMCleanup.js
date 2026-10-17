@@ -13,6 +13,7 @@ function sanitizerConfigFactory() {
     FORBID_ATTR: [],
     ADD_ATTR: [],
     FORCE_BODY: false,
+    SANITIZE_DOM: true,
   };
   let forDebug = false;
   

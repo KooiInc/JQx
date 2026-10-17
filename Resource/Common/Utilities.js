@@ -237,9 +237,11 @@ function assignPropertyValues(el, keyValuePairs) {
 
 function setData(el, keyValuePairs) {
   if (el && IS(keyValuePairs, Object)) {
-    for (const [key, value] of Object.entries(keyValuePairs)) {
+    for (let [key, value] of Object.entries(keyValuePairs)) {
+      key = key.replace(/[^a-zA-Z0-9-_]/g, '');
       el.setAttribute(`data-${toDashedNotation(key)}`, value);
     }
+    
     cleanupHtml(el);
   }
 }

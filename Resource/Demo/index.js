@@ -1,4 +1,5 @@
 import cssRules from "./styling.js";
+
 const isDev = /dev|local/i.test(location.href);
 const testBndl = false;
 const libLink = !testBndl && isDev ? "../../index.js" : "../../Bundle/jqx.min.js";
@@ -15,11 +16,20 @@ $.editCssRules(...cssRules);
 // use jqx in the developer console
 window.jqx = $;
 
+// test DOM clobbering
+// the console should show a sanitation message (attribute href)
+$.form({name: "config", class: "hidden"}, $.input({name: "debug", value:"true"})).render;
+$.a({id:"appState", class: "hidden"}, `test`).render;
+$(`#appState`).prop({href:"javascript:console.log('clobbered')"});
+setTimeout(() => {$(`form, #appState`).remove()}, 1000);
+
 // add event handling defined in function [getDelegates4Document]
 getDelegates4Document().forEach(([type, targetedHandlers]) =>
-  targetedHandlers.forEach( handler => {
+  targetedHandlers.forEach(handler => {
     const specs = {type, origin: handler.target, handlers: handler.handlers};
-    if ($.IS(handler.name, String) && handler.name.length) {specs.name = handler.name;}
+    if ($.IS(handler.name, String) && handler.name.length) {
+      specs.name = handler.name;
+    }
     $.handle(specs);
   })
 );
@@ -27,7 +37,7 @@ getDelegates4Document().forEach(([type, targetedHandlers]) =>
 // initialize some statics from $
 const log = $.logger.log;
 const {virtual: $$} = $;
-const { DIV, H2, SPAN, I, B, P, U, A, BUTTON, COMMENT, BR } = $;
+const {DIV, H2, SPAN, I, B, P, U, A, BUTTON, COMMENT, BR} = $;
 
 /* MAIN  */
 if (!debug) {
@@ -36,57 +46,57 @@ if (!debug) {
     self.prop(`title`, ttl);
     return self;
   });
-
+  
   const back2 = /github|codeberg/i.test(location.href) ? `_top` : `_blank`;
-
+  
   // create container for all generated html
   $.div(
       {id: `container`, class: `MAIN`})
     .append(
-      $.div( { id: `JQxRoot` }).append($.comment(`div#JQxRoot contains all generated html`))
+      $.div({id: `JQxRoot`}).append($.comment(`div#JQxRoot contains all generated html`))
     ).style({margin: `1rem auto`}).toDOM();
-
+  
   const backLinks = getBacklinks();
-
+  
   // create the header content
-  DIV( { id: `StyledPara`, class: `thickBorder` },
-    H2( `Demo & test JQueryLike (JQx) library`),
-    SPAN(I( B( {class: `attention`}, U(`Everything`) ) ),
+  DIV({id: `StyledPara`, class: `thickBorder`},
+    H2(`Demo & test JQueryLike (JQx) library`),
+    SPAN(I(B({class: `attention`}, U(`Everything`))),
       ` on this page was dynamically created using JQx.`),
-    P( B({class: `arrRight`, html: `&#8594;`}, ),
+    P(B({class: `arrRight`, html: `&#8594;`},),
       ` Check the HTML source &mdash; right click anywhere, and select 'View page source',
         or (for some browsers) press CTRL+U.`)
   ).appendTo(JQxRoot);
-
+  
   // The JQx constructor ($) is a proxy, so static element
   // creation will result in an error log message (see log)
   $.nocando(`I will NOT render!`);
   $.script.render;
   // ^ returns undefined. But there is a log entry (error)
-
+  
   
   // onclick is not allowed, so will be removed on element creation
   const msg = `hi there, you won't see me`;
   $(`<div id="nohandling" onclick="alert('${msg}')"></div>`)
     .html(`<h1>H e l l o  &nbsp;w o r l d</h1>`).appendTo(JQxRoot);
-
+  
   // <script> tag is removed.
   // data-attributes are removed initially, but may be added later
   // styles are inline here
-  $( [`<script id="noscripts">alert('hi');</script>`,
-     `<div id="delegates" data-id="delegates">Hi 1</div>`], JQxRoot)
+  $([`<script id="noscripts">alert('hi');</script>`,
+    `<div id="delegates" data-id="delegates">Hi 1</div>`], JQxRoot)
     .data.add({id: "delegates"})
     .html(` [you may <b><i>click</i> me</b>] `, true)
     .style({cursor: `pointer`});
-
+  
   // <notallowed> is ... well ... not allowed, so will be removed
   $.div({style: `cursor: pointer; margin-top: 0.7em;`},
-    `<notallowed id="will_not_be_created"></notallowed>`,
-    `Hi 2 [Hey! You can click AND hover me! (see log)]`)
+      `<notallowed id="will_not_be_created"></notallowed>`,
+      `Hi 2 [Hey! You can click AND hover me! (see log)]`)
     // add a click, mouseover and mouseout listener in one go
     .on(`click, mouseover, mouseout`, function heyHandler({evt, me}) {
       const currentColor = me.node.style.color;
-      switch(evt.type) {
+      switch (evt.type) {
         case `click`:
           // o look, a state machine ;)
           me.style({
@@ -102,48 +112,52 @@ if (!debug) {
           return log(`HI from div.exampleText (you moved your mouse pointer over me)`);
       }
     }).renderTo(JQxRoot);
-
+  
   // create and position a few buttons. Some already contain an event handler (delegated)
   const cssBttns = {
     defaultCSS: BUTTON({
       data: {sheetId: `JQxPopupCSS`, switchBttn: `popupCSS`},
-      text: `show popup css` }),
+      text: `show popup css`
+    }),
     popupCSS: BUTTON({
       data: {sheetId: `JQxStylesheet`, switchBttn: `defaultCSS`},
-      text: `show default css` }),
+      text: `show default css`
+    }),
   };
   $(`#StyledPara`).afterMe(
     DIV({id: "bttnblock"}).append(...[
-      BUTTON({id: "showLogEntries", text: "show log"}).on(`click`, showBacklog),
-      BUTTON({
-        id: "showComments",
-        text: "Show document comments",
-        title: "Show content of comment elements in a popup" }
-      ),
-      BUTTON({
-        id: "showCSS",
-        title: "Show the dynamically created styling in a popup" },
-        "Show custom CSS").on("click", function cssViewHandler() {
+        BUTTON({id: "showLogEntries", text: "show log"}).on(`click`, showBacklog),
+        BUTTON({
+            id: "showComments",
+            text: "Show document comments",
+            title: "Show content of comment elements in a popup"
+          }
+        ),
+        BUTTON({
+            id: "showCSS",
+            title: "Show the dynamically created styling in a popup"
+          },
+          "Show custom CSS").on("click", function cssViewHandler() {
           showStyling("JQxStylesheet", cssBttns.defaultCSS);
-      }),
-      BUTTON("Modal popup demo").on(`click`, modalDemo),
-      BUTTON(/github/i.test(location.href) ? "@Github" : "@Codeberg")
-        .on("click", function backLinksHandler() {
-          $.Popup.show( { content: backLinks } );
-        } )
-    ]
-  ));
-
+        }),
+        BUTTON("Modal popup demo").on(`click`, modalDemo),
+        BUTTON(/github/i.test(location.href) ? "@Github" : "@Codeberg")
+          .on("click", function backLinksHandler() {
+            $.Popup.show({content: backLinks});
+          })
+      ]
+    ));
+  
   $("button")
     .style({marginRight: "4px"})
     .each((btn, i) => btn.dataset.index = `bttn-${i}`); // each demo
   
   if (!/local/i.test(location.href)) {
-    $.img({src: `https://sdn.nicon.nl/px0_${isGithub ? `GH`: `CB`}-JQxDemo.png`});
+    $.img({src: `https://sdn.nicon.nl/px0_${isGithub ? `GH` : `CB`}-JQxDemo.png`});
   }
   
   // styled via named class .exampleText
- // $.virtual(`<div/>`)
+  // $.virtual(`<div/>`)
   $.editCssRules(`.exampleText {
       borderTop: 2px dotted #999;
       borderLeft: 5px solid red;
@@ -153,8 +167,8 @@ if (!debug) {
       padding-top: 0.2rem;
     }`);
   $.div({class: "exampleText"})
-  .append($.span(`Styling`).html(" examples", true))
-  .renderTo(JQxRoot);
+    .append($.span(`Styling`).html(" examples", true))
+    .renderTo(JQxRoot);
   
   // styled with intermediate class
   $$(`<div id="helloworld"/>`)
@@ -165,13 +179,15 @@ if (!debug) {
       border: "3px solid green",
       padding: "5px",
       fontSize: "1.2em",
-      display: "inline-block", })
+      display: "inline-block",
+    })
     .appendTo(JQxRoot)
     .find$("span")
     .css({className: "okRed", color: "red"});
   
   // create a custom function named 'cbBox'
   $.fn(`cbBox`, checkboxJQxFactory);
+  
   // the actual custom function
   function checkboxJQxFactory(me, spec) {
     // note: the originating element will be converted to
@@ -188,18 +204,21 @@ if (!debug) {
     const buttonRow = multipleOrSingleLinesControl(); //addSeparateBttn();
     me.append(checkBoxesBlock);
     
-    switch(true) {
-      case !!selectallBttn: return addAllOrNoneButton();
-      default: return me;
+    switch (true) {
+      case !!selectallBttn:
+        return addAllOrNoneButton();
+      default:
+        return me;
     }
     
     function addAllOrNoneButton() {
-      buttonRow.append($.span(` `, $.button( { data: { all: true } } )
-          .on("click", handleAllOrNoneBttn)));
+      buttonRow.append($.span(` `, $.button({data: {all: true}})
+        .on("click", handleAllOrNoneBttn)));
       $.handle({
-        type: `input`,
-        handler: handleInput,
-        selector: `[data-id='${boxId}'] input[type=checkbox]`}
+          type: `input`,
+          handler: handleInput,
+          selector: `[data-id='${boxId}'] input[type=checkbox]`
+        }
       );
       return me;
     }
@@ -214,7 +233,7 @@ if (!debug) {
           $.label(
             $.input({type: `radio`, name: `linesDisplay`, value: `false`}),
             `multiple lines`)
-          )
+        )
       );
       $.handle({type: `input`, selector: `[name='linesDisplay']`, handler: handleCBPerLineRadio});
       me.append(radio);
@@ -261,12 +280,12 @@ if (!debug) {
       $.editCssRules(
         `[data-id=${boxId}] {
           ${style || ``}
-        }` );
+        }`);
     }
     
     function createCssRules(boxId, optLines) {
-      if ( ![...$(`#JQxStylesheet`).node.sheet.cssRules]
-        .find(rule => rule.selectorText === `[data-checkbox-container]`) ) {
+      if (![...$(`#JQxStylesheet`).node.sheet.cssRules]
+        .find(rule => rule.selectorText === `[data-checkbox-container]`)) {
         $.editCssRules(
           `[data-checkbox-container] {
             margin: 1em 0;
@@ -332,41 +351,42 @@ if (!debug) {
   
   // example of custom function 'cbBox'
   $.span({class: "cbBoxEx"},
-      $.div(`The following box ('<b>Which colors ...</b>') is created from a <i>custom</i> function
+    $.div(`The following box ('<b>Which colors ...</b>') is created from a <i>custom</i> function
         created with <code>$.fn</code>,<br>called <code>cbBox</code>
         (say, a "mini library" for checkboxes).`),
-      $.div(`It creates a block of checkboxes from specified parameters.`),
-      $.div(`In this case an optional button is provided to check all or no checkboxes in
+    $.div(`It creates a block of checkboxes from specified parameters.`),
+    $.div(`In this case an optional button is provided to check all or no checkboxes in
         the box.`),
     $.span(`<h3>Which colors do you like?</h3>`)
-    // ^ note: if the enclosing element  is not a paragraph or div element,
-    // (so not a block element) it will be converted to a div
-    .cbBox({
-      opts: [
-        {value: 1, html: `<span style="color: red">Red</span>`},
-        {value: 2, html: `<span style="color: gold">Yellow</span>`},
-        {value: 3, html: `<span style="color: blue">Blue</span>`},
-        {value: 4, html: `<span style="color: green">Green</span>`},
-        {value: 5, html: `<span style="color: orange">Orange</span>`} ],
-      boxId: `colorSelectBox`,
-      style: `padding: 4px 8px; border: 1px dotted #c0c0c0; border-radius: 8px; h3 {
+      // ^ note: if the enclosing element  is not a paragraph or div element,
+      // (so not a block element) it will be converted to a div
+      .cbBox({
+        opts: [
+          {value: 1, html: `<span style="color: red">Red</span>`},
+          {value: 2, html: `<span style="color: gold">Yellow</span>`},
+          {value: 3, html: `<span style="color: blue">Blue</span>`},
+          {value: 4, html: `<span style="color: green">Green</span>`},
+          {value: 5, html: `<span style="color: orange">Orange</span>`}],
+        boxId: `colorSelectBox`,
+        style: `padding: 4px 8px; border: 1px dotted #c0c0c0; border-radius: 8px; h3 {
         margin: 0.2em 0 0.4em 0; text-align:center;
         padding-bottom: 0.4em; border-bottom: 1px solid #c0c0c0;}`,
-      selectallBttn: true,
-    })).appendTo(JQxRoot);
+        selectallBttn: true,
+      })).appendTo(JQxRoot);
   
   // code viewer for the [JQx instance].cbBox extension
   DIV({
       class: `exampleText codeVwr`,
-      data: {updown: `\u25BC Display `, forid: `cbBoxCode`, hidden: 1} },
+      data: {updown: `\u25BC Display `, forid: `cbBoxCode`, hidden: 1}
+    },
     `the code for the <code>[JQx instance].cbBox</code> extension ☝`,
-    ).appendTo(JQxRoot).afterMe(
-      $.div({id: `cbBoxCode`, class: `upDownFader`}, $.pre(
-          $.code(
-            `$.fn("cbBox", checkboxJQxFactory); // &lt;= create the extension\n`,
-            $.escHtml(`\n// invocation (create the above color checkbox container)\n` +
+  ).appendTo(JQxRoot).afterMe(
+    $.div({id: `cbBoxCode`, class: `upDownFader`}, $.pre(
+        $.code(
+          `$.fn("cbBox", checkboxJQxFactory); // &lt;= create the extension\n`,
+          $.escHtml(`\n// invocation (create the above color checkbox container)\n` +
             `$.div("<h3>Which colors do you like?</h3>")\n` +
-            `  .cbBox( {\n`+
+            `  .cbBox( {\n` +
             `     opts: [\n` +
             `        {value: 1, html: '<span style="color: red">Red</span>'},\n` +
             `        {value: 2, html: '<span style="color: gold">Yellow</span>'},\n` +
@@ -377,15 +397,15 @@ if (!debug) {
             `      style: "[...]" /* see all code */,\n` +
             `      selectallBttn: true }` +
             `  \n  );`),
-            `\n\n// the actual checkbox creator function\n`,
-            checkboxJQxFactory.toString()
+          `\n\n// the actual checkbox creator function\n`,
+          checkboxJQxFactory.toString()
             .trim()
             .replace(/\n {4}/g, `  `)
             .replace(/( {2})}$/, `}`)
-          )
         )
       )
-    );
+    )
+  );
   
   // append multiline comment to p#JQxRoot
   COMMENT(`Hi, I am a multiline HTML-comment.
@@ -393,38 +413,39 @@ if (!debug) {
      A comment may be injected into a child
      element (using the [root] parameter
      combined with a position`)
-  .appendTo(JQxRoot),
-
-  // a comment can also be appended using append/appendTo/prepend/prependTo
-  $$(`<!--I was appended to div#JQxRoot using .appendTo-->`)
-    .appendTo(JQxRoot);
+    .appendTo(JQxRoot),
+    
+    // a comment can also be appended using append/appendTo/prepend/prependTo
+    $$(`<!--I was appended to div#JQxRoot using .appendTo-->`)
+      .appendTo(JQxRoot);
   $$(`<!--I was PREpended to div#JQxRoot using .prependTo-->`)
     .prependTo(JQxRoot);
-
+  
   // comment insertion test (note: this works with before-/afterMe/andThen too now)
   $($.comment(`Comment @ #JQxRoot beforebegin (verify it in DOM tree)`), JQxRoot, $.at.BeforeBegin);
   
   $(`<!--Comment @ #bttnblock afterend (verify it in DOM tree)-->`,
     $(`#bttnblock`), $.at.AfterEnd);
-
+  
   $(`<!--Comment @ #bttnblock afterbegin (so, prepend) verify it in DOM tree) -->`,
     $(`#bttnblock`), $.at.AfterBegin);
-
+  
   // display code of this file
   // -------------------------
   DIV({
-    class: `exampleText codeVwr`,
-    data: {updown: `\u25BC Display `, forid: `code`, hidden: 1} },
+      class: `exampleText codeVwr`,
+      data: {updown: `\u25BC Display `, forid: `code`, hidden: 1}
+    },
     `all code used in this demo (index.js)`)
-  .appendTo(JQxRoot);
-
+    .appendTo(JQxRoot);
+  
   // append actual code to document
   injectCode(JQxRoot).then(_ => `code injected`);
-
+  
   const donePerf = (performance.now() - started) / 1000;
   const perfMessage =
     $.div(`Page creation took ${donePerf.toFixed(3)} seconds`)
-      .afterMe( $.div(`All done, enjoy 😎!` ) );
+      .afterMe($.div(`All done, enjoy 😎!`));
   $.Popup.show({content: perfMessage, closeAfter: 5});
   
   // this invalid tag will result in an error message in the console.
@@ -444,7 +465,7 @@ async function injectCode(root = document.body) {
         $.pre({data: {jsViewBox: true}, class: `language-javascript`},
           $.code(r.replace(/&/g, "&amp;").replace(/</g, "&lt;") +
             `\n// ${lns} lines`)
-        ) ).renderTo(root, $.at.beforeend)
+        )).renderTo(root, $.at.beforeend)
     }).then(_ => setTimeout(hljs.highlightAll));
 }
 
@@ -469,11 +490,11 @@ function getDelegates4Document() {
     }, {
       target: `#showComments`,
       name: "showCommentsHandler",
-      handlers: [function({evt}) {
+      handlers: [function ({evt}) {
         const comments = $.div(allComments([...document.childNodes]).join(`\n`));
         const head = $.h3(`*All Comments in this document:`)
           .Style.inline({marginTop: 0, marginBottom: `0.5rem`});
-        const content = $.div( head, comments );
+        const content = $.div(head, comments);
         return $.Popup.show({content});
       },]
     }, {
@@ -482,12 +503,12 @@ function getDelegates4Document() {
       handlers: [
         ({self}) => {
           const codeElem = $(`#${self.data.get(`forid`)}`);
-
+          
           if (!+self.data.get(`hidden`)) {
             codeElem.removeClass(`down`);
             return self.data.add({updown: '\u25bc Display ', hidden: 1})
           }
-
+          
           $(`.down`).each(el => el.classList.remove(`down`));
           $(`[data-forid]`).data.add({updown: '\u25bc Display ', hidden: 1});
           codeElem.addClass(`down`);
@@ -510,7 +531,7 @@ function modalDemo() {
       `Hi. This box is `, I(`really`), ` modal.`,
       BR(), `There is no close icon and clicking outside this box does nothing.`,
       BR(), `In other words: you can only close this using the button below.`,
-      BR() ).append(closeBttn),
+      BR()).append(closeBttn),
     modal: true,
     callback: callbackAfterClose,
     warnMessage: $.div(`There's only <b><i>one</i></b> escape`),
@@ -530,64 +551,66 @@ function showBacklog() {
 
 function allComments(root, result = []) {
   for (const node of root) {
-
+    
     if (node.childNodes && node.childNodes.length) {
       allComments([...node.childNodes], result);
     }
-
+    
     if (node.nodeType === 8) {
       const parent = node.parentNode;
       let parentStr;
-
+      
       if (parent) {
         const className = parent.classList.length && `.${[...parent.classList][0]}` || ``;
         parentStr = `&#8226; in <b>${
           parent.nodeName.toLowerCase()}${
           parent.id ? `#${parent.id}` : className ? className : ``}</b>`;
       }
-
+      
       const spacing = "&nbsp;".repeat(7);
       result.push(`<div class="cmmt">${parentStr ?? `&#8226; in <b>??</b>`}<br>${
         "&nbsp;".repeat(2)}&lt;!--${
-          node.textContent
-            .replace(/</, `&lt;`)
-            .replace(/\n/g, `<br>${spacing}`)}--&gt;</div>`);
+        node.textContent
+          .replace(/</, `&lt;`)
+          .replace(/\n/g, `<br>${spacing}`)}--&gt;</div>`);
     }
   }
-
+  
   return result;
 }
 
 // create links for popup
 function getBacklinks() {
   return DIV(
-      DIV(`The repository can be found  @ `,
-        A( {
-          href: isGithub
-            ? "//github.com/KooiInc/JQx"
-            : "//codeberg.org/KooiInc/JQx",
-          target: "_top",
-          text: isGithub
-            ? "https://github.com/JQx"
-            : "https://codeberg.org/KooiInc/JQx" } )),
-      DIV(`The documentation resides @ `,
-        A( {
-          href: isGithub
-            ? "//kooiinc.github.io/JQx/Resource/Docs/"
-            : "//kooiinc.codeberg.page/JQx/Resource/Docs/",
-          target: "_blank",
-          text: isGithub
-            ? "https://kooiinc.github.io/JQx/Resource/Docs/"
-            : "https://kooiinc.codeberg.page/JQx/Resource/Docs/" } ))
-    );
+    DIV(`The repository can be found  @ `,
+      A({
+        href: isGithub
+          ? "//github.com/KooiInc/JQx"
+          : "//codeberg.org/KooiInc/JQx",
+        target: "_top",
+        text: isGithub
+          ? "https://github.com/JQx"
+          : "https://codeberg.org/KooiInc/JQx"
+      })),
+    DIV(`The documentation resides @ `,
+      A({
+        href: isGithub
+          ? "//kooiinc.github.io/JQx/Resource/Docs/"
+          : "//kooiinc.codeberg.page/JQx/Resource/Docs/",
+        target: "_blank",
+        text: isGithub
+          ? "https://kooiinc.github.io/JQx/Resource/Docs/"
+          : "https://kooiinc.codeberg.page/JQx/Resource/Docs/"
+      }))
+  );
 }
 
 // :void. location dependent favicon & counter image
 function injectFavIconAndCounterImage() {
   const icons = {
-    github: { href: "../Common/Sites/GHfavicon.png"  },
-    codeberg: { href: "../Common/Sites/codebergicon.ico" },
-    local: { href: "../Common/Sites/devIco.png" },
+    github: {href: "../Common/Sites/GHfavicon.png"},
+    codeberg: {href: "../Common/Sites/codebergicon.ico"},
+    local: {href: "../Common/Sites/devIco.png"},
   };
   const currentLink = $(`head link[rel="icon"]`);
   $.allowTags(`link`, `#comment`);
@@ -598,10 +621,13 @@ function injectFavIconAndCounterImage() {
   // create counter image (if not in local debug window)
   !isLocal && $.img({src: counterSrc});
   
-  switch(true) {
-    case isLocal: return currentLink.replaceWith(link.attr(icons.local));
-    case isCodeberg: return currentLink.replaceWith(link.attr(icons.codeberg))
-    default: currentLink.replaceWith(link.attr(icons.github));
+  switch (true) {
+    case isLocal:
+      return currentLink.replaceWith(link.attr(icons.local));
+    case isCodeberg:
+      return currentLink.replaceWith(link.attr(icons.codeberg))
+    default:
+      currentLink.replaceWith(link.attr(icons.github));
   }
 }
 
@@ -617,7 +643,7 @@ function showStyling() {
       callback: () => popupContent.removeClass(displayClass),
     }
   );
-
+  
   hljs.highlightElement($.node(`[data-css-view-box]`));
 }
 
@@ -630,5 +656,5 @@ function getStyleRules4Display() {
     .replace(
       `#jqxPopup[open] #jqxPopupContent.cssDisplay`,
       `/* inserted to display custom CSS */\n#jqxPopup[open] #jqxPopupContent.cssDisplay`);
-  return css_beautify(stringified, {indent_size: 2, indent_char: " ", end_with_newline: true })
+  return css_beautify(stringified, {indent_size: 2, indent_char: " ", end_with_newline: true})
 }
