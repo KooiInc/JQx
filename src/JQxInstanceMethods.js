@@ -284,6 +284,7 @@ function instanceExtensionsFactory(jqx) {
     },
     hide(instance) { return loop(instance, el => applyStyle(el, {display: `none !important`})); },
     html(instance, htmlValue, append) {
+      htmlValue = cleanupHtml(htmlValue);
       switch(true) {
         case instance.is.empty && !isNonEmptyString(htmlValue): return "";
         case !isNonEmptyString(htmlValue): return instance.node?.getHTML() ?? ``;
@@ -301,7 +302,7 @@ function instanceExtensionsFactory(jqx) {
       if (instance.is.empty || !isNonEmptyString(forSelector) || !isNonEmptyString(htmlString)) { return instance; }
       const el2Change = instance.find$(forSelector);
       if (el2Change.length < 1) { return instance; }
-      const nwElement = createElementFromHtmlString(`<span>${htmlString}</span>`);
+      const nwElement = createElementFromHtmlString(`<span>${cleanupHtml(htmlString)}</span>`);
       el2Change.each(el => {
         if (!append) { el.textContent = ``; }
         el.insertAdjacentHTML(jqx.at.end, nwElement?.getHTML());
