@@ -294,6 +294,7 @@ function staticMethodsFactory(jqx) {
     logger: systemLog,
     proxyWrapper,
     text(str, isComment = false) { return isComment ? jqx(`<!--${str}-->`) : document.createTextNode(str); },
+    comment(str) { return jqx(`<!--${str}-->`); },
     node(selector, root = document) { return root.querySelector(selector, root); },
     nodes(selector, root = document) { return [...root.querySelectorAll(selector, root)]; },
     clearAllTimers,
