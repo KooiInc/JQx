@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2026-10-18 09:10:41 UTC-->
+<!-- Generated file, last update 2026-10-18 11:40:29 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -581,6 +581,12 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
              data-jumpkey="static_allowAttributes">[JQx].allowAttributes</div>)). It's also not allowed to use 
      a function as property value.
    </li>
+   <li><a target="_blank" 
+        href="https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Reflected_attributes"
+    >Non-reflected attributes</a> are preserved on the <code>Element</code> instance, but (per definition)
+    not present in the rendered <code>Element</code>.
+   </li> 
+   <li>Setting properties with a function value (e.g. <code>[instance].prop({some: () => alert("hello"})</code> is prohibited.</li>
    <li>After setting properties the element(s) under consideration are sanitized again. See example.</li>
    <li>See all information on properties and attributes @<a target="_blank" href="https://javascript.info/dom-attributes-and-properties">javascript.info</a></li>
 </ul>
