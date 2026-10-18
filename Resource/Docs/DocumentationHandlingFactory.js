@@ -739,7 +739,8 @@ function clickActionsFactory($) {
       exElem.prop({
           id: "ElementWithProps",
           title: "now I have a title",
-          justAProperty: "hi",
+          justAProperty: "hi",                   // <= HTMLDivElement instance property, not reflected
+          type: `text`,                          // <= HTMLDivElement instance property, not reflected
           "data-fantastic-stuff": true,
           data: {helloWorld: "Hello! World!"},
           onclick: 'javascript:alert("hello!")', // <= not allowed, see console
@@ -754,6 +755,7 @@ function clickActionsFactory($) {
           <br><code>exElem.prop("justAProperty")</code> =&gt; ${exElem.prop("justAProperty")}
           <br><code>exElem.prop("data-fantastic-stuff")</code> =&gt; ${exElem.prop("data-fantastic-stuff")}
           <br><code>exElem.prop("data-helloWorld")</code> =&gt; ${exElem.prop("data-helloWorld")}
+          <br><code>exElem.prop("type")</code> =&gt; ${exElem.prop("type")}
           <br><code>exElem.prop("value")</code> =&gt; ${exElem.prop("value")}
           <br>Serialized element =&gt;`).append($.pre({class: `outerhtml`}, exElem.HTML.get(1, 1)))
       } );
