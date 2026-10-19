@@ -736,11 +736,16 @@ function clickActionsFactory($) {
       const exElem = $('<div data-id="tmpEx"><b>Hello</b> <span>World</span>! (hover me)</div>')
         .showInExample(evt)
         .removeAfter(15);
+      // note: aria-* properties are not camelCased cf the standards
+      // e.g. "aria-valuetext" => "ariaValueText" (would expect "ariaValuetext")
       exElem.prop({
           id: "ElementWithProps",
           title: "now I have a title",
           justAProperty: "hi",                   // <= HTMLDivElement instance property, not reflected
           type: `text`,                          // <= HTMLDivElement instance property, not reflected
+          ariaValueText: "I am your text",       // <= reflected as "aria-valuetext"
+          "aria-key-shortcuts" : "Ctrl+Alt+A",   // <= reflected as "aria-keyshortcuts"
+          role: "mark",                          // <= reflected
           "data-fantastic-stuff": true,
           data: {helloWorld: "Hello! World!"},
           onclick: 'javascript:alert("hello!")', // <= not allowed, see console
@@ -753,6 +758,9 @@ function clickActionsFactory($) {
           <br><code>exElem.prop("id")</code> =&gt; ${exElem.prop("id")}
           <br><code>exElem.prop("onclick")</code> =&gt; ${exElem.prop("onclick")}
           <br><code>exElem.prop("justAProperty")</code> =&gt; ${exElem.prop("justAProperty")}
+          <br><code>exElem.prop("aria-valuetext")</code> =&gt; ${exElem.prop("aria-valuetext")}
+          <br><code>exElem.prop("role")</code> =&gt; ${exElem.prop("role")}
+          <br><code>exElem.prop("ariaKeyShortcuts")</code> =&gt; ${exElem.prop("ariaKeyShortcuts")}
           <br><code>exElem.prop("data-fantastic-stuff")</code> =&gt; ${exElem.prop("data-fantastic-stuff")}
           <br><code>exElem.prop("data-helloWorld")</code> =&gt; ${exElem.prop("data-helloWorld")}
           <br><code>exElem.prop("type")</code> =&gt; ${exElem.prop("type")}

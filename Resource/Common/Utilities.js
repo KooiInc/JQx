@@ -215,9 +215,11 @@ function propertyIsReflected(el, prop) {
 }
 
 function assignPropertyValues(el, keyValuePairs) {
+  console.log(keyValuePairs);
   for (let [propName, propValue] of Object.entries(keyValuePairs)) {
     propName = propName.trim();
-
+    propName = !/^data-/.test(propName) && /-/.test(propName) ? toCamelcase(propName) : propName;
+    
     switch (true) {
       case propName.startsWith(`on`):
         systemLog.error(`JQx: [instance].prop => '${propName}' not allowed`); break;

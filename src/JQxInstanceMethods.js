@@ -377,12 +377,13 @@ function instanceExtensionsFactory(jqx) {
             key = /(-\w)/.test(key) ? toCamelcase(key) : key;
             return node.dataset[key]
           default:
+            key = /-/.test(key) && !/^aria/.test(key) ? toCamelcase(key) : key;
             return propertyIsReflected(node, key) ? node.getAttribute(key) : node[key];
         }
       }
 
-      const props = !IS(nameOrKVStore, Object) ? { [nameOrKVStore]: value } : nameOrKVStore;
-      assignPropertyValues(instance.node, nameOrKVStore);
+      const props = IS(nameOrKVStore, String) ? { [nameOrKVStore]: value } : nameOrKVStore;
+      assignPropertyValues(instance.node, props);
       
       return instance;
     },
