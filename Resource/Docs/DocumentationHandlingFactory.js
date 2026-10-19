@@ -734,29 +734,34 @@ function clickActionsFactory($) {
     },
     propEx: evt => {
       const exElem = $('<div data-id="tmpEx"><b>Hello</b> <span>World</span>! (hover me)</div>')
-        .showInExample(evt)
-        .removeAfter(15);
+        .showInExample(evt, true);
+      // set single property with single key and value
+      exElem.prop("innerHTML", exElem.html() + ". Are we done?");
+      
+      // set properties using key-value Object
       exElem.prop({
           id: "ElementWithProps",
           title: "now I have a title",
-          justAProperty: "hi",                   // <= HTMLDivElement instance property, not reflected,
-                                                 //    so can *not* be retrieved using "just-a-property"
-          type: `text`,                          // <= HTMLDivElement instance property, not reflected
-          ariaValueText: "42 is the answer",     // <= reflected as "aria-valuetext"
-          "aria-key-shortcuts" : "Ctrl+Alt+A",   // <= reflected as "aria-keyshortcuts"
-          role: "mark",                          // <= reflected
+          justAProperty: "hi",                    // <= HTMLDivElement instance property, not reflected,
+                                                  //    so can *not* be retrieved using "just-a-property"
+          type: `text`,                           // <= HTMLDivElement instance property, not reflected
+          ariaValueText: "42 is the answer",      // <= reflected as "aria-valuetext"
+          "aria-key-shortcuts" : "Ctrl+Alt+A",    // <= reflected as "aria-keyshortcuts"
+          role: "mark",                           // <= reflected
           "data-fantastic-stuff": true,
           data: {helloWorld: "Hello! World!"},
-          onclick: 'javascript:alert("hello!")', // <= not allowed, see console
-          value: () => alert(`hello`),           // <= not allowed, see console
+          onclick: 'javascript:alert("hello!")',  // <= not allowed, see console
+          value: () => alert(`hello`),            // <= not allowed, see console
+          "data-value": () => alert(`hello`),     // <= not allowed, see console
+          dataNodice: () => alert(`hello`),       // <= not allowed, see console
+          dataSafe: 'javascript:alert("hello!")'  // <= not allowed, see console
         }
       );
-
+      
       $.Popup.show( {
         content: $.div(`<code>exElem.prop("title")</code> =&gt; ${exElem.prop("title")}
           <br><code>exElem.prop("id")</code> =&gt; ${exElem.prop("id")}
           <br><code>exElem.prop("onclick")</code> =&gt; ${exElem.prop("onclick")}
-          <br><code>exElem.prop("just-a-property")</code> =&gt; ${exElem.prop("just-a-property")}
           <br><code>exElem.prop("justAProperty")</code> =&gt; ${exElem.prop("justAProperty")}
           <br>&nbsp;&nbsp;*not reflected =&gt; <code>exElem.prop("just-a-property")</code> =&gt; ${exElem.prop("just-a-property")}
           <br><code>exElem.prop("ariaValueText")</code> =&gt; ${exElem.prop("ariaValueText")}
@@ -767,8 +772,13 @@ function clickActionsFactory($) {
           <br><code>exElem.prop("dataHelloWorld")</code> =&gt; ${exElem.prop("dataHelloWorld")}
           <br><code>exElem.prop("type")</code> =&gt; ${exElem.prop("type")}
           <br><code>exElem.prop("value")</code> =&gt; ${exElem.prop("value")}
+          <br><code>exElem.prop("dataValue")</code> =&gt; ${exElem.prop("dataValue")}
+          <br><code>exElem.prop("data-nodice")</code> =&gt; ${exElem.prop("data-nodice")}
+          <br><code>exElem.prop("dataCando")</code> =&gt; ${exElem.prop("dataCando")}
+          <br><code>exElem.prop("dataSafe")</code> =&gt; ${exElem.prop("dataSafe")}
           <br>Serialized element =&gt;`).append($.pre({class: `outerhtml`}, exElem.HTML.get(1, 1)))
       } );
+      
     },
     removeClassEx: evt => {
       $.editCssRule(".exRemoveClassTest { color: red; font-weight: bold; }");

@@ -192,6 +192,11 @@ function assignAttrValues(el, keyValuePairs) {
     for (let [key, value] of Object.entries(keyValuePairs)) {
       key = toDashedNotation(key.trim());
       
+      if (/javascript:/i.test(String(value))) {
+        systemLog.error(`JQx.attr: ${value}  not allowed`);
+        continue;
+      }
+      
       if (key.startsWith(`data`)) {
         return setData(el, value);
       }
@@ -214,20 +219,25 @@ function propertyIsReflected(el, prop) {
   return !!clone.getAttribute(prop);
 }
 
+function cleanupDataKey(key) {
+  return key.replace(/data/i, ``).replace(/^-/, ``);
+}
+
 function assignPropertyValues(el, keyValuePairs) {
   for (let [propName, propValue] of Object.entries(keyValuePairs)) {
     propName = propName.trim();
-    propName = !/^data-/.test(propName) && /-/.test(propName) ? toCamelcase(propName) : propName;
+    propName = !/^data/.test(propName) && /-/.test(propName) ? toCamelcase(propName) : propName;
     
     switch (true) {
       case propName.startsWith(`on`):
         systemLog.error(`JQx: [instance].prop => '${propName}' not allowed`); break;
-      case propName.startsWith(`data-`):
-        assignAttrValues(el, {data: {[propName.replace(/^data-/, ``)]: propValue}});  break;
-      case /data/i.test(propName) && IS(propValue, Object):
-        assignAttrValues(el, {data: {...propValue}}); break;
-      case typeof propValue === `function`:
-        systemLog.error(`JQx: [instance].prop => '${propName}' function values not allowed`); break;
+      case typeof propValue === `function` || /javascript/i.test(String(propValue)):
+        systemLog.error(`JQx: [instance].prop => '${
+          propName}: ${propValue.toString()}' not allowed`); break;
+      case propName.startsWith(`data`):
+        propName = cleanupDataKey(propName);
+        propValue = !IS(propValue, Object) ? {[propName]: propValue} : propValue;
+        assignAttrValues(el, {data: propValue});  break;
       default:
         el[propName] = propValue;
     }
@@ -434,7 +444,7 @@ function toDashedNotation(str2Convert) {
 }
 
 function ucFirst([first, ...theRest]) {
-  return `${first.toUpperCase()}${theRest.join(``)}`;
+  return `${first?.toUpperCase() ?? first}${theRest.join(``)}`;
 }
 
 function lcFirst([first, ...theRest]) {

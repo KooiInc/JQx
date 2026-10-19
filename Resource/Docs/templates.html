@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2026-10-19 08:12:47 UTC-->
+<!-- Generated file, last update 2026-10-19 11:29:52 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -566,7 +566,7 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
 </template>
 
 <template data-id="instance_prop" class="instance_prop" data-is-deprecated="false">
-<div data-params='[{"nameOrKVStore":""},{"value":"string | undefined."}]'></div>
+<div data-params='[{"nameOrKVStore":"string | Object<string, any>"},{"value":"string | undefined"}]'></div>
 <div data-return-value='string | JQx Instance'></div>
 <div data-text='1'><div>Set one or more properties (e.g. <code>title</code> or <code>disabled</code>) value for the first element of the JQx Instance element collection. Or, without <code>[value]</code> retrieves the value of [property] of the first (root) element from the JQx Instance collection.</div>
 
@@ -585,13 +585,17 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
         href="https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Reflected_attributes"
     >Non-reflected attributes</a> are preserved on the <code>Element</code> instance, but (per definition)
     not present in the rendered <code>Element</code>.
-   </li> 
+   </li>
+   <li>Setting/retrieval of <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/data-*"
+      >data-*</a> attributes using this method is offloaded to 
+       <div class="linkLike" data-action="jump2Nav" data-jumpkey="instance_attr">[instance].attr</div>
+   </li>
    <li>
       <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA"
          >aria-*</a> properties are not <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Glossary/Camel_case"
         >camelCased</a> cf what you would expect, e.g. <code>"aria-valuetext"</code> 
        => <code>"ariaValueText"</code> (would expect <code>"ariaValuetext"</code>). Use the right naming
-       when using such properties.
+       assigning such properties.
    </li>
    <li>Setting properties with a function value (e.g. <code>[instance].prop({some: () => alert("hello"})</code> is prohibited.</li>
    <li>After setting properties the element(s) under consideration are sanitized again. See example.</li>
