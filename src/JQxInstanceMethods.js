@@ -375,14 +375,6 @@ function instanceExtensionsFactory(jqx) {
         
         switch(true) {
           case /^data/.test(key): return instance.attr(key);
-          // case /^data-/i.test(key):
-          //   key = key.replace(/^data-/, ``);
-          //   key = /(-\w)/.test(key) && isReflected ? toCamelcase(key) : key;
-          //   return node.dataset[key] ?? null;
-          // case /^data/i.test(key): {
-          //   key = lcFirst(key.replace(/^data/, ``));
-          //   return node.dataset[key] ?? null;
-          // }
           default:
             key = /-/.test(key) && !/^aria/.test(key) && isReflected ? toCamelcase(key) : key;
             return isReflected ? node.getAttribute(key) : node[key] ?? null;
