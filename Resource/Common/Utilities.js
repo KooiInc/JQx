@@ -215,7 +215,6 @@ function propertyIsReflected(el, prop) {
 }
 
 function assignPropertyValues(el, keyValuePairs) {
-  console.log(keyValuePairs);
   for (let [propName, propValue] of Object.entries(keyValuePairs)) {
     propName = propName.trim();
     propName = !/^data-/.test(propName) && /-/.test(propName) ? toCamelcase(propName) : propName;
