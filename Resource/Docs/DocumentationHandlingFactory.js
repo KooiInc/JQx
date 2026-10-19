@@ -736,14 +736,13 @@ function clickActionsFactory($) {
       const exElem = $('<div data-id="tmpEx"><b>Hello</b> <span>World</span>! (hover me)</div>')
         .showInExample(evt)
         .removeAfter(15);
-      // note: aria-* properties are not camelCased cf the standards
-      // e.g. "aria-valuetext" => "ariaValueText" (would expect "ariaValuetext")
       exElem.prop({
           id: "ElementWithProps",
           title: "now I have a title",
-          justAProperty: "hi",                   // <= HTMLDivElement instance property, not reflected
+          justAProperty: "hi",                   // <= HTMLDivElement instance property, not reflected,
+                                                 //    so can *not* be retrieved using "just-a-property"
           type: `text`,                          // <= HTMLDivElement instance property, not reflected
-          ariaValueText: "I am your text",       // <= reflected as "aria-valuetext"
+          ariaValueText: "42 is the answer",     // <= reflected as "aria-valuetext"
           "aria-key-shortcuts" : "Ctrl+Alt+A",   // <= reflected as "aria-keyshortcuts"
           role: "mark",                          // <= reflected
           "data-fantastic-stuff": true,
@@ -757,12 +756,15 @@ function clickActionsFactory($) {
         content: $.div(`<code>exElem.prop("title")</code> =&gt; ${exElem.prop("title")}
           <br><code>exElem.prop("id")</code> =&gt; ${exElem.prop("id")}
           <br><code>exElem.prop("onclick")</code> =&gt; ${exElem.prop("onclick")}
+          <br><code>exElem.prop("just-a-property")</code> =&gt; ${exElem.prop("just-a-property")}
           <br><code>exElem.prop("justAProperty")</code> =&gt; ${exElem.prop("justAProperty")}
-          <br><code>exElem.prop("aria-valuetext")</code> =&gt; ${exElem.prop("aria-valuetext")}
+          <br>&nbsp;&nbsp;*not reflected =&gt; <code>exElem.prop("just-a-property")</code> =&gt; ${exElem.prop("just-a-property")}
+          <br><code>exElem.prop("ariaValueText")</code> =&gt; ${exElem.prop("ariaValueText")}
+          <br>&nbsp;&nbsp;*reflected =&gt; <code>exElem.prop("aria-valuetext")</code> =&gt; ${exElem.prop("aria-valuetext")}
           <br><code>exElem.prop("role")</code> =&gt; ${exElem.prop("role")}
           <br><code>exElem.prop("ariaKeyShortcuts")</code> =&gt; ${exElem.prop("ariaKeyShortcuts")}
           <br><code>exElem.prop("data-fantastic-stuff")</code> =&gt; ${exElem.prop("data-fantastic-stuff")}
-          <br><code>exElem.prop("data-helloWorld")</code> =&gt; ${exElem.prop("data-helloWorld")}
+          <br><code>exElem.prop("dataHelloWorld")</code> =&gt; ${exElem.prop("dataHelloWorld")}
           <br><code>exElem.prop("type")</code> =&gt; ${exElem.prop("type")}
           <br><code>exElem.prop("value")</code> =&gt; ${exElem.prop("value")}
           <br>Serialized element =&gt;`).append($.pre({class: `outerhtml`}, exElem.HTML.get(1, 1)))

@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2026-10-19 07:33:35 UTC-->
+<!-- Generated file, last update 2026-10-19 08:12:47 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -587,10 +587,11 @@ $(`p`).remove(":not(.keepMe)"); // => all &lt;p> except "&lt;p.keepMe>" are remo
     not present in the rendered <code>Element</code>.
    </li> 
    <li>
-      aria-* properties are not <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Glossary/Camel_case"
+      <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA"
+         >aria-*</a> properties are not <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Glossary/Camel_case"
         >camelCased</a> cf what you would expect, e.g. <code>"aria-valuetext"</code> 
-       => <code>"ariaValueText"</code> (would expect <code>"ariaValuetext"</code>). This is circumvented
-      in setting and/or retrieval of such properties
+       => <code>"ariaValueText"</code> (would expect <code>"ariaValuetext"</code>). Use the right naming
+       when using such properties.
    </li>
    <li>Setting properties with a function value (e.g. <code>[instance].prop({some: () => alert("hello"})</code> is prohibited.</li>
    <li>After setting properties the element(s) under consideration are sanitized again. See example.</li>

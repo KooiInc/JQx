@@ -4,7 +4,7 @@ import {
   datasetKeyProxy, loop, cloneAndDestroy, setData,
   findParentScrollDistance, emptyElement, css, assignAttrValues,
   applyStyle, createElementFromHtmlString, inject2DOMTree,
-  assignPropertyValues, cleanupHtml, toCamelcase, propertyIsReflected,
+  assignPropertyValues, cleanupHtml, toCamelcase, propertyIsReflected, lcFirst,
 } from "./JQxUtilities.js";
 
 const instanceIs = ExamineElementFeatureFactory();
@@ -371,14 +371,20 @@ function instanceExtensionsFactory(jqx) {
       
       if (IS(nameOrKVStore, String) && !value && !instance.is.empty) {
         let key = nameOrKVStore.trim();
+        const isReflected = propertyIsReflected(node, key);
+        
         switch(true) {
-          case /^data/i.test(key):
-            key = key.replace(/data-/, ``);
-            key = /(-\w)/.test(key) ? toCamelcase(key) : key;
-            return node.dataset[key]
+          case /^data-/i.test(key):
+            key = key.replace(/^data-/, ``);
+            key = /(-\w)/.test(key) && isReflected ? toCamelcase(key) : key;
+            return node.dataset[key];
+          case /^data/i.test(key): {
+            key = lcFirst(key.replace(/^data/, ``));
+            return node.dataset[key];
+          }
           default:
-            key = /-/.test(key) && !/^aria/.test(key) ? toCamelcase(key) : key;
-            return propertyIsReflected(node, key) ? node.getAttribute(key) : node[key];
+            key = /-/.test(key) && !/^aria/.test(key) && isReflected ? toCamelcase(key) : key;
+            return isReflected ? node.getAttribute(key) : node[key];
         }
       }
 
