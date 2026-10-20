@@ -221,7 +221,7 @@ function instanceExtensionsFactory(jqx) {
         
         if (inlineEvt) {
           systemLog.error(`JQx: [instance].attr => '${inlineEvt}' not allowed.`);
-          keyOrObj[inlineEvt] = null;
+          delete keyOrObj[inlineEvt];
         }
         
         assignAttrValues(instance.node, keyOrObj);

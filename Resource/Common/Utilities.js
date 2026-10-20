@@ -193,7 +193,7 @@ function assignAttrValues(el, keyValuePairs) {
       key = toDashedNotation(key.trim());
       
       if (/javascript:/i.test(String(value))) {
-        systemLog.error(`JQx.attr: ${value}  not allowed`);
+        systemLog.error(`[instance].attr: ${value}  not allowed`);
         continue;
       }
       
