@@ -379,7 +379,7 @@ if (!debug) {
       class: `exampleText codeVwr`,
       data: {updown: `\u25BC Display `, forid: `cbBoxCode`, hidden: 1}
     },
-    `the code for the <code>[JQx instance].cbBox</code> extension ☝`,
+    ` the code for the <code>[JQx instance].cbBox</code> extension ☝`,
   ).appendTo(JQxRoot).afterMe(
     $.div({id: `cbBoxCode`, class: `upDownFader`}, $.pre(
         $.code(
@@ -436,7 +436,7 @@ if (!debug) {
       class: `exampleText codeVwr`,
       data: {updown: `\u25BC Display `, forid: `code`, hidden: 1}
     },
-    `all code used in this demo (index.js)`)
+    ` all code used in this demo (index.js)`)
     .appendTo(JQxRoot);
   
   // append actual code to document

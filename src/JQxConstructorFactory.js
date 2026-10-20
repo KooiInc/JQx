@@ -6,7 +6,8 @@ import {
   getNodeContentForLog, tagFNFactory as $T, truncate, cleanupHtml,
 } from "./JQxUtilities.js";
 
-export default createCTORProxy();
+const ctor = createCTORProxy();
+export default ctor;
 
 function JQxMainFactory() {
   const ctor = addJQxStaticMethods(
@@ -79,11 +80,10 @@ function createFromTDFactory(key, factory) {
 }
 
 function createCTORProxy() {
-  const factory = JQxMainFactory();
   const getterTrap = { get(target, key) {
       const isStaticTag = !!$T[key]();
       switch(true) {
-        case isStaticTag: return createFromTDFactory(key, factory);
+        case isStaticTag: return createFromTDFactory(key, target);
         case Object.hasOwn(target, key): return target[key];
         default:
           systemLog.error(`JQx: "${String(key)}" is not a valid JQx property`);
@@ -92,5 +92,6 @@ function createCTORProxy() {
    }
   };
   
+  const factory = JQxMainFactory();
   return new Proxy(factory, getterTrap);
 }
