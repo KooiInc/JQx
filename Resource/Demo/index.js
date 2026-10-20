@@ -377,9 +377,9 @@ if (!debug) {
   // code viewer for the [JQx instance].cbBox extension
   DIV({
       class: `exampleText codeVwr`,
-      data: {updown: `\u25BC Display `, forid: `cbBoxCode`, hidden: 1}
+      data: {updown: `\u25BC Display`, forid: `cbBoxCode`, hidden: 1}
     },
-    ` the code for the <code>[JQx instance].cbBox</code> extension ☝`,
+    `the code for the <code>[JQx instance].cbBox</code> extension ☝`,
   ).appendTo(JQxRoot).afterMe(
     $.div({id: `cbBoxCode`, class: `upDownFader`}, $.pre(
         $.code(
@@ -501,18 +501,18 @@ function getDelegates4Document() {
       target: `.codeVwr`,
       name: "codeViewerHandler",
       handlers: [
-        ({self}) => {
-          const codeElem = $(`#${self.data.get(`forid`)}`);
+        ({self: me}) => {
+          const codeElem = $(`#${me.data.get(`forid`)}`);
           
-          if (!+self.data.get(`hidden`)) {
+          if (!+me.data.get(`hidden`)) {
             codeElem.removeClass(`down`);
-            return self.data.add({updown: '\u25bc Display ', hidden: 1})
+            return me.data.add({updown: '\u25bc Display ', hidden: 1})
           }
           
           $(`.down`).each(el => el.classList.remove(`down`));
           $(`[data-forid]`).data.add({updown: '\u25bc Display ', hidden: 1});
           codeElem.addClass(`down`);
-          self.data.add({updown: '\u25b2 Hide ', hidden: 0});
+          me.data.add({updown: '\u25b2 Hide ', hidden: 0});
         }
       ]
     }]
