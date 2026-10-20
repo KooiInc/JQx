@@ -52,7 +52,7 @@ export default [
     font-weight: bold;
   }`,
   `.codeVwr:before {
-    content: ' 'attr(data-updown);
+    content: attr(data-updown)' ';
   }`,
   `.upDownFader {
     max-height: 0;
