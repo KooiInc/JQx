@@ -748,8 +748,8 @@ function clickActionsFactory($) {
           ariaValueText: "42 is the answer",      // <= reflected as "aria-valuetext"
           "aria-key-shortcuts" : "Ctrl+Alt+A",    // <= reflected as "aria-keyshortcuts"
           role: "mark",                           // <= reflected
-          "data-fantastic-stuff": true,
-          data: {helloWorld: "Hello! World!"},
+          "data-fantastic-stuff": true,           // <= data-attribute handled by [instance].attr
+          data: {helloWorld: "Hello! World!"},    // <= data-attribute handled by [instance].attr
           onclick: 'javascript:alert("hello!")',  // <= not allowed, see console
           value: () => alert(`hello`),            // <= not allowed, see console
           "data-value": () => alert(`hello`),     // <= not allowed, see console
