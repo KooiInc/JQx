@@ -4,7 +4,7 @@ import {
   datasetKeyProxy, loop, cloneAndDestroy, setData,
   findParentScrollDistance, emptyElement, css, assignAttrValues,
   applyStyle, createElementFromHtmlString, inject2DOMTree,
-  assignPropertyValues, cleanupHtml, toCamelcase, propertyIsReflected, lcFirst,
+  assignPropertyValues, cleanupHtml, toCamelcase, propertyIsReflected,
 } from "./JQxUtilities.js";
 
 const instanceIs = ExamineElementFeatureFactory();
