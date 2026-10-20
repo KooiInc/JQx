@@ -1,5 +1,5 @@
 let popupStyling = getPopupStyling();
-export {popupStyling/*, ATTRS, allTags*/};
+export {popupStyling};
 
 function getPopupStyling() {
   return [

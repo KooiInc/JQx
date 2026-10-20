@@ -9,8 +9,6 @@ import {
 export default createCTORProxy();
 
 function JQxMainFactory() {
-  const logLineLength = 70;
-  
   const ctor = addJQxStaticMethods(
     function(input, root, position = insertPositions.BeforeEnd) {
       const isVirtual = IS(root, HTMLBRElement) || root === true;
@@ -75,7 +73,7 @@ function createFromTDFactory(key, factory) {
     const instance = factory(cleanupHtml($T.div($T[key](...args)).firstChild), true);
     const instanceHtml = instance.outerHtml;
     instanceHtml && systemLog.log(`JQx: created instance from ${
-      truncate(instanceHtml.replace(/\n/g, ``), {at: 55, wordBoundary: true})}`);
+      truncate(instanceHtml.replace(/\n/g, ``), {at: 60, wordBoundary: true})}`);
     return instance;
   }
 }
