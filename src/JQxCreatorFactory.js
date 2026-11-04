@@ -47,26 +47,6 @@ function addInstanceMethodOrGetter(name, extensionMethod, isGetter) {
   return systemLog.log(`JQx: added instance extension ${isGetter ? `getter` : `function`} [${name}]`);
 }
 
-function addCTORMethodOrGetterFactory(jqx) {
-  return function(name, extensionMethod, isGetter) {
-    name = name?.trim();
-    if (!isNonEmptyString(name) || !IS(extensionMethod, Function) ) {
-      return jqx.error("JQx.staticFn: invalid parameter(s)");
-    }
-    
-    const ext = !!isGetter
-      ? { get() { return extensionMethod(); } }
-      : { value(...args) { return extensionMethod(...args); } };
-    
-    try { Object.defineProperty(jqx, name, ext); }
-    catch(err) {
-      return jqx.warn(`JQx.staticFn: extension [${name}] already exists`);
-    }
-    
-    return systemLog.log(`JQx: added static extension ${!!isGetter ? `getter` : `function`} [${name}]`);
-  }
-}
-
 function proxify(instance) {
   return new Proxy(
     instance, { get: (target, key) => proxyTrapFactory(target, key, instance) }
@@ -250,11 +230,12 @@ function getNamedListenerFactory(jqx) {
 
 function popupGetter(jqx) {
   if (!jqx.activePopup) {
-    Object.defineProperty(
-      jqx, `activePopup`, {
-        value: PopupFactory(jqx),
-        enumerable: false
-      } );
+    jqx.activePopup = PopupFactory(jqx);
+    // Object.defineProperty(
+    //   jqx, `activePopup`, {
+    //     value: PopupFactory(jqx),
+    //     enumerable: false
+    //   } );
   }
   return jqx.activePopup;
 }
@@ -280,9 +261,9 @@ function staticMethodsFactory(jqx) {
     capturedHandling, log, warn, error, handlerWrapper
   } = getSelectedStaticMethods(jqx);
   const getNamedListener = getNamedListenerFactory(jqx);
-  const staticFN = addCTORMethodOrGetterFactory(jqx);
+  let activePopup;
   
-  return {
+  return Object.freeze({
     log,
     warn,
     error,
@@ -294,12 +275,13 @@ function staticMethodsFactory(jqx) {
     logger: systemLog,
     proxyWrapper,
     text(str, isComment = false) { return isComment ? jqx(`<!--${str}-->`) : document.createTextNode(str); },
-    comment(str) { return jqx(`<!--${str}-->`); },
     node(selector, root = document) { return root.querySelector(selector, root); },
     nodes(selector, root = document) { return [...root.querySelectorAll(selector, root)]; },
     clearAllTimers,
+    staticFn() {jqx.warn(`JQx: the staticFn method is deprecated`); return undefined;},
+    set activePopup(value) { activePopup = value; },
+    get activePopup() { return activePopup; },
     get HTMLSanitizer() { return cleanupHtml; },
-    get staticFn() { return function(name, method, isGetter) { return staticFN(name, method, isGetter); } },
     get toBool() { return convert2Bool; },
     get getNamedListener() { return getNamedListener; },
     get virtual() { return virtualFactory(jqx); },
@@ -318,9 +300,9 @@ function staticMethodsFactory(jqx) {
     get at() { return insertPositions; },
     get setStyle() { /*deprecated*/return editCssRule; },
     get fn() { return addFn; },
+    get Popup() { return popupGetter(jqx) },
     get lenient() { return tagLib.allowUnknownHtmlTags; },
     get IS() { return IS; },
-    get Popup() { return popupGetter(jqx); },
     get listenerStore() { return handlerWrapper.ListenerStore; },
-  };
+  });
 }
