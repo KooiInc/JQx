@@ -389,29 +389,6 @@ function clickActionsFactory($) {
         closeAfter: 5
       } );
     },
-    addStaticFnEx: evt => {
-      $.staticFn(`xample1`, staticEx1, true); // a getter
-      $.staticFn(`xample2`, staticEx2);       // a method
-      $.staticFn(`42`);                       // logs an error
-      
-      $.xample1;
-      
-      function staticEx1() {
-        $.logger.log(`***staticEx1 said HI`);
-        $.Popup.show({
-          content: `logged "***staticEx1 said HI"`,
-          closeAfter: 2,
-          callback: () => $.xample2(`world`, `and`, `universe!`),
-        })
-      }
-      
-      function staticEx2(...args) {
-        $.Popup.show({
-          content: $.div(`HELLO! ${args.join(" ")}`),
-          closeAfter: 3
-        });
-      }
-    },
     addClassEx: evt => {
             $.editCssRules(
         "#tmpEx.warnUser {color: red; font-weight: bold;}",
