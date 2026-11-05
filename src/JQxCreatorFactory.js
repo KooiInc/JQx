@@ -297,11 +297,11 @@ function staticMethodsFactory(jqx) {
     get delegateCaptured() { return capturedHandling; } ,
     get handle() { return  capturedHandling; },
     get listen() { return handlerWrapper.listen; },
+    get lenient() { return () => `deprecated, use allow-/prohibitTags` },
     get at() { return insertPositions; },
     get setStyle() { /*deprecated*/return editCssRule; },
     get fn() { return addFn; },
     get Popup() { return popupGetter(jqx) },
-    get lenient() { return tagLib.allowUnknownHtmlTags; },
     get IS() { return IS; },
     get listenerStore() { return handlerWrapper.ListenerStore; },
   });

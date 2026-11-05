@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2026-11-04 12:01:34 UTC-->
+<!-- Generated file, last update 2026-11-05 11:02:51 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -1508,40 +1508,17 @@ So removal of <code>.test1, test2 {...}</code> will fail using <code>$.removeCss
 <div data-example>##EXAMPLECODE@replaceWithEx##</div></div>
 </template>
 
-<template data-id="static_lenient" class="static_lenient" data-is-deprecated="false">
+<template data-id="static_lenient" class="static_lenient" data-is-deprecated="true">
 <div data-params='None'></div>
-<div data-return-value='{on: function, off: function}'></div>
-<div data-text='1'><div>
-  A few HTML tags are prohibited (e.g. <code>script</code>). One can override it using
-  <code>$.lenient</code>. It is an <code>Object</code> with two methods:
+<div data-return-value='n/a'></div>
+<div data-text='1'><!--DEPRECATED-->
+<div>
+  The lenient static method is deprecated and not active anymore
 </div>
 
-<ul>
-  <li>use <code>$.lenient.on()</code> to allow the creation of not allowed HTML tags 
-    (e.g. <code>embed</code>)
-    <div class="note"><b style="color:red">
-      Note</b>: <code>$.lenient.on()</code> may introduce security problems. <b 
-      class="warn">Handle with care</b>!</div>
-  </li>
-  <li>(Default) use <code>$.lenient.off()</code> to use only permitted HTML tags.</li>
-</ul>
+<div>To allow individual HTML tags, use <div class="linkLike" data-jumpkey="static_allowTags" data-action="jump2Nav"><code>$.allowTags(tagName)</code></div></div>
 
-<h3>
-  By default prohibited HTML tags:</h3> <ul>
-  <li>audio</li>
-  <li>embed</li>
-  <li>form</li>
-  <li>iframe</li>
-  <li>frameset</li>
-  <li>object</li>
-  <li>progress</li>
-  <li>script</li>
-  <li>template</li>
-  <li>use</li></ul>
-
-<div>To allow individual HTML tags, use <div class="linkLike" data-jumpkey="static_allowTag" data-action="jump2Nav"><code>$.allowTag(tagName)</code></div></div>
-
-<div>To prohibit individual HTML tags, use <div class="linkLike" data-jumpkey="static_prohibitTag" data-action="jump2Nav"><code>$.prohibitTag(tagName)</code></div></div></div>
+<div>To prohibit individual HTML tags, use <div class="linkLike" data-jumpkey="static_prohibitTags" data-action="jump2Nav"><code>$.prohibitTags(tagName)</code></div></div></div>
 </template>
 
 <template data-id="static_at" class="static_at" data-is-deprecated="false">

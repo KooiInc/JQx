@@ -1,11 +1,5 @@
 import { sanitizerConfig } from "./DOMCleanup.js";
 
-let lenient = false;
-const allowUnknownHtmlTags = {
-  on: () => lenient = true,
-  off: () => lenient = false,
-};
-
 function allowOrProhibitTag(tag, allow) {
   return allow ? sanitizerConfig.addTag(tag) : sanitizerConfig.removeTag(tag);
 }
