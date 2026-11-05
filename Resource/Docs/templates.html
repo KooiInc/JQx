@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2026-11-05 11:02:51 UTC-->
+<!-- Generated file, last update 2026-11-05 13:42:18 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -854,9 +854,8 @@ import $ from "//kooiinc.github.io/JQx/Bundle/jqx.min.js";
   or its <a target="_blank"
             href="https://developer.mozilla.org/en-US/docs/Glossary/Camel_case">camel cased</a>
   tag name: <code>$.someComponent</code>. You'll have to <i>allow</i> using such tags first: see
-  <div class="linkLike" data-action="jump2Nav" data-jumpkey="static_allowTag"
-    >$.allowTag
-  </div> (in their initial form, e.g. <code>$.allowTag(`my-webcomponent`)</code>. That will also
+  <div class="linkLike" data-action="jump2Nav" data-jumpkey="static_allowTags"
+    >$.allowTags</div> (in their initial form, e.g. <code>$.allowTags(`my-webcomponent`)</code>. That will also
    make a camelCased method name available (<code>$.myWebcomponent(...)</code>)). 
   <div>The top line of this document is a web component (<code>&lt;copyright-slotted></code>)
   </div>
@@ -1240,7 +1239,7 @@ $.TEMPLATE({id: "myTemplate", innerHTML: "..."}).render;</div>
     <li>
       for (XSS) securitiy reasons <i>comments</i> (<span style="color:#777">&lt;!-- ... ---&gt;</span>) are 
       disabled by <a target="_blank" href="https://github.com/cure53/DOMPurify">DOMPurify</a>. 
-      If you need comments in your html, enable them by <code>[jqx].allowTag("#comment")</code>.
+      If you need comments in your html, enable them by <code>[jqx].allowTags("#comment")</code>.
       See the 
       <div class="linkLike"
            data-action="jump2Nav" 
@@ -1250,7 +1249,7 @@ $.TEMPLATE({id: "myTemplate", innerHTML: "..."}).render;</div>
       For all manually allowed tags it may be wise to 
       <div class="linkLike"
            data-action="jump2Nav" 
-           data-jumpkey="static_prohibitTag">prohibit</div> 
+           data-jumpkey="static_prohibitTags">prohibit</div> 
      them after use.
     </li>
   </uL>
@@ -1516,9 +1515,9 @@ So removal of <code>.test1, test2 {...}</code> will fail using <code>$.removeCss
   The lenient static method is deprecated and not active anymore
 </div>
 
-<div>To allow individual HTML tags, use <div class="linkLike" data-jumpkey="static_allowTags" data-action="jump2Nav"><code>$.allowTags(tagName)</code></div></div>
+<div>To allow the use of individual HTML tags, use <div class="linkLike" data-jumpkey="static_allowTags" data-action="jump2Nav"><code>$.allowTags(tagName)</code></div></div>
 
-<div>To prohibit individual HTML tags, use <div class="linkLike" data-jumpkey="static_prohibitTags" data-action="jump2Nav"><code>$.prohibitTags(tagName)</code></div></div></div>
+<div>To prohibit the use of individual HTML tags, use <div class="linkLike" data-jumpkey="static_prohibitTags" data-action="jump2Nav"><code>$.prohibitTags(tagName)</code></div></div></div>
 </template>
 
 <template data-id="static_at" class="static_at" data-is-deprecated="false">
@@ -2240,7 +2239,7 @@ $.div({winners: "0", "custom-color": "marine", lost: "none"});
 <div data-text='1'><div>
   Uses <a target="_blank" href="https://github.com/cure53/DOMPurify">DOMPurify</a> with the internal 
   JQx configuration to sanitize the given string or (HTML/SVG)Element. If you used 
-  <code>allowTag/allowAttributes</code> in your code before invoking, that will be 
+  <code>allowTags/allowAttributes</code> in your code before invoking, that will be 
   honored as per the JQx configuration.
 </div></div>
 </template>
@@ -2248,7 +2247,7 @@ $.div({winners: "0", "custom-color": "marine", lost: "none"});
 <template data-id="static_prohibitTags" class="static_prohibitTags" data-is-deprecated="false">
 <div data-params='[{"...tags":"string[] tag names to prohibit"}]'></div>
 <div data-return-value='Nothing'></div>
-<div data-text='1'><div>The creation of most html-tags is allowed by default. You can prohibit the creation of one or more tags using this the <code>prohibitTag</code> method, e.g. <code>$.prohibitTag(`dialog`)</code>.</div>
+<div data-text='1'><div>The creation of most html-tags is allowed by default. You can prohibit the creation of one or more tags using this the <code>prohibitTags</code> method, e.g. <code>$.prohibitTags(`dialog`)</code>.</div>
 
 <div class="note"><b>Note</b>: for backward compatibility also available as <code>prohibit<b>Tag</b></code></div>
 
@@ -2256,7 +2255,7 @@ $.div({winners: "0", "custom-color": "marine", lost: "none"});
 Prohibiting a <code>tagName</code> also disables its use as a static JQx extension method. So
 </div>
 
-<div data-example>$.prohibitTag('template');
+<div data-example>$.prohibitTags('template');
 // this will show an error message in the console
 // Message: JQx: "template" not allowed, not rendered
 $.TEMPLATE({id: "myTemplate", innerHTML: "..."})?.toDOM();</div></div>
