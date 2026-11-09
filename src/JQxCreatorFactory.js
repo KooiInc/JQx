@@ -231,11 +231,6 @@ function getNamedListenerFactory(jqx) {
 function popupGetter(jqx) {
   if (!jqx.activePopup) {
     jqx.activePopup = PopupFactory(jqx);
-    // Object.defineProperty(
-    //   jqx, `activePopup`, {
-    //     value: PopupFactory(jqx),
-    //     enumerable: false
-    //   } );
   }
   return jqx.activePopup;
 }
