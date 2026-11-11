@@ -254,19 +254,32 @@ function getSelectedStaticMethods(jqx) {
 
 function createCustomStaticMethodFactory() {
   const customFns = {};
+  
   return {
     create({name, method, isGetter} = {}) {
-      if (!customFns[name] && typeof method === 'function') {
+      const {nameOk, methodOk} = checkParams(name, method);
+      if (!!nameOk) {
         const descriptr = !!isGetter
           ? { get() { return method } }
-          : { value(...args) { return method(...args); } };
-        Object.defineProperty(customFns, name, descriptr);
+          : { value(...args) { return methodOk(...args); } };
+        return Object.defineProperty(customFns, nameOk, descriptr);
       }
     },
     hasKey(key) { return Object.hasOwn(customFns, key); },
     getMethod(key) {
       return Object.getOwnPropertyDescriptor(customFns, key).get
         ? customFns[key]() : customFns[key]; },
+  }
+  
+  function checkParams(name, method) {
+    name = typeof name === `string` && name.length > 1 ? name : method?.name !== `method` && method?.name;
+    if (!!!name || typeof method !== 'function') {
+      const msg = `${name ? `name ok` : `no name`}${
+        method && typeof method === `function` ? `, method ok` : `, no/invalid method`}`;
+      systemLog.error(`JQx: staticFn insufficient parameters (${msg})`);
+      return {};
+    }
+    return !customFns[name] ? {nameOk: name, methodOk: method} : {};
   }
 }
 
