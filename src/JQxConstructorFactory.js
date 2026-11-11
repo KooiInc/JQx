@@ -1,4 +1,4 @@
-import { proxify, addJQxStaticMethods } from "./JQxCreatorFactory.js";
+import { proxify, addJQxStaticMethods, customs } from "./JQxCreatorFactory.js";
 import {
   isHtmlString, isArrayOfHtmlStrings, isArrayOfHtmlElements,
   input2Collection, setCollectionFromCssSelector, IS, systemLog,
@@ -82,16 +82,17 @@ function createCTORProxy() {
   const getterTrap = {
     get(target, key) {
       const isStaticTag = !!$T[key]();
+      
       switch(true) {
-        case isStaticTag: return createFromTDFactory(key, target);
+        case customs.hasKey(key): return customs.getMethod(key);
         case Object.hasOwn(target, key): return target[key];
+        case isStaticTag: return createFromTDFactory(key, target);
         default:
-          systemLog.warn(`JQx: "${String(key)}" not a JQx property. Empty instance is returned`);
-          return () => factory(``);
+          systemLog.warn(`JQx: "${String(key)}" not a JQx property.`);
+          return target;
       }
    }
   };
-  
   const factory = JQxMainFactory();
   return new Proxy(Object.freeze(factory), getterTrap);
 }

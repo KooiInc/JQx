@@ -26,8 +26,9 @@ const {
   isComment, isText, isHtmlString, isArrayOfHtmlElements, isArrayOfHtmlStrings,
   ElemArray2HtmlString, cssRuleEdit, addFn
 } = selectedUtilitiesFactory();
+const customs = createCustomStaticMethodFactory();
 
-export { proxify, addJQxStaticMethods };
+export { proxify, addJQxStaticMethods, customs };
 
 function selectedUtilitiesFactory() {
    return {
@@ -247,7 +248,26 @@ function getSelectedStaticMethods(jqx) {
   const error = (...line) => systemLog.on.error(...line).off;
   return {
     editCssRule, createStyle, editCssRules, allowProhibit, handle: capturedHandling, capturedHandling,
-    log, warn, error, handlerWrapper};
+    log, warn, error, handlerWrapper
+  };
+}
+
+function createCustomStaticMethodFactory() {
+  const customFns = {};
+  return {
+    create({name, method, isGetter} = {}) {
+      if (!customFns[name] && typeof method === 'function') {
+        const descriptr = !!isGetter
+          ? { get() { return method } }
+          : { value(...args) { return method(...args); } };
+        Object.defineProperty(customFns, name, descriptr);
+      }
+    },
+    hasKey(key) { return Object.hasOwn(customFns, key); },
+    getMethod(key) {
+      return Object.getOwnPropertyDescriptor(customFns, key).get
+        ? customFns[key]() : customFns[key]; },
+  }
 }
 
 function staticMethodsFactory(jqx) {
@@ -269,11 +289,16 @@ function staticMethodsFactory(jqx) {
     escHtml,
     logger: systemLog,
     proxyWrapper,
-    text(str, isComment = false) { return isComment ? jqx(`<!--${str}-->`) : document.createTextNode(str); },
+    text(str, isComment = false) {
+      isComment && jqx.allowTags(`#comment`);
+      const elem = isComment ? jqx.comment(str) : document.createTextNode(str);
+      jqx.prohibitTags(`#comment`);
+      return elem;
+    },
     node(selector, root = document) { return root.querySelector(selector, root); },
     nodes(selector, root = document) { return [...root.querySelectorAll(selector, root)]; },
     clearAllTimers,
-    staticFn() {jqx.warn(`JQx: the staticFn method is deprecated`); return undefined;},
+    staticFn({name, method, isGetter} = {}) { customs.create({name, method, isGetter}); },
     set activePopup(value) { activePopup = value; },
     get activePopup() { return activePopup; },
     get HTMLSanitizer() { return cleanupHtml; },
@@ -292,9 +317,9 @@ function staticMethodsFactory(jqx) {
     get delegateCaptured() { return capturedHandling; } ,
     get handle() { return  capturedHandling; },
     get listen() { return handlerWrapper.listen; },
-    get lenient() { return () => `deprecated, use allow-/prohibitTags` },
+    get lenient() { /*deprecated*/ return `deprecated, use allow-/prohibitTags` },
     get at() { return insertPositions; },
-    get setStyle() { /*deprecated*/return editCssRule; },
+    get setStyle() { /*deprecated*/ return editCssRule; },
     get fn() { return addFn; },
     get Popup() { return popupGetter(jqx) },
     get IS() { return IS; },

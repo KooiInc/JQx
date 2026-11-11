@@ -10,13 +10,13 @@ import {
 
 export {
   after, applyStyle, assignAttrValues, assignPropertyValues, beforeOrAfter, cleanupHtml, clearAllTimers, cloneAndDestroy,
-  convert2Bool, createElementFromHtmlString, css, datasetKeyProxy, ElemArray2HtmlString, emptyElement, escHtml,
-  ExamineElementFeatureFactory, findParentScrollDistance, getAttributesForLogging, getHandlerName, getNodeContentForLog,
-  HandlerFactory, inject2DOMTree, input2Collection, insertPositions, IS, isArrayOfHtmlElements, isArrayOfHtmlStrings,
-  isCommentOrTextNode, isHtmlString, isNode, isNonEmptyString, lcFirst, logTime, loop, maybe, PopupFactory,
-  propertyIsReflected, proxyWrapper, randomNr, randomString, resolveEventTypeParameter, selectedFactoryHelpers,
-  setCollectionFromCssSelector, setData, styleFactory, systemLog, tagFNFactory, tagLib, toCamelcase, toDashedNotation,
-  truncate,
+  convert2Bool, createElementFromHtmlString, css, datasetKeyProxy, ElemArray2HtmlString, emptyElement,
+  escHtml, ExamineElementFeatureFactory, findParentScrollDistance, getAttributesForLogging, getHandlerName,
+  getNodeContentForLog, HandlerFactory, inject2DOMTree, input2Collection, insertPositions, IS, isArrayOfHtmlElements,
+  isArrayOfHtmlStrings, isCommentOrTextNode, isHtmlString, isNode, isNonEmptyString, lcFirst, logTime, loop, maybe,
+  PopupFactory, propertyIsReflected, proxyWrapper, randomNr, randomString, resolveEventTypeParameter,
+  selectedFactoryHelpers, setCollectionFromCssSelector, setData, styleFactory, systemLog, tagFNFactory, tagLib,
+  toCamelcase, toDashedNotation, truncate,
 };
 
 function loop(instance, callback) {
@@ -42,14 +42,15 @@ function setCollectionFromCssSelector(input, root, self) {
   const selectorRoot = root !== document.body && (IS(input, String) && input.toLowerCase() !== "body") ? root : document;
   if (!IS(input, String) || input.trim().length < 1) { return; }
   try { self.collection = [...selectorRoot.querySelectorAll(input)]; }
-  catch (err) { systemLog.warn(`JQx: Invalid CSS querySelector. [${!IS(input, String) ? `Not a string!` : input}]`); }
+  catch (err) { systemLog.warn(`JQx: Invalid CSS querySelector "${!IS(input, String) ? `Not a string!` : input}"`); }
 }
 
 function selectedFactoryHelpers() {
   return {
     isCommentOrTextNode, isNode, isComment, isText, isHtmlString, isArrayOfHtmlElements,
     isArrayOfHtmlStrings, ElemArray2HtmlString, input2Collection, setCollectionFromCssSelector,
-    cssRuleEdit: styleFactory({createWithId: `JQxStylesheet`}) };
+    cssRuleEdit: styleFactory({createWithId: `JQxStylesheet`})
+  };
 }
 
 function ExamineElementFeatureFactory() {
