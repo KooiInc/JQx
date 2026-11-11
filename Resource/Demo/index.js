@@ -5,23 +5,34 @@ const testBndl = false;
 const libLink = !testBndl && isDev ? "../../index.js" : "../../Bundle/jqx.min.js";
 const $ = (await import(libLink)).default;
 $.allowAttributes(`target`);
+$.staticFn({name: `getComments`, method: allCommentsFactory()});
+$.staticFn({name: `comment2Str`, method: nodeContent});
 $.logger.enable;
 const started = performance.now();
 const debug = false;
 const isGithub = /github/i.test(location.href);
 injectFavIconAndCounterImage();
+
 // initialize styling for this page
 $.editCssRules(...cssRules);
 
-// use jqx in the developer console
-window.jqx = $;
-
-// test DOM clobbering
-// the console should show a sanitation message (attribute href)
-$.form({name: "config", class: "hidden"}, $.input({name: "debug", value:"true"})).render;
-$.a({id:"appState", class: "hidden"}, `test`).render;
-$(`#appState`).prop({href:"javascript:console.log('clobbered')"});
-setTimeout(() => {$(`form, #appState`).remove()}, 1000);
+/*
+  test DOM clobbering
+  - The console should show sanitation messages
+  - The window[...] variables should be conserved
+  - The concerning id's/names should be renamed
+    to "user-content-[id/name]"
+*/
+window.config = {};
+window.debug = "abc";
+window.jqx = $; // use jqx in the developer console
+$.form(
+  {name: "config", class: "hidden"},
+  $.input({id: "debug", value:"true"}),
+  $.a({id:"jqx", class: "hidden"}, `test`)
+).render;
+$.warn(`JQx DOM clobbering prevention tested => window.config = ${
+  JSON.stringify(window.config)}; window.debug = ${window.debug}`);
 
 // add event handling defined in function [getDelegates4Document]
 getDelegates4Document().forEach(([type, targetedHandlers]) =>
@@ -68,14 +79,29 @@ if (!debug) {
         or (for some browsers) press CTRL+U.`)
   ).appendTo(JQxRoot);
   
-  // The JQx constructor ($) is a proxy, so static element
-  // creation will result in an error log message (see log)
+  /*
+     The JQx constructor ($) is a proxy.
+     $.nocando can't be invoked, it will
+     return the constructor and try to
+     invoke that with the given arguments.
+     In this case the constructor interprets
+     the argument (a string) as a css selector.
+     That's not valid, so there's a warning
+     in the console.
+   */
   $.nocando(`I will NOT render!`);
-  $.script.render;
-  // ^ returns undefined. But there is a log entry (error)
   
+  /* $.script is sanitized, so returns constructor.
+     There will be 2 console log entries:
+     sanitation (error) and
+     render warning (empty collection)
+  */
+  $.script(`alert("HellNo");`).render;
   
-  // onclick is not allowed, so will be removed on element creation
+  /*
+    onclick is not allowed, so will be removed on element creation.
+    There will be console log entry (error)
+  */
   const msg = `hi there, you won't see me`;
   $(`<div id="nohandling" onclick="alert('${msg}')"></div>`)
     .html(`<h1>H e l l o  &nbsp;w o r l d</h1>`).appendTo(JQxRoot);
@@ -451,7 +477,7 @@ if (!debug) {
   // this invalid tag will result in an error message in the console.
   $.div123(`Will NOT work`);
   
-  $.prohibitTags(`link`, `#comment`);
+  $.prohibitTags(`link`);
 }
 /* DEBUG EXIT POINT */
 
@@ -491,10 +517,16 @@ function getDelegates4Document() {
       target: `#showComments`,
       name: "showCommentsHandler",
       handlers: [function ({evt}) {
-        const comments = $.div(allComments([...document.childNodes]).join(`\n`));
+        const comments = $.div($.getComments(document.childNodes).join(`\n`));
         const head = $.h3(`*All Comments in this document:`)
           .Style.inline({marginTop: 0, marginBottom: `0.5rem`});
-        const content = $.div(head, comments);
+        const postHoc = $.div(
+          {style: `margin-top: 1em`},
+          `The comments were retrieved using the `,
+          $.i(`custom`), ` static `,
+          $.code(`$.getComments`), ` method.`,
+          $.div(`See code used in this document (`, $.code(`$.staticFn`), ` call).`));
+        const content = $.div(head, comments, postHoc);
         return $.Popup.show({content});
       },]
     }, {
@@ -549,34 +581,40 @@ function showBacklog() {
   });
 }
 
-function allComments(root, result = []) {
-  for (const node of root) {
-    
-    if (node.childNodes && node.childNodes.length) {
-      allComments([...node.childNodes], result);
-    }
-    
-    if (node.nodeType === 8) {
-      const parent = node.parentNode;
-      let parentStr;
-      
-      if (parent) {
-        const className = parent.classList.length && `.${[...parent.classList][0]}` || ``;
-        parentStr = `&#8226; in <b>${
-          parent.nodeName.toLowerCase()}${
-          parent.id ? `#${parent.id}` : className ? className : ``}</b>`;
-      }
-      
-      const spacing = "&nbsp;".repeat(7);
-      result.push(`<div class="cmmt">${parentStr ?? `&#8226; in <b>??</b>`}<br>${
-        "&nbsp;".repeat(2)}&lt;!--${
-        node.textContent
-          .replace(/</, `&lt;`)
-          .replace(/\n/g, `<br>${spacing}`)}--&gt;</div>`);
-    }
+function allCommentsFactory() {
+  const result = [];
+  
+  return function(roots) {
+    result.length = 0; // allways renew results
+    return allComments(roots);
   }
   
-  return result;
+  function allComments(roots) {
+    for (const node of roots) {
+      
+      if (node.childNodes && node.childNodes.length) {
+        allComments([...node.childNodes], result);
+      }
+      
+      if (node.nodeType === 8) {
+        const parent = node.parentNode;
+        let parentStr;
+        
+        if (parent) {
+          const className = parent.classList.length && `.${[...parent.classList][0]}` || ``;
+          parentStr = `&#8226; in <b>${
+            parent.nodeName.toLowerCase()}${
+            parent.id ? `#${parent.id}` : className ? className : ``}</b>`;
+        }
+        
+        const spacing = "&nbsp;".repeat(7);
+        result.push(`<div class="cmmt">${parentStr ?? `&#8226; in <b>??</b>`}<br>${
+          "&nbsp;".repeat(2)}${$.comment2Str(node, 1).replace(/\n/g, `<br>${spacing}`)}</div>`);
+      }
+    }
+    
+    return result;
+  }
 }
 
 // create links for popup
@@ -629,6 +667,12 @@ function injectFavIconAndCounterImage() {
     default:
       currentLink.replaceWith(link.attr(icons.github));
   }
+}
+
+function nodeContent(node, html) {
+  return $.IS(node, Comment)
+    ? !!html ? `&lt;!--${node.textContent}--&gt;` : `<!--${node.textContent}-->`
+    : node.textContent;
 }
 
 // for popup style rules

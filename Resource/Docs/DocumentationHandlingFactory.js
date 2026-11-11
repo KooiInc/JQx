@@ -1162,6 +1162,30 @@ function clickActionsFactory($) {
         exDiv.setData({id: "temporary", goodbye: "and bye again"});
       }, 1500);
     },
+    addStaticFnEx: evt => {
+      $.staticFn({name: `xample1`, method: staticEx1, isGetter: true}); // a getter
+      $.staticFn({method: xample2});                                    // a named method
+      $.staticFn({name: `42`});                                         // logs an error
+      $.staticFn({method: () => ``});                                   // idem
+      $.staticFn();                                                     // idem
+      $.xample1;
+      
+      function staticEx1() {
+        $.logger.log(`***staticEx1 said HI`);
+        $.Popup.show({
+          content: `logged "***staticEx1 said HI"`,
+          closeAfter: 3,
+          callback: () => $.xample2(`world`, `and`, `universe!`),
+        })
+      }
+      
+      function xample2(...args) {
+        $.Popup.show({
+          content: $.div(`HELLO! ${args.join(" ")}`),
+          closeAfter: 5
+        });
+      }
+    },
     appendToEx: evt => {
       $.editCssRule(".tmpExAppendTo { color: blue; font-weight: normal; }");
       const helloWorld = $.virtual('<div class="tmpExAppendTo">Hello World</div>');
