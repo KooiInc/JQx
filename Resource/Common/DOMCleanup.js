@@ -11,7 +11,7 @@ function sanitizerConfigFactory() {
     ADD_TAGS: [],
     FORBID_TAGS: [],
     FORBID_ATTR: [],
-    ADD_ATTR: [],
+    ADD_ATTR: [`target`],
     FORCE_BODY: false,
     SANITIZE_DOM: true,
   };
@@ -51,13 +51,18 @@ function sanitizeNow(HTMLStringOrElement, notInPlace) {
   const configClean = notInPlace || typeof HTMLStringOrElement === `string` ? config.notInPlaceConfig : config.current;
   const sane = DOMPurify.sanitize(HTMLStringOrElement, configClean);
   
+  if (sane?.target && sane.target === `_blank`) {
+    sane.setAttribute(`rel`, `noopener`);
+    systemLog.log(`JQx sanitizer: added rel="noopener" to targeted element`);
+  }
+  
   if (window[sane.id] && !HTMLStringOrElement.isConnected) {
-    systemLog.warn(`JQx sanitized: DOM clobbering for id "${sane.id}" prevented`);
+    systemLog.warn(`JQx sanitizer: DOM clobbering for id "${sane.id}" prevented`);
     sane.id = `user-content-${sane.id}`;
   }
   
   if (window[sane.name] && !HTMLStringOrElement.isConnected) {
-    systemLog.warn(`JQx sanitized: DOM clobbering for name "${sane.name}" prevented`);
+    systemLog.warn(`JQx sanitizer: DOM clobbering for name "${sane.name}" prevented`);
     sane.name = `user-content-${sane.name}`;
   }
   
@@ -72,7 +77,6 @@ function sanitizeStringOrElement(HTMLStringOrElement) {
   try {
     return sanitizeNow(HTMLStringOrElement);
   } catch(err) {
-    systemLog.log(`JQX: sanitition NOT in place`);
     return sanitizeNow(HTMLStringOrElement, true);
   }
 }

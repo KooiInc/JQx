@@ -4,7 +4,6 @@ const isDev = /dev|local/i.test(location.href);
 const testBndl = false;
 const libLink = !testBndl && isDev ? "../../index.js" : "../../Bundle/jqx.min.js";
 const $ = (await import(libLink)).default;
-$.allowAttributes(`target`);
 $.staticFn({name: `getComments`, method: allCommentsFactory()});
 $.staticFn({name: `comment2Str`, method: nodeContent});
 $.logger.enable;
