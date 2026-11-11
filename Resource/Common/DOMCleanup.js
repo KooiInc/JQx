@@ -51,6 +51,16 @@ function sanitizeNow(HTMLStringOrElement, notInPlace) {
   const configClean = notInPlace || typeof HTMLStringOrElement === `string` ? config.notInPlaceConfig : config.current;
   const sane = DOMPurify.sanitize(HTMLStringOrElement, configClean);
   
+  if (window[sane.id] && !HTMLStringOrElement.isConnected) {
+    systemLog.warn(`JQx sanitized: DOM clobbering for id "${sane.id}" prevented`);
+    sane.id = `user-content-${sane.id}`;
+  }
+  
+  if (window[sane.name] && !HTMLStringOrElement.isConnected) {
+    systemLog.warn(`JQx sanitized: DOM clobbering for name "${sane.name}" prevented`);
+    sane.name = `user-content-${sane.name}`;
+  }
+  
   if (DOMPurify.removed.length > 0) {
     logSanitation(DOMPurify.removed, HTMLStringOrElement);
   }
