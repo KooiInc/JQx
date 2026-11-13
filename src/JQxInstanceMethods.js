@@ -529,7 +529,7 @@ function instanceExtensionsFactory(jqx) {
         case !IS(newValue, String):
           return instance.node.value;
         default:
-          instance.prop({value: IS(newValue, String) ? "" : newValue});
+          instance.prop({value: !IS(newValue, String) ? "" : newValue});
           return instance;
       }
     },
