@@ -101,7 +101,7 @@ export default function($) {
   
 
   function failModalClose(warnMessage) {
-    if (!$.IS(warnMessage, String, HTMLElement) && !warnMessage.isJQx) { return; }
+    if (!$.IS(warnMessage, String, HTMLElement) || !warnMessage?.isJQx) { return; }
     
     warnMessage = getWarnMessageHTML(warnMessage);
     let modalWarningBox = popupContent.find$(`.warn`);
