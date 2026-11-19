@@ -7,12 +7,11 @@ Bundlephobia is a lost case
 [![](https://depx.co/api/badge/jqx-es)](https://depx.co/pkg/jqx-es)
 
 > [!NOTE]
-> The listening to - and handling of events has been overhauled. This means that
-> callbacks for event listeners now are always expected to have the
-> signature`[handler]({evt: event, me: JQx instance})`. If you use `[JQx].delegate` or
-> `[JQx instance].on` in your code, please review.
+> The creation of HTML Elements using JQx now uses [DOMPurify](https://github.com/cure53/DOMPurify) for sanitation
+> of such elements. This means that certain tags and/or attributes will be weeded out. You can manually allow
+> tags or attributes using the static functions `[JQx constructor].allowAttributes` and `[JQx constructor].allowAttributes`.
 >
-> See [documentation](https://kooiinc.codeberg.page/JQx/Resource/Docs/?navTo=static_handle) for the new `handle` functionality.
+> See [documentation](https://kooiinc.github.io/JQx/Resource/Docs/?navTo=static_allowAttributes).
 
 # JQx
 
