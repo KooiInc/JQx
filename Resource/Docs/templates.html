@@ -1,4 +1,4 @@
-<!-- Generated file, last update 2026-11-11 11:12:04 UTC-->
+<!-- Generated file, last update 2026-11-19 13:46:29 UTC-->
 <template data-id="jqx_About" class="jqx_About" data-is-deprecated="false">
 <div data-params='None'></div>
 <div data-return-value=''></div>
@@ -2211,6 +2211,11 @@ $.div({winners: "0", "custom-color": "marine", lost: "none"});
   <b>Notes</b>: 
    <ul>
      <li>allowing certain attributes may constitute <b>security risks</b>. <i>Handle with care</i>!</li>
+     <li>
+        The <code>id</code> attribute/property may not work as expected when before creation of the concerning element
+        a variable with the same name was assigned. In that case the id is <i>renamed</i> to 
+        "user-content-[original id attribute value]"
+     </li> 
      <li>
         For all manually allowed tags it may be wise to 
         <div class="linkLike"

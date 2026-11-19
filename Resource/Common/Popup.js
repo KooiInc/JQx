@@ -110,7 +110,7 @@ export default function($) {
     switch(true) {
       case modalWarningBox.is.empty: modalWarningBox = $(`<div class="warn">${warnMessage}</div>`);
       default: popupContent.append(modalWarningBox.addClass(`active`));
-        createTimer(() => popupContent.find$(`.warn`).removeClass(`active`), 2);
+        createTimer(() => popupContent.find$(`.warn`).removeClass(`active`), 5);
     }
   }
 }
